@@ -1,0 +1,1512 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="LoongsonEdu">
+      
+      
+      
+        <link rel="prev" href="../stack_frame/index.html">
+      
+      
+      <link rel="icon" href="../../images/loongson3-image.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>汇编编程示例 - LA32R指令集学习指导手册</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#la32r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-header__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LA32R指令集学习指导手册
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              汇编编程示例
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-nav__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    LA32R指令集学习指导手册
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        引言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          LA32R中的用户态整型指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R中的用户态整型指令
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/instr_expression/index.html" class="md-nav__link">
+        LA32R的机器语言与汇编语言表达
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/compute_instrs/index.html" class="md-nav__link">
+        算术逻辑移位类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/ldst_instrs/index.html" class="md-nav__link">
+        数据传输类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/br_jump_instrs/index.html" class="md-nav__link">
+        分支跳转类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/llsc_instrs/index.html" class="md-nav__link">
+        用LL/SC指令构建基本同步原语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/misc_instrs/index.html" class="md-nav__link">
+        其它用户态指令
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          LA32R汇编编程简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R汇编编程简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workenv/index.html" class="md-nav__link">
+        LA32R汇编编程学习环境介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_directives/index.html" class="md-nav__link">
+        常用汇编器指示
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pesudo_instrs/index.html" class="md-nav__link">
+        LA32R汇编器支持的伪指令汇总
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../register_convention/index.html" class="md-nav__link">
+        寄存器使用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calling_convention/index.html" class="md-nav__link">
+        函数调用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addr_space/index.html" class="md-nav__link">
+        进程虚拟地址空间布局规范
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stack_frame/index.html" class="md-nav__link">
+        栈帧布局
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          汇编编程示例
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        汇编编程示例
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    汇编编程示例
+  </a>
+  
+    <nav class="md-nav" aria-label="汇编编程示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hello-world" class="md-nav__link">
+    Hello, world!
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hello-world-syscall" class="md-nav__link">
+    Hello, world! syscall版本
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bubble-sort" class="md-nav__link">
+    bubble sort
+  </a>
+  
+    <nav class="md-nav" aria-label="bubble sort">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scanflen" class="md-nav__link">
+    scanf：从标准输入中读取len值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#randlenlenarr" class="md-nav__link">
+    rand：根据len值生成len个随机数，存入arr中
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#printf" class="md-nav__link">
+    printf：打印数组值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bubble_sort" class="md-nav__link">
+    bubble_sort：冒泡排序
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    完整汇编程序
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    汇编编程示例
+  </a>
+  
+    <nav class="md-nav" aria-label="汇编编程示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hello-world" class="md-nav__link">
+    Hello, world!
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hello-world-syscall" class="md-nav__link">
+    Hello, world! syscall版本
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bubble-sort" class="md-nav__link">
+    bubble sort
+  </a>
+  
+    <nav class="md-nav" aria-label="bubble sort">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scanflen" class="md-nav__link">
+    scanf：从标准输入中读取len值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#randlenlenarr" class="md-nav__link">
+    rand：根据len值生成len个随机数，存入arr中
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#printf" class="md-nav__link">
+    printf：打印数组值
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bubble_sort" class="md-nav__link">
+    bubble_sort：冒泡排序
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    完整汇编程序
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="la32r">LA32R汇编编程简介</h1>
+<h2 id="_1">汇编编程示例</h2>
+<h3 id="hello-world">Hello, world!</h3>
+<p>首先我们先实现一个最经典的例子，即向屏幕中输出"Hello, world!"。在这个例子中，我们可以了解汇编程序的基本结构，掌握函数作为调用者和被调用者需要考虑的寄存器使用规范。</p>
+<p>来看看它的c语言描述：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">hello.c</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">    </span><span class="n">puts</span><span class="p">(</span><span class="s">&quot;Hello, world!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>尝试对这个c语言描述进行翻译。</p>
+<p>字符串"Hello, world!"需要存储于数据段<code>.data</code>，给其一个可以访问的标号，记为<code>output</code>。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">hello.S</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="na">.section</span><span class="w"> </span><span class="no">.data</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="nl">output:</span><span class="w"> </span><span class="na">.asciz</span><span class="w"> </span><span class="s">&quot;Hello, world!\n&quot;</span>
+</code></pre></div></td></tr></table></div>
+<p>代码部分位于<code>.text</code>代码段。程序的入口地址<code>main</code>必须设置为全局符号。有读者在写其他语言汇编时可能将程序入口地址设置为<code>_start</code>，实际上，系统有<code>_start</code>函数。而系统的<code>_start</code>会首先做初始化工作，之后跳转至<code>main</code>标号处，结束后会进行回收工作。如果我们将用户程序入口地址定义为<code>_start</code>标号，则会将系统的函数覆盖掉。有的链接器允许进行这样的操作。而la32r的链接器则会报告对<code>_start</code>的多重定义错误（<code>multiple definition of</code>`<code>_start'</code>），以及未找到<code>main</code>错误（<code>undefined reference to</code>`<code>main'</code>）。因此我们在定义程序入口时，应当定义一个全局的<code>main</code>标号。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">hello.S</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="na">.section</span><span class="w"> </span><span class="no">.text</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="na">.globl</span><span class="w"> </span><span class="no">main</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nl">main:</span>
+</code></pre></div></td></tr></table></div>
+<p>考虑到需要调用<code>puts</code>函数，<code>$ra</code>可能被毁，因此需要保存到栈帧中。如果该函数就是叶子函数，则不需要保存<code>$ra</code>。相应地，栈指针只需要减小一个寄存器长度，即4字节。（第6、7行）</p>
+<p>在返回到<code>main</code>的调用函数前，需要恢复<code>$ra</code>和<code>$sp</code>。（第11、12行）</p>
+<p>函数调用时，针对参数需要考虑两个问题：参数存在哪？存什么内容？<code>puts</code>只有一个参数，根据寄存器使用约定，<code>$a0</code>是第一个参数寄存器，因此存入<code>$a0</code>中。那么<code>$a0</code>中存什么呢？根据</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">puts</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">str</span><span class="p">);</span>
+</code></pre></div>
+<p>c函数的声明，可以看到它的参数是地址，因此将需要输出的字符串地址通过<code>la.local</code>指令加载到<code>$a0</code>中。（第8、9行）读者可以思考一下，对于<code>printf("%d\n", a);</code>和<code>scanf("%d", &amp;a);</code>参数应该分别是什么形式。</p>
+<p>在返回到<code>main</code>的调用函数前，还需要设置<code>main</code>函数的返回值为0，存入返回值寄存器<code>$v0</code>（即<code>$a0</code>）中。（第10、13行）</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">hello.S</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">output</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="nv">%plt</span><span class="p">(</span><span class="no">puts</span><span class="p">)</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+</code></pre></div></td></tr></table></div>
+<p><br></p>
+<h3 id="hello-world-syscall">Hello, world! syscall版本</h3>
+<p>此时我们聚焦于函数的主体功能部分，通过这个例子中，我们可以简单了解系统调用的汇编程序编写方法。</p>
+<p><code>puts</code>在更底层是通过<code>sys_write</code>来实现的。我们可以尝试使用<code>sys_write</code>实现打印功能。首先考察<code>sys_write</code>的参数格式，其他<code>syscall</code>函数我们可以查阅linux源码<code>include/linux/syscalls.h</code>中定义的函数：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kt">long</span><span class="w"> </span><span class="nf">sys_write</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__user</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+</code></pre></div>
+<p>第一个参数<code>fd</code>文件描述符，在POSIX语义中，0、1、2这三个值已经被赋予特殊含义，分别是标准输入（<code>STDIN_FILENO</code>），标准输出（<code>STDOUT_FILENO</code>），标准错误（<code>STDERR_FILENO</code>）。其他文件描述符用于描述打开的文件。在本示例中，因为是向屏幕输出，我们设置<code>fd = 1</code>。</p>
+<p>第二个参数即为前述<code>output</code>。</p>
+<p>第三个参数为字符串长度，这个需要手动计数一下。</p>
+<p>参数都确定好之后，我们需要回忆一下系统调用的约定。和函数调用不同，我们需要将系统调用号存放于<code>$a7</code>中，用剩余的<code>$a0 ~ $a6</code>寄存器传递参数。在内核文件<code>include/uapi/asm-generic/unistd.h</code>中查询系统调用号，可知<code>sys_write</code>的系统调用号为64。因此能够写出以下代码，同样达到向屏幕打印的效果。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">hello_sys.S</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">        </span><span class="no">$a7</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="w">     </span><span class="c1"># syscall number</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w">      </span><span class="c1"># fd</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">output</span><span class="w"> </span><span class="c1"># buf</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">        </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="w">     </span><span class="c1"># count</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">    </span><span class="nf">syscall</span><span class="w">     </span><span class="mi">0</span>
+</code></pre></div></td></tr></table></div>
+<p><br></p>
+<h3 id="bubble-sort">bubble sort</h3>
+<p>这个示例希望能够增强读者对函数调用过程，寄存器使用规范，以及<code>if</code>/<code>for</code>/双重<code>for</code>控制流的理解。这里先给出它的c语言版本，读者可以尝试写出这段程序的汇编语言版本，并在我们的实验平台上运行以及调试，如遇困难再进行后面的阅读。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.c</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-7-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-7-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-7-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-7-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-7-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-7-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-7-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-7-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-7-10">10</a></span>
+<span class="normal"><a href="#__codelineno-7-11">11</a></span>
+<span class="normal"><a href="#__codelineno-7-12">12</a></span>
+<span class="normal"><a href="#__codelineno-7-13">13</a></span>
+<span class="normal"><a href="#__codelineno-7-14">14</a></span>
+<span class="normal"><a href="#__codelineno-7-15">15</a></span>
+<span class="normal"><a href="#__codelineno-7-16">16</a></span>
+<span class="normal"><a href="#__codelineno-7-17">17</a></span>
+<span class="normal"><a href="#__codelineno-7-18">18</a></span>
+<span class="normal"><a href="#__codelineno-7-19">19</a></span>
+<span class="normal"><a href="#__codelineno-7-20">20</a></span>
+<span class="normal"><a href="#__codelineno-7-21">21</a></span>
+<span class="normal"><a href="#__codelineno-7-22">22</a></span>
+<span class="normal"><a href="#__codelineno-7-23">23</a></span>
+<span class="normal"><a href="#__codelineno-7-24">24</a></span>
+<span class="normal"><a href="#__codelineno-7-25">25</a></span>
+<span class="normal"><a href="#__codelineno-7-26">26</a></span>
+<span class="normal"><a href="#__codelineno-7-27">27</a></span>
+<span class="normal"><a href="#__codelineno-7-28">28</a></span>
+<span class="normal"><a href="#__codelineno-7-29">29</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="mi">50</span><span class="p">];</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">bubble_sort</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="err">–</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="err">–</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">                </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">                </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">;</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="p">}</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15"></a>
+<a id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="w">    </span><span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">len</span><span class="p">);</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19"></a>
+<a id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22"></a>
+<a id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="w">    </span><span class="n">bubble_sort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<a id="__codelineno-7-24" name="__codelineno-7-24"></a>
+<a id="__codelineno-7-25" name="__codelineno-7-25"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<a id="__codelineno-7-26" name="__codelineno-7-26"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-7-27" name="__codelineno-7-27"></a>
+<a id="__codelineno-7-28" name="__codelineno-7-28"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-7-29" name="__codelineno-7-29"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>这个例子的<code>main</code>函数相对比较复杂。观察到<code>main</code>函数主要完成五部分内容：<code>scanf</code>，<code>rand</code>，<code>printf</code>，<code>bubble_sort</code>，<code>printf</code>。我们逐个击破。</p>
+<h4 id="scanflen"><strong><code>scanf</code></strong>：从标准输入中读取<code>len</code>值</h4>
+<p>函数调用前解决参数问题：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">scanf</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+</code></pre></div>
+<p>第一个参数是字符串地址，之后的参数是变量的地址。因此在本例中，我们需要提前定义好字符串<code>"%d"</code>以及<code>len</code>变量，以便于后续得到地址。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S: .data</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span>
+<span class="normal"><a href="#__codelineno-9-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="na">.section</span><span class="w"> </span><span class="no">.data</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nl">len:</span><span class="w"> </span><span class="na">.int</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="nl">input_format:</span><span class="w"> </span><span class="na">.asciz</span><span class="w"> </span><span class="s">&quot;%d&quot;</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S: scanf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span>
+<span class="normal"><a href="#__codelineno-10-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">input_format</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">len</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">scanf</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="randlenlenarr"><strong><code>rand</code></strong>：根据<code>len</code>值生成<code>len</code>个随机数，存入<code>arr</code>中</h4>
+<p><strong>单重<code>for</code>循环控制流</strong> 我们可以使用<a href="/instructions/br_jump_instrs/#c">分支跳转类指令</a>一节提到的<code>for</code>循环结构，这里再介绍一种结构，可以在循环主体减去一条分支跳转类指令，如果已知循环至少执行一次，那么第3行还能再省去：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span>
+<span class="normal"><a href="#__codelineno-11-2">2</a></span>
+<span class="normal"><a href="#__codelineno-11-3">3</a></span>
+<span class="normal"><a href="#__codelineno-11-4">4</a></span>
+<span class="normal"><a href="#__codelineno-11-5">5</a></span>
+<span class="normal"><a href="#__codelineno-11-6">6</a></span>
+<span class="normal"><a href="#__codelineno-11-7">7</a></span>
+<span class="normal"><a href="#__codelineno-11-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">len</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">    </span><span class="nf">bne</span><span class="w">         </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="no">loop</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="nl">loop:</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w">    </span><span class="err">&lt;</span><span class="nf">do_something</span><span class="err">&gt;</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w">    </span><span class="nf">bgt</span><span class="w">         </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="no">loop</span>
+</code></pre></div></td></tr></table></div>
+<p>然而在实际循环中，仍有两方面需要注意：</p>
+<ol>
+<li>
+<p>如果<code>&lt;do_something&gt;</code>中有函数的调用，那么存放循环计数的寄存器就不能直接用被调用者不保存的寄存器，如<code>$t##</code>、<code>$a##</code>。那么解决方法，可以是将<code>$t##</code>在<code>&lt;do_something&gt;</code>前保存至栈中，在<code>&lt;do_something&gt;</code>后取出使用，该方法会在循环中产生较多访存；也可以考虑使用<code>$s##</code>作为循环计数变量，而代价是使用前需要将旧值存入栈中，以及在该函数返回前将其恢复出来。直观感觉是第二个方法更有利于循环的高效执行。</p>
+</li>
+<li>
+<p>虽然我们在c语言中常使用的循环增量为1，但如果考虑到这个循环计数值我们将用于数组的访问，我们可以根据数据宽度设置循环增量，并且循环初始值、结束条件可以稍作调整，将其进行等价转换：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span>
+<span class="normal"><a href="#__codelineno-12-2">2</a></span>
+<span class="normal"><a href="#__codelineno-12-3">3</a></span>
+<span class="normal"><a href="#__codelineno-12-4">4</a></span>
+<span class="normal"><a href="#__codelineno-12-5">5</a></span>
+<span class="normal"><a href="#__codelineno-12-6">6</a></span>
+<span class="normal"><a href="#__codelineno-12-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="w">    </span><span class="c1">// before</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w">    </span><span class="c1">// after    </span>
+<a id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">addr</span><span class="p">;</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="n">len</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span>
+<a id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="w">        </span><span class="o">*</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+<p>如果我们用一个寄存器作为循环计数寄存器，那么在获取<code>arr[i]</code>时，需要完成<code>addr = (uint32_t)&amp;arr[0] + i * 4</code>的计算。我们可以转换成汇编做一个对比。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-13-10">10</a></span>
+<span class="normal"><a href="#__codelineno-13-11">11</a></span>
+<span class="normal"><a href="#__codelineno-13-12">12</a></span>
+<span class="normal"><a href="#__codelineno-13-13">13</a></span>
+<span class="normal"><a href="#__codelineno-13-14">14</a></span>
+<span class="normal"><a href="#__codelineno-13-15">15</a></span>
+<span class="normal"><a href="#__codelineno-13-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># before</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">    </span><span class="c1"># $t0 = i</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w">    </span><span class="c1"># $t1 = &amp;arr[0]</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w">    </span><span class="c1"># $t3 = store value</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="nl">loop:</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w">    </span><span class="nf">slli.w</span><span class="w">      </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w">     </span><span class="c1"># $t2 = i * 4</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">       </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t2</span><span class="w">   </span><span class="c1"># $t2 = i * 4 + &amp;arr[0]</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10"></a>
+<a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="c1"># after</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="w">    </span><span class="c1"># $t0 = &amp;arr[i]</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="w">    </span><span class="c1"># $t1 = store value</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="nl">loop:</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+</code></pre></div></td></tr></table></div>
+</li>
+</ol>
+<p><strong>数组定义</strong> 与<code>len</code>类似，数组需要提前在数据段定义才能进行访问。这里我们可以采用之前提到的<code>.rept ... .endr</code>汇编指示来定义50个变量。</p>
+<p><strong>函数返回</strong> 这里<code>rand</code>是一个无参数但是有返回值的函数，注意返回值存于<code>$a0</code>中。</p>
+<p>那么可以开始编写这部分内容。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S: .data</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span>
+<span class="normal"><a href="#__codelineno-14-2">2</a></span>
+<span class="normal"><a href="#__codelineno-14-3">3</a></span>
+<span class="normal"><a href="#__codelineno-14-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="na">.section</span><span class="w"> </span><span class="no">.data</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="nl">value_array:</span><span class="w"> </span><span class="na">.rept</span><span class="w"> </span><span class="mi">50</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">             </span><span class="na">.int</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w">             </span><span class="na">.endr</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S: main: rand</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-15-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-15-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-15-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-15-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-15-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-15-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-15-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-15-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-15-10">10</a></span>
+<span class="normal"><a href="#__codelineno-15-11">11</a></span>
+<span class="normal"><a href="#__codelineno-15-12">12</a></span>
+<span class="normal"><a href="#__codelineno-15-13">13</a></span>
+<span class="normal"><a href="#__codelineno-15-14">14</a></span>
+<span class="normal"><a href="#__codelineno-15-15">15</a></span>
+<span class="normal"><a href="#__codelineno-15-16">16</a></span>
+<span class="normal"><a href="#__codelineno-15-17">17</a></span>
+<span class="normal"><a href="#__codelineno-15-18">18</a></span>
+<span class="normal"><a href="#__codelineno-15-19">19</a></span>
+<span class="normal"><a href="#__codelineno-15-20">20</a></span>
+<span class="normal"><a href="#__codelineno-15-21">21</a></span>
+<span class="normal"><a href="#__codelineno-15-22">22</a></span>
+<span class="normal"><a href="#__codelineno-15-23">23</a></span>
+<span class="normal"><a href="#__codelineno-15-24">24</a></span>
+<span class="normal"><a href="#__codelineno-15-25">25</a></span>
+<span class="normal"><a href="#__codelineno-15-26">26</a></span>
+<span class="normal"><a href="#__codelineno-15-27">27</a></span>
+<span class="normal"><a href="#__codelineno-15-28">28</a></span>
+<span class="normal"><a href="#__codelineno-15-29">29</a></span>
+<span class="normal"><a href="#__codelineno-15-30">30</a></span>
+<span class="normal"><a href="#__codelineno-15-31">31</a></span>
+<span class="normal"><a href="#__codelineno-15-32">32</a></span>
+<span class="normal"><a href="#__codelineno-15-33">33</a></span>
+<span class="normal"><a href="#__codelineno-15-34">34</a></span>
+<span class="normal"><a href="#__codelineno-15-35">35</a></span>
+<span class="normal"><a href="#__codelineno-15-36">36</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="na">.section</span><span class="w"> </span><span class="no">.text</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="na">.globl</span><span class="w"> </span><span class="no">main</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="nl">main:</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-16</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1"># s0 = &amp;value_array</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="w">         </span><span class="c1"># s1 = len</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9"></a>
+<a id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">    </span><span class="na">...</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11"></a>
+<a id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">value_array</span><span class="w">    </span><span class="c1"># $s0 = &amp;arr[0]</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">len</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1"># $s1 = len</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15"></a>
+<a id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span>
+<a id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="w">    </span><span class="nf">slli.w</span><span class="w">      </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">       </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="w">       </span><span class="c1"># $s2 = &amp;arr[len - 1]</span>
+<a id="__codelineno-15-20" name="__codelineno-15-20"></a>
+<a id="__codelineno-15-21" name="__codelineno-15-21"></a><span class="nl">loop_r:</span>
+<a id="__codelineno-15-22" name="__codelineno-15-22"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">rand</span>
+<a id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="w">            </span><span class="c1"># 使用$t0寄存器，每次循环都需要加载</span>
+<a id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="w">    </span><span class="nf">mod.w</span><span class="w">       </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span>
+<a id="__codelineno-15-25" name="__codelineno-15-25"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-15-26" name="__codelineno-15-26"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span><span class="w">        </span><span class="c1"># 倒着生成的随机值</span>
+<a id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="w">    </span><span class="nf">bge</span><span class="w">         </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">loop_r</span>
+<a id="__codelineno-15-28" name="__codelineno-15-28"></a>
+<a id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="w">    </span><span class="na">...</span>
+<a id="__codelineno-15-30" name="__codelineno-15-30"></a>
+<a id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-15-32" name="__codelineno-15-32"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-15-33" name="__codelineno-15-33"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<a id="__codelineno-15-34" name="__codelineno-15-34"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-15-35" name="__codelineno-15-35"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span>
+<a id="__codelineno-15-36" name="__codelineno-15-36"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="printf"><strong><code>printf</code></strong>：打印数组值</h4>
+<p>注意到<code>main</code>中两次<code>printf</code>的操作内容是一样的，我们可以将其提取为一个公共函数：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1">1</a></span>
+<span class="normal"><a href="#__codelineno-16-2">2</a></span>
+<span class="normal"><a href="#__codelineno-16-3">3</a></span>
+<span class="normal"><a href="#__codelineno-16-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">output_data</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">    </span><span class="n">puts</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p><code>for</code>循环的写法与注意事项已在前一小节提及，这里再强调一下<code>printf</code>的写法。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">printf</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">);</span>
+</code></pre></div>
+<p>可以看到<code>printf</code>包含两个参数，字符串<code>"%d "</code>和整形变量<code>a</code>，字符串变量需在数据段定义。整形变量即为数组第<code>i</code>项的值（注意不是地址），此处涉及访存。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S: .data</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span>
+<span class="normal"><a href="#__codelineno-18-2">2</a></span>
+<span class="normal"><a href="#__codelineno-18-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="na">.section</span><span class="w"> </span><span class="no">.data</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="nl">print_format:</span><span class="w"> </span><span class="na">.asciz</span><span class="w"> </span><span class="s">&quot;%d &quot;</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="nl">print_line:</span><span class="w"> </span><span class="na">.asciz</span><span class="w"> </span><span class="s">&quot;\n&quot;</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S: main: output_data</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-19-1">1</a></span>
+<span class="normal"><a href="#__codelineno-19-2">2</a></span>
+<span class="normal"><a href="#__codelineno-19-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="w">            </span><span class="c1"># arg1: start_addr = &amp;value_array</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="w">            </span><span class="c1"># arg2: len</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">output_data</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S: printf</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-20-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-20-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-20-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-20-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-20-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-20-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-20-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-20-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-20-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-20-10">10</a></span>
+<span class="normal"><a href="#__codelineno-20-11">11</a></span>
+<span class="normal"><a href="#__codelineno-20-12">12</a></span>
+<span class="normal"><a href="#__codelineno-20-13">13</a></span>
+<span class="normal"><a href="#__codelineno-20-14">14</a></span>
+<span class="normal"><a href="#__codelineno-20-15">15</a></span>
+<span class="normal"><a href="#__codelineno-20-16">16</a></span>
+<span class="normal"><a href="#__codelineno-20-17">17</a></span>
+<span class="normal"><a href="#__codelineno-20-18">18</a></span>
+<span class="normal"><a href="#__codelineno-20-19">19</a></span>
+<span class="normal"><a href="#__codelineno-20-20">20</a></span>
+<span class="normal"><a href="#__codelineno-20-21">21</a></span>
+<span class="normal"><a href="#__codelineno-20-22">22</a></span>
+<span class="normal"><a href="#__codelineno-20-23">23</a></span>
+<span class="normal"><a href="#__codelineno-20-24">24</a></span>
+<span class="normal"><a href="#__codelineno-20-25">25</a></span>
+<span class="normal"><a href="#__codelineno-20-26">26</a></span>
+<span class="normal"><a href="#__codelineno-20-27">27</a></span>
+<span class="normal"><a href="#__codelineno-20-28">28</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="na">.type</span><span class="w"> </span><span class="no">output_data</span><span class="p">,</span><span class="w"> </span><span class="na">@function</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="nl">output_data:</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-16</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8"></a>
+<a id="__codelineno-20-9" name="__codelineno-20-9"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="w">            </span><span class="c1"># s0 = len</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="w">            </span><span class="c1"># s1 = value addr</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">print_format</span><span class="w">   </span><span class="c1"># s2 = printf arg1(print_format)</span>
+<a id="__codelineno-20-12" name="__codelineno-20-12"></a><span class="nl">loop_o:</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="w">            </span><span class="c1"># a0 = s2</span>
+<a id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1"># a1 = printf arg2(value)</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">printf</span>
+<a id="__codelineno-20-16" name="__codelineno-20-16"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-20-17" name="__codelineno-20-17"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span>
+<a id="__codelineno-20-18" name="__codelineno-20-18"></a><span class="w">    </span><span class="nf">bne</span><span class="w">         </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="no">loop_o</span>
+<a id="__codelineno-20-19" name="__codelineno-20-19"></a>
+<a id="__codelineno-20-20" name="__codelineno-20-20"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">print_line</span>
+<a id="__codelineno-20-21" name="__codelineno-20-21"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">puts</span>
+<a id="__codelineno-20-22" name="__codelineno-20-22"></a>
+<a id="__codelineno-20-23" name="__codelineno-20-23"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-20-24" name="__codelineno-20-24"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-20-25" name="__codelineno-20-25"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<a id="__codelineno-20-26" name="__codelineno-20-26"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-20-27" name="__codelineno-20-27"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span>
+<a id="__codelineno-20-28" name="__codelineno-20-28"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+</code></pre></div></td></tr></table></div>
+<h4 id="bubble_sort"><strong><code>bubble_sort</code></strong>：冒泡排序</h4>
+<p>这是一个双重<code>for</code>循环的控制流，在编写<code>for</code>循环时，我们需要想清楚初始值是什么，终止条件是什么，循环增量怎么设置，循环主体要做什么。</p>
+<p>前面我们提到，出于访问数组的便捷性考虑，我们会将循环计数变量改造为每次访问的地址，这里进行相同的改造：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-21-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-21-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-21-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-21-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-21-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-21-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-21-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-21-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-21-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-21-10">10</a></span>
+<span class="normal"><a href="#__codelineno-21-11">11</a></span>
+<span class="normal"><a href="#__codelineno-21-12">12</a></span>
+<span class="normal"><a href="#__codelineno-21-13">13</a></span>
+<span class="normal"><a href="#__codelineno-21-14">14</a></span>
+<span class="normal"><a href="#__codelineno-21-15">15</a></span>
+<span class="normal"><a href="#__codelineno-21-16">16</a></span>
+<span class="normal"><a href="#__codelineno-21-17">17</a></span>
+<span class="normal"><a href="#__codelineno-21-18">18</a></span>
+<span class="normal"><a href="#__codelineno-21-19">19</a></span>
+<span class="normal"><a href="#__codelineno-21-20">20</a></span>
+<span class="normal"><a href="#__codelineno-21-21">21</a></span>
+<span class="normal"><a href="#__codelineno-21-22">22</a></span>
+<span class="normal"><a href="#__codelineno-21-23">23</a></span>
+<span class="normal"><a href="#__codelineno-21-24">24</a></span>
+<span class="normal"><a href="#__codelineno-21-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="w">    </span><span class="c1">// before</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="err">–</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="err">–</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6"></a><span class="w">                </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7"></a><span class="w">                </span><span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">;</span>
+<a id="__codelineno-21-8" name="__codelineno-21-8"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-21-9" name="__codelineno-21-9"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-21-11" name="__codelineno-21-11"></a>
+<a id="__codelineno-21-12" name="__codelineno-21-12"></a><span class="w">    </span><span class="c1">// after</span>
+<a id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">addr_i</span><span class="p">,</span><span class="w"> </span><span class="n">addr_j</span><span class="p">;</span>
+<a id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">addr_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"> </span><span class="n">addr_i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">len</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span><span class="w"> </span><span class="n">addr_i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-15" name="__codelineno-21-15"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">addr_j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"> </span>\
+<a id="__codelineno-21-16" name="__codelineno-21-16"></a><span class="w">             </span><span class="n">addr_j</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">&amp;</span><span class="n">array</span><span class="p">[</span><span class="n">len</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span>\
+<a id="__codelineno-21-17" name="__codelineno-21-17"></a><span class="w">             </span><span class="n">addr_j</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-18" name="__codelineno-21-18"></a><span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="n">addr_j</span><span class="p">;</span>
+<a id="__codelineno-21-19" name="__codelineno-21-19"></a><span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)(</span><span class="n">addr_j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
+<a id="__codelineno-21-20" name="__codelineno-21-20"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-21" name="__codelineno-21-21"></a><span class="w">                </span><span class="o">*</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="n">addr_j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<a id="__codelineno-21-22" name="__codelineno-21-22"></a><span class="w">                </span><span class="o">*</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)(</span><span class="n">addr_j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<a id="__codelineno-21-23" name="__codelineno-21-23"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-21-24" name="__codelineno-21-24"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-21-25" name="__codelineno-21-25"></a><span class="w">    </span><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>注意到这里循环内部没有函数调用，所以我们可以放心大胆地使用<code>$t##</code>和<code>$a##</code>。</p>
+<p>分析一下寄存器分配方案：</p>
+<ol>
+<li>
+<p><code>addr_j</code>每次都从<code>&amp;array[0]</code>开始，所以必须存<code>&amp;array[0]</code>，<code>$a0</code>作为参数天然存了这个值。</p>
+</li>
+<li>
+<p><code>addr_i</code>要与终止条件<code>&amp;array[len - 1]</code>判断，因此要存<code>&amp;array[len - 1]</code>，<code>$a1</code>原本存<code>len</code>，经过<code>(len - 1) &lt;&lt; 2 + $a0</code>的变换可以得到，直接存于<code>$a1</code>中即可。</p>
+</li>
+<li>
+<p>存储<code>addr_i</code>需要一个寄存器，记为<code>$a2</code>；存储<code>addr_j</code>需要一个寄存器，记为<code>$t0</code>。</p>
+</li>
+<li>
+<p><code>addr_j</code>的终止值不用每次都计算，可以在每次外层循环更新变量时更新内层循环终止值，初始设为<code>$a1</code>，每次减4即可，记为<code>$t1</code>。</p>
+</li>
+<li>
+<p>需要获取<code>addr_j</code>和<code>addr_j + 4</code>地址处的值，分别记为<code>$t2</code>和<code>$t3</code>。</p>
+</li>
+</ol>
+<p>据此，可以设计<code>bubble_sort</code>的代码了。</p>
+<h4 id="_2">完整汇编程序</h4>
+<p>这里给读者提供一个能够正确实现bubble sort的汇编代码示例，仅供参考。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">bubble_sort.S</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-22-1">  1</a></span>
+<span class="normal"><a href="#__codelineno-22-2">  2</a></span>
+<span class="normal"><a href="#__codelineno-22-3">  3</a></span>
+<span class="normal"><a href="#__codelineno-22-4">  4</a></span>
+<span class="normal"><a href="#__codelineno-22-5">  5</a></span>
+<span class="normal"><a href="#__codelineno-22-6">  6</a></span>
+<span class="normal"><a href="#__codelineno-22-7">  7</a></span>
+<span class="normal"><a href="#__codelineno-22-8">  8</a></span>
+<span class="normal"><a href="#__codelineno-22-9">  9</a></span>
+<span class="normal"><a href="#__codelineno-22-10"> 10</a></span>
+<span class="normal"><a href="#__codelineno-22-11"> 11</a></span>
+<span class="normal"><a href="#__codelineno-22-12"> 12</a></span>
+<span class="normal"><a href="#__codelineno-22-13"> 13</a></span>
+<span class="normal"><a href="#__codelineno-22-14"> 14</a></span>
+<span class="normal"><a href="#__codelineno-22-15"> 15</a></span>
+<span class="normal"><a href="#__codelineno-22-16"> 16</a></span>
+<span class="normal"><a href="#__codelineno-22-17"> 17</a></span>
+<span class="normal"><a href="#__codelineno-22-18"> 18</a></span>
+<span class="normal"><a href="#__codelineno-22-19"> 19</a></span>
+<span class="normal"><a href="#__codelineno-22-20"> 20</a></span>
+<span class="normal"><a href="#__codelineno-22-21"> 21</a></span>
+<span class="normal"><a href="#__codelineno-22-22"> 22</a></span>
+<span class="normal"><a href="#__codelineno-22-23"> 23</a></span>
+<span class="normal"><a href="#__codelineno-22-24"> 24</a></span>
+<span class="normal"><a href="#__codelineno-22-25"> 25</a></span>
+<span class="normal"><a href="#__codelineno-22-26"> 26</a></span>
+<span class="normal"><a href="#__codelineno-22-27"> 27</a></span>
+<span class="normal"><a href="#__codelineno-22-28"> 28</a></span>
+<span class="normal"><a href="#__codelineno-22-29"> 29</a></span>
+<span class="normal"><a href="#__codelineno-22-30"> 30</a></span>
+<span class="normal"><a href="#__codelineno-22-31"> 31</a></span>
+<span class="normal"><a href="#__codelineno-22-32"> 32</a></span>
+<span class="normal"><a href="#__codelineno-22-33"> 33</a></span>
+<span class="normal"><a href="#__codelineno-22-34"> 34</a></span>
+<span class="normal"><a href="#__codelineno-22-35"> 35</a></span>
+<span class="normal"><a href="#__codelineno-22-36"> 36</a></span>
+<span class="normal"><a href="#__codelineno-22-37"> 37</a></span>
+<span class="normal"><a href="#__codelineno-22-38"> 38</a></span>
+<span class="normal"><a href="#__codelineno-22-39"> 39</a></span>
+<span class="normal"><a href="#__codelineno-22-40"> 40</a></span>
+<span class="normal"><a href="#__codelineno-22-41"> 41</a></span>
+<span class="normal"><a href="#__codelineno-22-42"> 42</a></span>
+<span class="normal"><a href="#__codelineno-22-43"> 43</a></span>
+<span class="normal"><a href="#__codelineno-22-44"> 44</a></span>
+<span class="normal"><a href="#__codelineno-22-45"> 45</a></span>
+<span class="normal"><a href="#__codelineno-22-46"> 46</a></span>
+<span class="normal"><a href="#__codelineno-22-47"> 47</a></span>
+<span class="normal"><a href="#__codelineno-22-48"> 48</a></span>
+<span class="normal"><a href="#__codelineno-22-49"> 49</a></span>
+<span class="normal"><a href="#__codelineno-22-50"> 50</a></span>
+<span class="normal"><a href="#__codelineno-22-51"> 51</a></span>
+<span class="normal"><a href="#__codelineno-22-52"> 52</a></span>
+<span class="normal"><a href="#__codelineno-22-53"> 53</a></span>
+<span class="normal"><a href="#__codelineno-22-54"> 54</a></span>
+<span class="normal"><a href="#__codelineno-22-55"> 55</a></span>
+<span class="normal"><a href="#__codelineno-22-56"> 56</a></span>
+<span class="normal"><a href="#__codelineno-22-57"> 57</a></span>
+<span class="normal"><a href="#__codelineno-22-58"> 58</a></span>
+<span class="normal"><a href="#__codelineno-22-59"> 59</a></span>
+<span class="normal"><a href="#__codelineno-22-60"> 60</a></span>
+<span class="normal"><a href="#__codelineno-22-61"> 61</a></span>
+<span class="normal"><a href="#__codelineno-22-62"> 62</a></span>
+<span class="normal"><a href="#__codelineno-22-63"> 63</a></span>
+<span class="normal"><a href="#__codelineno-22-64"> 64</a></span>
+<span class="normal"><a href="#__codelineno-22-65"> 65</a></span>
+<span class="normal"><a href="#__codelineno-22-66"> 66</a></span>
+<span class="normal"><a href="#__codelineno-22-67"> 67</a></span>
+<span class="normal"><a href="#__codelineno-22-68"> 68</a></span>
+<span class="normal"><a href="#__codelineno-22-69"> 69</a></span>
+<span class="normal"><a href="#__codelineno-22-70"> 70</a></span>
+<span class="normal"><a href="#__codelineno-22-71"> 71</a></span>
+<span class="normal"><a href="#__codelineno-22-72"> 72</a></span>
+<span class="normal"><a href="#__codelineno-22-73"> 73</a></span>
+<span class="normal"><a href="#__codelineno-22-74"> 74</a></span>
+<span class="normal"><a href="#__codelineno-22-75"> 75</a></span>
+<span class="normal"><a href="#__codelineno-22-76"> 76</a></span>
+<span class="normal"><a href="#__codelineno-22-77"> 77</a></span>
+<span class="normal"><a href="#__codelineno-22-78"> 78</a></span>
+<span class="normal"><a href="#__codelineno-22-79"> 79</a></span>
+<span class="normal"><a href="#__codelineno-22-80"> 80</a></span>
+<span class="normal"><a href="#__codelineno-22-81"> 81</a></span>
+<span class="normal"><a href="#__codelineno-22-82"> 82</a></span>
+<span class="normal"><a href="#__codelineno-22-83"> 83</a></span>
+<span class="normal"><a href="#__codelineno-22-84"> 84</a></span>
+<span class="normal"><a href="#__codelineno-22-85"> 85</a></span>
+<span class="normal"><a href="#__codelineno-22-86"> 86</a></span>
+<span class="normal"><a href="#__codelineno-22-87"> 87</a></span>
+<span class="normal"><a href="#__codelineno-22-88"> 88</a></span>
+<span class="normal"><a href="#__codelineno-22-89"> 89</a></span>
+<span class="normal"><a href="#__codelineno-22-90"> 90</a></span>
+<span class="normal"><a href="#__codelineno-22-91"> 91</a></span>
+<span class="normal"><a href="#__codelineno-22-92"> 92</a></span>
+<span class="normal"><a href="#__codelineno-22-93"> 93</a></span>
+<span class="normal"><a href="#__codelineno-22-94"> 94</a></span>
+<span class="normal"><a href="#__codelineno-22-95"> 95</a></span>
+<span class="normal"><a href="#__codelineno-22-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-22-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-22-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-22-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-22-100">100</a></span>
+<span class="normal"><a href="#__codelineno-22-101">101</a></span>
+<span class="normal"><a href="#__codelineno-22-102">102</a></span>
+<span class="normal"><a href="#__codelineno-22-103">103</a></span>
+<span class="normal"><a href="#__codelineno-22-104">104</a></span>
+<span class="normal"><a href="#__codelineno-22-105">105</a></span>
+<span class="normal"><a href="#__codelineno-22-106">106</a></span>
+<span class="normal"><a href="#__codelineno-22-107">107</a></span>
+<span class="normal"><a href="#__codelineno-22-108">108</a></span>
+<span class="normal"><a href="#__codelineno-22-109">109</a></span>
+<span class="normal"><a href="#__codelineno-22-110">110</a></span>
+<span class="normal"><a href="#__codelineno-22-111">111</a></span>
+<span class="normal"><a href="#__codelineno-22-112">112</a></span>
+<span class="normal"><a href="#__codelineno-22-113">113</a></span>
+<span class="normal"><a href="#__codelineno-22-114">114</a></span>
+<span class="normal"><a href="#__codelineno-22-115">115</a></span>
+<span class="normal"><a href="#__codelineno-22-116">116</a></span>
+<span class="normal"><a href="#__codelineno-22-117">117</a></span>
+<span class="normal"><a href="#__codelineno-22-118">118</a></span>
+<span class="normal"><a href="#__codelineno-22-119">119</a></span>
+<span class="normal"><a href="#__codelineno-22-120">120</a></span>
+<span class="normal"><a href="#__codelineno-22-121">121</a></span>
+<span class="normal"><a href="#__codelineno-22-122">122</a></span>
+<span class="normal"><a href="#__codelineno-22-123">123</a></span>
+<span class="normal"><a href="#__codelineno-22-124">124</a></span>
+<span class="normal"><a href="#__codelineno-22-125">125</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="na">.section</span><span class="w"> </span><span class="no">.data</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="nl">value_array:</span><span class="w"> </span><span class="na">.rept</span><span class="w"> </span><span class="mi">50</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w">             </span><span class="na">.int</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w">             </span><span class="na">.endr</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="nl">len:</span><span class="w"> </span><span class="na">.int</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="nl">input_format:</span><span class="w"> </span><span class="na">.asciz</span><span class="w"> </span><span class="s">&quot;%d&quot;</span>
+<a id="__codelineno-22-7" name="__codelineno-22-7"></a><span class="nl">print_format:</span><span class="w"> </span><span class="na">.asciz</span><span class="w"> </span><span class="s">&quot;%d &quot;</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="nl">print_line:</span><span class="w"> </span><span class="na">.asciz</span><span class="w"> </span><span class="s">&quot;\n&quot;</span>
+<a id="__codelineno-22-9" name="__codelineno-22-9"></a>
+<a id="__codelineno-22-10" name="__codelineno-22-10"></a><span class="na">.section</span><span class="w"> </span><span class="no">.text</span>
+<a id="__codelineno-22-11" name="__codelineno-22-11"></a><span class="na">.globl</span><span class="w"> </span><span class="no">main</span>
+<a id="__codelineno-22-12" name="__codelineno-22-12"></a><span class="nl">main:</span>
+<a id="__codelineno-22-13" name="__codelineno-22-13"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-16</span>
+<a id="__codelineno-22-14" name="__codelineno-22-14"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-15" name="__codelineno-22-15"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1"># s0 = &amp;value_array</span>
+<a id="__codelineno-22-16" name="__codelineno-22-16"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="w">         </span><span class="c1"># s1 = len</span>
+<a id="__codelineno-22-17" name="__codelineno-22-17"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-22-18" name="__codelineno-22-18"></a>
+<a id="__codelineno-22-19" name="__codelineno-22-19"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">input_format</span>
+<a id="__codelineno-22-20" name="__codelineno-22-20"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">len</span>
+<a id="__codelineno-22-21" name="__codelineno-22-21"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">scanf</span>
+<a id="__codelineno-22-22" name="__codelineno-22-22"></a>
+<a id="__codelineno-22-23" name="__codelineno-22-23"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">value_array</span>
+<a id="__codelineno-22-24" name="__codelineno-22-24"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">len</span>
+<a id="__codelineno-22-25" name="__codelineno-22-25"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-26" name="__codelineno-22-26"></a>
+<a id="__codelineno-22-27" name="__codelineno-22-27"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span>
+<a id="__codelineno-22-28" name="__codelineno-22-28"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span>
+<a id="__codelineno-22-29" name="__codelineno-22-29"></a><span class="w">    </span><span class="nf">slli.w</span><span class="w">      </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span>
+<a id="__codelineno-22-30" name="__codelineno-22-30"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">       </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span>
+<a id="__codelineno-22-31" name="__codelineno-22-31"></a>
+<a id="__codelineno-22-32" name="__codelineno-22-32"></a><span class="nl">loop_r:</span>
+<a id="__codelineno-22-33" name="__codelineno-22-33"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">rand</span>
+<a id="__codelineno-22-34" name="__codelineno-22-34"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span>
+<a id="__codelineno-22-35" name="__codelineno-22-35"></a><span class="w">    </span><span class="nf">mod.w</span><span class="w">       </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span>
+<a id="__codelineno-22-36" name="__codelineno-22-36"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-37" name="__codelineno-22-37"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span>
+<a id="__codelineno-22-38" name="__codelineno-22-38"></a><span class="w">    </span><span class="nf">bge</span><span class="w">         </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">loop_r</span>
+<a id="__codelineno-22-39" name="__codelineno-22-39"></a>
+<a id="__codelineno-22-40" name="__codelineno-22-40"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="w">            </span><span class="c1"># arg1: start_addr = &amp;value_array</span>
+<a id="__codelineno-22-41" name="__codelineno-22-41"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="w">            </span><span class="c1"># arg2: len</span>
+<a id="__codelineno-22-42" name="__codelineno-22-42"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">output_data</span>
+<a id="__codelineno-22-43" name="__codelineno-22-43"></a>
+<a id="__codelineno-22-44" name="__codelineno-22-44"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="w">            </span><span class="c1"># arg1: start_addr = &amp;value_array</span>
+<a id="__codelineno-22-45" name="__codelineno-22-45"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="w">            </span><span class="c1"># arg2: len</span>
+<a id="__codelineno-22-46" name="__codelineno-22-46"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">bubble_sort</span>
+<a id="__codelineno-22-47" name="__codelineno-22-47"></a>
+<a id="__codelineno-22-48" name="__codelineno-22-48"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="w">            </span><span class="c1"># arg1: start_addr = &amp;value_array</span>
+<a id="__codelineno-22-49" name="__codelineno-22-49"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="w">            </span><span class="c1"># arg2: len</span>
+<a id="__codelineno-22-50" name="__codelineno-22-50"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">output_data</span>
+<a id="__codelineno-22-51" name="__codelineno-22-51"></a>
+<a id="__codelineno-22-52" name="__codelineno-22-52"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span>
+<a id="__codelineno-22-53" name="__codelineno-22-53"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-54" name="__codelineno-22-54"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-55" name="__codelineno-22-55"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<a id="__codelineno-22-56" name="__codelineno-22-56"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-22-57" name="__codelineno-22-57"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span>
+<a id="__codelineno-22-58" name="__codelineno-22-58"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+<a id="__codelineno-22-59" name="__codelineno-22-59"></a>
+<a id="__codelineno-22-60" name="__codelineno-22-60"></a><span class="na">.type</span><span class="w"> </span><span class="no">bubble_sort</span><span class="p">,</span><span class="w"> </span><span class="na">@function</span>
+<a id="__codelineno-22-61" name="__codelineno-22-61"></a><span class="nl">bubble_sort:</span>
+<a id="__codelineno-22-62" name="__codelineno-22-62"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span>
+<a id="__codelineno-22-63" name="__codelineno-22-63"></a><span class="w">    </span><span class="nf">bne</span><span class="w">         </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">sort</span>
+<a id="__codelineno-22-64" name="__codelineno-22-64"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+<a id="__codelineno-22-65" name="__codelineno-22-65"></a><span class="nl">sort:</span>
+<a id="__codelineno-22-66" name="__codelineno-22-66"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span>
+<a id="__codelineno-22-67" name="__codelineno-22-67"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-68" name="__codelineno-22-68"></a><span class="w">                                    </span><span class="c1"># a0 = value start addr</span>
+<a id="__codelineno-22-69" name="__codelineno-22-69"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="w">            </span><span class="c1"># a2 = i start addr</span>
+<a id="__codelineno-22-70" name="__codelineno-22-70"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span>
+<a id="__codelineno-22-71" name="__codelineno-22-71"></a><span class="w">    </span><span class="nf">slli.w</span><span class="w">      </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span>
+<a id="__codelineno-22-72" name="__codelineno-22-72"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">       </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="w">       </span><span class="c1"># a1 = value end addr</span>
+<a id="__codelineno-22-73" name="__codelineno-22-73"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="w">            </span><span class="c1"># t1 = j end addr, i loop changes</span>
+<a id="__codelineno-22-74" name="__codelineno-22-74"></a>
+<a id="__codelineno-22-75" name="__codelineno-22-75"></a><span class="nl">loop_i:</span>
+<a id="__codelineno-22-76" name="__codelineno-22-76"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="w">            </span><span class="c1"># t0 = j start addr, j loop changes</span>
+<a id="__codelineno-22-77" name="__codelineno-22-77"></a>
+<a id="__codelineno-22-78" name="__codelineno-22-78"></a><span class="nl">loop_j:</span>
+<a id="__codelineno-22-79" name="__codelineno-22-79"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1"># t2 = value[j]</span>
+<a id="__codelineno-22-80" name="__codelineno-22-80"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1"># t3 = value[j+1]</span>
+<a id="__codelineno-22-81" name="__codelineno-22-81"></a><span class="w">    </span><span class="nf">ble</span><span class="w">         </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">noswap</span>
+<a id="__codelineno-22-82" name="__codelineno-22-82"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-83" name="__codelineno-22-83"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-84" name="__codelineno-22-84"></a>
+<a id="__codelineno-22-85" name="__codelineno-22-85"></a><span class="nl">noswap:</span>
+<a id="__codelineno-22-86" name="__codelineno-22-86"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-87" name="__codelineno-22-87"></a><span class="w">    </span><span class="nf">bne</span><span class="w">         </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">loop_j</span>
+<a id="__codelineno-22-88" name="__codelineno-22-88"></a>
+<a id="__codelineno-22-89" name="__codelineno-22-89"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-90" name="__codelineno-22-90"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="mi">-4</span>
+<a id="__codelineno-22-91" name="__codelineno-22-91"></a><span class="w">    </span><span class="nf">bne</span><span class="w">         </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">loop_i</span>
+<a id="__codelineno-22-92" name="__codelineno-22-92"></a>
+<a id="__codelineno-22-93" name="__codelineno-22-93"></a><span class="nl">end_loop_i:</span>
+<a id="__codelineno-22-94" name="__codelineno-22-94"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-95" name="__codelineno-22-95"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-96" name="__codelineno-22-96"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+<a id="__codelineno-22-97" name="__codelineno-22-97"></a>
+<a id="__codelineno-22-98" name="__codelineno-22-98"></a><span class="na">.type</span><span class="w"> </span><span class="no">output_data</span><span class="p">,</span><span class="w"> </span><span class="na">@function</span>
+<a id="__codelineno-22-99" name="__codelineno-22-99"></a><span class="nl">output_data:</span>
+<a id="__codelineno-22-100" name="__codelineno-22-100"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-16</span>
+<a id="__codelineno-22-101" name="__codelineno-22-101"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-102" name="__codelineno-22-102"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-103" name="__codelineno-22-103"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<a id="__codelineno-22-104" name="__codelineno-22-104"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-22-105" name="__codelineno-22-105"></a>
+<a id="__codelineno-22-106" name="__codelineno-22-106"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="w">            </span><span class="c1"># s0 = len</span>
+<a id="__codelineno-22-107" name="__codelineno-22-107"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="w">            </span><span class="c1"># s1 = value addr</span>
+<a id="__codelineno-22-108" name="__codelineno-22-108"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">print_format</span><span class="w">   </span><span class="c1"># s2 = printf arg1(print_format)</span>
+<a id="__codelineno-22-109" name="__codelineno-22-109"></a><span class="nl">loop_o:</span>
+<a id="__codelineno-22-110" name="__codelineno-22-110"></a><span class="w">    </span><span class="nf">move</span><span class="w">        </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$s2</span><span class="w">            </span><span class="c1"># a0 = s2</span>
+<a id="__codelineno-22-111" name="__codelineno-22-111"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1"># a1 = printf arg2(value)</span>
+<a id="__codelineno-22-112" name="__codelineno-22-112"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">printf</span>
+<a id="__codelineno-22-113" name="__codelineno-22-113"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-114" name="__codelineno-22-114"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span>
+<a id="__codelineno-22-115" name="__codelineno-22-115"></a><span class="w">    </span><span class="nf">bne</span><span class="w">         </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="no">loop_o</span>
+<a id="__codelineno-22-116" name="__codelineno-22-116"></a>
+<a id="__codelineno-22-117" name="__codelineno-22-117"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">print_line</span>
+<a id="__codelineno-22-118" name="__codelineno-22-118"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="no">puts</span>
+<a id="__codelineno-22-119" name="__codelineno-22-119"></a>
+<a id="__codelineno-22-120" name="__codelineno-22-120"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-22-121" name="__codelineno-22-121"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-22-122" name="__codelineno-22-122"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s1</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<a id="__codelineno-22-123" name="__codelineno-22-123"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$s2</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span>
+<a id="__codelineno-22-124" name="__codelineno-22-124"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span>
+<a id="__codelineno-22-125" name="__codelineno-22-125"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span>
+</code></pre></div></td></tr></table></div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../stack_frame/index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 栈帧布局" rel="prev">
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                栈帧布局
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 LoongsonEdu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://gitee.com/loongson-edu" target="_blank" rel="noopener" title="gitee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.984 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.016 0zm6.09 5.333c.328 0 .593.266.592.593v1.482a.594.594 0 0 1-.593.592H9.777c-.982 0-1.778.796-1.778 1.778v5.63c0 .327.266.592.593.592h5.63c.982 0 1.778-.796 1.778-1.778v-.296a.593.593 0 0 0-.592-.593h-4.15a.592.592 0 0 1-.592-.592v-1.482a.593.593 0 0 1 .593-.592h6.815c.327 0 .593.265.593.592v3.408a4 4 0 0 1-4 4H5.926a.593.593 0 0 1-.593-.593V9.778a4.444 4.444 0 0 1 4.445-4.444h8.296Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.top", "navigation.expand"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
+      
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+      
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+      
+    
+  </body>
+</html>

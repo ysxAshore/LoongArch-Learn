@@ -1,0 +1,784 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="LoongsonEdu">
+      
+      
+      
+        <link rel="prev" href="../addr_space/index.html">
+      
+      
+        <link rel="next" href="../as_example/index.html">
+      
+      <link rel="icon" href="../../images/loongson3-image.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>栈帧布局 - LA32R指令集学习指导手册</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#la32r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-header__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LA32R指令集学习指导手册
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              栈帧布局
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-nav__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    LA32R指令集学习指导手册
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        引言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          LA32R中的用户态整型指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R中的用户态整型指令
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/instr_expression/index.html" class="md-nav__link">
+        LA32R的机器语言与汇编语言表达
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/compute_instrs/index.html" class="md-nav__link">
+        算术逻辑移位类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/ldst_instrs/index.html" class="md-nav__link">
+        数据传输类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/br_jump_instrs/index.html" class="md-nav__link">
+        分支跳转类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/llsc_instrs/index.html" class="md-nav__link">
+        用LL/SC指令构建基本同步原语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/misc_instrs/index.html" class="md-nav__link">
+        其它用户态指令
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          LA32R汇编编程简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R汇编编程简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workenv/index.html" class="md-nav__link">
+        LA32R汇编编程学习环境介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_directives/index.html" class="md-nav__link">
+        常用汇编器指示
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pesudo_instrs/index.html" class="md-nav__link">
+        LA32R汇编器支持的伪指令汇总
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../register_convention/index.html" class="md-nav__link">
+        寄存器使用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calling_convention/index.html" class="md-nav__link">
+        函数调用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addr_space/index.html" class="md-nav__link">
+        进程虚拟地址空间布局规范
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          栈帧布局
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        栈帧布局
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    栈帧布局
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../as_example/index.html" class="md-nav__link">
+        汇编编程示例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    栈帧布局
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="la32r">LA32R汇编编程简介</h1>
+<h2 id="_1">栈帧布局</h2>
+<p>通过前一节的介绍，我们了解到进程执行过程中会在内存中为其分配栈空间。栈是我们最常用到的存放可读写临时数据的区域。通常我们会使用栈来管理函数运行过程中的返回地址、参数和局部变量等信息。栈的大小在程序运行过程中是不断动态调整的。</p>
+<p>LA32R架构下函数栈实现为满递减栈（Full Descending Stack）类型。这里“递减”指的是栈向着地址减小的方向增长。“满”是指栈顶指针（<code>$sp</code>）总是指向最后一个压入栈的元素。</p>
+<p>栈被组织成一个个栈帧（Stack Frame）。每个栈帧是栈上一段地址连续的空间，对应着一个处在执行过程中的函数。</p>
+<div align=center><img src="../../images/la32r_stack_frame.png"></div>
+
+<figcaption align=center>LA32R栈帧布局</figcaption>
+
+<p>上图中我们给出了一个栈帧布局的示意。其中从高地址向下，依次是调用当前函数的调用者栈帧、当前函数的栈帧，如果此时当前函数再调用其它函数，则被调用函数的栈帧紧靠在当前栈帧向下布局。每个函数的栈帧中从高地址向下通常大致划分为三个区域，首先是存放当前函数的局部变量以及Caller Save寄存器的值，接下来是动态栈空间（如果当前函数使用并分配了动态栈空间的话），再往下靠近被调用函数栈帧的区域是用来存放那些无法通过寄存器传递的子函数参数值的。结合着上述栈帧布局的示意，读者应该更直观的体会：前面讲寄存器使用约定时的Caller Save和Callee Save寄存器分别存在哪个函数对应的栈帧，以及前面讲到函数调用约定时用栈传参时参数是存放在哪个函数的栈帧上。</p>
+<p>大多数情况下，函数只需要用<code>$sp</code>来管理栈帧。如果在编译时能够确定栈帧的大小，那么在进入一个函数时，可以一次性分配所需的栈空间（一次性意味着后面操作当前栈帧过程中<code>$sp</code>的值不再变化），同时栈帧中的内容相对于<code>$sp</code>的偏移也是容易计算的。不过，如果一个函数的栈帧在编译期无法确定大小，例如C语言中使用alloca()调用分配动态栈空间，会使得在操作当前栈帧的过程中<code>$sp</code>的值发生变化，这就会导致栈帧中的内容相对于<code>$sp</code>的偏移值计算起来变得麻烦。于是引入了栈帧指针（Frame Pointer）。它总是指向当前活跃栈帧的起始位置，而在操作当前栈帧过程中这个位置总是固定不变，因此在栈帧指针的协助下，能够方便维护栈帧中内容位置的计算。最常见地，在释放当前栈帧时，<code>$sp</code>不用再重新计算它应该向上移动多少位置，可以直接利用<code>$fp</code>中的值来快速恢复。</p>
+<p>下面来看几个例子，来帮助读者建立起直观的认识。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">               </span><span class="kt">int</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="p">);</span><span class="w"> </span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">normal</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
+</code></pre></div>
+<p>上述C程序如果用gcc -O2 -S来编译，则生成如下的汇编代码（为方便阅读，已将形如$r##的寄存器名替换为寄存器使用约定中的ABI别名）。可以看到这里只通过sp来确定各内容在栈中的位置。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nl">normal:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-32</span><span class="w">       </span><span class="c1">#分配栈帧</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="w">      </span><span class="c1">#第10个参数的值</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1">#通过栈向foo传第10个参数</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="w">       </span><span class="c1">#第9个参数的值</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1">#通过栈向foo传第9个参数</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a7</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第8个参数</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a6</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第7个参数</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a5</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第6个参数</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a4</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第5个参数</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a3</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第4个参数</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第3个参数</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第2个参数</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第1个参数</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="w">        </span><span class="c1">#在栈中保存ra</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="nv">%plt</span><span class="p">(</span><span class="no">foo</span><span class="p">)</span><span class="w">           </span><span class="c1">#调用foo函数</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="w">        </span><span class="c1">#从栈中恢复ra</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="w">        </span><span class="c1">#释放栈帧</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span><span class="w">                 </span><span class="c1">#函数返回</span>
+</code></pre></div>
+<p>如果前述C程序用gcc -O2 -fno-omit-frame-pointer来编译，使其强行使用栈帧指针，则生成如下的代码。可以看到函数一开始会将<code>$fp</code>的旧值压入栈中，然后将其指向当前栈帧的起始位置处。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nl">normal:</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-32</span><span class="w">       </span><span class="c1">#分配栈帧</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$fp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="w">        </span><span class="c1">#在栈中保存fp</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="w">        </span><span class="c1">#在栈中保存ra</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$fp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="w">        </span><span class="c1">#fp指向栈帧起始位置</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="w">      </span><span class="c1">#第10个参数的值</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1">#通过栈向foo传第10个参数</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="w">       </span><span class="c1">#第9个参数的值</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1">#通过栈向foo传第9个参数</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a7</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第8个参数</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a6</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第7个参数</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a5</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第6个参数</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a4</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第5个参数</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a3</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第4个参数</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第3个参数</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第2个参数</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第1个参数</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="nv">%plt</span><span class="p">(</span><span class="no">foo</span><span class="p">)</span><span class="w">           </span><span class="c1">#调用foo函数</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="w">        </span><span class="c1">#从栈中恢复ra</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$fp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="w">        </span><span class="c1">#从栈中恢复fp</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="w">        </span><span class="c1">#释放栈帧</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span><span class="w">                 </span><span class="c1">#函数返回</span>
+</code></pre></div>
+<p>我们看到上面的汇编中<code>$fp</code>并没有用来做什么事情，维护它的代码是冗余的，下面我们所要看看例子中将实际用到<code>$fp</code>。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;alloca.h&gt;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">e</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">               </span><span class="kt">int</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="p">);</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kt">int</span><span class="w"> </span><span class="nf">dynamic</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloca</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x123</span><span class="p">;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">foo</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nl">dynamic:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="w">        </span><span class="c1">#size向上对齐到16整倍数，步骤1/3</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-32</span><span class="w">       </span><span class="c1">#分配栈帧中固定大小的部分</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nf">srli.w</span><span class="w">      </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1">#size向上对齐到16整倍数，步骤2/3</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$fp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="w">        </span><span class="c1">#在栈中保存fp</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="w">        </span><span class="c1">#在栈中保存ra</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$fp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="w">        </span><span class="c1">#fp指向栈帧起始位置</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="nf">slli.w</span><span class="w">      </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1">#size向上对齐到16整倍数，步骤3/3</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="nf">sub.w</span><span class="w">       </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="w">       </span><span class="c1">#在栈上分配alloca申请的空间</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="w">        </span><span class="c1">#p数组的起始地址，通过寄存器向foo传第1个参数</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">291</span><span class="w">       </span><span class="mi">#0</span><span class="no">x123</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1">#向p[0]存入0x123</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="w">      </span><span class="c1">#第10个参数的值</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">         </span><span class="c1">#通过栈向foo传第10个参数</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="w">       </span><span class="c1">#第9个参数的值</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="c1">#通过栈向foo传第9个参数</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a7</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第8个参数</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a6</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第7个参数</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a5</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第6个参数</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a4</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第5个参数</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a3</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第4个参数</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a2</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w">       </span><span class="c1">#通过寄存器向foo传第3个参数</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">291</span><span class="w">     </span><span class="c1">#通过寄存器向foo传第2个参数</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="nf">bl</span><span class="w">          </span><span class="nv">%plt</span><span class="p">(</span><span class="no">foo</span><span class="p">)</span><span class="w">           </span><span class="c1">#调用foo函数</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$fp</span><span class="p">,</span><span class="w"> </span><span class="mi">-32</span><span class="w">       </span><span class="c1">#释放掉当前栈帧通过alloca动态分配的部分</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="w">        </span><span class="c1">#从栈中恢复ra</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$fp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="w">        </span><span class="c1">#从栈中恢复fp</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="w">        </span><span class="c1">#释放掉当前栈帧余下的固定大小的部分</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">    </span><span class="nf">jr</span><span class="w">          </span><span class="no">$ra</span><span class="w">                 </span><span class="c1">#函数返回</span>
+</code></pre></div>
+<p>上面的代码中size要向上对齐到16整倍数的原因是LA32R的ABI要求栈帧16字节对齐。</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../addr_space/index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 进程虚拟地址空间布局规范" rel="prev">
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                进程虚拟地址空间布局规范
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../as_example/index.html" class="md-footer__link md-footer__link--next" aria-label="Next: 汇编编程示例" rel="next">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                汇编编程示例
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 LoongsonEdu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://gitee.com/loongson-edu" target="_blank" rel="noopener" title="gitee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.984 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.016 0zm6.09 5.333c.328 0 .593.266.592.593v1.482a.594.594 0 0 1-.593.592H9.777c-.982 0-1.778.796-1.778 1.778v5.63c0 .327.266.592.593.592h5.63c.982 0 1.778-.796 1.778-1.778v-.296a.593.593 0 0 0-.592-.593h-4.15a.592.592 0 0 1-.592-.592v-1.482a.593.593 0 0 1 .593-.592h6.815c.327 0 .593.265.593.592v3.408a4 4 0 0 1-4 4H5.926a.593.593 0 0 1-.593-.593V9.778a4.444 4.444 0 0 1 4.445-4.444h8.296Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.top", "navigation.expand"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
+      
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+      
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+      
+    
+  </body>
+</html>

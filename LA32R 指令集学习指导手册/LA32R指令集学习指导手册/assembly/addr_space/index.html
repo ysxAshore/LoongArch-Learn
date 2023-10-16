@@ -1,0 +1,749 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="LoongsonEdu">
+      
+      
+      
+        <link rel="prev" href="../calling_convention/index.html">
+      
+      
+        <link rel="next" href="../stack_frame/index.html">
+      
+      <link rel="icon" href="../../images/loongson3-image.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>进程虚拟地址空间布局规范 - LA32R指令集学习指导手册</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#la32r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-header__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LA32R指令集学习指导手册
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              进程虚拟地址空间布局规范
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-nav__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    LA32R指令集学习指导手册
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        引言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          LA32R中的用户态整型指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R中的用户态整型指令
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/instr_expression/index.html" class="md-nav__link">
+        LA32R的机器语言与汇编语言表达
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/compute_instrs/index.html" class="md-nav__link">
+        算术逻辑移位类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/ldst_instrs/index.html" class="md-nav__link">
+        数据传输类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/br_jump_instrs/index.html" class="md-nav__link">
+        分支跳转类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/llsc_instrs/index.html" class="md-nav__link">
+        用LL/SC指令构建基本同步原语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/misc_instrs/index.html" class="md-nav__link">
+        其它用户态指令
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          LA32R汇编编程简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R汇编编程简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workenv/index.html" class="md-nav__link">
+        LA32R汇编编程学习环境介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_directives/index.html" class="md-nav__link">
+        常用汇编器指示
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pesudo_instrs/index.html" class="md-nav__link">
+        LA32R汇编器支持的伪指令汇总
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../register_convention/index.html" class="md-nav__link">
+        寄存器使用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calling_convention/index.html" class="md-nav__link">
+        函数调用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          进程虚拟地址空间布局规范
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        进程虚拟地址空间布局规范
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    进程虚拟地址空间布局规范
+  </a>
+  
+    <nav class="md-nav" aria-label="进程虚拟地址空间布局规范">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    Linux系统下进程虚拟地址空间
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    裸金属执行环境下的进程虚拟地址空间管理
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stack_frame/index.html" class="md-nav__link">
+        栈帧布局
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../as_example/index.html" class="md-nav__link">
+        汇编编程示例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    进程虚拟地址空间布局规范
+  </a>
+  
+    <nav class="md-nav" aria-label="进程虚拟地址空间布局规范">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    Linux系统下进程虚拟地址空间
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    裸金属执行环境下的进程虚拟地址空间管理
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="la32r">LA32R汇编编程简介</h1>
+<h2 id="_1">进程虚拟地址空间布局规范</h2>
+<p>通常来说，进程虚拟地址空间的布局是由指令系统、工具链和操作系统配合在一起共同决定的。ABI规范中并不会限定进程地址空间的布局规则。不过，为了让读者更好地了解这部分内容，我们将着重介绍Linux/LA32R中所采用的进程虚拟地址空间布局，并在此基础之上简要讨论一下嵌入式设备中常见的裸金属执行环境下的进程虚拟地址空间管理。</p>
+<h3 id="linux">Linux系统下进程虚拟地址空间</h3>
+<p>大多数指令架构在Linux系统下一个进程可见的内存地址空间布局都是简单划分为用户空间（user space）和内核空间（kernel space）。以32位指令架构为例，X86-32在Linux系统下每个进程的4GB虚地址空间被大致划分为<code>0x0 ~ 0xBFFFFFFF(3GB)</code>的用户空间和<code>0xC0000000 ~ 0xFFFFFFFF(1GB)</code>的内核空间，而MIPS32在Linux系统下每个进程的4GB虚地址空间被大致划分为<code>0x0 ~ 0x7FFFFFFF(2GB)</code>的用户空间和<code>0x80000000 ~ 0xFFFFFFFF(2GB)</code>的内核空间。</p>
+<p>对于LA32R来说，其在Linux系统下每个进程的4GB虚地址空间被大致划分为<code>0x0 ~ 0x7FFFFFFF(2GB)</code>的用户空间和<code>0x80000000 ~ 0xFFFFFFFF(2GB)</code>的内核空间。其中<code>0x80000000</code>以上的地址空间是所有进程共享的，其中通过直接映射窗口（Direct Mapping Window）配置出<code>0x80000000 ~ 0x9FFFFFFF</code>和<code>0xA0000000 ~ 0xBFFFFFFF</code>两个各512MB大小、存储访问类型分别是强序非缓存和一致可缓存的直接映射区域，供内核高效率地访问系统中最低512MB<strong>物理地址</strong>空间。</p>
+<div align=center><img src="../../images/la32r_linux_thread_mmap.png"></div>
+
+<figcaption align=center>LA32R进程地址空间分布</figcaption>
+
+<p>我们这里将主要讨论Linux系统下加载一个应用程序后的地址空间布局，所以我们将主要关注4GB虚拟地址空间下的用户空间部分。在Linux系统下，可执行程序采用ELF(Executable and Linkable Format)格式。在ELF文件中包含着一系列不同的段（section），不同的段用于存放不同类型的内容，其中最常见的段有：</p>
+<ul>
+<li>.text段：用于保存程序中的代码片段。</li>
+<li>.data段：用于保存已经初始化的全局变量和静态局部变量。</li>
+<li>.bss段：用于保存未初始化的全局变量和静态局部变量。</li>
+<li>.rodata段：用于保存只读的变量。</li>
+</ul>
+<p>工具链在编译链接应用程序时，会按照<strong>默认配置</strong>的链接参数为上述各段设置好地址。运行程序时操作系统中的装载器将根据程序文件中记录的各段的内存地址信息，把代码和数据装入相应的虚拟内存地址。其中.text段会被放在最靠近0地址的位置（但是这个位置不会是0地址，地址0在多数操作系统中都会被设置为不可访问的地址，以便捕获空指针访问），然后向高地址依次摆放.rodata段、.data段、.bss段。装载器将ELF文件.text段中存放的代码，.rodata段数据和.data段变量的初始值复制到内存中。ELF文件中的.bss段中只记录各变量的大小，由装载器直接为变量分配所需的内存空间，然后清零。.bss段之上是堆（heap）空间。堆用于管理程序运行过程中动态分配的内存，如C程序中用malloc函数分配的内存就是放在堆空间进行管理的。其大体从低地址向高地址增长，不过堆的分配和释放行为比较复杂，并不是简单的超一个方向增长。从<strong>接近</strong>用户空间最高可访问地址向下的一段空间被用作该进程的栈。栈沿着高地址向低地址方向增长，它用作函数的临时工作空间，存储C程序中的非静态局部变量、子函数参数和返回地址等函数执行完毕就可以抛弃的数据。堆和栈之间的地址空间通常用来存放程序所用到的动态链接库，其具体地址由动态链接器在这段空间中寻找出合适的地址。</p>
+<div align=center><img src="../../images/elf_user_addr_space.png"></div>
+
+<figcaption align=center>进程中用户地址空间分布</figcaption>
+
+<h3 id="_2">裸金属执行环境下的进程虚拟地址空间管理</h3>
+<p>嵌入式设备中常使用裸金属执行环境。此时设备上并不会运行操作系统，所有的软件功能实现在一个进程之中。由于裸金属执行环境的软件通常也是用汇编语言和C语言开发，那么自然也需要用工具链进行编译和链接。由于没有操作系统支持基于页表映射地址翻译模式，裸金属执行环境中通常采用直接地址映射翻译模式<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>。在此种地址映射方式下，物理地址和虚地址的最低28位是相同的。对于一个小型的嵌入式设备而言，其物理地址空间范围可能都不超过2<sup>28</sup>字节，而其中能够存放代码、能放置栈空间地址区域都是有限的，且地址分布未必和Linux系统下用户进程存放.text段、栈的地址分布一致。因此，在编译链接裸金属执行环境时，通常都需要重新指定各类链接参数。譬如，<a href="https://gitee.com/loongson-edu/chiplab">chiplab项目</a>中运行<code>my_program</code>的裸金属执行环境在编译时，就使用了<code>chiplab/toolchains/system_newlib/pmon.ld</code>作为新链接脚本。感兴趣的读者可以结合这个脚本学习体会一下。其实前面提到在Linux系统下链接器使用的<strong>默认配置</strong>的链接参数也是通过链接脚本控制的。以LA32R GCC交叉编译工具链为例，这个默认的链接脚本是<code>loongarch32r-linux-gnusf/lib/ldscripts/elf32loongarch.x</code>文件。</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>除了复位结束后的一小段代码，我们通常不建议软件运行在直接地址翻译模式下。&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../calling_convention/index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 函数调用约定" rel="prev">
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                函数调用约定
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../stack_frame/index.html" class="md-footer__link md-footer__link--next" aria-label="Next: 栈帧布局" rel="next">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                栈帧布局
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 LoongsonEdu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://gitee.com/loongson-edu" target="_blank" rel="noopener" title="gitee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.984 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.016 0zm6.09 5.333c.328 0 .593.266.592.593v1.482a.594.594 0 0 1-.593.592H9.777c-.982 0-1.778.796-1.778 1.778v5.63c0 .327.266.592.593.592h5.63c.982 0 1.778-.796 1.778-1.778v-.296a.593.593 0 0 0-.592-.593h-4.15a.592.592 0 0 1-.592-.592v-1.482a.593.593 0 0 1 .593-.592h6.815c.327 0 .593.265.593.592v3.408a4 4 0 0 1-4 4H5.926a.593.593 0 0 1-.593-.593V9.778a4.444 4.444 0 0 1 4.445-4.444h8.296Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.top", "navigation.expand"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
+      
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+      
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+      
+    
+  </body>
+</html>

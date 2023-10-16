@@ -1,0 +1,827 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="LoongsonEdu">
+      
+      
+      
+        <link rel="prev" href="../../index.html">
+      
+      
+        <link rel="next" href="../compute_instrs/index.html">
+      
+      <link rel="icon" href="../../images/loongson3-image.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>LA32R的机器语言与汇编语言表达 - LA32R指令集学习指导手册</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#la32r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-header__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LA32R指令集学习指导手册
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              LA32R的机器语言与汇编语言表达
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-nav__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    LA32R指令集学习指导手册
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        引言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          LA32R中的用户态整型指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R中的用户态整型指令
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          LA32R的机器语言与汇编语言表达
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        LA32R的机器语言与汇编语言表达
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#la32r_1" class="md-nav__link">
+    LA32R的机器语言与汇编语言表达
+  </a>
+  
+    <nav class="md-nav" aria-label="LA32R的机器语言与汇编语言表达">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la32r_2" class="md-nav__link">
+    LA32R的机器语言表达
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la32r_3" class="md-nav__link">
+    LA32R的汇编语言表达
+  </a>
+  
+    <nav class="md-nav" aria-label="LA32R的汇编语言表达">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    寄存器号前是否要加$?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abi" class="md-nav__link">
+    根据ABI寄存器使用约定的寄存器别名前是否要加$?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    汇编程序中出现的指令在指令手册中查不到是怎么回事？
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compute_instrs/index.html" class="md-nav__link">
+        算术逻辑移位类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ldst_instrs/index.html" class="md-nav__link">
+        数据传输类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../br_jump_instrs/index.html" class="md-nav__link">
+        分支跳转类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llsc_instrs/index.html" class="md-nav__link">
+        用LL/SC指令构建基本同步原语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../misc_instrs/index.html" class="md-nav__link">
+        其它用户态指令
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          LA32R汇编编程简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R汇编编程简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/workenv/index.html" class="md-nav__link">
+        LA32R汇编编程学习环境介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/common_directives/index.html" class="md-nav__link">
+        常用汇编器指示
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/pesudo_instrs/index.html" class="md-nav__link">
+        LA32R汇编器支持的伪指令汇总
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/register_convention/index.html" class="md-nav__link">
+        寄存器使用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/calling_convention/index.html" class="md-nav__link">
+        函数调用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/addr_space/index.html" class="md-nav__link">
+        进程虚拟地址空间布局规范
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/stack_frame/index.html" class="md-nav__link">
+        栈帧布局
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/as_example/index.html" class="md-nav__link">
+        汇编编程示例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#la32r_1" class="md-nav__link">
+    LA32R的机器语言与汇编语言表达
+  </a>
+  
+    <nav class="md-nav" aria-label="LA32R的机器语言与汇编语言表达">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la32r_2" class="md-nav__link">
+    LA32R的机器语言表达
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la32r_3" class="md-nav__link">
+    LA32R的汇编语言表达
+  </a>
+  
+    <nav class="md-nav" aria-label="LA32R的汇编语言表达">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    寄存器号前是否要加$?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abi" class="md-nav__link">
+    根据ABI寄存器使用约定的寄存器别名前是否要加$?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    汇编程序中出现的指令在指令手册中查不到是怎么回事？
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="la32r">LA32R中的用户态整型指令</h1>
+<h2 id="la32r_1">LA32R的机器语言与汇编语言表达</h2>
+<p>这一节我们讨论几个与指令的机器语言和汇编语言两种表达形式相关的问题。</p>
+<p>我们常见的指令表达形式有两种：一种是给CPU硬件“看”的，我们称之为机器语言；另一种是给编程人员看的，即所谓汇编语言。例如，LA32R中功能行为是“1号寄存器的值加上2号寄存器的值结果写入3号寄存器”这样一条指令，其机器语言表达是一个32位的比特串<code>00000000000100000000100000100011</code>，其可以被汇编器直接识别的汇编语言表达是<code>add.w $r3, $r1, $r2</code>或者<code>add.w $sp, $ra, $tp</code>。两种汇编语言表达的差异主要体现在寄存器操作数，第一种是从指令集手册规范直接得到的最基础表达形式，第二种则涉及到ABI中定义的寄存器规范。</p>
+<h3 id="la32r_2">LA32R的机器语言表达</h3>
+<p>机器语言中的指令直观上就是一个二进制比特串，进一步对于RISC指令集来说，构成每个指令的的比特串都是固定长度。LA32R指令集采用RISC设计理念，其指令长度固定为32位。这32位的比特串，哪些用来对应操作类型（如加减还是移位），哪些用来寻址操作对象（如哪个寄存器或者内存中的哪个地址），需要有个规则，这就是我们通常讲的指令编码格式。<a href="https://www.loongson.cn/uploads/images/2023041918122813624.%E9%BE%99%E8%8A%AF%E6%9E%B6%E6%9E%8432%E4%BD%8D%E7%B2%BE%E7%AE%80%E7%89%88%E5%8F%82%E8%80%83%E6%89%8B%E5%86%8C_r1p03.pdf">LA32R指令手册</a>的表1-1给出了该指令集的典型编码格式。正如手册中提到的，这9种是<strong>典型</strong>编码格式，并不是全部编码格式。同MIPS和RISC-V指令集的编码格式相比，LA32R的种类要更多，格式上好像也有差异，对已经熟悉MIPS或RISC-V教学和设计的人来说可能有些不习惯。针对这方面问题，下面提供一些我们的观点供参考。</p>
+<p><strong>在教学方面</strong>，LA32R具有大多数RISC指令集指令编码的设计特征，体现在三个方面：一是定长以简化取指访存行为和译码电路定位指令边界的逻辑复杂度，二是操作码采用层次化变长编码以适应不用数目操作数的情况，三是操作数位置固定从而使得译码过程中操作码解析和操作数提取可以并行处理。这三方面特征，定长和操作数位置固定是比较容易理解的，层次化变长编码可能还是会让人困惑：MIPS或者RISC-V的指令编码有opcode、func域，这是层次化，但没看出变长；LA32R中的opcode是有好几个长度（变长），但没看出层次化。其实，一套指令集中指令操作码主要职责就是能够唯一的标识出这条指令，又由于操作数信息占据的位置有长有短，因此要在指令码整体长度固定的情况下定义尽可能多的指令，操作码很自然的会采用前缀编码方式来提升其编码效率。又因为增减一个操作数会一次性增减几个比特（如一个寄存器操作数占5个比特），所以采用前缀编码形式的操作码又呈现出一种层次化的形态。</p>
+<p><strong>在设计方面</strong>，真正会关注指令码细节的无外乎CPU结构设计人员和汇编器开发人员。其中汇编器中识别、生成指令码的工作是软件自动进行的，可以认为还是机器在看，所以按照汇编器指令编码模板的格式，将LA32R指令手册附录B中的指令码信息填入即可。可能会因为指令编码格式感到困难的可能是一些直接用Verilog等传统HDL语言开发CPU译码部件设计的读者，因为原先MIPS或RISC-V指令集将操作码信息层次切分到opcode、funct等域中，会使得设计者很自然地在写译码逻辑时按照这种层次化风格来译码。那么LA23R这种情况怎么办呢？其实，设计者还是可以自己定义一个切分的层次，再按照层次化风格来译码。譬如<a href="https://gitee.com/loongson-edu/chiplab">chiplab项目</a>中<code>IP/myCPU/</code>目录下的OpenLA500处理器核的译码逻辑（<code>id_stage.v</code>）就是这种风格。不过，如果对于生成电路质量不是要求那么高且对于现代EDA综合工具提取公共子表达优化有充分的信心，直接写出如下风格的代码也未尝不可：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">assign</span><span class="w"> </span><span class="n">inst_add_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inst_code</span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">15</span><span class="p">]</span><span class="o">==</span><span class="mh">17&#39;h20</span><span class="p">;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">assign</span><span class="w"> </span><span class="n">inst_sub_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inst_code</span><span class="p">[</span><span class="mh">31</span><span class="o">:</span><span class="mh">15</span><span class="p">]</span><span class="o">==</span><span class="mh">17&#39;h22</span><span class="p">;</span>
+</code></pre></div>
+<p>最后再探讨一个阅读使用习惯的问题，即有些人问LA32R的用户手册中为什么不像其它指令集手册一样，将每条指令的指令码和它的功能表述逐条放在一起。对此我们的考虑是，指令码作为主要给机器看的指令表达，通常设计开发人员并不需要查看。目前我们能想到的典型应用场景，主要是前面提到的CPU译码部件开发和汇编器开发工作，此外就是<strong>人工</strong>翻译指令码或者从指令码解析指令功能这种极特殊的场景。以我们的实践经验来看，这些场景下都是所有指令的编码集中在一处比分散在手册各处更利于使用。</p>
+<h3 id="la32r_3">LA32R的汇编语言表达</h3>
+<p>本小节并不展开介绍LA32R汇编语言，只是讨论初学者在进行LA32R汇编开发时容易产生困惑的寄存器表达问题和伪指令问题。</p>
+<h4 id="_1">寄存器号前是否要加<code>$</code>?</h4>
+<p>假设当前要表达一个将第12号和第13号通用寄存器值相加结果写入第14号寄存器的操作，已知这需要使用<code>add.w</code>指令，因为指令手册中<code>add.w</code>写的指令格式是<code>add.w rd, rj, rk</code>，所以直观上汇编代码应该写成<code>add.w r14, r12, r13</code>，但是这样写的代码编译是会报错的。目前LA的工具链规定了指令中通用寄存器号的<code>r</code>前面必须添加<code>$</code>符号，即本例中的指令应该写成<code>add.w $r14, $r12, $r13</code>。由于我们进行汇编或反汇编都离不开工具链，所以汇编器对寄存器操作数书写形式的要求就成了一种事实上的规范。类似的情况对于浮点指令也存在，即可以通过编译的代码中浮点寄存器要写成<code>$f##</code>而不是<code>f##</code>。</p>
+<h4 id="abi">根据ABI寄存器使用约定的寄存器别名前是否要加<code>$</code>?</h4>
+<p>LoongArch的ABI中定义了寄存器使用约定，目前大多数读者对这部分内容的了解是来自于<a href="https://www.loongson.cn/kindeditor/attached/file/20220905/20220905064403_20930.pdf">《计算机体系结构基础（第3版）》</a>中的内容。例如，书中4.1.1小节表4-1中指出不用保存的暂存器是<code>r12 ~ r20</code>，它们的别名是<code>t0 ~ t8</code>。不过，一些读者实际看到的汇编源程序中却既有写成<code>t##</code>又有写成<code>$t##</code>，然后自己写程序的时候，写成<code>t##</code>有时候编译不报错有时候又报错。那么到底哪种写法是正确的呢？其实LoongArch工具链原生支持的只有<code>$t##</code>这种写法。之所以有的地方能写成<code>t##</code>而编译通过，实际上是因为这些代码中重新定义了一批形如<code>t##</code>的宏。例如，<a href="https://gitee.com/loongson-edu/chiplab">chiplab项目</a>中<code>software/func/</code>目录下的汇编测试代码包含了<code>regdef.h</code>这个头文件，其中包含了如下的宏定义：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#define zero    $r0</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#define ra      $r1</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#define tp      $r2</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cp">#define sp      $r3</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="cp">#define a0      $r4</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="cp">#define a1      $r5</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cp">#define a2      $r6</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="cp">#define a3      $r7</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="cp">#define a4      $r8</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="cp">#define a5      $r9</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="cp">#define a6      $r10</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="cp">#define a7      $r11</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="cp">#define v0      $r10 </span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="cp">#define v1      $r11 </span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="cp">#define t0      $r12</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="cp">#define t1      $r13</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="cp">#define t2      $r14</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="cp">#define t3      $r15</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="cp">#define t4      $r16</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="cp">#define t5      $r17</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="cp">#define t6      $r18</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="cp">#define t7      $r19</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="cp">#define t8      $r20</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="cp">#define x       $r21</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="cp">#define fp      $r22</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="cp">#define s0      $r23</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="cp">#define s1      $r24</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="cp">#define s2      $r25</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="cp">#define s3      $r26</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="cp">#define s4      $r27</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="cp">#define s5      $r28</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="cp">#define s6      $r29</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="cp">#define s7      $r30</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="cp">#define s8      $r31</span>
+</code></pre></div>
+<h4 id="_2">汇编程序中出现的指令在指令手册中查不到是怎么回事？</h4>
+<p>初学者可能会在一些LA32R的汇编程序中看到诸如<code>move</code>、<code>li.w</code>、<code>jr</code>、<code>la</code>这样的指令，但是翻遍指令集手册却看不到这些指令的定义。其实这些指令是LA32R的汇编器支持的<strong>伪指令</strong>。之所以称其“伪”是因为它们并不“真”的需要在CPU上专门实现，它们其实是一些固定了某些操作数表达形式的指令（序列）。例如，伪指令<code>move $r1 $r2</code>实际上会被汇编器自动翻译成<code>or $r1, $r2, $r0</code>，伪指令<code>jr $ra</code>会被汇编器自动翻译成<code>jirl $r0, $ra, 0</code>。汇编器定义伪指令是为了在不增加硬件实现开销的情况下丰富汇编编程可用的指令，提升汇编开发的效率。本手册第1部分后面将会结合具体的应用场景陆续介绍LA32R汇编开发时常用的伪指令，同时在本手册第2部分将列出目前LA32R汇编器支持的所有伪指令供大家查阅。</p>
+<p>这里再和熟悉MIPS汇编的读者探讨一下，为什么我们用“伪指令”而不是MIPS体系下的“宏指令”来称呼上面这些指令。主要还是MIPS的ABI中预留了一个通用寄存器<code>at</code>专供汇编器使用，有了这个寄存器存储临时中间变量，汇编器就可以构造出更复杂的指令序列，其对应的宏指令确实功能更丰富，也配得上<code>macro</code>这个词。相比之下，LA中的伪指令尽管也有对应两三条真实指令序列的，但大多数只对应一条，某种程度上更像是一个“别名”，因此用<code>pseudo</code>这个词更合适一点。</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 引言" rel="prev">
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                引言
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../compute_instrs/index.html" class="md-footer__link md-footer__link--next" aria-label="Next: 算术逻辑移位类指令" rel="next">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                算术逻辑移位类指令
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 LoongsonEdu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://gitee.com/loongson-edu" target="_blank" rel="noopener" title="gitee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.984 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.016 0zm6.09 5.333c.328 0 .593.266.592.593v1.482a.594.594 0 0 1-.593.592H9.777c-.982 0-1.778.796-1.778 1.778v5.63c0 .327.266.592.593.592h5.63c.982 0 1.778-.796 1.778-1.778v-.296a.593.593 0 0 0-.592-.593h-4.15a.592.592 0 0 1-.592-.592v-1.482a.593.593 0 0 1 .593-.592h6.815c.327 0 .593.265.593.592v3.408a4 4 0 0 1-4 4H5.926a.593.593 0 0 1-.593-.593V9.778a4.444 4.444 0 0 1 4.445-4.444h8.296Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.top", "navigation.expand"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
+      
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+      
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1138 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="LoongsonEdu">
+      
+      
+      
+        <link rel="prev" href="../../instructions/misc_instrs/index.html">
+      
+      
+        <link rel="next" href="../common_directives/index.html">
+      
+      <link rel="icon" href="../../images/loongson3-image.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>LA32R汇编编程学习环境介绍 - LA32R指令集学习指导手册</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#la32r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-header__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LA32R指令集学习指导手册
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              LA32R汇编编程学习环境介绍
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-nav__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    LA32R指令集学习指导手册
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        引言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          LA32R中的用户态整型指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R中的用户态整型指令
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/instr_expression/index.html" class="md-nav__link">
+        LA32R的机器语言与汇编语言表达
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/compute_instrs/index.html" class="md-nav__link">
+        算术逻辑移位类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/ldst_instrs/index.html" class="md-nav__link">
+        数据传输类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/br_jump_instrs/index.html" class="md-nav__link">
+        分支跳转类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/llsc_instrs/index.html" class="md-nav__link">
+        用LL/SC指令构建基本同步原语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../instructions/misc_instrs/index.html" class="md-nav__link">
+        其它用户态指令
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          LA32R汇编编程简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R汇编编程简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          LA32R汇编编程学习环境介绍
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        LA32R汇编编程学习环境介绍
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#la32r_1" class="md-nav__link">
+    LA32R汇编编程学习环境介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="LA32R汇编编程学习环境介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    交叉工具链
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    环境搭建与工具使用方法介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="环境搭建与工具使用方法介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loongarch32r-linux-gnusf-" class="md-nav__link">
+    loongarch32r-linux-gnusf-*
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la32r-qemu" class="md-nav__link">
+    la32r-QEMU
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la32r-linux" class="md-nav__link">
+    la32r-Linux
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loongarch32r-linux-gnusf-gdb" class="md-nav__link">
+    loongarch32r-linux-gnusf-gdb
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_directives/index.html" class="md-nav__link">
+        常用汇编器指示
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pesudo_instrs/index.html" class="md-nav__link">
+        LA32R汇编器支持的伪指令汇总
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../register_convention/index.html" class="md-nav__link">
+        寄存器使用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calling_convention/index.html" class="md-nav__link">
+        函数调用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addr_space/index.html" class="md-nav__link">
+        进程虚拟地址空间布局规范
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stack_frame/index.html" class="md-nav__link">
+        栈帧布局
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../as_example/index.html" class="md-nav__link">
+        汇编编程示例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#la32r_1" class="md-nav__link">
+    LA32R汇编编程学习环境介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="LA32R汇编编程学习环境介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    交叉工具链
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    环境搭建与工具使用方法介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="环境搭建与工具使用方法介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loongarch32r-linux-gnusf-" class="md-nav__link">
+    loongarch32r-linux-gnusf-*
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la32r-qemu" class="md-nav__link">
+    la32r-QEMU
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la32r-linux" class="md-nav__link">
+    la32r-Linux
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loongarch32r-linux-gnusf-gdb" class="md-nav__link">
+    loongarch32r-linux-gnusf-gdb
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="la32r">LA32R汇编编程简介</h1>
+<h2 id="la32r_1">LA32R汇编编程学习环境介绍</h2>
+<h3 id="_1">交叉工具链</h3>
+<p>在进行基于LA32R的应用程序或操作系统开发时，由于我们手边缺少真实的以LA32R为架构的CPU，我们可以借助交叉工具链进行代码的编译与程序的模拟运行。</p>
+<p>在交叉开发的过程中，应区分宿主机和目标机。目标机的指令集架构是期望运行的架构，也就是本手册的LA32R架构；宿主机是执行编译、提供模拟运行环境的机器，如我们常用的x86架构机器。交叉编译要实现的目标是在宿主机上生成目标机架构的代码，模拟运行实现的目标是在宿主机上运行目标机架构的程序。</p>
+<p>下表中的工具为LA32R汇编编程环境所需的工具与软件环境，请选择对应版本下载好，下一小节将介绍它们的使用方法。</p>
+<table>
+<thead>
+<tr>
+<th align="center">工具</th>
+<th align="center">用途</th>
+<th align="center">下载地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">loongarch32r-linux-gnusf-{gcc/objdump/gdb/...}</td>
+<td align="center">交叉编译器、反汇编器、调试器……</td>
+<td align="center"><a href="https://gitee.com/loongson-edu/la32r-toolchains/releases">工具发行版地址</a></td>
+</tr>
+<tr>
+<td align="center">la32r-QEMU</td>
+<td align="center">LA32R模拟器</td>
+<td align="center"><a href="https://gitee.com/loongson-edu/la32r-QEMU">源码仓库地址</a></td>
+</tr>
+<tr>
+<td align="center">la32r-Linux</td>
+<td align="center">LA32R内核</td>
+<td align="center"><a href="https://gitee.com/loongson-edu/la32r-Linux">源码仓库地址</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_2">环境搭建与工具使用方法介绍</h3>
+<h4 id="loongarch32r-linux-gnusf-"><code>loongarch32r-linux-gnusf-*</code></h4>
+<p>交叉工具链目前仅支持宿主机为x86架构和LA64架构的版本。下载后可以通过</p>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=&lt;your loongarch32r-linux-gnusf path&gt;/bin:$PATH&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</code></pre></div>
+将其添加至环境变量中并使其生效。可以在命令行中输入<code>loong</code>后按<code>&lt;TAB&gt;</code>键查看是否能够自动联想出<code>loongarch32r-linux-gnusf-</code>，来检查路径配置是否正确。</p>
+<p>工具的使用方法与不带交叉前缀的使用方法一致。最常使用的两个工具为<code>gcc</code>和<code>objdump</code>。前者用于编译<code>.c</code>或<code>.S</code>源文件生成目标机可执行程序；后者用于生成反汇编文件，常用于debug，查看指令地址<code>PC</code>和指令<code>inst</code>的关系，查看变量的内存地址等等，它的不同参数会输出不同的内容，可以查阅<a href="https://sourceware.org/binutils/docs-2.40/binutils.pdf">GNU工具手册</a>的<code>objdump</code>部分了解更多。</p>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># compile source</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>$<span class="w"> </span>loongarch32r-linux-gnusf-gcc<span class="w"> </span>&lt;file_name&gt;.S<span class="w"> </span>-o<span class="w"> </span>&lt;file_name&gt;
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># dump disassembly file</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>$<span class="w"> </span>loongarch32r-linux-gnusf-objdump<span class="w"> </span>-D<span class="w"> </span>&lt;file_name&gt;<span class="w"> </span>&gt;<span class="w"> </span>&lt;file_name&gt;.s
+</code></pre></div>
+<br></p>
+<h4 id="la32r-qemu"><code>la32r-QEMU</code></h4>
+<p>通过<code>qemu</code>（Quick Emulator），我们可以在宿主机上运行目标机架构程序，能够运行我们编写的LA32R汇编程序。</p>
+<p><strong>qemu编译</strong> 因为提供的是qemu源码，因此可以在各自宿主机上进行编译运行。编译qemu前请阅读仓库的wiki，安装好编译时的依赖。编写编译脚本<code>&lt;your qemu path&gt;/build.sh</code>，建议添加<code>--static</code>编译选项生成静态可执行qemu。生成的qemu为<code>&lt;your qemu path&gt;/build/qemu-system-loongarch32</code>。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">build.sh</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span>
+<span class="normal"><a href="#__codelineno-2-7">7</a></span>
+<span class="normal"><a href="#__codelineno-2-8">8</a></span>
+<span class="normal"><a href="#__codelineno-2-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;build&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span>mkdir<span class="w"> </span>build
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">fi</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nb">cd</span><span class="w"> </span>build
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>../configure<span class="w"> </span>--target-list<span class="o">=</span>loongarch32-softmmu<span class="w">  </span><span class="se">\</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">             </span>--disable-werror<span class="w"> </span>--enable-debug<span class="w">    </span><span class="se">\</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="hll"><span class="w">             </span>--static
+</span><a id="__codelineno-2-9" name="__codelineno-2-9"></a>make<span class="w"> </span>-j
+</code></pre></div></td></tr></table></div>
+<p><strong>qemu运行</strong></p>
+<div class="admonition info">
+<p class="admonition-title"><strong>QEMU的两种运行模式：</strong></p>
+<p>User Mode（使用者模式）：用户只需要将目标机架构程序放在QEMU中运行即可，其他的事情全部由QEMU虚拟机来完成，不需要用户自定义内核和虚拟磁盘等文件。</p>
+<p>System Mode（系统模式）：用户需要为QEMU指定运行的内核或者虚拟硬盘等文件。</p>
+</div>
+<p>目前la32r的qemu仅支持<code>system</code>模式，因此在使用时我们需要通过<code>-kernel</code>选项为其指定内核文件，下一小节对内核文件进行详细介绍。其他参数配置详见qemu仓库的wiki。类似地，我们可以编写运行脚本<code>&lt;your qemu path&gt;/system_run.sh</code>。</p>
+<p>如果在qemu上运行出错，需要debug，我们可以利用<code>loongarch32r-linux-gnusf-gdb</code>通过端口连接后进行交叉调试。此时需要添加<code>-gdb tcp::1234</code>配置端口号，以及<code>-S</code>让qemu不自动运行，与gdb连接后再运行。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">system_run.sh</label><label for="__tabbed_1_2">system_run_gdb.sh</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a>/build/qemu-system-loongarch32<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">            </span>-M<span class="w"> </span>ls3a5k32<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="hll"><span class="w">            </span>-kernel<span class="w"> </span>&lt;your<span class="w"> </span>linux<span class="w"> </span>image<span class="w"> </span>path&gt;<span class="w"> </span><span class="se">\</span>
+</span><a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">            </span>-nographic<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">            </span>-serial<span class="w"> </span>mon:stdio<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">            </span>-m<span class="w"> </span><span class="m">128</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">            </span>-append<span class="w"> </span><span class="s2">&quot;console=ttyS0,115200 rdinit=/init loglevel=9&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">            </span>-monitor<span class="w"> </span>tcp::4278,server,nowait<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">            </span>-smp<span class="w"> </span><span class="m">1</span>
+</code></pre></div></td></tr></table></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a>/build/qemu-system-loongarch32<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">            </span>-M<span class="w"> </span>ls3a5k32<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="hll"><span class="w">            </span>-kernel<span class="w"> </span>&lt;your<span class="w"> </span>linux<span class="w"> </span>image<span class="w"> </span>path&gt;<span class="w"> </span><span class="se">\</span>
+</span><a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">            </span>-nographic<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">            </span>-serial<span class="w"> </span>mon:stdio<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">            </span>-m<span class="w"> </span><span class="m">128</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">            </span>-append<span class="w"> </span><span class="s2">&quot;console=ttyS0,115200 rdinit=/init loglevel=9&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">            </span>-monitor<span class="w"> </span>tcp::4278,server,nowait<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">            </span>-smp<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="hll"><span class="w">            </span>-gdb<span class="w"> </span>tcp::1234<span class="w"> </span><span class="se">\</span>
+</span><a id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="hll"><span class="w">            </span>-S
+</span></code></pre></div></td></tr></table></div>
+</div>
+</div>
+</div>
+<p><br></p>
+<h4 id="la32r-linux"><code>la32r-Linux</code></h4>
+<p>由于目前la32r的qemu仅支持<code>system</code>模式，我们需要指定内核文件，即为由该源码编译完成的内存镜像文件。</p>
+<p><strong><code>initrd</code>内存文件系统</strong> 由于目前la32r的linux尚不支持文件系统，仅支持<code>initrd</code>内存文件系统，我们需要把由gcc编译好的可执行程序放入<code>initrd</code>文件夹中，编译内核，从而运行qemu后可以在同一路径中找到可执行程序并进行执行。每次对<code>initrd</code>中的文件修改后都必须重新编译内核。la32r的linux提供一个基础的<a href="https://gitee.com/loongson-edu/la32r-Linux/releases"><code>initrd</code>包</a>，下载后解压可直接使用。</p>
+<p>可以看到<code>initrd</code>的目录结构就是我们平常所见的根目录下的文件系统的结构。我们可以将写好的应用程序放置于<code>initrd_d/home</code>目录下，并修改<code>initrd_d/etc/profile</code>使得每次启动linux后直接进入可执行程序所在路径。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">tree initrd_d</label><label for="__tabbed_2_2">initrd_d/etc/profile</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>initrd_d
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>├──<span class="w"> </span>bin
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>├──<span class="w"> </span>dev
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>├──<span class="w"> </span>emb
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>├──<span class="w"> </span>etc
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│<span class="w">   </span>└──<span class="w"> </span>init.d
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="hll">├──<span class="w"> </span>home
+</span><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>├──<span class="w"> </span>lib
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│<span class="w">   </span>└──<span class="w"> </span>modules
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>├──<span class="w"> </span>lib32<span class="w"> </span>-&gt;<span class="w"> </span>lib
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>├──<span class="w"> </span>media
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>├──<span class="w"> </span>mnt
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>├──<span class="w"> </span>proc
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>├──<span class="w"> </span>sbin
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>├──<span class="w"> </span>sys
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>├──<span class="w"> </span>tmp
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>├──<span class="w"> </span>usr
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>│<span class="w">   </span>├──<span class="w"> </span>bin
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>│<span class="w">   </span>├──<span class="w"> </span>lib
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>│<span class="w">   </span>└──<span class="w"> </span>sbin
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>└──<span class="w"> </span>var
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
+<span class="normal"><a href="#__codelineno-6-2">2</a></span>
+<span class="normal"><a href="#__codelineno-6-3">3</a></span>
+<span class="normal"><a href="#__codelineno-6-4">4</a></span>
+<span class="normal"><a href="#__codelineno-6-5">5</a></span>
+<span class="normal"><a href="#__codelineno-6-6">6</a></span>
+<span class="normal"><a href="#__codelineno-6-7">7</a></span>
+<span class="normal"><a href="#__codelineno-6-8">8</a></span>
+<span class="normal"><a href="#__codelineno-6-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># /etc/profile: system-wide .profile file for the Bourne shells                  </span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="nb">echo</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;Processing /etc/profile... &quot;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="c1"># no-op</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Done&quot;</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="nb">echo</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="hll"><span class="nb">export</span><span class="w"> </span><span class="nv">HOME</span><span class="o">=</span>/home/
+</span><a id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="hll"><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>
+</span></code></pre></div></td></tr></table></div>
+</div>
+</div>
+</div>
+<p><strong>linux编译</strong> 因为提供的是linux源码，我们需要在宿主机上进行交叉编译。编译linux前请阅读仓库的<code>README</code>。修改编译脚本<code>&lt;your linux path&gt;/la_build.sh</code>，注意修改<code>CROSS_COMPILE</code>变量，因为前面我们已将其添加到环境变量中，可以不指明交叉编译器路径。生成的linux为<code>&lt;your linux path&gt;/la_build/vmlinux</code>。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">la_build.sh</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-7-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-7-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-7-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-7-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-7-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-7-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-7-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-7-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-7-10">10</a></span>
+<span class="normal"><a href="#__codelineno-7-11">11</a></span>
+<span class="normal"><a href="#__codelineno-7-12">12</a></span>
+<span class="normal"><a href="#__codelineno-7-13">13</a></span>
+<span class="normal"><a href="#__codelineno-7-14">14</a></span>
+<span class="normal"><a href="#__codelineno-7-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="hll"><span class="nb">export</span><span class="w"> </span><span class="nv">CROSS_COMPILE</span><span class="o">=</span>loongarch32r-linux-gnusf-
+</span><a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>loongarch
+<a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="nv">OUT</span><span class="o">=</span>la_build
+<a id="__codelineno-7-6" name="__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-d<span class="w"> </span>la_build<span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="k">then</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">    </span>mkdir<span class="w"> </span>la_build
+<a id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">    </span>make<span class="w"> </span>la32_defconfig<span class="w"> </span><span class="nv">O</span><span class="o">=</span><span class="si">${</span><span class="nv">OUT</span><span class="si">}</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="k">fi</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11"></a>
+<a id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;----------------output </span><span class="si">${</span><span class="nv">OUT</span><span class="si">}</span><span class="s2">----------------&quot;</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13"></a>
+<a id="__codelineno-7-14" name="__codelineno-7-14"></a>make<span class="w"> </span>menuconfig<span class="w"> </span><span class="nv">O</span><span class="o">=</span><span class="si">${</span><span class="nv">OUT</span><span class="si">}</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15"></a>make<span class="w"> </span>vmlinux<span class="w"> </span>-j<span class="w">  </span><span class="nv">O</span><span class="o">=</span><span class="si">${</span><span class="nv">OUT</span><span class="si">}</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>build_error.log
+</code></pre></div></td></tr></table></div>
+<p>编译linux时，我们需要在配置文件中指明<code>initrd_d</code>的路径。一个办法是通过<code>menuconfig</code>图形界面完成配置，注意路径按照个人配置来设置。</p>
+<div align=center><img src="../../images/menuconfig1.png" width="500"><img src="../../images/menuconfig2.png" width="500"><img src="../../images/menuconfig3.png" width="500"></div>
+
+<figcaption align=center>menuconfig</figcaption>
+
+<p>另一个办法是与<code>menuconfig</code>具有相同功能的非图形化配置，修改<code>la_build/.config</code>文件中的如下参数即可。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">CONFIG_INITRAMFS_SOURCE</span><span class="o">=</span><span class="s2">&quot;&lt;your initrd path&gt;&quot;</span>
+</code></pre></div>
+<p><br></p>
+<h4 id="loongarch32r-linux-gnusf-gdb">loongarch32r-linux-gnusf-gdb</h4>
+<p>如果在qemu上程序运行出错，此时我们可以利用gdb进行debug。前面提到，可以在qemu运行时添加<code>-gdb tcp::1234</code>和<code>-S</code>参数，等待gdb通过端口1234来连接。连接后，像调试普通宿主机程序一样调试即可。</p>
+<p><strong>qemu与gdb的连接过程</strong></p>
+<table>
+<tr><th>宿主机 terminal 1: qemu</th><th>宿主机 terminal 2: gdb</th></tr>
+
+<tr>
+<td>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># start qemu</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>&lt;your<span class="w"> </span>qemu<span class="w"> </span>path&gt;
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>$<span class="w"> </span>./system_run_gdb.sh
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># qemu wait for connection</span>
+</code></pre></div>
+
+</td>
+
+<td>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>&lt;your<span class="w"> </span>initrd_d<span class="w"> </span>path&gt;
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># load file&#39;s symbol table</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>$<span class="w"> </span>loongarch32r-linux-gnusf-gdb<span class="w"> </span>&lt;file_name&gt;
+</code></pre></div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+<br>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># connect with gdb</span>
+</code></pre></div>
+
+</td>
+<td>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># at gdb terminal</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>target<span class="w"> </span>remote<span class="w"> </span>:1234
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>b<span class="w"> </span>main
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>b<span class="w"> </span>&lt;somewhere_you_want&gt;
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
+</code></pre></div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># qemu start run</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># at qemu kernel terminal</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>/home<span class="w"> </span>$<span class="w"> </span>./&lt;file_name&gt;
+</code></pre></div>
+
+</td>
+<td>
+
+<br><br>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># … reach breakpoints</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># trail for bugs</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>&lt;command&gt;
+</code></pre></div>
+
+</td>
+</tr>
+
+
+
+
+</table>
+
+<p><strong>gdb常用命令</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">命令</th>
+<th align="left">例子</th>
+<th align="left">用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>c</code></td>
+<td align="left">-</td>
+<td align="left">继续执行，直到遇到断点</td>
+</tr>
+<tr>
+<td align="center"><code>si</code></td>
+<td align="left">-</td>
+<td align="left">执行下一条指令，如果有函数调用，则进入函数内部</td>
+</tr>
+<tr>
+<td align="center"><code>ni</code></td>
+<td align="left">-</td>
+<td align="left">执行下一条指令，即使有函数调用，也不会进入函数内部</td>
+</tr>
+<tr>
+<td align="center"><code>i r</code><br>(<code>info registers</code>)</td>
+<td align="left">-</td>
+<td align="left">查看全部通用寄存器值</td>
+</tr>
+<tr>
+<td align="center"><code>b &lt;symbol&gt;</code></td>
+<td align="left"><code>b main</code></td>
+<td align="left">在标号处设断点</td>
+</tr>
+<tr>
+<td align="center"><code>b *&lt;addr&gt;</code></td>
+<td align="left"><code>b *0x10518</code></td>
+<td align="left">在某地址处设断点</td>
+</tr>
+<tr>
+<td align="center"><code>p /&lt;basic_format&gt; &lt;symbol&gt;</code></td>
+<td align="left"><code>p /x $sp</code></td>
+<td align="left">以某种格式打印某个标号（寄存器或变量）的值<br><code>&lt;basic_format&gt;</code>:<br><code>c-&gt;char</code><br><code>d-&gt;decimal</code><br><code>o-&gt;octal</code><br><code>x-&gt;hex</code></td>
+</tr>
+<tr>
+<td align="center"><code>x /&lt;format&gt; &lt;symbol&gt;</code></td>
+<td align="left"><code>x /10x 0x10580</code><br><br><code>x /20i 0x10580</code><br><br><code>x /20i $pc</code></td>
+<td align="left">以某种格式打印内存地址的值<br><code>&lt;format&gt; = &lt;num&gt;&lt;basic_format&gt;</code><br><code>&lt;basic_format&gt;</code>:<br><code>c-&gt;char</code><br><code>d-&gt;decimal</code><br><code>o-&gt;octal</code><br><code>x-&gt;hex</code><br><code>i-&gt;instruction</code></td>
+</tr>
+<tr>
+<td align="center"><code>disassemble</code></td>
+<td align="left">-</td>
+<td align="left">查看当前<code>PC</code>所在地址的一段汇编指令</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../instructions/misc_instrs/index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 其它用户态指令" rel="prev">
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                其它用户态指令
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../common_directives/index.html" class="md-footer__link md-footer__link--next" aria-label="Next: 常用汇编器指示" rel="next">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                常用汇编器指示
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 LoongsonEdu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://gitee.com/loongson-edu" target="_blank" rel="noopener" title="gitee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.984 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.016 0zm6.09 5.333c.328 0 .593.266.592.593v1.482a.594.594 0 0 1-.593.592H9.777c-.982 0-1.778.796-1.778 1.778v5.63c0 .327.266.592.593.592h5.63c.982 0 1.778-.796 1.778-1.778v-.296a.593.593 0 0 0-.592-.593h-4.15a.592.592 0 0 1-.592-.592v-1.482a.593.593 0 0 1 .593-.592h6.815c.327 0 .593.265.593.592v3.408a4 4 0 0 1-4 4H5.926a.593.593 0 0 1-.593-.593V9.778a4.444 4.444 0 0 1 4.445-4.444h8.296Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.top", "navigation.expand"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
+      
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+      
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+      
+    
+  </body>
+</html>
