@@ -1,0 +1,933 @@
+From 8d4a6075df03e2e9ba6f5c019c0a7b9f838c35a4 Mon Sep 17 00:00:00 2001
+From: liangliang678 <wujunliang@loongson.cn>
+Date: Thu, 6 Jul 2023 14:31:36 +0800
+Subject: [PATCH] exp12
+
+---
+ csr.h       |  16 +++++
+ csr.v       | 183 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ exe_stage.v |  72 +++++++++++++++++----
+ id_stage.v  |  78 ++++++++++++++++++++--
+ if_stage.v  |  19 +++++-
+ mem_stage.v |  40 +++++++++++-
+ mycpu.h     |   6 +-
+ mycpu_top.v |  74 ++++++++++++++++++++-
+ wb_stage.v  |  43 +++++++++++-
+ 9 files changed, 502 insertions(+), 29 deletions(-)
+ create mode 100644 csr.h
+ create mode 100644 csr.v
+
+diff --git a/csr.h b/csr.h
+new file mode 100644
+index 0000000..11b2b89
+--- /dev/null
++++ b/csr.h
+@@ -0,0 +1,16 @@
++//CRMD
++`define PLV       1:0
++`define IE        2
++`define DA        3
++`define PG        4
++`define DATF      6:5
++`define DATM      8:7
++//PRMD
++`define PPLV      1:0
++`define PIE       2
++//ESTAT
++`define IS        12:0
++`define ECODE     21:16
++`define ESUBCODE  30:22
++
++`define ECODE_SYS  6'hb
+diff --git a/csr.v b/csr.v
+new file mode 100644
+index 0000000..f5a622f
+--- /dev/null
++++ b/csr.v
+@@ -0,0 +1,183 @@
++`include "mycpu.h"
++`include "csr.h"
++
++module csr 
++(
++    input  wire                          clk          ,
++    input  wire                          reset        ,
++    //from to ds 
++    input  wire [13:0]                   rd_addr      ,
++    output wire [31:0]                   rd_data      ,
++    //from ws
++    input  wire                          csr_wr_en    ,
++    input  wire [13:0]                   wr_addr      ,
++    input  wire [31:0]                   wr_data      ,
++    //from ws
++    input  wire                          excp_flush   ,
++    input  wire                          ertn_flush   ,
++    input  wire [31:0]                   era_in       ,
++    input  wire [ 8:0]                   esubcode_in  ,
++    input  wire [ 5:0]                   ecode_in     ,
++    //to fs
++    output wire [31:0]                   eentry_out   ,
++    output wire [31:0]                   era_out      
++);
++
++localparam CRMD  = 14'h0;
++localparam PRMD  = 14'h1;
++localparam ESTAT = 14'h5;
++localparam ERA   = 14'h6;
++localparam EENTRY= 14'hc;
++localparam SAVE0 = 14'h30;
++localparam SAVE1 = 14'h31;
++localparam SAVE2 = 14'h32;
++localparam SAVE3 = 14'h33;
++
++wire crmd_wen   = csr_wr_en & (wr_addr == CRMD);
++wire prmd_wen   = csr_wr_en & (wr_addr == PRMD);
++wire estat_wen  = csr_wr_en & (wr_addr == ESTAT);
++wire era_wen    = csr_wr_en & (wr_addr == ERA);
++wire eentry_wen = csr_wr_en & (wr_addr == EENTRY);
++wire save0_wen  = csr_wr_en & (wr_addr == SAVE0);
++wire save1_wen  = csr_wr_en & (wr_addr == SAVE1);
++wire save2_wen  = csr_wr_en & (wr_addr == SAVE2);
++wire save3_wen  = csr_wr_en & (wr_addr == SAVE3);
++
++reg [31:0] csr_crmd;
++reg [31:0] csr_prmd;
++reg [31:0] csr_estat;
++reg [31:0] csr_era;
++reg [31:0] csr_eentry;
++reg [31:0] csr_save0;
++reg [31:0] csr_save1;
++reg [31:0] csr_save2;
++reg [31:0] csr_save3;
++
++assign eentry_out   = csr_eentry;
++assign era_out      = csr_era;
++
++assign rd_data = {32{rd_addr == CRMD  }}  & csr_crmd    |
++                 {32{rd_addr == PRMD  }}  & csr_prmd    |
++                 {32{rd_addr == ESTAT }}  & csr_estat   |
++                 {32{rd_addr == ERA   }}  & csr_era	    |
++                 {32{rd_addr == EENTRY}}  & csr_eentry  |
++                 {32{rd_addr == SAVE0 }}  & csr_save0   |
++                 {32{rd_addr == SAVE1 }}  & csr_save1   |
++                 {32{rd_addr == SAVE2 }}  & csr_save2   |
++                 {32{rd_addr == SAVE3 }}  & csr_save3   ;
++
++//crmd
++always @(posedge clk) begin
++    if (reset) begin
++        csr_crmd[ `PLV] <=  2'b0;
++        csr_crmd[  `IE] <=  1'b0;
++        csr_crmd[  `DA] <=  1'b1;
++        csr_crmd[  `PG] <=  1'b0;
++        csr_crmd[`DATF] <=  2'b0;
++        csr_crmd[`DATM] <=  2'b0;
++        csr_crmd[31: 9] <= 23'b0;
++    end
++    else if (excp_flush) begin
++        csr_crmd[ `PLV] <=  2'b0;
++        csr_crmd[  `IE] <=  1'b0;
++    end
++    else if (ertn_flush) begin
++        csr_crmd[ `PLV] <= csr_prmd[`PPLV];
++        csr_crmd[  `IE] <= csr_prmd[`PIE ];
++    end 
++    else if (crmd_wen) begin
++        csr_crmd[ `PLV] <= wr_data[ `PLV];
++        csr_crmd[  `IE] <= wr_data[	 `IE];
++        csr_crmd[  `DA] <= wr_data[	 `DA];
++        csr_crmd[  `PG] <= wr_data[  `PG];
++        csr_crmd[`DATF] <= wr_data[`DATF];
++        csr_crmd[`DATM] <= wr_data[`DATM];
++    end
++end
++
++//prmd
++always @(posedge clk) begin
++    if (reset) begin
++        csr_prmd[31: 3] <= 29'b0;
++    end
++    else if (excp_flush) begin
++        csr_prmd[`PPLV] <= csr_crmd[`PLV];
++        csr_prmd[ `PIE] <= csr_crmd[`IE ];
++    end
++    else if (prmd_wen) begin
++        csr_prmd[`PPLV] <= wr_data[`PPLV];
++        csr_prmd[ `PIE] <= wr_data[ `PIE];
++    end
++end
++
++//estat
++always @(posedge clk) begin
++    if (reset) begin
++        csr_estat[ 1: 0] <= 2'b0; 
++        csr_estat[ 9: 2] <= 8'b0; // tmp
++		csr_estat[10]    <= 1'b0;
++        csr_estat[11]    <= 1'b0;
++		csr_estat[12]    <= 1'b0;
++        csr_estat[15:13] <= 3'b0;
++        csr_estat[31]    <= 1'b0;
++    end
++    else begin
++        if (excp_flush) begin
++            csr_estat[   `ECODE] <= ecode_in;
++            csr_estat[`ESUBCODE] <= esubcode_in;
++        end
++        else if (estat_wen) begin
++            csr_estat[      1:0] <= wr_data[      1:0];
++        end
++    end
++end
++
++//era
++always @(posedge clk) begin
++    if (excp_flush) begin
++        csr_era <= era_in;
++    end
++    else if (era_wen) begin
++        csr_era <= wr_data;
++    end
++end
++
++//eentry
++always @(posedge clk) begin
++    if (reset) begin
++        csr_eentry[5:0] <= 6'b0;
++    end
++    else if (eentry_wen) begin
++        csr_eentry[31:6] <= wr_data[31:6];
++    end
++end
++
++//save0
++always @(posedge clk) begin
++    if (save0_wen) begin
++        csr_save0 <= wr_data;
++    end 
++end
++
++//save1
++always @(posedge clk) begin
++    if (save1_wen) begin
++        csr_save1 <= wr_data;
++    end 
++end
++
++//save2
++always @(posedge clk) begin
++    if (save2_wen) begin
++        csr_save2 <= wr_data;
++    end 
++end
++
++//save3
++always @(posedge clk) begin
++    if (save3_wen) begin
++        csr_save3 <= wr_data;
++    end 
++end
++
++endmodule
+diff --git a/exe_stage.v b/exe_stage.v
+index eb9c1b0..3065a48 100644
+--- a/exe_stage.v
++++ b/exe_stage.v
+@@ -20,6 +20,11 @@ module exe_stage(
+     output wire [31:0] es_rj_value     ,
+     output wire [31:0] es_rkd_value    ,
+     input  wire        div_complete    ,
++    //excp 
++    input  wire        excp_flush    ,
++    input  wire        ertn_flush    ,
++    input  wire        refetch_flush ,
++    input  wire        ms_excp       ,
+     // data sram interface
+     output wire        data_sram_en   ,
+     output wire [ 3:0] data_sram_we   ,
+@@ -30,6 +35,8 @@ module exe_stage(
+ reg         es_valid      ;
+ wire        es_ready_go   ;
+ 
++wire flush_sign = excp_flush || ertn_flush || refetch_flush;
++
+ reg  [`DS_TO_ES_BUS_WD -1:0] ds_to_es_bus_r;
+ wire [13:0] es_alu_op      ;
+ wire [ 3:0] es_mul_div_op  ;
+@@ -45,8 +52,24 @@ wire [31:0] es_imm         ;
+ wire [31:0] es_rj_value    ;
+ wire [31:0] es_rkd_value   ;
+ wire [31:0] es_pc          ;
+-
+-assign {es_mem_size    ,  //159:158
++wire [ 0:0] es_excp_num    ;
++wire        es_ertn        ;
++wire        es_excp        ;
++wire        es_res_from_csr;
++wire        es_csr_we      ;
++wire [13:0] es_csr_addr;
++wire        es_csr_mask    ;
++wire [31:0] es_csr_data    ;
++
++assign {es_excp_num    ,  //211:211
++        es_ertn        ,  //210:210
++        es_excp        ,  //209:209
++        es_res_from_csr,  //208:208
++        es_csr_we      ,  //207:207
++        es_csr_addr    ,  //206:193
++        es_csr_mask    ,  //192:192
++        es_csr_data    ,  //191:160
++        es_mem_size    ,  //159:158
+         es_mem_sign_ext,  //157:157
+         es_alu_op      ,  //156:143
+         es_mul_div_op  ,  //142:139
+@@ -68,24 +91,41 @@ wire [31:0] es_alu_src2   ;
+ wire [31:0] es_alu_result ;
+ wire [ 1:0] addr_low;
+ 
+-assign es_to_ms_bus = {es_mem_size    ,  //79:78
++wire [31:0] csr_mask_wdata;
++wire [31:0] csr_final_wdata;
++
++wire [31:0] es_final_result;
++
++wire excp;
++wire [ 0:0] excp_num;
++
++assign es_to_ms_bus = {excp_num       ,  //129:129
++                       es_ertn        ,  //128:128
++                       excp           ,  //127:127
++                       es_csr_we      ,  //126:126
++                       es_csr_addr    ,  //125:112
++                       csr_final_wdata,  //111:80
++                       es_mem_size    ,  //79:78
+                        es_mem_sign_ext,  //77:77
+                        addr_low,         //76:75
+                        es_mul_div_op  ,  //74:71
+                        es_res_from_mem,  //70:70
+                        es_gr_we       ,  //69:69
+                        es_dest        ,  //68:64
+-                       es_alu_result  ,  //63:32
++                       es_final_result,  //63:32
+                        es_pc             //31:0
+                       };
+ 
+-assign es_ready_go    = !div_stall;
++assign es_ready_go    = !div_stall || excp;
+ assign es_allowin     = !es_valid || es_ready_go && ms_allowin;
+ assign es_to_ms_valid =  es_valid && es_ready_go;
+ always @(posedge clk) begin
+     if (reset) begin     
+         es_valid <= 1'b0;
+     end
++    else if (flush_sign) begin
++        es_valid <= 1'b0;
++    end
+     else if (es_allowin) begin 
+         es_valid <= ds_to_es_valid;
+     end
+@@ -115,7 +155,7 @@ assign es_mul_enable = (es_mul_div_op[0] | es_mul_div_op[1]) & es_valid;
+ assign div_stall     = es_div_enable & ~div_complete;
+ 
+ wire dep_need_stall = es_valid && (es_res_from_mem | es_div_enable | es_mul_enable);
+-assign es_to_ds_forward_bus = {dep_need_stall, es_valid && es_gr_we, es_dest, es_alu_result};
++assign es_to_ds_forward_bus = {dep_need_stall, es_valid && es_gr_we, es_dest, es_final_result};
+ 
+ // mem
+ assign addr_low = es_alu_result[1:0];
+@@ -138,14 +178,24 @@ wire [31:0] es_stb_data = {{8{es_stb_wen[3]}} & es_rkd_value[7:0] ,
+ wire [31:0] es_sth_data = {{16{es_sth_wen[3]}} & es_rkd_value[15:0] ,
+                            {16{es_sth_wen[0]}} & es_rkd_value[15:0]};
+ 
+-assign data_sram_en    = (es_res_from_mem || es_mem_we) && es_valid;
+-assign data_sram_we    = {4{es_mem_we && es_mem_size[0]}} & es_stb_wen |
+-                         {4{es_mem_we && es_mem_size[1]}} & es_sth_wen |
+-                         {4{es_mem_we && !es_mem_size  }} & 4'hf       |
+-                         {4{!es_mem_we                 }} & 4'h0;
++assign data_sram_en    = (es_res_from_mem || es_mem_we) && es_valid && !flush_sign && !ms_excp && !excp;
++assign data_sram_we    = {4{es_mem_we && !flush_sign && !ms_excp && !excp && es_mem_size[0]}} & es_stb_wen |
++                         {4{es_mem_we && !flush_sign && !ms_excp && !excp && es_mem_size[1]}} & es_sth_wen |
++                         {4{es_mem_we && !flush_sign && !ms_excp && !excp && !es_mem_size  }} & 4'hf       |
++                         {4{!es_mem_we || flush_sign || ms_excp || excp                    }} & 4'h0;
+ assign data_sram_addr  = es_alu_result;
+ assign data_sram_wdata = ({32{es_mem_size[0]}} & es_stb_data ) |
+                          ({32{es_mem_size[1]}} & es_sth_data ) |
+                          ({32{!es_mem_size  }} & es_rkd_value) ;
+ 
++// csr
++assign csr_mask_wdata  = (es_rj_value & es_rkd_value) | (~es_rj_value & es_csr_data);
++assign csr_final_wdata = es_csr_mask ? csr_mask_wdata : es_rkd_value;
++
++assign es_final_result = es_res_from_csr ? es_csr_data : es_alu_result;
++
++// excp
++assign excp     = es_excp && es_valid;
++assign excp_num = es_excp_num;
++
+ endmodule
+diff --git a/id_stage.v b/id_stage.v
+index c0623bd..1bf471c 100644
+--- a/id_stage.v
++++ b/id_stage.v
+@@ -19,12 +19,20 @@ module id_stage(
+     //to fs
+     output wire [`BR_BUS_WD       -1:0] br_bus        ,
+     //to rf: for write back
+-    input  wire [`WS_TO_RF_BUS_WD -1:0] ws_to_rf_bus
++    input  wire [`WS_TO_RF_BUS_WD -1:0] ws_to_rf_bus  ,
++    //csr & excp
++    input  wire                              excp_flush    ,
++    input  wire                              ertn_flush    ,
++    input  wire                              refetch_flush ,
++    output wire [13:0]                       rd_csr_addr   ,
++    input  wire [31:0]                       rd_csr_data   
+ );
+ 
+ reg         ds_valid   ;
+ wire        ds_ready_go;
+ 
++wire flush_sign = excp_flush || ertn_flush || refetch_flush;
++
+ reg  [`FS_TO_DS_BUS_WD -1:0] fs_to_ds_bus_r;
+ 
+ wire [31:0] ds_inst;
+@@ -61,6 +69,9 @@ wire        need_si16;
+ wire        need_si20;
+ wire        need_si26;  
+ wire        src2_is_4;
++wire        res_from_csr;
++wire        csr_we;
++wire        csr_mask;
+ 
+ // inst splits
+ wire [ 5:0] op_31_26;
+@@ -74,11 +85,15 @@ wire [11:0] i12;
+ wire [19:0] i20;
+ wire [15:0] i16;
+ wire [25:0] i26;
++wire [13:0] csr_idx;
+ 
+ wire [63:0] op_31_26_d;
+ wire [15:0] op_25_22_d;
+ wire [ 3:0] op_21_20_d;
+ wire [31:0] op_19_15_d;
++wire [31:0] rd_d;
++wire [31:0] rj_d;
++wire [31:0] rk_d;
+ 
+ // inst def
+ wire        inst_add_w; 
+@@ -134,6 +149,12 @@ wire        inst_st_b;
+ wire        inst_st_h;
+ wire        inst_st_w; 
+ 
++wire        inst_syscall;
++wire        inst_csrrd;
++wire        inst_csrwr;
++wire        inst_csrxchg;
++wire        inst_ertn;
++
+ // reg & imm value
+ wire [ 4:0] rf_raddr1;
+ wire [31:0] rf_rdata1;
+@@ -142,6 +163,7 @@ wire [31:0] rf_rdata2;
+ wire [31:0] rj_value;
+ wire [31:0] rkd_value;
+ wire [31:0] ds_imm;
++wire [31:0] csr_data;
+ 
+ // forward and stall
+ wire inst_need_rj;
+@@ -187,7 +209,19 @@ wire [31:0] jirl_offs;
+ wire [31:0] br_target;
+ assign br_bus       = {br_taken_cancel,br_taken,br_target};
+ 
+-assign ds_to_es_bus = {mem_size    ,  //159:158
++// excp
++wire excp;
++wire [ 0:0] excp_num;
++
++assign ds_to_es_bus = {excp_num    ,  //211:211
++                       inst_ertn   ,  //210:210
++                       excp        ,  //209:209
++                       res_from_csr,  //208:208
++                       csr_we      ,  //207:207
++                       csr_idx     ,  //206:193
++                       csr_mask    ,  //192:192
++                       csr_data    ,  //191:160
++                       mem_size    ,  //159:158
+                        mem_sign_ext,  //157:157
+                        alu_op      ,  //156:143
+                        mul_div_op  ,  //142:139
+@@ -204,13 +238,16 @@ assign ds_to_es_bus = {mem_size    ,  //159:158
+                        ds_pc          //31 :0
+                       };
+ 
+-assign ds_ready_go    = !(rf1_stall || rf2_stall);
++assign ds_ready_go    = !(rf1_stall || rf2_stall) || excp;
+ assign ds_allowin     = !ds_valid || ds_ready_go && es_allowin;
+ assign ds_to_es_valid = ds_valid && ds_ready_go;
+ always @(posedge clk) begin 
+     if (reset) begin     
+         ds_valid <= 1'b0;
+     end
++    else if (flush_sign) begin
++        ds_valid <= 1'b0;
++    end
+     else if (br_taken_cancel) begin
+         ds_valid <= 1'b0;
+     end
+@@ -238,10 +275,15 @@ assign i20  = ds_inst[24: 5];
+ assign i16  = ds_inst[25:10];
+ assign i26  = {ds_inst[ 9: 0], ds_inst[25:10]};
+ 
++assign csr_idx = ds_inst[23:10];
++
+ decoder_6_64 u_dec0(.in(op_31_26 ), .out(op_31_26_d ));
+ decoder_4_16 u_dec1(.in(op_25_22 ), .out(op_25_22_d ));
+ decoder_2_4  u_dec2(.in(op_21_20 ), .out(op_21_20_d ));
+ decoder_5_32 u_dec3(.in(op_19_15 ), .out(op_19_15_d ));
++decoder_5_32 u_dec4(.in(rd ), .out(rd_d ));
++decoder_5_32 u_dec5(.in(rj ), .out(rj_d ));
++decoder_5_32 u_dec6(.in(rk ), .out(rk_d ));
+ 
+ // inst def
+ assign inst_add_w      = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h00];
+@@ -297,6 +339,12 @@ assign inst_st_b       = op_31_26_d[6'h0a] & op_25_22_d[4'h4];
+ assign inst_st_h       = op_31_26_d[6'h0a] & op_25_22_d[4'h5];
+ assign inst_st_w       = op_31_26_d[6'h0a] & op_25_22_d[4'h6];
+ 
++assign inst_syscall    = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h16];
++assign inst_csrrd      = op_31_26_d[6'h01] & ~ds_inst[25] & ~ds_inst[24] & rj_d[5'h00];
++assign inst_csrwr      = op_31_26_d[6'h01] & ~ds_inst[25] & ~ds_inst[24] & rj_d[5'h01];
++assign inst_csrxchg    = op_31_26_d[6'h01] & ~ds_inst[25] & ~ds_inst[24] & (~rj_d[5'h00] & ~rj_d[5'h01]);  //rj != 0,1
++assign inst_ertn       = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h10] & rk_d[5'h0e] & rj_d[5'h00] & rd_d[5'h00];
++
+ // control signals
+ assign alu_op[ 0] = inst_add_w    |
+                     inst_addi_w   |
+@@ -373,7 +421,8 @@ assign gr_we         = ~inst_b    &
+                        ~inst_bgeu & 
+                        ~inst_st_b & 
+                        ~inst_st_h &
+-                       ~inst_st_w ;
++                       ~inst_st_w &
++                       ~inst_syscall;
+ assign mem_we        = inst_st_b | inst_st_h  | inst_st_w;
+ assign mem_size[0]   = inst_ld_b | inst_ld_bu | inst_st_b;
+ assign mem_size[1]   = inst_ld_h | inst_ld_hu | inst_st_h;
+@@ -386,7 +435,9 @@ assign src_reg_is_rd = inst_beq  |
+                        inst_bgeu | 
+                        inst_st_b | 
+                        inst_st_h |
+-                       inst_st_w ;
++                       inst_st_w |
++                       inst_csrwr|
++                       inst_csrxchg;
+ assign dest       = dst_is_r1 ? 5'd1 : rd;
+ assign need_ui5   = inst_slli_w |
+                     inst_srli_w | 
+@@ -508,7 +559,9 @@ assign inst_need_rkd =  inst_add_w  |
+                         inst_bgeu   |
+                         inst_st_b   |
+                         inst_st_h   |
+-                        inst_st_w   ;
++                        inst_st_w   |
++                        inst_csrwr  |
++                        inst_csrxchg;
+ 
+ assign rf1_stall = inst_need_rj &&
+                    (es_dep_need_stall && (es_forward_reg == rf_raddr1));
+@@ -540,7 +593,7 @@ assign br_taken = (   inst_beq  &&  rj_eq_rd
+                    || inst_jirl
+                    || inst_bl
+                    || inst_b
+-                  ) && ds_valid; 
++                  ) && ds_valid && !flush_sign; 
+ 
+ assign br_offs = need_si26 ? {{ 4{i26[25]}}, i26[25:0], 2'b0} : 
+                              {{14{i16[15]}}, i16[15:0], 2'b0} ;
+@@ -550,4 +603,15 @@ assign br_target = (inst_bl || inst_b || inst_beq || inst_bne || inst_blt || ins
+                                                                  (ds_pc + br_offs) :
+                                                    /*inst_jirl*/ (rj_value + jirl_offs);
+ 
++// excp
++assign excp = inst_syscall;
++assign excp_num = {inst_syscall};
++
++assign res_from_csr  = inst_csrrd | inst_csrwr | inst_csrxchg;
++assign csr_we        = inst_csrwr | inst_csrxchg;
++assign csr_mask      = inst_csrxchg;
++
++assign rd_csr_addr = csr_idx;
++assign csr_data    = rd_csr_data;
++
+ endmodule
+diff --git a/if_stage.v b/if_stage.v
+index 5a629f9..e038638 100644
+--- a/if_stage.v
++++ b/if_stage.v
+@@ -10,6 +10,13 @@ module if_stage(
+     //to ds
+     output wire                         fs_to_ds_valid ,
+     output wire [`FS_TO_DS_BUS_WD -1:0] fs_to_ds_bus   ,
++    //excp
++    input  wire                         excp_flush       ,
++    input  wire                         ertn_flush       ,
++    input  wire                         refetch_flush    ,
++    input  wire [31:0]                  ws_pc            ,
++    input  wire [31:0]                  csr_eentry       ,
++    input  wire [31:0]                  csr_era          ,
+     // inst sram interface
+     output wire        inst_sram_en   ,
+     output wire [ 3:0] inst_sram_wen  ,
+@@ -23,6 +30,8 @@ wire        fs_ready_go;
+ wire        fs_allowin;
+ wire        to_fs_valid;
+ 
++wire flush_sign = excp_flush || ertn_flush || refetch_flush;
++
+ wire         br_taken_cancel;
+ wire         br_taken;
+ wire [ 31:0] br_target;
+@@ -38,11 +47,15 @@ wire [31:0] seq_pc;
+ wire [31:0] nextpc;
+ assign to_fs_valid  = ~reset;
+ assign seq_pc       = fs_pc + 3'h4;
+-assign nextpc       = br_taken ? br_target : seq_pc; 
++assign nextpc       = excp_flush                   ? csr_eentry :
++                      ertn_flush                   ? csr_era    :
++                      refetch_flush                ? ws_pc + 3'h4 :
++                      br_taken                     ? br_target  : 
++                                                     seq_pc; 
+ 
+ // IF stage
+ assign fs_ready_go    = 1'b1;
+-assign fs_allowin     = !fs_valid || fs_ready_go && ds_allowin;
++assign fs_allowin     = !fs_valid || fs_ready_go && ds_allowin || flush_sign;
+ assign fs_to_ds_valid =  fs_valid && fs_ready_go;
+ always @(posedge clk) begin
+     if (reset) begin
+@@ -51,7 +64,7 @@ always @(posedge clk) begin
+     else if (fs_allowin) begin
+         fs_valid <= to_fs_valid;
+     end
+-    else if (br_taken_cancel) begin
++    else if (br_taken_cancel || flush_sign) begin
+         fs_valid <= 1'b0;
+     end
+ 
+diff --git a/mem_stage.v b/mem_stage.v
+index 4544076..50c6c73 100644
+--- a/mem_stage.v
++++ b/mem_stage.v
+@@ -18,6 +18,11 @@ module mem_stage(
+     input  wire [31:0]     div_result    ,
+     input  wire [31:0]     mod_result    ,
+     input  wire [63:0]     mul_result    ,
++    //excp
++    input  wire            excp_flush    ,
++    input  wire            ertn_flush    ,
++    input  wire            refetch_flush ,
++    output wire            excp_out      ,
+     //from data sram
+     input  wire [31:0] data_sram_rdata
+ );
+@@ -25,6 +30,8 @@ module mem_stage(
+ reg         ms_valid;
+ wire        ms_ready_go;
+ 
++wire flush_sign = excp_flush || ertn_flush || refetch_flush;
++
+ reg [`ES_TO_MS_BUS_WD -1:0] es_to_ms_bus_r;
+ wire [ 3:0] ms_mul_div_op;
+ wire        ms_res_from_mem;
+@@ -35,7 +42,19 @@ wire [31:0] ms_pc;
+ wire [ 1:0] ms_mem_size;
+ wire        ms_mem_sign_ext;
+ wire [ 1:0] ms_addr_low;
+-assign {ms_mem_size    ,  //79:78
++wire [ 0:0] ms_excp_num;
++wire        ms_ertn;
++wire        ms_excp;
++wire        ms_csr_we;
++wire [13:0] ms_csr_waddr;
++wire [31:0] ms_csr_wdata;
++assign {ms_excp_num    ,  //129:129
++        ms_ertn        ,  //128:128
++        ms_excp        ,  //127:127
++        ms_csr_we      ,  //126:126
++        ms_csr_waddr   ,  //125:112
++        ms_csr_wdata   ,  //111:80
++        ms_mem_size    ,  //79:78
+         ms_mem_sign_ext,  //77:77
+         ms_addr_low    ,  //76:75
+         ms_mul_div_op  ,  //74:71
+@@ -48,8 +67,16 @@ assign {ms_mem_size    ,  //79:78
+ 
+ wire [31:0] mem_result;
+ wire [31:0] ms_final_result;
++wire        excp;
++wire [ 0:0] excp_num;
+ 
+-assign ms_to_ws_bus = {ms_gr_we       ,  //69:69
++assign ms_to_ws_bus = {excp_num       ,  //119:119
++                       ms_ertn        ,  //118:118
++                       excp           ,  //117:117
++                       ms_csr_we      ,  //116:116
++                       ms_csr_waddr   ,  //115:102
++                       ms_csr_wdata   ,  //101:70
++                       ms_gr_we       ,  //69:69
+                        ms_dest        ,  //68:64
+                        ms_final_result,  //63:32
+                        ms_pc             //31:0
+@@ -62,6 +89,9 @@ always @(posedge clk) begin
+     if (reset) begin
+         ms_valid <= 1'b0;
+     end
++    else if (flush_sign) begin
++        ms_valid <= 1'b0;
++    end
+     else if (ms_allowin) begin
+         ms_valid <= es_to_ms_valid;
+     end
+@@ -95,4 +125,10 @@ assign ms_final_result = ({32{ms_res_from_mem }}                  & mem_result
+ 
+ assign ms_to_ds_forward_bus = {ms_valid && ms_gr_we, ms_dest, ms_final_result};
+ 
++// excp
++assign excp     = ms_excp & ms_valid;
++assign excp_num = ms_excp_num;
++
++assign excp_out = ms_ertn && ms_valid || excp;
++
+ endmodule
+diff --git a/mycpu.h b/mycpu.h
+index f4880a1..b8075b7 100644
+--- a/mycpu.h
++++ b/mycpu.h
+@@ -3,9 +3,9 @@
+ 
+     `define BR_BUS_WD       34
+     `define FS_TO_DS_BUS_WD 64
+-    `define DS_TO_ES_BUS_WD 160
+-    `define ES_TO_MS_BUS_WD 80
+-    `define MS_TO_WS_BUS_WD 70
++    `define DS_TO_ES_BUS_WD 212
++    `define ES_TO_MS_BUS_WD 130
++    `define MS_TO_WS_BUS_WD 120
+     `define WS_TO_RF_BUS_WD 38
+     `define ES_TO_DS_FORWARD_BUS 39
+     `define MS_TO_DS_FORWARD_BUS 38
+diff --git a/mycpu_top.v b/mycpu_top.v
+index 92b2761..664470b 100644
+--- a/mycpu_top.v
++++ b/mycpu_top.v
+@@ -51,6 +51,25 @@ wire [31:0]  div_result;
+ wire [31:0]  mod_result;
+ wire [63:0]  mul_result;
+ 
++wire        excp_flush;
++wire        ertn_flush;
++wire        refetch_flush;
++wire        ms_excp;
++
++wire [13:0] csr_rd_addr   ;
++wire [31:0] csr_rd_data   ;
++wire        csr_wr_en     ;
++wire [13:0] csr_wr_addr   ;
++wire [31:0] csr_wr_data   ;
++
++wire [31:0] ws_csr_era    ;
++wire [ 8:0] ws_csr_esubcode;
++wire [ 5:0] ws_csr_ecode  ;
++wire [31:0] fs_csr_eentry ;
++wire [31:0] fs_csr_era    ;
++
++
++
+ // IF stage
+ if_stage if_stage(
+     .clk            (clk            ),
+@@ -62,6 +81,13 @@ if_stage if_stage(
+     //outputs
+     .fs_to_ds_valid (fs_to_ds_valid ),
+     .fs_to_ds_bus   (fs_to_ds_bus   ),
++    //excp
++    .excp_flush     (excp_flush     ),
++    .ertn_flush     (ertn_flush     ),
++    .refetch_flush  (refetch_flush  ),
++    .ws_pc          (ws_csr_era     ),
++    .csr_eentry     (fs_csr_eentry  ),
++    .csr_era        (fs_csr_era     ),
+     //inst sram interface
+     .inst_sram_en   (inst_sram_en   ),
+     .inst_sram_wen  (inst_sram_wen  ),
+@@ -89,7 +115,13 @@ id_stage id_stage(
+     //to fs
+     .br_bus         (br_bus         ),
+     //to rf: for write back
+-    .ws_to_rf_bus   (ws_to_rf_bus   )
++    .ws_to_rf_bus   (ws_to_rf_bus   ),
++    //excp
++    .excp_flush     (excp_flush     ),
++    .ertn_flush     (ertn_flush     ),
++    .refetch_flush  (refetch_flush  ),
++    .rd_csr_addr    (csr_rd_addr    ),
++    .rd_csr_data    (csr_rd_data    )
+ );
+ // EXE stage
+ exe_stage exe_stage(
+@@ -112,6 +144,11 @@ exe_stage exe_stage(
+     .es_rj_value          (es_rj_value         ),
+     .es_rkd_value         (es_rkd_value        ),
+     .div_complete         (div_complete        ),
++    //excp
++    .excp_flush     (excp_flush     ),
++    .ertn_flush     (ertn_flush     ),
++    .refetch_flush  (refetch_flush  ),
++    .ms_excp        (ms_excp        ),
+     //data sram interface
+     .data_sram_en   (data_sram_en   ),
+     .data_sram_we   (data_sram_we   ),
+@@ -159,6 +196,11 @@ mem_stage mem_stage(
+     .div_result           (div_result          ),
+     .mod_result           (mod_result          ),
+     .mul_result           (mul_result          ),
++    //excp
++    .excp_flush     (excp_flush     ),
++    .ertn_flush     (ertn_flush     ),
++    .refetch_flush  (refetch_flush  ),
++    .excp_out       (ms_excp        ),
+     //from data sram
+     .data_sram_rdata(data_sram_rdata)
+ );
+@@ -175,6 +217,16 @@ wb_stage wb_stage(
+     .ws_to_rf_bus   (ws_to_rf_bus   ),
+     //to ds
+     .ws_to_ds_forward_bus (ws_to_ds_forward_bus),
++    //excp
++    .csr_era        (ws_csr_era     ),
++    .csr_esubcode   (ws_csr_esubcode),
++    .csr_ecode      (ws_csr_ecode   ),
++    .excp_flush     (excp_flush     ),
++    .ertn_flush     (ertn_flush     ),
++    .refetch_flush  (refetch_flush  ),
++    .csr_wr_en      (csr_wr_en      ),
++    .wr_csr_addr    (csr_wr_addr    ),
++    .wr_csr_data    (csr_wr_data    ),
+     //trace debug interface
+     .debug_wb_pc      (debug_wb_pc      ),
+     .debug_wb_rf_we   (debug_wb_rf_we   ),
+@@ -182,4 +234,24 @@ wb_stage wb_stage(
+     .debug_wb_rf_wdata(debug_wb_rf_wdata)
+ );
+ 
++csr u_csr(
++    .clk         (clk            ),
++    .reset       (reset          ),
++    //from to ds 
++    .rd_addr     (csr_rd_addr    ),
++    .rd_data     (csr_rd_data    ),
++    //from ws  
++    .csr_wr_en   (csr_wr_en      ),
++    .wr_addr     (csr_wr_addr    ),
++    .wr_data     (csr_wr_data    ),
++    .excp_flush  (excp_flush     ),
++    .ertn_flush  (ertn_flush     ),
++    .era_in      (ws_csr_era     ),
++    .esubcode_in (ws_csr_esubcode),
++    .ecode_in    (ws_csr_ecode   ),
++    //to fs 
++    .eentry_out  (fs_csr_eentry  ),
++    .era_out     (fs_csr_era     )
++);
++
+ endmodule
+diff --git a/wb_stage.v b/wb_stage.v
+index 344cefc..d2a5a1d 100644
+--- a/wb_stage.v
++++ b/wb_stage.v
+@@ -12,6 +12,17 @@ module wb_stage(
+     output wire [`WS_TO_RF_BUS_WD -1:0]  ws_to_rf_bus  ,
+     //to ds
+     output  wire [`WS_TO_DS_FORWARD_BUS - 1:0] ws_to_ds_forward_bus,
++    //excp
++    output wire [31:0] csr_era                          ,
++    output wire [ 8:0] csr_esubcode                     ,
++    output wire [ 5:0] csr_ecode                        ,
++    output wire        excp_flush                       ,
++    output wire        ertn_flush                       ,
++    output wire        refetch_flush                    ,
++    //csr wr
++    output wire        csr_wr_en                        ,
++    output wire [13:0] wr_csr_addr                      ,
++    output wire [31:0] wr_csr_data                      ,
+     //trace debug interface
+     output wire [31:0] debug_wb_pc     ,
+     output wire [ 3:0] debug_wb_rf_we  ,
+@@ -22,12 +33,26 @@ module wb_stage(
+ reg         ws_valid;
+ wire        ws_ready_go;
+ 
++wire flush_sign = excp_flush || ertn_flush || refetch_flush;
++
+ reg [`MS_TO_WS_BUS_WD -1:0] ms_to_ws_bus_r;
+ wire        ws_gr_we;
+ wire [ 4:0] ws_dest;
+ wire [31:0] ws_final_result;
+ wire [31:0] ws_pc;
+-assign {ws_gr_we       ,  //69:69
++wire [ 0:0] ws_excp_num;
++wire        ws_ertn;
++wire        ws_excp;
++wire        ws_csr_we;
++wire [13:0] ws_csr_waddr;
++wire [31:0] ws_csr_wdata;
++assign {ws_excp_num    ,  //119:119
++        ws_ertn        ,  //118:118
++        ws_excp        ,  //117:117
++        ws_csr_we      ,  //116:116
++        ws_csr_waddr   ,  //115:102
++        ws_csr_wdata   ,  //101:70
++        ws_gr_we       ,  //69:69
+         ws_dest        ,  //68:64
+         ws_final_result,  //63:32
+         ws_pc             //31:0
+@@ -47,6 +72,9 @@ always @(posedge clk) begin
+     if (reset) begin
+         ws_valid <= 1'b0;
+     end
++    else if (flush_sign) begin
++        ws_valid <= 1'b0;
++    end
+     else if (ws_allowin) begin
+         ws_valid <= ms_to_ws_valid;
+     end
+@@ -56,12 +84,23 @@ always @(posedge clk) begin
+     end
+ end
+ 
+-assign rf_we    = ws_gr_we && ws_valid;
++assign rf_we    = ws_gr_we && ws_valid && !ws_excp;
+ assign rf_waddr = ws_dest;
+ assign rf_wdata = ws_final_result;
+ 
+ assign ws_to_ds_forward_bus = {ws_valid && ws_gr_we, ws_dest, ws_final_result};
+ 
++// excp
++assign csr_era      = ws_pc;
++assign csr_esubcode = 9'b0;
++assign csr_ecode    = ws_excp_num[0] ? {`ECODE_SYS} : 6'b0;
++assign excp_flush   = ws_excp && ws_valid;
++assign ertn_flush   = ws_ertn && ws_valid;
++assign refetch_flush= ws_csr_we && ws_valid && !ws_excp;
++assign csr_wr_en    = ws_csr_we && ws_valid && !ws_excp;
++assign wr_csr_addr  = ws_csr_waddr;
++assign wr_csr_data  = ws_csr_wdata; 
++
+ // debug info generate
+ assign debug_wb_pc       = ws_pc;
+ assign debug_wb_rf_we    = {4{rf_we}};
+-- 
+2.34.1
+

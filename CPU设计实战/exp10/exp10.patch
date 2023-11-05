@@ -1,0 +1,820 @@
+From 60e83f1ed1c454bb126417529d657ec0a131bea7 Mon Sep 17 00:00:00 2001
+From: liangliang678 <wujunliang@loongson.cn>
+Date: Thu, 6 Jul 2023 10:57:33 +0800
+Subject: [PATCH] exp10
+
+---
+ alu.v       |  14 +++-
+ div.v       |  92 ++++++++++++++++++++++++
+ exe_stage.v |  27 ++++++--
+ id_stage.v  | 125 +++++++++++++++++++++++++++++----
+ mem_stage.v |  15 +++-
+ mul.v       | 196 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ mycpu.h     |   4 +-
+ mycpu_top.v |  41 +++++++++++
+ 8 files changed, 487 insertions(+), 27 deletions(-)
+ create mode 100644 div.v
+ create mode 100644 mul.v
+
+diff --git a/alu.v b/alu.v
+index fba881b..cbaf950 100644
+--- a/alu.v
++++ b/alu.v
+@@ -1,5 +1,5 @@
+ module alu(
+-  input  wire [11:0] alu_op,
++  input  wire [13:0] alu_op,
+   input  wire [31:0] alu_src1,
+   input  wire [31:0] alu_src2,
+   output wire [31:0] alu_result
+@@ -17,6 +17,8 @@ wire op_sll;   //logic left shift
+ wire op_srl;   //logic right shift
+ wire op_sra;   //arithmetic right shift
+ wire op_lui;   //Load Upper Immediate
++wire op_andn;  //bitwise andn
++wire op_orn;   //bitwise orn
+ 
+ // control code decomposition
+ assign op_add  = alu_op[ 0];
+@@ -31,6 +33,8 @@ assign op_sll  = alu_op[ 8];
+ assign op_srl  = alu_op[ 9];
+ assign op_sra  = alu_op[10];
+ assign op_lui  = alu_op[11];
++assign op_andn = alu_op[12];
++assign op_orn  = alu_op[13];
+ 
+ wire [31:0] add_sub_result;
+ wire [31:0] slt_result;
+@@ -43,6 +47,8 @@ wire [31:0] lui_result;
+ wire [31:0] sll_result;
+ wire [63:0] sr64_result;
+ wire [31:0] sr_result;
++wire [31:0] andn_result;
++wire [31:0] orn_result;
+ 
+ // 32-bit adder
+ wire [31:0] adder_a;
+@@ -74,6 +80,8 @@ assign or_result  = alu_src1 | alu_src2;
+ assign nor_result = ~or_result;
+ assign xor_result = alu_src1 ^ alu_src2;
+ assign lui_result = alu_src2;
++assign andn_result= alu_src1 & ~alu_src2;
++assign orn_result = alu_src1 | ~alu_src2;
+ 
+ // SLL result
+ assign sll_result = alu_src1 << alu_src2[4:0];   //rj << i5
+@@ -92,6 +100,8 @@ assign alu_result = ({32{op_add|op_sub}} & add_sub_result)
+                   | ({32{op_xor       }} & xor_result)
+                   | ({32{op_lui       }} & lui_result)
+                   | ({32{op_sll       }} & sll_result)
+-                  | ({32{op_srl|op_sra}} & sr_result);
++                  | ({32{op_srl|op_sra}} & sr_result)
++                  | ({32{op_andn      }} & andn_result)
++                  | ({32{op_orn       }} & orn_result);                
+ 
+ endmodule
+diff --git a/div.v b/div.v
+new file mode 100644
+index 0000000..91f3939
+--- /dev/null
++++ b/div.v
+@@ -0,0 +1,92 @@
++//x/y   //执行需要34个周期
++module div(
++    input  wire div_clk, reset,
++    input  wire div,
++    input  wire div_signed,
++    input  wire [31:0] x, y,
++    output wire [31:0] s, r,
++    output wire complete
++);
++
++reg [32:0] UnsignS;
++reg [32:0] UnsignR;
++reg [32:0] tmp_r;
++reg [7:0] count;
++wire [32:0] tmp_d;
++wire [32:0] result_r;
++wire [32:0] UnsignX, UnsignY;
++
++reg  div_signed_buffer; 
++reg  x_31_buffer;
++reg  y_31_buffer;
++wire real_div_signed;
++wire real_x_31;
++wire real_y_31;
++wire complete_delay;
++wire real_complete;
++
++assign complete_delay = (count == 8'hf0);
++assign real_complete = complete_delay || complete;
++
++always @(posedge div_clk) begin 
++    if (reset) begin 
++        div_signed_buffer <= 1'b0;
++        x_31_buffer <= 1'b0;
++        y_31_buffer <= 1'b0;
++    end 
++    else if (div) begin 
++        div_signed_buffer <= div_signed;   //when div inst go to ms, div_signed will be changed. so buffer it.
++        x_31_buffer <= x[31];
++        y_31_buffer <= y[31];
++    end
++end
++
++assign real_div_signed = real_complete ? div_signed_buffer : div_signed;
++assign real_x_31 = real_complete ? x_31_buffer : x[31];
++assign real_y_31 = real_complete ? y_31_buffer : y[31];
++
++assign UnsignX = {1'b0, (real_div_signed ? (x[31] ? (~x + 1) : x) : x)}; //取绝对值并扩展至33位
++assign UnsignY = {1'b0, (real_div_signed ? (y[31] ? (~y + 1) : y) : y)};
++
++always @(posedge div_clk) begin  //33位除法计算
++    if (reset || ~div || complete_delay) begin
++        count <= 8'd32;     //计算33次
++        tmp_r <= 33'b0;
++    end
++    else if (~(count[7])) begin
++        if (tmp_d[32]) begin    //tmp_d为负数
++            UnsignS <= {UnsignS[31:0], 1'b0};
++            tmp_r <= result_r;
++        end 
++        else begin
++            UnsignS <= {UnsignS[31:0], 1'b1};
++            tmp_r <= tmp_d;
++        end
++        count <= count - 8'd1;
++    end
++    else begin
++        UnsignR <= tmp_r;
++        count   <= 8'hf0; //complete signal only maintain one clock
++    end
++end
++
++assign complete = (count == 8'hff);//chenji
++
++assign result_r = {tmp_r[31:0], UnsignX[count]};
++assign tmp_d = result_r - UnsignY;
++
++wire [32:0] TmpS, TmpR;
++assign TmpS = (real_div_signed ? ((real_x_31 == real_y_31) ? UnsignS : ~(UnsignS - 1)) : UnsignS); //去绝对值并截位
++assign TmpR = (real_div_signed ? (real_x_31 ? ~(UnsignR - 1) : UnsignR) : UnsignR);
++
++assign s = TmpS[31:0];
++assign r = TmpR[31:0];
++
++endmodule
++
++//表达式的符号关系
++//x[31]  y[31]  s[31]  r[31]
++//  0      0      0      0
++//  0      1      1      0
++//  1      0      1      1
++//  1      1      0      1
+diff --git a/exe_stage.v b/exe_stage.v
+index f6927a2..1f7d7ed 100644
+--- a/exe_stage.v
++++ b/exe_stage.v
+@@ -14,6 +14,12 @@ module exe_stage(
+     output wire [`ES_TO_MS_BUS_WD -1:0] es_to_ms_bus  ,
+     //to ds
+     output wire [`ES_TO_DS_FORWARD_BUS - 1:0] es_to_ds_forward_bus,
++    //div_mul
++    output wire        es_div_enable   ,
++    output wire        es_mul_div_sign ,
++    output wire [31:0] es_rj_value     ,
++    output wire [31:0] es_rkd_value    ,
++    input  wire        div_complete    ,
+     // data sram interface
+     output wire        data_sram_en   ,
+     output wire [ 3:0] data_sram_we   ,
+@@ -25,7 +31,8 @@ reg         es_valid      ;
+ wire        es_ready_go   ;
+ 
+ reg  [`DS_TO_ES_BUS_WD -1:0] ds_to_es_bus_r;
+-wire [11:0] es_alu_op      ;
++wire [13:0] es_alu_op      ;
++wire [ 3:0] es_mul_div_op  ;
+ wire        es_res_from_mem;
+ wire        es_src1_is_pc  ;
+ wire        es_src2_is_imm ;
+@@ -37,7 +44,9 @@ wire [31:0] es_rj_value    ;
+ wire [31:0] es_rkd_value   ;
+ wire [31:0] es_pc          ;
+ 
+-assign {es_alu_op      ,  //149:138
++assign {es_alu_op      ,  //156:143
++        es_mul_div_op  ,  //142:139
++        es_mul_div_sign,  //138:138
+         es_res_from_mem,  //137:137
+         es_src1_is_pc  ,  //136:136
+         es_src2_is_imm ,  //135:135
+@@ -54,14 +63,15 @@ wire [31:0] es_alu_src1   ;
+ wire [31:0] es_alu_src2   ;
+ wire [31:0] es_alu_result ;
+ 
+-assign es_to_ms_bus = {es_res_from_mem,  //70:70
++assign es_to_ms_bus = {es_mul_div_op  ,  //74:71
++                       es_res_from_mem,  //70:70
+                        es_gr_we       ,  //69:69
+                        es_dest        ,  //68:64
+                        es_alu_result  ,  //63:32
+                        es_pc             //31:0
+                       };
+ 
+-assign es_ready_go    = 1'b1;
++assign es_ready_go    = !div_stall;
+ assign es_allowin     = !es_valid || es_ready_go && ms_allowin;
+ assign es_to_ms_valid =  es_valid && es_ready_go;
+ always @(posedge clk) begin
+@@ -77,7 +87,7 @@ always @(posedge clk) begin
+     end
+ end
+ 
+-// alu
++// alu mul div
+ assign es_alu_src1 = es_src1_is_pc  ? es_pc[31:0] : 
+                                       es_rj_value;
+                                       
+@@ -91,7 +101,12 @@ alu u_alu(
+     .alu_result (es_alu_result)
+ );
+ 
+-wire dep_need_stall = es_valid && es_res_from_mem;
++assign es_div_enable = (es_mul_div_op[2] | es_mul_div_op[3]) & es_valid;
++assign es_mul_enable = (es_mul_div_op[0] | es_mul_div_op[1]) & es_valid;
++
++assign div_stall     = es_div_enable & ~div_complete;
++
++wire dep_need_stall = es_valid && (es_res_from_mem | es_div_enable | es_mul_enable);
+ assign es_to_ds_forward_bus = {dep_need_stall, es_valid && es_gr_we, es_dest, es_alu_result};
+ 
+ assign data_sram_en    = (es_res_from_mem || es_mem_we) && es_valid;
+diff --git a/id_stage.v b/id_stage.v
+index 0702715..7d5b292 100644
+--- a/id_stage.v
++++ b/id_stage.v
+@@ -41,7 +41,9 @@ assign {rf_we   ,  //37:37
+        } = ws_to_rf_bus;
+ 
+ // control signals
+-wire [11:0] alu_op;
++wire [13:0] alu_op;
++wire [ 3:0] mul_div_op;
++wire        mul_div_sign;
+ wire        src1_is_pc;
+ wire        src2_is_imm;
+ wire        res_from_mem;
+@@ -51,6 +53,7 @@ wire        mem_we;
+ wire        src_reg_is_rd;
+ wire [4: 0] dest;
+ wire        need_ui5;
++wire        need_ui12;
+ wire        need_si12;
+ wire        need_si16;
+ wire        need_si20;
+@@ -84,12 +87,31 @@ wire        inst_nor;
+ wire        inst_and;    
+ wire        inst_or;     
+ wire        inst_xor;
++wire        inst_andn;
++wire        inst_orn;
++wire        inst_sll_w;
++wire        inst_srl_w;
++wire        inst_sra_w;   
++wire        inst_mul_w;
++wire        inst_mulh_w;
++wire        inst_mulh_wu;
++wire        inst_div_w;
++wire        inst_mod_w;
++wire        inst_div_wu;
++wire        inst_mod_wu;
+ 
+ wire        inst_addi_w; 
++wire        inst_slti;
++wire        inst_sltui;
++wire        inst_andi;
++wire        inst_ori;
++wire        inst_xori;
+ wire        inst_slli_w;  
+ wire        inst_srli_w;  
+ wire        inst_srai_w;  
+ wire        inst_lu12i_w;
++wire        inst_pcaddi;
++wire        inst_pcaddu12i;
+ 
+ wire        inst_jirl;   
+ wire        inst_b;      
+@@ -151,7 +173,9 @@ wire [31:0] jirl_offs;
+ wire [31:0] br_target;
+ assign br_bus       = {br_taken_cancel,br_taken,br_target};
+ 
+-assign ds_to_es_bus = {alu_op      ,  //149:138
++assign ds_to_es_bus = {alu_op      ,  //156:143
++                       mul_div_op  ,  //142:139
++                       mul_div_sign,  //138:138
+                        res_from_mem,  //137:137
+                        src1_is_pc  ,  //136:136
+                        src2_is_imm ,  //135:135
+@@ -212,12 +236,31 @@ assign inst_nor        = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1]
+ assign inst_and        = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h09];
+ assign inst_or         = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0a];
+ assign inst_xor        = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0b];
++assign inst_andn       = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0d];
++assign inst_orn        = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0c];
++assign inst_sll_w      = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0e];
++assign inst_srl_w      = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0f];
++assign inst_sra_w      = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h10];
++assign inst_mul_w      = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h18];
++assign inst_mulh_w     = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h19];
++assign inst_mulh_wu    = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h1a];
++assign inst_div_w      = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h00];
++assign inst_mod_w      = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h01];
++assign inst_div_wu     = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h02];
++assign inst_mod_wu     = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h03];
+ 
+ assign inst_addi_w     = op_31_26_d[6'h00] & op_25_22_d[4'ha];
++assign inst_slti       = op_31_26_d[6'h00] & op_25_22_d[4'h8];
++assign inst_sltui      = op_31_26_d[6'h00] & op_25_22_d[4'h9];
++assign inst_andi       = op_31_26_d[6'h00] & op_25_22_d[4'hd];
++assign inst_ori        = op_31_26_d[6'h00] & op_25_22_d[4'he];
++assign inst_xori       = op_31_26_d[6'h00] & op_25_22_d[4'hf];
+ assign inst_slli_w     = op_31_26_d[6'h00] & op_25_22_d[4'h1] & op_21_20_d[2'h0] & op_19_15_d[5'h01];
+ assign inst_srli_w     = op_31_26_d[6'h00] & op_25_22_d[4'h1] & op_21_20_d[2'h0] & op_19_15_d[5'h09];
+ assign inst_srai_w     = op_31_26_d[6'h00] & op_25_22_d[4'h1] & op_21_20_d[2'h0] & op_19_15_d[5'h11];
+ assign inst_lu12i_w    = op_31_26_d[6'h05] & ~ds_inst[25];
++assign inst_pcaddi     = op_31_26_d[6'h06] & ~ds_inst[25];
++assign inst_pcaddu12i  = op_31_26_d[6'h07] & ~ds_inst[25];
+ 
+ assign inst_jirl       = op_31_26_d[6'h13];
+ assign inst_b          = op_31_26_d[6'h14];
+@@ -231,29 +274,48 @@ assign inst_st_w       = op_31_26_d[6'h0a] & op_25_22_d[4'h6];
+ // control signals
+ assign alu_op[ 0] = inst_add_w    |
+                     inst_addi_w   |
++                    inst_pcaddi   |
++                    inst_pcaddu12i|
+                     inst_jirl     | 
+                     inst_bl       |                    
+                     inst_ld_w     |
+                     inst_st_w     ;
+ assign alu_op[ 1] = inst_sub_w;
+-assign alu_op[ 2] = inst_slt;
+-assign alu_op[ 3] = inst_sltu;
+-assign alu_op[ 4] = inst_and;
++assign alu_op[ 2] = inst_slt   | inst_slti;
++assign alu_op[ 3] = inst_sltu  | inst_sltui;
++assign alu_op[ 4] = inst_and   | inst_andi;
+ assign alu_op[ 5] = inst_nor;
+-assign alu_op[ 6] = inst_or;
+-assign alu_op[ 7] = inst_xor;
+-assign alu_op[ 8] = inst_slli_w;
+-assign alu_op[ 9] = inst_srli_w;
+-assign alu_op[10] = inst_srai_w;
++assign alu_op[ 6] = inst_or    | inst_ori;
++assign alu_op[ 7] = inst_xor   | inst_xori;
++assign alu_op[ 8] = inst_sll_w | inst_slli_w;
++assign alu_op[ 9] = inst_srl_w | inst_srli_w;
++assign alu_op[10] = inst_sra_w | inst_srai_w;
+ assign alu_op[11] = inst_lu12i_w;
++assign alu_op[12] = inst_andn;
++assign alu_op[13] = inst_orn;
++
++assign mul_div_op[ 0] = inst_mul_w;
++assign mul_div_op[ 1] = inst_mulh_w | inst_mulh_wu;
++assign mul_div_op[ 2] = inst_div_w  | inst_div_wu;
++assign mul_div_op[ 3] = inst_mod_w  | inst_mod_wu;
++assign mul_div_sign  = inst_mul_w | inst_mulh_w | inst_div_w | inst_mod_w;
+ 
+ assign src1_is_pc    = inst_jirl   | 
+-                       inst_bl     ;
++                       inst_bl     | 
++                       inst_pcaddi | 
++                       inst_pcaddu12i;
+ assign src2_is_imm   = inst_addi_w    |
++                       inst_slti      |
++                       inst_sltui     |
++                       inst_andi      |
++                       inst_ori       |
++                       inst_xori      |
+                        inst_slli_w    | 
+                        inst_srli_w    |
+                        inst_srai_w    |
+                        inst_lu12i_w   |
++                       inst_pcaddi    |
++                       inst_pcaddu12i |
+                        inst_jirl      |
+                        inst_bl        |
+                        inst_ld_w      |
+@@ -272,22 +334,30 @@ assign dest       = dst_is_r1 ? 5'd1 : rd;
+ assign need_ui5   = inst_slli_w |
+                     inst_srli_w | 
+                     inst_srai_w ;
++assign need_ui12  = inst_andi | 
++                    inst_ori  | 
++                    inst_xori ;
+ assign need_si12  = inst_addi_w |     
++                    inst_slti   | 
++                    inst_sltui  | 
+                     inst_ld_w   |
+                     inst_st_w   ;
+ assign need_si16  = inst_jirl |
+                     inst_beq  | 
+                     inst_bne  ;
+-assign need_si20  = inst_lu12i_w;
++assign need_si20  = inst_lu12i_w | 
++                    inst_pcaddu12i;
+ assign need_si26  = inst_b |
+                     inst_bl;
+ assign src2_is_4  = inst_jirl | 
+                     inst_bl   ;
+ 
+ // reg & imm value
+-assign ds_imm = src2_is_4 ? 32'h4                      :
+-		        need_si20 ? {i20[19:0], 12'b0}         :
+-  /*need_ui5 || need_si12*/ {{20{i12[11]}}, i12[11:0]} ;
++assign ds_imm = {32{src2_is_4   }} &  32'h4       | 
++                {32{need_ui5    }} & {{20{i12[11]}}, i12[11:0]} |
++                {32{need_si12   }} & {{20{i12[11]}}, i12[11:0]} |
++                {32{need_ui12   }} & {20'b0, i12} |
++		        {32{need_si20   }} & {i20[19:0], 12'b0};
+ 
+ assign rf_raddr1 = rj;
+ assign rf_raddr2 = src_reg_is_rd ? rd :rk;
+@@ -311,7 +381,22 @@ assign inst_need_rj  =  inst_add_w  |
+                         inst_and    |
+                         inst_or     |
+                         inst_xor    |
++                        inst_sll_w  |
++                        inst_srl_w  |
++                        inst_sra_w  |
++                        inst_mul_w  |
++                        inst_mulh_w |
++                        inst_mulh_wu|
++                        inst_div_w  |
++                        inst_div_wu |
++                        inst_mod_w  |
++                        inst_mod_wu |
+                         inst_addi_w |
++                        inst_slti   |
++                        inst_sltui  |
++                        inst_andi   |
++                        inst_ori    |
++                        inst_xori   |  
+                         inst_slli_w |
+                         inst_srli_w |
+                         inst_srai_w |                      
+@@ -328,6 +413,16 @@ assign inst_need_rkd =  inst_add_w  |
+                         inst_and    |
+                         inst_or     |
+                         inst_xor    |
++                        inst_sll_w  |
++                        inst_srl_w  |
++                        inst_sra_w  |
++                        inst_mul_w  |
++                        inst_mulh_w |
++                        inst_mulh_wu|
++                        inst_div_w  |
++                        inst_div_wu |
++                        inst_mod_w  |
++                        inst_mod_wu |
+                         inst_beq    |
+                         inst_bne    |
+                         inst_st_w   ;
+diff --git a/mem_stage.v b/mem_stage.v
+index b22760e..4b32381 100644
+--- a/mem_stage.v
++++ b/mem_stage.v
+@@ -14,6 +14,10 @@ module mem_stage(
+     output wire [`MS_TO_WS_BUS_WD -1:0] ms_to_ws_bus  ,
+     //to ds
+     output  wire [`ES_TO_DS_FORWARD_BUS - 1:0] ms_to_ds_forward_bus,
++    //div mul
++    input  wire [31:0]     div_result    ,
++    input  wire [31:0]     mod_result    ,
++    input  wire [63:0]     mul_result    ,
+     //from data sram
+     input  wire [31:0] data_sram_rdata
+ );
+@@ -22,12 +26,14 @@ reg         ms_valid;
+ wire        ms_ready_go;
+ 
+ reg [`ES_TO_MS_BUS_WD -1:0] es_to_ms_bus_r;
++wire [ 3:0] ms_mul_div_op;
+ wire        ms_res_from_mem;
+ wire        ms_gr_we;
+ wire [ 4:0] ms_dest;
+ wire [31:0] ms_alu_result;
+ wire [31:0] ms_pc;
+-assign {ms_res_from_mem,  //70:70
++assign {ms_mul_div_op  ,  //74:71
++        ms_res_from_mem,  //70:70
+         ms_gr_we       ,  //69:69
+         ms_dest        ,  //68:64
+         ms_alu_result  ,  //63:32
+@@ -61,7 +67,12 @@ end
+ 
+ assign mem_result = data_sram_rdata;
+ 
+-assign ms_final_result = ms_res_from_mem ? mem_result : ms_alu_result;
++assign ms_final_result = ({32{ms_res_from_mem }}                  & mem_result       )  |
++                         ({32{ms_mul_div_op[0]}}                  & mul_result[31: 0])  |
++                         ({32{ms_mul_div_op[1]}}                  & mul_result[63:32])  |
++                         ({32{ms_mul_div_op[2]}}                  & div_result       )  |
++                         ({32{ms_mul_div_op[3]}}                  & mod_result       )  |
++                         ({32{!ms_mul_div_op & !ms_res_from_mem}} & ms_alu_result);
+ 
+ assign ms_to_ds_forward_bus = {ms_valid && ms_gr_we, ms_dest, ms_final_result};
+ 
+diff --git a/mul.v b/mul.v
+new file mode 100644
+index 0000000..1ab8bb7
+--- /dev/null
++++ b/mul.v
+@@ -0,0 +1,196 @@
++module YDecoder(
++    input  wire yc, yb, ya, //c -> i+1; b -> i; a -> i-1
++    output wire negx, x, neg2x, _2x
++);
++
++assign negx = (yc & yb & ~ya) | (yc & ~yb & ya);
++assign x = (~yc & ~yb & ya) | (~yc & yb & ~ya);
++assign neg2x = (yc & ~yb & ~ya);
++assign _2x = (~yc & yb & ya);
++
++endmodule
++
++
++module BoothBase(
++    input  wire negx, x, neg2x, _2x,
++    input  wire InX,
++    input  wire PosLastX, NegLastX,
++    output wire PosNextX, NegNextX,
++    output wire OutX
++);
++
++assign OutX = (negx & ~InX) | (x & InX) | (neg2x & NegLastX) | (_2x & PosLastX);
++assign PosNextX = InX;
++assign NegNextX = ~InX;
++
++endmodule
++
++
++module BoothInterBase(
++    input  wire [2:0] y,
++    input  wire [63:0] InX,
++    output wire [63:0] OutX,
++    output wire Carry
++);
++
++wire negx, x, neg2x, _2x;
++wire [1:0] CarrySig [64:0];
++
++YDecoder uu(.yc(y[2]), .yb(y[1]), .ya(y[0]), .negx(negx), .x(x), .neg2x(neg2x), ._2x(_2x));
++
++BoothBase fir(.negx(negx), .x(x), .neg2x(neg2x), ._2x(_2x), .InX(InX[0]), .PosLastX(1'b0), .NegLastX(1'b1), .PosNextX(CarrySig[1][0]), .NegNextX(CarrySig[1][1]), .OutX(OutX[0]));
++
++generate
++    genvar i;
++    for (i=1; i<64; i=i+1) begin: gfor
++        BoothBase ui(
++            .negx(negx),
++            .x(x),
++            .neg2x(neg2x),
++            ._2x(_2x),
++            .InX(InX[i]),
++            .PosLastX(CarrySig[i][0]),
++            .NegLastX(CarrySig[i][1]),
++            .PosNextX(CarrySig[i+1][0]),
++            .NegNextX(CarrySig[i+1][1]),
++            .OutX(OutX[i])
++        );
++    end
++endgenerate
++
++assign Carry = negx || neg2x;
++
++endmodule
++
++
++module addr(
++    input  wire A, B, C,
++    output wire Carry, S
++);
++
++assign S = ~A & ~B & C | ~A & B & ~C | A & ~B & ~C | A & B & C;
++assign Carry = A & B | A & C | B & C;
++
++endmodule
++
++module WallaceTreeBase(
++    input  wire [16:0] InData,
++    input  wire [13:0] CIn,
++    output wire [13:0] COut,
++    output wire C, S
++);
++
++//first stage
++wire [4:0] FirSig;
++addr first1(.A(InData[4]), .B(InData[3]), .C(InData[2]), .Carry(COut[0]), .S(FirSig[0]));
++addr first2(.A(InData[7]), .B(InData[6]), .C(InData[5]), .Carry(COut[1]), .S(FirSig[1]));
++addr first3(.A(InData[10]), .B(InData[9]), .C(InData[8]), .Carry(COut[2]), .S(FirSig[2]));
++addr first4(.A(InData[13]), .B(InData[12]), .C(InData[11]), .Carry(COut[3]), .S(FirSig[3]));
++addr first5(.A(InData[16]), .B(InData[15]), .C(InData[14]), .Carry(COut[4]), .S(FirSig[4]));
++
++//second stage
++wire [3:0] SecSig;
++addr second1(.A(CIn[2]), .B(CIn[1]), .C(CIn[0]), .Carry(COut[5]), .S(SecSig[0]));
++addr second2(.A(InData[0]), .B(CIn[4]), .C(CIn[3]), .Carry(COut[6]), .S(SecSig[1]));
++addr second3(.A(FirSig[1]), .B(FirSig[0]), .C(InData[1]), .Carry(COut[7]), .S(SecSig[2]));
++addr second4(.A(FirSig[4]), .B(FirSig[3]), .C(FirSig[2]), .Carry(COut[8]), .S(SecSig[3]));
++
++//third stage
++wire [1:0] ThiSig;
++addr third1(.A(SecSig[0]), .B(CIn[6]), .C(CIn[5]), .Carry(COut[9]), .S(ThiSig[0]));
++addr third2(.A(SecSig[3]), .B(SecSig[2]), .C(SecSig[1]), .Carry(COut[10]), .S(ThiSig[1]));
++
++//fourth stage
++wire [1:0] ForSig;
++addr fourth1(.A(CIn[9]), .B(CIn[8]), .C(CIn[7]), .Carry(COut[11]), .S(ForSig[0]));
++addr fourth2(.A(ThiSig[1]), .B(ThiSig[0]), .C(CIn[10]), .Carry(COut[12]), .S(ForSig[1]));
++
++//fifth stage
++wire FifSig;
++addr fifth1(.A(ForSig[1]), .B(ForSig[0]), .C(CIn[11]), .Carry(COut[13]), .S(FifSig));
++
++//sixth stage
++addr sixth1(.A(FifSig), .B(CIn[13]), .C(CIn[12]), .Carry(C), .S(S));
++
++endmodule
++
++//-------------------------------------------------------------------------------------------------------------------
++
++module mul(
++    input  wire mul_clk, reset,
++    input  wire mul_signed,
++    input  wire [31:0] x, y, //x扩展至64位 y扩展至33位 区别有无符号
++    output wire [63:0] result
++);
++
++wire [63:0] CalX;
++wire [32:0] CalY;
++
++assign CalX = mul_signed ? {{32{x[31]}}, x} : {32'b0, x};
++assign CalY = mul_signed ? {y[31], y} : {1'b0, y};
++
++//booth
++wire [16:0] Carry; //booth计算得到的进位
++wire [63:0] BoothRes [16:0]; //booth的计算结果
++BoothInterBase fir(.y({CalY[1], CalY[0], 1'b0}), .InX(CalX), .OutX(BoothRes[0]), .Carry(Carry[0]));
++
++generate
++    genvar i;
++    for (i=2; i<32; i=i+2) begin: boothfor
++        BoothInterBase ai(
++            .y(CalY[i+1:i-1]),
++            .InX(CalX<<i),
++            .OutX(BoothRes[i>>1]),
++            .Carry(Carry[i>>1])
++        );
++    end
++endgenerate
++
++BoothInterBase las(.y({CalY[32], CalY[32], CalY[31]}), .InX(CalX<<32), .OutX(BoothRes[16]), .Carry(Carry[16]));
++
++reg [16:0] SecStageCarry;
++reg [63:0] SecStageBoothRes [16:0];
++integer p;
++ 
++always @(posedge mul_clk) begin
++    if (~reset) begin
++        SecStageCarry <= Carry;
++        for(p=0; p<17; p=p+1) begin
++            SecStageBoothRes[p] <= BoothRes[p];
++        end 
++    end
++end
++
++//wallace
++wire [13:0] WallaceInter [64:0] /*verilator split_var*/;
++wire [63:0] COut, SOut;
++
++WallaceTreeBase firs(
++            .InData({SecStageBoothRes[0][0], SecStageBoothRes[1][0], SecStageBoothRes[2][0], SecStageBoothRes[3][0], SecStageBoothRes[4][0], SecStageBoothRes[5][0], SecStageBoothRes[6][0],
++            SecStageBoothRes[7][0], SecStageBoothRes[8][0], SecStageBoothRes[9][0], SecStageBoothRes[10][0], SecStageBoothRes[11][0], SecStageBoothRes[12][0], SecStageBoothRes[13][0], SecStageBoothRes[14][0],
++            SecStageBoothRes[15][0], SecStageBoothRes[16][0]}),
++            .CIn(SecStageCarry[13:0]),
++            .COut(WallaceInter[1]),
++            .C(COut[0]),
++            .S(SOut[0])
++        );
++
++generate
++    genvar n;
++    for (n=1; n<64; n=n+1) begin: wallacefor
++        WallaceTreeBase bi(
++            .InData({SecStageBoothRes[0][n], SecStageBoothRes[1][n], SecStageBoothRes[2][n], SecStageBoothRes[3][n], SecStageBoothRes[4][n], SecStageBoothRes[5][n], SecStageBoothRes[6][n],
++            SecStageBoothRes[7][n], SecStageBoothRes[8][n], SecStageBoothRes[9][n], SecStageBoothRes[10][n], SecStageBoothRes[11][n], SecStageBoothRes[12][n], SecStageBoothRes[13][n], SecStageBoothRes[14][n],
++            SecStageBoothRes[15][n], SecStageBoothRes[16][n]}),
++            .CIn(WallaceInter[n]),
++            .COut(WallaceInter[n+1]),
++            .C(COut[n]),
++            .S(SOut[n])
++        );
++    end
++endgenerate
++
++//64bit add
++assign result = SOut + {COut[62:0], SecStageCarry[14]} + SecStageCarry[15];
++
++endmodule
+diff --git a/mycpu.h b/mycpu.h
+index 79ff114..aa3425d 100644
+--- a/mycpu.h
++++ b/mycpu.h
+@@ -3,8 +3,8 @@
+ 
+     `define BR_BUS_WD       34
+     `define FS_TO_DS_BUS_WD 64
+-    `define DS_TO_ES_BUS_WD 150
+-    `define ES_TO_MS_BUS_WD 71
++    `define DS_TO_ES_BUS_WD 157
++    `define ES_TO_MS_BUS_WD 75
+     `define MS_TO_WS_BUS_WD 70
+     `define WS_TO_RF_BUS_WD 38
+     `define ES_TO_DS_FORWARD_BUS 39
+diff --git a/mycpu_top.v b/mycpu_top.v
+index 06a1610..92b2761 100644
+--- a/mycpu_top.v
++++ b/mycpu_top.v
+@@ -42,6 +42,15 @@ wire [`ES_TO_DS_FORWARD_BUS - 1:0] es_to_ds_forward_bus;
+ wire [`MS_TO_DS_FORWARD_BUS - 1:0] ms_to_ds_forward_bus;
+ wire [`WS_TO_DS_FORWARD_BUS - 1:0] ws_to_ds_forward_bus;
+ 
++wire         es_div_enable;
++wire         es_mul_div_sign;
++wire [31:0]  es_rj_value;
++wire [31:0]  es_rkd_value;
++wire         div_complete;
++wire [31:0]  div_result;
++wire [31:0]  mod_result;
++wire [63:0]  mul_result;
++
+ // IF stage
+ if_stage if_stage(
+     .clk            (clk            ),
+@@ -97,12 +106,40 @@ exe_stage exe_stage(
+     .es_to_ms_bus   (es_to_ms_bus   ),
+     //to ds
+     .es_to_ds_forward_bus (es_to_ds_forward_bus),
++    //div_mul
++    .es_div_enable        (es_div_enable       ),
++    .es_mul_div_sign      (es_mul_div_sign     ),
++    .es_rj_value          (es_rj_value         ),
++    .es_rkd_value         (es_rkd_value        ),
++    .div_complete         (div_complete        ),
+     //data sram interface
+     .data_sram_en   (data_sram_en   ),
+     .data_sram_we   (data_sram_we   ),
+     .data_sram_addr (data_sram_addr ),
+     .data_sram_wdata(data_sram_wdata)
+ );
++
++div u_div(
++    .div_clk         (clk            ),
++    .reset           (reset          ),
++    .div             (es_div_enable  ),
++    .div_signed      (es_mul_div_sign),
++    .x               (es_rj_value    ),
++    .y               (es_rkd_value   ),
++    .s               (div_result     ),
++    .r               (mod_result     ),
++    .complete        (div_complete   )
++);
++
++mul u_mul(
++    .mul_clk         (clk            ),
++    .reset           (reset          ),
++    .mul_signed      (es_mul_div_sign),
++    .x               (es_rj_value    ),
++    .y               (es_rkd_value   ),
++    .result          (mul_result     )
++);
++
+ // MEM stage
+ mem_stage mem_stage(
+     .clk            (clk            ),
+@@ -118,6 +155,10 @@ mem_stage mem_stage(
+     .ms_to_ws_bus   (ms_to_ws_bus   ),
+     //to ds
+     .ms_to_ds_forward_bus (ms_to_ds_forward_bus),
++    //div mul
++    .div_result           (div_result          ),
++    .mod_result           (mod_result          ),
++    .mul_result           (mul_result          ),
+     //from data sram
+     .data_sram_rdata(data_sram_rdata)
+ );
+-- 
+2.34.1
+

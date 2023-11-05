@@ -1,0 +1,1311 @@
+From 7a920988260d6a08137cbb4b867beb25d0bce38b Mon Sep 17 00:00:00 2001
+From: liangliang678 <wujunliang@loongson.cn>
+Date: Thu, 6 Jul 2023 17:05:39 +0800
+Subject: [PATCH] exp18
+
+---
+ addr_trans.v | 180 ++++++++++++++++++++++++++++++++++++++++++++
+ csr.h        |  24 ++++++
+ csr.v        | 204 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ exe_stage.v  |  48 ++++++++++--
+ id_stage.v   |  47 ++++++++++--
+ mem_stage.v  |  41 ++++++++--
+ mycpu.h      |   6 +-
+ mycpu_top.v  |  88 ++++++++++++++++++++++
+ tlb.v        | 208 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools.v      |  46 ++++++++++++
+ wb_stage.v   |  61 +++++++++++++--
+ 11 files changed, 923 insertions(+), 30 deletions(-)
+ create mode 100644 addr_trans.v
+ create mode 100644 tlb.v
+
+diff --git a/addr_trans.v b/addr_trans.v
+new file mode 100644
+index 0000000..b631443
+--- /dev/null
++++ b/addr_trans.v
+@@ -0,0 +1,180 @@
++`include "csr.h"
++
++module addr_trans
++#(
++    parameter TLBNUM = 16
++)
++(
++    input  wire                 clk                  ,
++    input  wire [ 9:0]          asid                 ,
++    //data addr trans
++    input  wire [31:0]          data_vaddr           ,
++    output wire                 data_tlb_found       ,
++    output wire [ 3:0]          data_tlb_index       ,
++    //tlbwi tlbwr tlb write
++    input  wire                 tlbfill_en           ,
++    input  wire                 tlbwr_en             ,
++    input  wire [ 4:0]          rand_index           ,
++    input  wire [31:0]          tlbehi_in            ,
++    input  wire [31:0]          tlbelo0_in           ,
++    input  wire [31:0]          tlbelo1_in           ,
++    input  wire [31:0]          tlbidx_in            , 
++    //tlbr tlb read
++    output wire [31:0]          tlbehi_out           ,
++    output wire [31:0]          tlbelo0_out          ,
++    output wire [31:0]          tlbelo1_out          ,
++    output wire [31:0]          tlbidx_out           ,
++    output wire [ 9:0]          asid_out             ,
++    //invtlb 
++    input  wire                 invtlb_en            ,
++    input  wire [ 9:0]          invtlb_asid          ,
++    input  wire [18:0]          invtlb_vpn           ,
++    input  wire [ 4:0]          invtlb_op                      
++);
++
++wire [18:0] s0_vppn     ;
++wire        s0_odd_page ;
++wire [ 5:0] s0_ps       ;
++wire [19:0] s0_ppn      ;
++
++wire [18:0] s1_vppn     ;
++wire        s1_odd_page ;
++wire [ 5:0] s1_ps       ;
++wire [19:0] s1_ppn      ;
++wire [ 9:0] s1_asid     ;
++
++wire        we          ;
++wire [ 4:0] w_index     ;
++wire [18:0] w_vppn      ;
++wire        w_g         ;
++wire [ 5:0] w_ps        ;
++wire        w_e         ;
++wire        w_v0        ;
++wire        w_d0        ;
++wire [ 1:0] w_mat0      ;
++wire [ 1:0] w_plv0      ;
++wire [19:0] w_ppn0      ;
++wire        w_v1        ;
++wire        w_d1        ;
++wire [ 1:0] w_mat1      ;
++wire [ 1:0] w_plv1      ;
++wire [19:0] w_ppn1      ;
++
++wire [ 4:0] r_index     ;
++wire [18:0] r_vppn      ;
++wire [ 9:0] r_asid      ;
++wire        r_g         ;
++wire [ 5:0] r_ps        ;
++wire        r_e         ;
++wire        r_v0        ;
++wire        r_d0        ; 
++wire [ 1:0] r_mat0      ;
++wire [ 1:0] r_plv0      ;
++wire [19:0] r_ppn0      ;
++wire        r_v1        ;
++wire        r_d1        ;
++wire [ 1:0] r_mat1      ;
++wire [ 1:0] r_plv1      ;
++wire [19:0] r_ppn1      ;
++
++//trans search port sig
++assign s0_vppn     = 19'b0;
++assign s0_odd_page = 1'b0;
++
++assign s1_vppn     = invtlb_en ? invtlb_vpn : data_vaddr[31:13];
++assign s1_odd_page = invtlb_en ? 1'b0 : data_vaddr[12];
++assign s1_asid     = invtlb_en ? invtlb_asid : asid;
++
++//trans write port sig
++assign we      = tlbfill_en || tlbwr_en;
++assign w_index = ({5{tlbfill_en}} & rand_index) | ({5{tlbwr_en}} & tlbidx_in[`INDEX]);
++assign w_vppn  = tlbehi_in[`VPPN];
++assign w_g     = tlbelo0_in[`TLB_G] && tlbelo1_in[`TLB_G];
++assign w_ps    = tlbidx_in[`PS];
++assign w_e     = !tlbidx_in[`NE];
++assign w_v0    = tlbelo0_in[`TLB_V];
++assign w_d0    = tlbelo0_in[`TLB_D];
++assign w_plv0  = tlbelo0_in[`TLB_PLV];
++assign w_mat0  = tlbelo0_in[`TLB_MAT];
++assign w_ppn0  = tlbelo0_in[`TLB_PPN_EN];
++assign w_v1    = tlbelo1_in[`TLB_V];
++assign w_d1    = tlbelo1_in[`TLB_D];
++assign w_plv1  = tlbelo1_in[`TLB_PLV];
++assign w_mat1  = tlbelo1_in[`TLB_MAT];
++assign w_ppn1  = tlbelo1_in[`TLB_PPN_EN];
++
++//trans read port sig
++assign r_index      = tlbidx_in[`INDEX];
++assign tlbehi_out   = {r_vppn, 13'b0};
++assign tlbelo0_out  = {4'b0, r_ppn0, 1'b0, r_g, r_mat0, r_plv0, r_d0, r_v0};
++assign tlbelo1_out  = {4'b0, r_ppn1, 1'b0, r_g, r_mat1, r_plv1, r_d1, r_v1};
++assign tlbidx_out   = {!r_e, 1'b0, r_ps, 24'b0}; //note do not write index
++assign asid_out     = r_asid;
++
++tlb u_tlb(
++    .clk            (clk            ),
++    // search port 0
++    .s0_vppn        (s0_vppn        ),
++    .s0_va_bit12    (s0_odd_page    ),
++    .s0_asid        (asid           ),
++    .s0_found       (inst_tlb_found ),
++    .s0_index       (),
++    .s0_ps          (s0_ps          ),
++    .s0_ppn         (s0_ppn         ),
++    .s0_v           (inst_tlb_v     ),
++    .s0_d           (inst_tlb_d     ),
++    .s0_mat         (inst_tlb_mat   ),
++    .s0_plv         (inst_tlb_plv   ),
++    // search port 1
++    .s1_vppn        (s1_vppn        ),
++    .s1_va_bit12    (s1_odd_page    ),
++    .s1_asid        (s1_asid        ),
++    .s1_found       (data_tlb_found ),
++    .s1_index       (data_tlb_index ),
++    .s1_ps          (s1_ps          ),
++    .s1_ppn         (s1_ppn         ),
++    .s1_v           (data_tlb_v     ),
++    .s1_d           (data_tlb_d     ),
++    .s1_mat         (data_tlb_mat   ),
++    .s1_plv         (data_tlb_plv   ),
++    // write port 
++    .we             (we             ),     
++    .w_index        (w_index        ),
++    .w_vppn         (w_vppn         ),
++    .w_asid         (asid           ),
++    .w_g            (w_g            ),
++    .w_ps           (w_ps           ),
++    .w_e            (w_e            ),
++    .w_v0           (w_v0           ),
++    .w_d0           (w_d0           ),
++    .w_plv0         (w_plv0         ),
++    .w_mat0         (w_mat0         ),
++    .w_ppn0         (w_ppn0         ),
++    .w_v1           (w_v1           ),
++    .w_d1           (w_d1           ),
++    .w_plv1         (w_plv1         ),
++    .w_mat1         (w_mat1         ),
++    .w_ppn1         (w_ppn1         ),
++    //read port 
++    .r_index        (r_index        ),
++    .r_vppn         (r_vppn         ),
++    .r_asid         (r_asid         ),
++    .r_g            (r_g            ),
++    .r_ps           (r_ps           ),
++    .r_e            (r_e            ),
++    .r_v0           (r_v0           ),
++    .r_d0           (r_d0           ),
++    .r_mat0         (r_mat0         ),
++    .r_plv0         (r_plv0         ),
++    .r_ppn0         (r_ppn0         ),
++    .r_v1           (r_v1           ),
++    .r_d1           (r_d1           ),
++    .r_mat1         (r_mat1         ),
++    .r_plv1         (r_plv1         ),
++    .r_ppn1         (r_ppn1         ),
++    //invalid port
++    .invtlb_valid   (invtlb_en      ),
++    .invtlb_op      (invtlb_op      )
++);
++
++endmodule
+diff --git a/csr.h b/csr.h
+index 6592e67..31f889f 100644
+--- a/csr.h
++++ b/csr.h
+@@ -16,12 +16,36 @@
+ `define IS        12:0
+ `define ECODE     21:16
+ `define ESUBCODE  30:22
++//TLBIDX
++`define INDEX     3:0
++`define PS        29:24
++`define NE        31
++//TLBEHI
++`define VPPN      31:13
++//TLBELO
++`define TLB_V      0
++`define TLB_D      1
++`define TLB_PLV    3:2
++`define TLB_MAT    5:4
++`define TLB_G      6
++`define TLB_PPN    31:8
++`define TLB_PPN_EN 27:8
++//ASID
++`define TLB_ASID  9:0
+ //TCFG
+ `define EN        0
+ `define PERIODIC  1
+ `define INITVAL   31:2
+ //TICLR
+ `define CLR       0
++//TLBRENTRY
++`define TLBRENTRY_PA 31:6
++//DMW
++`define PLV0      0
++`define PLV3      3 
++`define DMW_MAT   5:4
++`define PSEG      27:25
++`define VSEG      31:29
+ 
+ `define ECODE_INT  6'h0
+ `define ECODE_ADEF 6'h8
+diff --git a/csr.v b/csr.v
+index 738055d..fc81478 100644
+--- a/csr.v
++++ b/csr.v
+@@ -2,6 +2,9 @@
+ `include "csr.h"
+ 
+ module csr 
++#(
++    parameter TLBNUM = 16
++)
+ (
+     input  wire                          clk          ,
+     input  wire                          reset        ,
+@@ -23,9 +26,28 @@ module csr
+     input  wire [ 5:0]                   ecode_in     ,
+     input  wire                          va_error_in  ,
+     input  wire [31:0]                   bad_va_in    ,
++    input  wire                          tlbsrch_en   ,
++    input  wire                          tlbsrch_found,
++    input  wire [ 3:0]                   tlbsrch_index,
+     //interrupt
+     input  wire [ 7:0]                   interrupt    ,
+     output wire                          has_int      ,
++    //to es
++    output wire [18:0]                   vppn_out     ,
++    //to addr trans
++    output wire [ 9:0]                   asid_out     ,
++    output wire [ 4:0]                   rand_index   ,
++    output wire [31:0]                   tlbehi_out   ,
++    output wire [31:0]                   tlbelo0_out  ,
++    output wire [31:0]                   tlbelo1_out  ,
++    output wire [31:0]                   tlbidx_out   ,
++    //from addr trans 
++    input  wire                          tlbrd_en     ,
++    input  wire [31:0]                   tlbehi_in    ,
++    input  wire [31:0]                   tlbelo0_in   ,
++    input  wire [31:0]                   tlbelo1_in   ,
++    input  wire [31:0]                   tlbidx_in    ,
++    input  wire [ 9:0]                   asid_in      ,
+     //to fs
+     output wire [31:0]                   eentry_out   ,
+     output wire [31:0]                   era_out      
+@@ -38,6 +60,11 @@ localparam ESTAT = 14'h5;
+ localparam ERA   = 14'h6;
+ localparam BADV  = 14'h7;
+ localparam EENTRY= 14'hc;
++localparam TLBIDX= 14'h10;
++localparam TLBEHI= 14'h11;
++localparam TLBELO0=14'h12;
++localparam TLBELO1=14'h13;
++localparam ASID  = 14'h18;
+ localparam SAVE0 = 14'h30;
+ localparam SAVE1 = 14'h31;
+ localparam SAVE2 = 14'h32;
+@@ -46,6 +73,9 @@ localparam TID   = 14'h40;
+ localparam TCFG  = 14'h41;
+ localparam TVAL  = 14'h42;
+ localparam TICLR = 14'h44;
++localparam TLBRENTRY = 14'h88;
++localparam DMW0  = 14'h180;
++localparam DMW1  = 14'h181;
+ 
+ wire crmd_wen   = csr_wr_en & (wr_addr == CRMD);
+ wire prmd_wen   = csr_wr_en & (wr_addr == PRMD);
+@@ -54,6 +84,11 @@ wire estat_wen  = csr_wr_en & (wr_addr == ESTAT);
+ wire era_wen    = csr_wr_en & (wr_addr == ERA);
+ wire badv_wen   = csr_wr_en & (wr_addr == BADV);
+ wire eentry_wen = csr_wr_en & (wr_addr == EENTRY);
++wire tlbidx_wen = csr_wr_en & (wr_addr == TLBIDX);
++wire tlbehi_wen = csr_wr_en & (wr_addr == TLBEHI);
++wire tlbelo0_wen= csr_wr_en & (wr_addr == TLBELO0);
++wire tlbelo1_wen= csr_wr_en & (wr_addr == TLBELO1);
++wire asid_wen   = csr_wr_en & (wr_addr == ASID);
+ wire save0_wen  = csr_wr_en & (wr_addr == SAVE0);
+ wire save1_wen  = csr_wr_en & (wr_addr == SAVE1);
+ wire save2_wen  = csr_wr_en & (wr_addr == SAVE2);
+@@ -62,6 +97,9 @@ wire tid_wen    = csr_wr_en & (wr_addr == TID);
+ wire tcfg_wen   = csr_wr_en & (wr_addr == TCFG);
+ wire tval_wen   = csr_wr_en & (wr_addr == TVAL);
+ wire ticlr_wen  = csr_wr_en & (wr_addr == TICLR);
++wire tlbrentry_wen = csr_wr_en & (wr_addr == TLBRENTRY);
++wire DMW0_wen   = csr_wr_en & (wr_addr == DMW0);
++wire DMW1_wen   = csr_wr_en & (wr_addr == DMW1);
+ 
+ reg [31:0] csr_crmd;
+ reg [31:0] csr_prmd;
+@@ -70,6 +108,11 @@ reg [31:0] csr_estat;
+ reg [31:0] csr_era;
+ reg [31:0] csr_badv;
+ reg [31:0] csr_eentry;
++reg [31:0] csr_tlbidx;
++reg [31:0] csr_tlbehi;
++reg [31:0] csr_tlbelo0;
++reg [31:0] csr_tlbelo1;
++reg [31:0] csr_asid;
+ reg [31:0] csr_save0;
+ reg [31:0] csr_save1;
+ reg [31:0] csr_save2;
+@@ -78,14 +121,30 @@ reg [31:0] csr_tid;
+ reg [31:0] csr_tcfg;
+ reg [31:0] csr_tval;
+ reg [31:0] csr_ticlr;
++reg [31:0] csr_tlbrentry;
++reg [31:0] csr_dmw0;
++reg [31:0] csr_dmw1;
+ 
+ reg timer_en;
+ reg [31:0] timer_64;
+ 
++wire tlbrd_valid_wr_en;
++wire tlbrd_invalid_wr_en;
++
++assign tlbrd_valid_wr_en   = tlbrd_en && !tlbidx_in[`NE];
++assign tlbrd_invalid_wr_en = tlbrd_en &&  tlbidx_in[`NE];
++
+ assign eentry_out   = csr_eentry;
+ assign era_out      = csr_era;
+ assign timer_64_out = timer_64;
+ assign tid_out      = csr_tid;
++assign asid_out     = csr_asid[`TLB_ASID];
++assign vppn_out     = csr_tlbehi[`VPPN];
++assign tlbehi_out   = csr_tlbehi;
++assign tlbelo0_out  = csr_tlbelo0;
++assign tlbelo1_out  = csr_tlbelo1;
++assign tlbidx_out   = csr_tlbidx;
++assign rand_index   = timer_64[3:0];
+ 
+ assign has_int = ((csr_ectl[`LIE] & csr_estat[`IS]) != 13'b0) & csr_crmd[`IE];
+ 
+@@ -96,6 +155,11 @@ assign rd_data = {32{rd_addr == CRMD  }}  & csr_crmd    |
+                  {32{rd_addr == ERA   }}  & csr_era	    |
+                  {32{rd_addr == BADV  }}  & csr_badv    |
+                  {32{rd_addr == EENTRY}}  & csr_eentry  |
++                 {32{rd_addr == TLBIDX}}  & csr_tlbidx  |
++                 {32{rd_addr == TLBEHI}}  & csr_tlbehi  |
++                 {32{rd_addr == TLBELO0}} & csr_tlbelo0 |
++                 {32{rd_addr == TLBELO1}} & csr_tlbelo1 |
++                 {32{rd_addr == ASID  }}  & csr_asid    |
+                  {32{rd_addr == SAVE0 }}  & csr_save0   |
+                  {32{rd_addr == SAVE1 }}  & csr_save1   |
+                  {32{rd_addr == SAVE2 }}  & csr_save2   |
+@@ -103,7 +167,10 @@ assign rd_data = {32{rd_addr == CRMD  }}  & csr_crmd    |
+                  {32{rd_addr == TID   }}  & csr_tid     |
+                  {32{rd_addr == TCFG  }}  & csr_tcfg    |
+                  {32{rd_addr == TVAL  }}  & csr_tval    |
+-                 {32{rd_addr == TICLR }}  & csr_ticlr   ;
++                 {32{rd_addr == TICLR }}  & csr_ticlr   |
++                 {32{rd_addr == TLBRENTRY}} & csr_tlbrentry   |
++                 {32{rd_addr == DMW0}}    & csr_dmw0    |
++                 {32{rd_addr == DMW1}}    & csr_dmw1    ;
+ 
+ //timer_64
+ always @(posedge clk) begin
+@@ -234,6 +301,141 @@ always @(posedge clk) begin
+     end
+ end
+ 
++//tlbidx
++always @(posedge clk) begin
++    if (reset) begin
++        csr_tlbidx[23: 4] <= 20'b0;
++        csr_tlbidx[30]    <= 1'b0;
++		csr_tlbidx[`INDEX]<= 5'b0;
++    end
++    else if (tlbidx_wen) begin
++		csr_tlbidx[$clog2(TLBNUM)-1:0] <= wr_data[$clog2(TLBNUM)-1:0];
++        csr_tlbidx[`PS]    <= wr_data[`PS];
++        csr_tlbidx[`NE]    <= wr_data[`NE];
++    end
++    else if (tlbsrch_en) begin
++        if (tlbsrch_found) begin
++            csr_tlbidx[`INDEX] <= tlbsrch_index;
++            csr_tlbidx[`NE]    <= 1'b0;
++        end
++        else begin
++            csr_tlbidx[`NE] <= 1'b1;
++        end
++    end
++    else if (tlbrd_valid_wr_en) begin
++        csr_tlbidx[`PS] <= tlbidx_in[`PS];
++        csr_tlbidx[`NE] <= tlbidx_in[`NE];
++    end
++    else if (tlbrd_invalid_wr_en) begin
++        csr_tlbidx[`PS] <= 6'b0;
++        csr_tlbidx[`NE] <= tlbidx_in[`NE];
++    end
++end
++
++//tlbehi
++always @(posedge clk) begin
++    if (reset) begin
++        csr_tlbehi[12:0] <= 13'b0;
++    end
++    else if (tlbehi_wen) begin
++        csr_tlbehi[`VPPN] <= wr_data[`VPPN];
++    end
++    else if (tlbrd_valid_wr_en) begin
++        csr_tlbehi[`VPPN] <= tlbehi_in[`VPPN];
++    end
++    else if (tlbrd_invalid_wr_en) begin
++        csr_tlbehi[`VPPN] <= 19'b0;
++    end
++end
++
++//tlbelo0
++always @(posedge clk) begin
++    if (reset) begin
++        csr_tlbelo0[7] <= 1'b0;
++    end
++    else if (tlbelo0_wen) begin
++        csr_tlbelo0[`TLB_V]   <= wr_data[`TLB_V];
++        csr_tlbelo0[`TLB_D]   <= wr_data[`TLB_D];
++        csr_tlbelo0[`TLB_PLV] <= wr_data[`TLB_PLV];
++        csr_tlbelo0[`TLB_MAT] <= wr_data[`TLB_MAT];
++        csr_tlbelo0[`TLB_G]   <= wr_data[`TLB_G];
++        csr_tlbelo0[`TLB_PPN] <= wr_data[`TLB_PPN];
++    end
++    else if (tlbrd_valid_wr_en) begin
++        csr_tlbelo0[`TLB_V]   <= tlbelo0_in[`TLB_V];
++        csr_tlbelo0[`TLB_D]   <= tlbelo0_in[`TLB_D];
++        csr_tlbelo0[`TLB_PLV] <= tlbelo0_in[`TLB_PLV];
++        csr_tlbelo0[`TLB_MAT] <= tlbelo0_in[`TLB_MAT];
++        csr_tlbelo0[`TLB_G]   <= tlbelo0_in[`TLB_G];
++        csr_tlbelo0[`TLB_PPN] <= tlbelo0_in[`TLB_PPN];
++    end
++    else if (tlbrd_invalid_wr_en) begin
++        csr_tlbelo0[`TLB_V]   <= 1'b0;
++        csr_tlbelo0[`TLB_D]   <= 1'b0;
++        csr_tlbelo0[`TLB_PLV] <= 2'b0;
++        csr_tlbelo0[`TLB_MAT] <= 2'b0;
++        csr_tlbelo0[`TLB_G]   <= 1'b0;
++        csr_tlbelo0[`TLB_PPN] <= 24'b0;
++    end
++end
++
++//tlbelo1
++always @(posedge clk) begin
++    if (reset) begin
++        csr_tlbelo1[7] <= 1'b0;
++    end
++    else if (tlbelo1_wen) begin
++        csr_tlbelo1[`TLB_V]   <= wr_data[`TLB_V];
++        csr_tlbelo1[`TLB_D]   <= wr_data[`TLB_D];
++        csr_tlbelo1[`TLB_PLV] <= wr_data[`TLB_PLV];
++        csr_tlbelo1[`TLB_MAT] <= wr_data[`TLB_MAT];
++        csr_tlbelo1[`TLB_G]   <= wr_data[`TLB_G];
++        csr_tlbelo1[`TLB_PPN] <= wr_data[`TLB_PPN];
++    end
++    else if (tlbrd_valid_wr_en) begin
++        csr_tlbelo1[`TLB_V]   <= tlbelo1_in[`TLB_V];
++        csr_tlbelo1[`TLB_D]   <= tlbelo1_in[`TLB_D];
++        csr_tlbelo1[`TLB_PLV] <= tlbelo1_in[`TLB_PLV];
++        csr_tlbelo1[`TLB_MAT] <= tlbelo1_in[`TLB_MAT];
++        csr_tlbelo1[`TLB_G]   <= tlbelo1_in[`TLB_G];
++        csr_tlbelo1[`TLB_PPN] <= tlbelo1_in[`TLB_PPN];
++    end
++    else if (tlbrd_invalid_wr_en) begin
++        csr_tlbelo1[`TLB_V]   <= 1'b0;
++        csr_tlbelo1[`TLB_D]   <= 1'b0;
++        csr_tlbelo1[`TLB_PLV] <= 2'b0;
++        csr_tlbelo1[`TLB_MAT] <= 2'b0;
++        csr_tlbelo1[`TLB_G]   <= 1'b0;
++        csr_tlbelo1[`TLB_PPN] <= 24'b0;
++    end
++end
++
++//asid
++always @(posedge clk) begin
++    if (reset) begin
++        csr_asid[31:10] <= 22'h280; //ASIDBITS = 10
++    end
++    else if (asid_wen) begin
++        csr_asid[`TLB_ASID] <= wr_data[`TLB_ASID];
++    end
++    else if (tlbrd_valid_wr_en) begin
++        csr_asid[`TLB_ASID] <= asid_in;
++    end
++    else if (tlbrd_invalid_wr_en) begin
++        csr_asid[`TLB_ASID] <= 10'b0;
++    end
++end
++
++//TLBRENTRY
++always @(posedge clk) begin
++    if (reset) begin
++        csr_tlbrentry[5:0] <= 6'b0;
++    end
++    else if (tlbrentry_wen) begin
++        csr_tlbrentry[`TLBRENTRY_PA] <= wr_data[`TLBRENTRY_PA];
++    end
++end
++
+ //save0
+ always @(posedge clk) begin
+     if (save0_wen) begin
+diff --git a/exe_stage.v b/exe_stage.v
+index cdb19f5..55d5997 100644
+--- a/exe_stage.v
++++ b/exe_stage.v
+@@ -25,6 +25,12 @@ module exe_stage(
+     input  wire        ertn_flush    ,
+     input  wire        refetch_flush ,
+     input  wire        ms_excp       ,
++    //from csr 
++    input  wire [18:0]     csr_vppn       ,
++    //tlb 
++    output wire [31:0]     data_vaddr     ,
++    input  wire            data_tlb_found ,
++    input  wire [ 3:0]     data_tlb_index ,
+     // data sram interface
+     output wire        data_req    ,
+     output wire        data_wr     ,
+@@ -63,10 +69,20 @@ wire        es_csr_we      ;
+ wire [13:0] es_csr_addr;
+ wire        es_csr_mask    ;
+ wire [31:0] es_csr_data    ;
+-
+-assign {es_excp_num    ,  //215:211
+-        es_ertn        ,  //210:210
+-        es_excp        ,  //209:209
++wire        es_inst_tlbsrch;
++wire        es_inst_tlbrd  ;
++wire        es_inst_tlbwr  ;
++wire        es_inst_tlbfill;
++wire        es_inst_invtlb ;
++
++assign {es_excp_num    ,  //220:216
++        es_ertn        ,  //215:215
++        es_excp        ,  //214:214
++        es_inst_tlbsrch,  //213:213
++        es_inst_tlbrd  ,  //212:212
++        es_inst_tlbwr  ,  //211:211
++        es_inst_tlbfill,  //210:210
++        es_inst_invtlb ,  //209:209
+         es_res_from_csr,  //208:208
+         es_csr_we      ,  //207:207
+         es_csr_addr    ,  //206:193
+@@ -93,6 +109,9 @@ wire [31:0] es_alu_src1   ;
+ wire [31:0] es_alu_src2   ;
+ wire [31:0] es_alu_result ;
+ 
++wire [ 9:0] es_invtlb_asid ;
++wire [18:0] es_invtlb_vpn  ;
++
+ wire [31:0] csr_mask_wdata;
+ wire [31:0] csr_final_wdata;
+ 
+@@ -102,9 +121,18 @@ wire excp;
+ wire [ 5:0] excp_num;
+ wire excp_ale;
+ 
+-assign es_to_ms_bus = {excp_num       ,  //165:160
+-                       es_ertn        ,  //159:159
+-                       excp           ,  //158:158
++assign es_to_ms_bus = {excp_num       ,  //204:199
++                       es_ertn        ,  //198:198
++                       excp           ,  //197:197
++                       es_inst_tlbrd  ,  //196:196
++                       es_inst_tlbwr  ,  //195:195
++                       es_inst_tlbfill,  //194:194
++                       es_inst_invtlb ,  //193:193
++                       es_invtlb_asid ,  //192:183
++                       es_invtlb_vpn  ,  //182:164
++                       es_inst_tlbsrch,  //163:163
++                       data_tlb_found ,  //162:162
++                       data_tlb_index ,  //161:158
+                        es_csr_we      ,  //157:157
+                        es_csr_addr    ,  //156:143
+                        csr_final_wdata,  //142:111
+@@ -164,6 +192,8 @@ wire dep_need_stall = es_valid && (es_res_from_mem | es_div_enable | es_mul_enab
+ assign es_to_ds_forward_bus = {dep_need_stall, es_valid && es_gr_we, es_dest, es_final_result};
+ 
+ // mem
++assign data_vaddr = {csr_vppn, 13'b0};
++
+ wire [3:0] es_stb_wen = {es_alu_result[1:0]==2'b11  ,
+                          es_alu_result[1:0]==2'b10  ,
+                          es_alu_result[1:0]==2'b01  ,
+@@ -192,6 +222,10 @@ assign data_wdata = ({32{es_mem_size[0]}} & es_stb_data ) |
+                     ({32{es_mem_size[1]}} & es_sth_data ) |
+                     ({32{!es_mem_size  }} & es_rkd_value) ;
+ 
++// tlb
++assign es_invtlb_asid = es_rj_value[9:0];
++assign es_invtlb_vpn  = es_rkd_value[31:13];
++
+ // csr
+ assign csr_mask_wdata  = (es_rj_value & es_rkd_value) | (~es_rj_value & es_csr_data);
+ assign csr_final_wdata = es_csr_mask ? csr_mask_wdata : es_rkd_value;
+diff --git a/id_stage.v b/id_stage.v
+index 4fe0a9f..3b96db4 100644
+--- a/id_stage.v
++++ b/id_stage.v
+@@ -168,6 +168,11 @@ wire        inst_ertn;
+ wire        inst_rdcntid_w;
+ wire        inst_rdcntvl_w;
+ wire        inst_rdcntvh_w;
++wire        inst_tlbsrch;
++wire        inst_tlbrd;
++wire        inst_tlbwr;
++wire        inst_tlbfill;
++wire        inst_invtlb;
+ 
+ // reg & imm value
+ wire [ 4:0] rf_raddr1;
+@@ -230,9 +235,14 @@ wire excp;
+ wire [ 4:0] excp_num;
+ wire excp_ine;
+ 
+-assign ds_to_es_bus = {excp_num    ,  //215:211
+-                       inst_ertn   ,  //210:210
+-                       excp        ,  //209:209
++assign ds_to_es_bus = {excp_num    ,  //220:216
++                       inst_ertn   ,  //215:215
++                       excp        ,  //214:214
++                       inst_tlbsrch,  //213:213
++                       inst_tlbrd  ,  //212:212
++                       inst_tlbwr  ,  //211:211
++                       inst_tlbfill,  //210:210
++                       inst_invtlb ,  //209:209
+                        res_from_csr,  //208:208
+                        csr_we      ,  //207:207
+                        csr_idx     ,  //206:193
+@@ -365,6 +375,11 @@ assign inst_ertn       = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0]
+ assign inst_rdcntid_w  = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h0] & op_19_15_d[5'h00] & rk_d[5'h18] & rd_d[5'h00];
+ assign inst_rdcntvl_w  = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h0] & op_19_15_d[5'h00] & rk_d[5'h18] & rj_d[5'h00] & !rd_d[5'h00];
+ assign inst_rdcntvh_w  = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h0] & op_19_15_d[5'h00] & rk_d[5'h19] & rj_d[5'h00];
++assign inst_tlbsrch    = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h10] & rk_d[5'h0a] & rj_d[5'h00] & rd_d[5'h00];
++assign inst_tlbrd      = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h10] & rk_d[5'h0b] & rj_d[5'h00] & rd_d[5'h00];
++assign inst_tlbwr      = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h10] & rk_d[5'h0c] & rj_d[5'h00] & rd_d[5'h00];
++assign inst_tlbfill    = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h10] & rk_d[5'h0d] & rj_d[5'h00] & rd_d[5'h00];
++assign inst_invtlb     = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h13];
+ 
+ assign inst_valid = inst_add_w     |
+                     inst_sub_w     |
+@@ -420,7 +435,18 @@ assign inst_valid = inst_add_w     |
+                     inst_rdcntid_w |
+                     inst_rdcntvh_w |
+                     inst_rdcntvl_w |
+-                    inst_ertn      ;
++                    inst_ertn      |
++                    inst_tlbsrch   |
++                    inst_tlbrd     |
++                    inst_tlbwr     |
++                    inst_tlbfill   |
++                    (inst_invtlb && (rd == 5'd0 || 
++                                     rd == 5'd1 || 
++                                     rd == 5'd2 || 
++                                     rd == 5'd3 || 
++                                     rd == 5'd4 ||
++                                     rd == 5'd5 || 
++                                     rd == 5'd6 ));
+ 
+ // control signals
+ assign alu_op[ 0] = inst_add_w    |
+@@ -500,7 +526,12 @@ assign gr_we         = ~inst_b    &
+                        ~inst_st_b & 
+                        ~inst_st_h &
+                        ~inst_st_w &
+-                       ~inst_syscall;
++                       ~inst_syscall &
++                       ~inst_tlbsrch &
++                       ~inst_tlbrd   &
++                       ~inst_tlbwr   &
++                       ~inst_tlbfill &
++                       ~inst_invtlb  ;
+ assign mem_we        = inst_st_b | inst_st_h  | inst_st_w;
+ assign mem_size[0]   = inst_ld_b | inst_ld_bu | inst_st_b;
+ assign mem_size[1]   = inst_ld_h | inst_ld_hu | inst_st_h;
+@@ -611,7 +642,8 @@ assign inst_need_rj  =  inst_add_w  |
+                         inst_ld_w   |
+                         inst_st_b   |
+                         inst_st_h   |
+-                        inst_st_w   ;
++                        inst_st_w   |
++                        inst_invtlb ;
+ assign inst_need_rkd =  inst_add_w  |
+                         inst_sub_w  |
+                         inst_slt    |
+@@ -640,7 +672,8 @@ assign inst_need_rkd =  inst_add_w  |
+                         inst_st_h   |
+                         inst_st_w   |
+                         inst_csrwr  |
+-                        inst_csrxchg;
++                        inst_csrxchg|
++                        inst_invtlb ;
+ 
+ assign rf1_stall = inst_need_rj &&
+                    ((es_dep_need_stall && (es_forward_reg == rf_raddr1)) ||
+diff --git a/mem_stage.v b/mem_stage.v
+index 842a6e1..7e1ae1f 100644
+--- a/mem_stage.v
++++ b/mem_stage.v
+@@ -50,9 +50,27 @@ wire        ms_excp;
+ wire        ms_csr_we;
+ wire [13:0] ms_csr_waddr;
+ wire [31:0] ms_csr_wdata;
+-assign {ms_excp_num    ,  //165:160
+-        ms_ertn        ,  //159:159
+-        ms_excp        ,  //158:158
++wire        ms_inst_tlbrd  ;
++wire        ms_inst_tlbwr  ;
++wire        ms_inst_tlbfill;
++wire        ms_inst_invtlb ;
++wire [ 9:0] ms_invtlb_asid;
++wire [18:0] ms_invtlb_vpn;
++wire        ms_inst_tlbsrch;
++wire        data_tlb_found;
++wire [ 3:0] data_tlb_index;
++assign {ms_excp_num    ,  //204:199
++        ms_ertn        ,  //198:198
++        ms_excp        ,  //197:197
++        ms_inst_tlbrd  ,  //196:196
++        ms_inst_tlbwr  ,  //195:195
++        ms_inst_tlbfill,  //194:194
++        ms_inst_invtlb ,  //193:193
++        ms_invtlb_asid ,  //192:183
++        ms_invtlb_vpn  ,  //182:164
++        ms_inst_tlbsrch,  //163:163
++        data_tlb_found ,  //162:162
++        data_tlb_index ,  //161:158
+         ms_csr_we      ,  //157:157
+         ms_csr_waddr   ,  //156:143
+         ms_csr_wdata   ,  //142:111
+@@ -75,10 +93,19 @@ wire [31:0] ms_final_result;
+ wire        excp;
+ wire [ 5:0] excp_num;
+ 
+-assign ms_to_ws_bus = {ms_mem_addr    ,  //156:125
+-                       excp_num       ,  //124:119
+-                       ms_ertn        ,  //118:118
+-                       excp           ,  //117:117
++assign ms_to_ws_bus = {ms_mem_addr    ,  //195:164
++                       excp_num       ,  //163:158
++                       ms_ertn        ,  //157:157
++                       excp           ,  //156:156
++                       ms_inst_tlbrd  ,  //155:155
++                       ms_inst_tlbwr  ,  //154:154
++                       ms_inst_tlbfill,  //153:153
++                       ms_inst_invtlb ,  //152:152
++                       ms_invtlb_asid ,  //151:142
++                       ms_invtlb_vpn  ,  //141:123
++                       ms_inst_tlbsrch,  //122:122
++                       data_tlb_found ,  //121:121
++                       data_tlb_index ,  //120:117
+                        ms_csr_we      ,  //116:116
+                        ms_csr_waddr   ,  //115:102
+                        ms_csr_wdata   ,  //101:70
+diff --git a/mycpu.h b/mycpu.h
+index 850c00f..45c60ec 100644
+--- a/mycpu.h
++++ b/mycpu.h
+@@ -3,9 +3,9 @@
+ 
+     `define BR_BUS_WD       34
+     `define FS_TO_DS_BUS_WD 66
+-    `define DS_TO_ES_BUS_WD 216
+-    `define ES_TO_MS_BUS_WD 166
+-    `define MS_TO_WS_BUS_WD 157
++    `define DS_TO_ES_BUS_WD 221
++    `define ES_TO_MS_BUS_WD 205
++    `define MS_TO_WS_BUS_WD 196
+     `define WS_TO_RF_BUS_WD 38
+     `define ES_TO_DS_FORWARD_BUS 39
+     `define MS_TO_DS_FORWARD_BUS 39
+diff --git a/mycpu_top.v b/mycpu_top.v
+index 91c502d..b70b060 100644
+--- a/mycpu_top.v
++++ b/mycpu_top.v
+@@ -120,11 +120,38 @@ wire [ 8:0] ws_csr_esubcode;
+ wire [ 5:0] ws_csr_ecode  ;
+ wire        va_error      ;
+ wire [31:0] bad_va        ;
++wire        tlbsrch_en    ;
++wire        tlbsrch_found ;
++wire [ 3:0] tlbsrch_index ;
+ wire        has_int       ;
+ wire [31:0] fs_csr_eentry ;
+ wire [31:0] fs_csr_era    ;
+ 
++wire [18:0] csr_vppn      ; 
++wire [ 9:0] csr_asid      ;
++wire [ 4:0] csr_rand_index;
++wire [31:0] csr_tlbehi    ;
++wire [31:0] csr_tlbelo0   ;
++wire [31:0] csr_tlbelo1   ;
++wire [31:0] csr_tlbidx    ;
+ 
++wire [31:0] wr_tlbehi     ;
++wire [31:0] wr_tlbelo0    ;
++wire [31:0] wr_tlbelo1    ;
++wire [31:0] wr_tlbidx     ;
++wire [ 9:0] wr_asid       ;
++
++wire        tlbfill_en    ;
++wire        tlbwr_en      ;
++wire        tlbrd_en      ;
++wire        invtlb_en     ;
++wire [ 9:0] invtlb_asid   ;
++wire [18:0] invtlb_vpn    ;
++wire [ 4:0] invtlb_op     ;
++
++wire [31:0] data_vaddr        ;
++wire        data_tlb_found    ;
++wire [ 3:0] data_tlb_index    ;
+ 
+ // IF stage
+ if_stage if_stage(
+@@ -212,6 +239,12 @@ exe_stage exe_stage(
+     .ertn_flush     (ertn_flush     ),
+     .refetch_flush  (refetch_flush  ),
+     .ms_excp        (ms_excp        ),
++    //from csr 
++    .csr_vppn       (csr_vppn       ),
++    //to addr trans 
++    .data_vaddr     (data_vaddr     ),
++    .data_tlb_found (data_tlb_found ),
++    .data_tlb_index (data_tlb_index ),
+     //data sram interface
+     .data_req       (data_req    ),
+     .data_wr        (data_wr     ),
+@@ -296,6 +329,17 @@ wb_stage wb_stage(
+     .csr_wr_en      (csr_wr_en      ),
+     .wr_csr_addr    (csr_wr_addr    ),
+     .wr_csr_data    (csr_wr_data    ),
++    //tlb inst
++    .tlbsrch_en     (tlbsrch_en ),
++    .tlbfill_en     (tlbfill_en ),
++    .tlbwr_en       (tlbwr_en   ),
++    .tlbrd_en       (tlbrd_en   ),
++    .invtlb_en      (invtlb_en  ),
++    .invtlb_asid    (invtlb_asid),
++    .invtlb_vpn     (invtlb_vpn ),
++    .invtlb_op      (invtlb_op  ),
++    .tlbsrch_found(tlbsrch_found),
++    .tlbsrch_index(tlbsrch_index),
+     //trace debug interface
+     .debug_wb_pc      (debug_wb_pc      ),
+     .debug_wb_rf_we   (debug_wb_rf_we   ),
+@@ -323,14 +367,58 @@ csr u_csr(
+     .ecode_in    (ws_csr_ecode   ),
+     .va_error_in (va_error       ),
+     .bad_va_in   (bad_va         ),
++    .tlbsrch_en   (tlbsrch_en    ),
++    .tlbsrch_found(tlbsrch_found ),
++    .tlbsrch_index(tlbsrch_index ),
+     //interrupt
+     .interrupt   (8'b0           ),
+     .has_int     (has_int        ),
++    //to es
++    .vppn_out     (csr_vppn      ),
++    //to addr trans
++    .asid_out     (csr_asid      ),
++    .rand_index   (csr_rand_index),
++    .tlbehi_out   (csr_tlbehi    ),
++    .tlbelo0_out  (csr_tlbelo0   ),
++    .tlbelo1_out  (csr_tlbelo1   ),
++    .tlbidx_out   (csr_tlbidx    ),
++    //from addr trans 
++    .tlbrd_en     (tlbrd_en      ),
++    .tlbehi_in    (wr_tlbehi     ),
++    .tlbelo0_in   (wr_tlbelo0    ),
++    .tlbelo1_in   (wr_tlbelo1    ),
++    .tlbidx_in    (wr_tlbidx     ),
++    .asid_in      (wr_asid       ),
+     //to fs 
+     .eentry_out  (fs_csr_eentry  ),
+     .era_out     (fs_csr_era     )
+ );
+ 
++addr_trans u_addr_trans(
++    .clk                  (aclk),
++    .asid                 (csr_asid     ),
++    .data_vaddr           (data_vaddr),
++    .data_tlb_found       (data_tlb_found),
++    .data_tlb_index       (data_tlb_index),
++
++    .tlbfill_en           (tlbfill_en),
++    .tlbwr_en             (tlbwr_en),
++    .rand_index           (csr_rand_index),
++    .tlbehi_in            (csr_tlbehi),
++    .tlbelo0_in           (csr_tlbelo0),
++    .tlbelo1_in           (csr_tlbelo1),
++    .tlbidx_in            (csr_tlbidx),
++    .tlbehi_out           (wr_tlbehi),
++    .tlbelo0_out          (wr_tlbelo0),
++    .tlbelo1_out          (wr_tlbelo1),
++    .tlbidx_out           (wr_tlbidx),
++    .asid_out             (wr_asid),
++    .invtlb_en            (invtlb_en),
++    .invtlb_asid          (invtlb_asid),
++    .invtlb_vpn           (invtlb_vpn),
++    .invtlb_op            (invtlb_op)
++);
++
+ axi_bridge u_axi_brige(
+     .clk    (aclk   ),
+     .reset  (reset  ),
+diff --git a/tlb.v b/tlb.v
+new file mode 100644
+index 0000000..53d4e20
+--- /dev/null
++++ b/tlb.v
+@@ -0,0 +1,208 @@
++module tlb
++#(
++    parameter TLBNUM = 16
++)
++(
++    input  wire  clk,
++    // search port 0
++    input  wire [18:0]               s0_vppn     ,
++    input  wire                      s0_va_bit12 ,
++    input  wire [ 9:0]               s0_asid     ,
++    output wire                      s0_found    ,
++    output wire [ 4:0]               s0_index    ,
++    output wire [ 5:0]               s0_ps       ,
++    output wire [19:0]               s0_ppn      ,
++    output wire                      s0_v        ,
++    output wire                      s0_d        ,
++    output wire [ 1:0]               s0_mat      ,
++    output wire [ 1:0]               s0_plv      ,
++    //search port 1
++    input  wire [18:0]               s1_vppn     ,
++    input  wire                      s1_va_bit12 ,
++    input  wire [ 9:0]               s1_asid     ,
++    output wire                      s1_found    ,
++    output wire [ 4:0]               s1_index    ,
++    output wire [ 5:0]               s1_ps       ,
++    output wire [19:0]               s1_ppn      ,
++    output wire                      s1_v        ,
++    output wire                      s1_d        ,
++    output wire [ 1:0]               s1_mat      ,
++    output wire [ 1:0]               s1_plv      ,
++    // write port 
++    input  wire                      we          ,
++    input  wire [$clog2(TLBNUM)-1:0] w_index     ,
++    input  wire [18:0]               w_vppn      ,
++    input  wire [ 9:0]               w_asid      ,
++    input  wire                      w_g         ,
++    input  wire [ 5:0]               w_ps        ,
++    input  wire                      w_e         ,
++    input  wire                      w_v0        ,
++    input  wire                      w_d0        ,
++    input  wire [ 1:0]               w_mat0      ,
++    input  wire [ 1:0]               w_plv0      ,
++    input  wire [19:0]               w_ppn0      ,
++    input  wire                      w_v1        ,
++    input  wire                      w_d1        ,
++    input  wire [ 1:0]               w_mat1      ,
++    input  wire [ 1:0]               w_plv1      ,
++    input  wire [19:0]               w_ppn1      ,
++    // read port
++    input  wire [$clog2(TLBNUM)-1:0] r_index     ,
++    output wire [18:0]               r_vppn      ,
++    output wire [ 9:0]               r_asid      ,
++    output wire                      r_g         ,
++    output wire [ 5:0]               r_ps        ,
++    output wire                      r_e         ,
++    output wire                      r_v0        ,
++    output wire                      r_d0        ,
++    output wire [ 1:0]               r_mat0      ,
++    output wire [ 1:0]               r_plv0      ,
++    output wire [19:0]               r_ppn0      ,
++    output wire                      r_v1        ,
++    output wire                      r_d1        ,
++    output wire [ 1:0]               r_mat1      ,
++    output wire [ 1:0]               r_plv1      ,
++    output wire [19:0]               r_ppn1      ,
++    // invalid port 
++    input  wire                      invtlb_valid ,
++    input  wire [ 4:0]               invtlb_op    
++);
++
++reg [18:0] tlb_vppn     [TLBNUM-1:0];
++reg        tlb_e        [TLBNUM-1:0];
++reg [ 9:0] tlb_asid     [TLBNUM-1:0];
++reg        tlb_g        [TLBNUM-1:0];
++reg [ 5:0] tlb_ps       [TLBNUM-1:0];
++reg [19:0] tlb_ppn0     [TLBNUM-1:0];
++reg [ 1:0] tlb_plv0     [TLBNUM-1:0];
++reg [ 1:0] tlb_mat0     [TLBNUM-1:0];
++reg        tlb_d0       [TLBNUM-1:0];
++reg        tlb_v0       [TLBNUM-1:0];
++reg [19:0] tlb_ppn1     [TLBNUM-1:0];
++reg [ 1:0] tlb_plv1     [TLBNUM-1:0];
++reg [ 1:0] tlb_mat1     [TLBNUM-1:0];
++reg        tlb_d1       [TLBNUM-1:0];
++reg        tlb_v1       [TLBNUM-1:0];
++
++wire [TLBNUM-1:0] match0;
++wire [TLBNUM-1:0] match1;
++
++wire [$clog2(TLBNUM)-1:0] match0_en;
++wire [$clog2(TLBNUM)-1:0] match1_en;
++
++wire [TLBNUM-1:0] s0_odd_page_buffer;
++wire [TLBNUM-1:0] s1_odd_page_buffer;
++
++genvar i;
++generate
++    for (i = 0; i < TLBNUM; i = i + 1)
++        begin: match
++            assign s0_odd_page_buffer[i] = (tlb_ps[i] == 6'd12) ? s0_va_bit12 : s0_vppn[8];
++            assign match0[i] = (tlb_e[i] == 1'b1) && ((tlb_ps[i] == 6'd12) ? s0_vppn == tlb_vppn[i] : s0_vppn[18:9] == tlb_vppn[i][18:9]) && ((s0_asid == tlb_asid[i]) || tlb_g[i]);
++            assign s1_odd_page_buffer[i] = (tlb_ps[i] == 6'd12) ? s1_va_bit12 : s1_vppn[8];
++            assign match1[i] = (tlb_e[i] == 1'b1) && ((tlb_ps[i] == 6'd12) ? s1_vppn == tlb_vppn[i] : s1_vppn[18:9] == tlb_vppn[i][18:9]) && ((s1_asid == tlb_asid[i]) || tlb_g[i]);
++        end
++endgenerate
++
++encoder_32_5 en_match0 (.in({{(32-TLBNUM){1'b0}},match0}), .out(match0_en));
++encoder_32_5 en_match1 (.in({{(32-TLBNUM){1'b0}},match1}), .out(match1_en));
++
++assign s0_found = |match0;
++assign s1_found = |match1;
++
++assign s0_index = {{(5-$clog2(TLBNUM)){1'b0}},match0_en};
++assign s0_ps    = tlb_ps[match0_en];
++assign s0_ppn   = s0_odd_page_buffer[match0_en] ? tlb_ppn1[match0_en] : tlb_ppn0[match0_en];
++assign s0_v     = s0_odd_page_buffer[match0_en] ? tlb_v1[match0_en]   : tlb_v0[match0_en]  ;
++assign s0_d     = s0_odd_page_buffer[match0_en] ? tlb_d1[match0_en]   : tlb_d0[match0_en]  ;
++assign s0_mat   = s0_odd_page_buffer[match0_en] ? tlb_mat1[match0_en] : tlb_mat0[match0_en];
++assign s0_plv   = s0_odd_page_buffer[match0_en] ? tlb_plv1[match0_en] : tlb_plv0[match0_en];
++
++assign s1_index = {{(5-$clog2(TLBNUM)){1'b0}},match1_en};
++assign s1_ps    = tlb_ps[match1_en];
++assign s1_ppn   = s1_odd_page_buffer[match1_en] ? tlb_ppn1[match1_en] : tlb_ppn0[match1_en];
++assign s1_v     = s1_odd_page_buffer[match1_en] ? tlb_v1[match1_en]   : tlb_v0[match1_en]  ;
++assign s1_d     = s1_odd_page_buffer[match1_en] ? tlb_d1[match1_en]   : tlb_d0[match1_en]  ;
++assign s1_mat   = s1_odd_page_buffer[match1_en] ? tlb_mat1[match1_en] : tlb_mat0[match1_en];
++assign s1_plv   = s1_odd_page_buffer[match1_en] ? tlb_plv1[match1_en] : tlb_plv0[match1_en];
++
++always @(posedge clk) begin
++    if (we) begin
++        tlb_vppn [w_index] <= w_vppn;
++        tlb_asid [w_index] <= w_asid;
++        tlb_g    [w_index] <= w_g; 
++        tlb_ps   [w_index] <= w_ps;  
++        tlb_ppn0 [w_index] <= w_ppn0;
++        tlb_plv0 [w_index] <= w_plv0;
++        tlb_mat0 [w_index] <= w_mat0;
++        tlb_d0   [w_index] <= w_d0;
++        tlb_v0   [w_index] <= w_v0; 
++        tlb_ppn1 [w_index] <= w_ppn1;
++        tlb_plv1 [w_index] <= w_plv1;
++        tlb_mat1 [w_index] <= w_mat1;
++        tlb_d1   [w_index] <= w_d1;
++        tlb_v1   [w_index] <= w_v1; 
++    end
++end
++
++assign r_vppn  =  tlb_vppn [r_index]; 
++assign r_asid  =  tlb_asid [r_index]; 
++assign r_g     =  tlb_g    [r_index]; 
++assign r_ps    =  tlb_ps   [r_index]; 
++assign r_e     =  tlb_e    [r_index]; 
++assign r_v0    =  tlb_v0   [r_index]; 
++assign r_d0    =  tlb_d0   [r_index]; 
++assign r_mat0  =  tlb_mat0 [r_index]; 
++assign r_plv0  =  tlb_plv0 [r_index]; 
++assign r_ppn0  =  tlb_ppn0 [r_index]; 
++assign r_v1    =  tlb_v1   [r_index]; 
++assign r_d1    =  tlb_d1   [r_index]; 
++assign r_mat1  =  tlb_mat1 [r_index]; 
++assign r_plv1  =  tlb_plv1 [r_index]; 
++assign r_ppn1  =  tlb_ppn1 [r_index]; 
++
++//tlb entry invalid 
++generate 
++    for (i = 0; i < TLBNUM; i = i + 1) 
++        begin: invalid_tlb_entry 
++            always @(posedge clk) begin
++                if (we && (w_index == i)) begin
++                    tlb_e[i] <= w_e;
++                end
++                else if (invtlb_valid) begin
++                    if (invtlb_op == 5'd0 || invtlb_op == 5'd1) begin
++                        tlb_e[i] <= 1'b0;
++                    end
++                    else if (invtlb_op == 5'd2) begin
++                        if (tlb_g[i]) begin
++                            tlb_e[i] <= 1'b0;
++                        end
++                    end
++                    else if (invtlb_op == 5'd3) begin
++                        if (!tlb_g[i]) begin
++                            tlb_e[i] <= 1'b0;
++                        end
++                    end
++                    else if (invtlb_op == 5'd4) begin
++                        if (!tlb_g[i] && (tlb_asid[i] == s1_asid)) begin
++                            tlb_e[i] <= 1'b0;
++                        end
++                    end
++                    else if (invtlb_op == 5'd5) begin
++                        if (!tlb_g[i] && (tlb_asid[i] == s1_asid) && 
++                           ((tlb_ps[i] == 6'd12) ? (tlb_vppn[i] == s1_vppn) : (tlb_vppn[i][18:9] == s1_vppn[18:9]))) begin
++                            tlb_e[i] <= 1'b0;
++                        end
++                    end
++                    else if (invtlb_op == 5'd6) begin
++                        if ((tlb_g[i] || (tlb_asid[i] == s1_asid)) && 
++                           ((tlb_ps[i] == 6'd12) ? (tlb_vppn[i] == s1_vppn) : (tlb_vppn[i][18:9] == s1_vppn[18:9]))) begin
++                            tlb_e[i] <= 1'b0;
++                        end
++                    end
++                end
++            end
++        end 
++endgenerate
++
++endmodule
+diff --git a/tools.v b/tools.v
+index ee43e3a..d33ee8c 100644
+--- a/tools.v
++++ b/tools.v
+@@ -48,3 +48,49 @@ generate for (i=0; i<64; i=i+1) begin : gen_for_dec_6_64
+ end endgenerate
+ 
+ endmodule
++
++module encoder_4_2(
++    input  wire [3:0] in,
++    output wire [1:0] out
++);
++
++assign out = {2{in[0]}} & 2'd0 |
++	         {2{in[1]}} & 2'd1 |
++	         {2{in[2]}} & 2'd2 |
++	         {2{in[3]}} & 2'd3 ;
++
++endmodule
++
++module encoder_16_4(
++    input  wire [15:0] in,
++    output wire [ 3:0] out
++);
++
++wire [1:0] out_0, out_1, out_2, out_3;
++
++encoder_4_2 one (.in(in[ 3: 0]), .out(out_0));
++encoder_4_2 two (.in(in[ 7: 4]), .out(out_1));
++encoder_4_2 thr (.in(in[11: 8]), .out(out_2));
++encoder_4_2 fou (.in(in[15:12]), .out(out_3));
++
++assign out = {4{|in[ 3: 0]}} & {2'd0, out_0} |
++	         {4{|in[ 7: 4]}} & {2'd1, out_1} |		
++	         {4{|in[11: 8]}} & {2'd2, out_2} |		
++	         {4{|in[15:12]}} & {2'd3, out_3} ;		
++
++endmodule
++
++module encoder_32_5(
++    input  wire [31:0] in,
++    output wire [ 4:0] out
++);
++
++wire [3:0] out_0, out_1;
++
++encoder_16_4 one (.in(in[15: 0]), .out(out_0));
++encoder_16_4 two (.in(in[31:16]), .out(out_1));
++
++assign out = {5{|in[15: 0]}} & {1'd0, out_0} |
++	         {5{|in[31:16]}} & {1'd1, out_1} ;
++
++endmodule
+diff --git a/wb_stage.v b/wb_stage.v
+index cd79bd6..20c1fcb 100644
+--- a/wb_stage.v
++++ b/wb_stage.v
+@@ -25,6 +25,17 @@ module wb_stage(
+     output wire        csr_wr_en                        ,
+     output wire [13:0] wr_csr_addr                      ,
+     output wire [31:0] wr_csr_data                      ,
++    //tlb inst
++    output wire        tlbfill_en                       ,
++    output wire        tlbwr_en                         ,
++    output wire        tlbrd_en                         ,
++    output wire        invtlb_en                        ,
++    output wire [ 9:0] invtlb_asid                      ,
++    output wire [18:0] invtlb_vpn                       ,
++    output wire [ 4:0] invtlb_op                        ,
++    output wire        tlbsrch_en                       ,
++    output wire        tlbsrch_found                    ,
++    output wire [ 3:0] tlbsrch_index                    ,
+     //trace debug interface
+     output wire [31:0] debug_wb_pc     ,
+     output wire [ 3:0] debug_wb_rf_we  ,
+@@ -49,10 +60,28 @@ wire        ws_excp;
+ wire        ws_csr_we;
+ wire [13:0] ws_csr_waddr;
+ wire [31:0] ws_csr_wdata;
+-assign {ws_error_va    ,  //156:125
+-        ws_excp_num    ,  //124:119
+-        ws_ertn        ,  //118:118
+-        ws_excp        ,  //117:117
++wire        ws_inst_tlbrd  ;
++wire        ws_inst_tlbwr  ;
++wire        ws_inst_tlbfill;
++wire        ws_inst_invtlb ;
++wire [ 9:0] ws_invtlb_asid;
++wire [18:0] ws_invtlb_vpn;
++wire        ws_inst_tlbsrch;
++wire        data_tlb_found;
++wire [ 3:0] data_tlb_index;
++assign {ws_error_va    ,  //195:163
++        ws_excp_num    ,  //163:158
++        ws_ertn        ,  //157:157
++        ws_excp        ,  //156:156
++        ws_inst_tlbrd  ,  //155:155
++        ws_inst_tlbwr  ,  //154:154
++        ws_inst_tlbfill,  //153:153
++        ws_inst_invtlb ,  //152:152
++        ws_invtlb_asid ,  //151:142
++        ws_invtlb_vpn  ,  //141:123
++        ws_inst_tlbsrch,  //122:122
++        data_tlb_found ,  //121:121
++        data_tlb_index ,  //120:117
+         ws_csr_we      ,  //116:116
+         ws_csr_waddr   ,  //115:102
+         ws_csr_wdata   ,  //101:70
+@@ -94,6 +123,22 @@ assign rf_wdata = ws_final_result;
+ 
+ assign ws_to_ds_forward_bus = {ws_valid && ws_gr_we, ws_dest, ws_final_result};
+ 
++// tlb inst
++assign {tlbsrch_en ,
++        tlbwr_en   , 
++        tlbfill_en , 
++        tlbrd_en   ,
++        invtlb_en } = {ws_inst_tlbsrch,
++                       ws_inst_tlbwr  , 
++                       ws_inst_tlbfill, 
++                       ws_inst_tlbrd  ,
++                       ws_inst_invtlb } & {5{ws_valid && !ws_excp}};
++assign invtlb_op    = ws_dest;
++assign invtlb_asid  = ws_invtlb_asid;
++assign invtlb_vpn   = ws_invtlb_vpn;
++assign tlbsrch_found = data_tlb_found;
++assign tlbsrch_index = data_tlb_index;
++
+ // excp
+ assign csr_era      = ws_pc;
+ assign {csr_ecode, 
+@@ -108,7 +153,13 @@ assign {csr_ecode,
+                         47'b0;
+ assign excp_flush   = ws_excp && ws_valid;
+ assign ertn_flush   = ws_ertn && ws_valid;
+-assign refetch_flush= ws_csr_we && ws_valid && !ws_excp;
++assign refetch_flush= (ws_csr_we        ||
++                       ws_inst_tlbsrch  ||
++                       ws_inst_tlbwr    ||
++                       ws_inst_tlbfill  ||
++                       ws_inst_tlbrd    ||
++                       ws_inst_invtlb) && ws_valid && !ws_excp;
++
+ assign csr_wr_en    = ws_csr_we && ws_valid && !ws_excp;
+ assign wr_csr_addr  = ws_csr_waddr;
+ assign wr_csr_data  = ws_csr_wdata; 
+-- 
+2.34.1
+

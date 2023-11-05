@@ -1,0 +1,845 @@
+From 49f21745c3526867c176542de0b8591e7be03594 Mon Sep 17 00:00:00 2001
+From: liangliang678 <wujunliang@loongson.cn>
+Date: Thu, 6 Jul 2023 17:53:54 +0800
+Subject: [PATCH] exp19
+
+---
+ addr_trans.v |  49 +++++++++++++++++++++--
+ csr.h        |   6 +++
+ csr.v        |  67 +++++++++++++++++++++++++++++++-
+ exe_stage.v  |  52 ++++++++++++++++++++-----
+ id_stage.v   |   6 +--
+ if_stage.v   |  52 ++++++++++++++++++++-----
+ mem_stage.v  |  10 ++---
+ mycpu.h      |   8 ++--
+ mycpu_top.v  | 108 +++++++++++++++++++++++++++++++++++++++++++++++++--
+ wb_stage.v   |  35 ++++++++++++-----
+ 10 files changed, 346 insertions(+), 47 deletions(-)
+
+diff --git a/addr_trans.v b/addr_trans.v
+index b631443..19c7302 100644
+--- a/addr_trans.v
++++ b/addr_trans.v
+@@ -7,10 +7,30 @@ module addr_trans
+ (
+     input  wire                 clk                  ,
+     input  wire [ 9:0]          asid                 ,
++    //trans mode
++    input  wire                 inst_addr_trans_en   ,
++    input  wire                 data_addr_trans_en   ,
++    //inst addr trans
++    input  wire [31:0]          inst_vaddr           ,
++    input  wire                 inst_dmw0_en         ,
++    input  wire                 inst_dmw1_en         ,
++    output wire [31:0]          inst_paddr           ,
++    output wire                 inst_tlb_found       ,
++    output wire                 inst_tlb_v           ,
++    output wire                 inst_tlb_d           ,
++    output wire [ 1:0]          inst_tlb_mat         ,
++    output wire [ 1:0]          inst_tlb_plv         ,
+     //data addr trans
+     input  wire [31:0]          data_vaddr           ,
++    input  wire                 data_dmw0_en         ,
++    input  wire                 data_dmw1_en         ,
++    output wire [31:0]          data_paddr           ,
+     output wire                 data_tlb_found       ,
+     output wire [ 3:0]          data_tlb_index       ,
++    output wire                 data_tlb_v           ,
++    output wire                 data_tlb_d           ,
++    output wire [ 1:0]          data_tlb_mat         ,
++    output wire [ 1:0]          data_tlb_plv         ,
+     //tlbwi tlbwr tlb write
+     input  wire                 tlbfill_en           ,
+     input  wire                 tlbwr_en             ,
+@@ -29,7 +49,12 @@ module addr_trans
+     input  wire                 invtlb_en            ,
+     input  wire [ 9:0]          invtlb_asid          ,
+     input  wire [18:0]          invtlb_vpn           ,
+-    input  wire [ 4:0]          invtlb_op                      
++    input  wire [ 4:0]          invtlb_op            ,
++    //from csr
++    input  wire [31:0]          csr_dmw0             ,
++    input  wire [31:0]          csr_dmw1             ,
++    input  wire                 csr_da               ,
++    input  wire                 csr_pg               
+ );
+ 
+ wire [18:0] s0_vppn     ;
+@@ -77,9 +102,12 @@ wire [ 1:0] r_mat1      ;
+ wire [ 1:0] r_plv1      ;
+ wire [19:0] r_ppn1      ;
+ 
++wire        pg_mode;
++wire        da_mode;
++
+ //trans search port sig
+-assign s0_vppn     = 19'b0;
+-assign s0_odd_page = 1'b0;
++assign s0_vppn     = inst_vaddr[31:13];
++assign s0_odd_page = inst_vaddr[12];
+ 
+ assign s1_vppn     = invtlb_en ? invtlb_vpn : data_vaddr[31:13];
+ assign s1_odd_page = invtlb_en ? 1'b0 : data_vaddr[12];
+@@ -177,4 +205,19 @@ tlb u_tlb(
+     .invtlb_op      (invtlb_op      )
+ );
+ 
++assign pg_mode = !csr_da &&  csr_pg;
++assign da_mode =  csr_da && !csr_pg;
++
++assign inst_paddr    = da_mode ? inst_vaddr :
++                       (pg_mode && inst_dmw0_en) ? {csr_dmw0[`PSEG], inst_vaddr[28:0]} :
++                       (pg_mode && inst_dmw1_en) ? {csr_dmw1[`PSEG], inst_vaddr[28:0]} :
++                       (s0_ps == 6'd12)    ? {s0_ppn, inst_vaddr[11:0]} :
++                       (s0_ps == 6'd21)    ? {s0_ppn[19:9], inst_vaddr[20:0]} : 32'b0;
++
++assign data_paddr    = da_mode ? data_vaddr :
++                       (pg_mode && data_dmw0_en) ? {csr_dmw0[`PSEG], data_vaddr[28:0]} :
++                       (pg_mode && data_dmw1_en) ? {csr_dmw1[`PSEG], data_vaddr[28:0]} :
++                       (s1_ps == 6'd12)    ? {s1_ppn, data_vaddr[11:0]} :
++                       (s1_ps == 6'd21)    ? {s1_ppn[19:9], data_vaddr[20:0]} : 32'b0;
++
+ endmodule
+diff --git a/csr.h b/csr.h
+index 31f889f..b35770e 100644
+--- a/csr.h
++++ b/csr.h
+@@ -48,10 +48,16 @@
+ `define VSEG      31:29
+ 
+ `define ECODE_INT  6'h0
++`define ECODE_PIL  6'h1
++`define ECODE_PIS  6'h2
++`define ECODE_PIF  6'h3
++`define ECODE_PME  6'h4
++`define ECODE_PPI  6'h7
+ `define ECODE_ADEF 6'h8
+ `define ECODE_ALE  6'h9
+ `define ECODE_SYS  6'hb
+ `define ECODE_BRK  6'hc
+ `define ECODE_INE  6'hd
++`define ECODE_TLBR 6'h3f
+ 
+ `define ESUBCODE_ADEF  9'h0
+diff --git a/csr.v b/csr.v
+index fc81478..7051496 100644
+--- a/csr.v
++++ b/csr.v
+@@ -26,6 +26,9 @@ module csr
+     input  wire [ 5:0]                   ecode_in     ,
+     input  wire                          va_error_in  ,
+     input  wire [31:0]                   bad_va_in    ,
++    input  wire                          excp_tlbrefill,
++    input  wire                          excp_tlb     ,
++    input  wire [18:0]                   excp_tlb_vppn, 
+     input  wire                          tlbsrch_en   ,
+     input  wire                          tlbsrch_found,
+     input  wire [ 3:0]                   tlbsrch_index,
+@@ -41,6 +44,12 @@ module csr
+     output wire [31:0]                   tlbelo0_out  ,
+     output wire [31:0]                   tlbelo1_out  ,
+     output wire [31:0]                   tlbidx_out   ,
++    output wire                          pg_out       ,
++    output wire                          da_out       ,
++    output wire [31:0]                   dmw0_out     ,
++    output wire [31:0]                   dmw1_out     ,
++    output wire [ 1:0]                   datf_out     ,
++    output wire [ 1:0]                   datm_out     ,
+     //from addr trans 
+     input  wire                          tlbrd_en     ,
+     input  wire [31:0]                   tlbehi_in    ,
+@@ -48,9 +57,12 @@ module csr
+     input  wire [31:0]                   tlbelo1_in   ,
+     input  wire [31:0]                   tlbidx_in    ,
+     input  wire [ 9:0]                   asid_in      ,
++    //general use
++    output wire [ 1:0]                   plv_out      ,
+     //to fs
+     output wire [31:0]                   eentry_out   ,
+-    output wire [31:0]                   era_out      
++    output wire [31:0]                   era_out      ,
++    output wire [31:0]                   tlbrentry_out
+ );
+ 
+ localparam CRMD  = 14'h0;
+@@ -130,9 +142,11 @@ reg [31:0] timer_64;
+ 
+ wire tlbrd_valid_wr_en;
+ wire tlbrd_invalid_wr_en;
++wire eret_tlbrefill_excp;
+ 
+ assign tlbrd_valid_wr_en   = tlbrd_en && !tlbidx_in[`NE];
+ assign tlbrd_invalid_wr_en = tlbrd_en &&  tlbidx_in[`NE];
++assign eret_tlbrefill_excp = csr_estat[`ECODE] == 6'h3f;
+ 
+ assign eentry_out   = csr_eentry;
+ assign era_out      = csr_era;
+@@ -145,6 +159,14 @@ assign tlbelo0_out  = csr_tlbelo0;
+ assign tlbelo1_out  = csr_tlbelo1;
+ assign tlbidx_out   = csr_tlbidx;
+ assign rand_index   = timer_64[3:0];
++assign pg_out       = csr_crmd[`PG];
++assign da_out       = csr_crmd[`DA];
++assign dmw0_out     = csr_dmw0;
++assign dmw1_out     = csr_dmw1;
++assign plv_out      = csr_crmd[`PLV];
++assign tlbrentry_out= csr_tlbrentry;
++assign datf_out     = csr_crmd[`DATF];
++assign datm_out     = csr_crmd[`DATM];
+ 
+ assign has_int = ((csr_ectl[`LIE] & csr_estat[`IS]) != 13'b0) & csr_crmd[`IE];
+ 
+@@ -196,10 +218,18 @@ always @(posedge clk) begin
+     else if (excp_flush) begin
+         csr_crmd[ `PLV] <=  2'b0;
+         csr_crmd[  `IE] <=  1'b0;
++        if (excp_tlbrefill) begin
++            csr_crmd [`DA] <= 1'b1;
++            csr_crmd [`PG] <= 1'b0;
++        end
+     end
+     else if (ertn_flush) begin
+         csr_crmd[ `PLV] <= csr_prmd[`PPLV];
+         csr_crmd[  `IE] <= csr_prmd[`PIE ];
++        if (eret_tlbrefill_excp) begin
++            csr_crmd[`DA] <= 1'b0;
++            csr_crmd[`PG] <= 1'b1;
++        end
+     end 
+     else if (crmd_wen) begin
+         csr_crmd[ `PLV] <= wr_data[ `PLV];
+@@ -346,6 +376,9 @@ always @(posedge clk) begin
+     else if (tlbrd_invalid_wr_en) begin
+         csr_tlbehi[`VPPN] <= 19'b0;
+     end
++    else if (excp_tlb) begin
++        csr_tlbehi[`VPPN] <= excp_tlb_vppn;
++    end
+ end
+ 
+ //tlbelo0
+@@ -436,6 +469,38 @@ always @(posedge clk) begin
+     end
+ end
+ 
++//dmw0
++always @(posedge clk) begin
++    if (reset) begin
++        csr_dmw0[ 2:1] <= 2'b0;
++        csr_dmw0[24:6] <= 19'b0;
++        csr_dmw0[28]   <= 1'b0;
++    end
++    else if (DMW0_wen) begin
++        csr_dmw0[`PLV0]    <= wr_data[`PLV0];
++        csr_dmw0[`PLV3]    <= wr_data[`PLV3];
++        csr_dmw0[`DMW_MAT] <= wr_data[`DMW_MAT];
++        csr_dmw0[`PSEG]    <= wr_data[`PSEG];
++        csr_dmw0[`VSEG]    <= wr_data[`VSEG];
++    end
++end
++
++//dmw1
++always @(posedge clk) begin
++    if (reset) begin
++        csr_dmw1[ 2:1] <= 2'b0;
++        csr_dmw1[24:6] <= 19'b0;
++        csr_dmw1[28]   <= 1'b0;
++    end
++    else if (DMW1_wen) begin
++        csr_dmw1[`PLV0]    <= wr_data[`PLV0];
++        csr_dmw1[`PLV3]    <= wr_data[`PLV3];
++        csr_dmw1[`DMW_MAT] <= wr_data[`DMW_MAT];
++        csr_dmw1[`PSEG]    <= wr_data[`PSEG];
++        csr_dmw1[`VSEG]    <= wr_data[`VSEG];
++    end
++end
++
+ //save0
+ always @(posedge clk) begin
+     if (save0_wen) begin
+diff --git a/exe_stage.v b/exe_stage.v
+index 55d5997..143fb77 100644
+--- a/exe_stage.v
++++ b/exe_stage.v
+@@ -26,11 +26,26 @@ module exe_stage(
+     input  wire        refetch_flush ,
+     input  wire        ms_excp       ,
+     //from csr 
++    input  wire            csr_pg         ,
++    input  wire            csr_da         ,
++    input  wire [31:0]     csr_dmw0       ,
++    input  wire [31:0]     csr_dmw1       ,
++    input  wire [ 1:0]     csr_plv        ,
++    input  wire [ 1:0]     csr_datm       ,
+     input  wire [18:0]     csr_vppn       ,
++    //to addr trans 
++    output wire [31:0]     data_vaddr        ,
++    output wire            data_addr_trans_en,   
++    output wire            dmw0_en           ,
++    output wire            dmw1_en           ,  
+     //tlb 
+-    output wire [31:0]     data_vaddr     ,
++    input  wire [31:0]     data_paddr     ,
+     input  wire            data_tlb_found ,
+     input  wire [ 3:0]     data_tlb_index ,
++    input  wire            data_tlb_v     ,
++    input  wire            data_tlb_d     ,
++    input  wire [ 1:0]     data_tlb_mat   ,
++    input  wire [ 1:0]     data_tlb_plv   ,
+     // data sram interface
+     output wire        data_req    ,
+     output wire        data_wr     ,
+@@ -61,7 +76,7 @@ wire [31:0] es_imm         ;
+ wire [31:0] es_rj_value    ;
+ wire [31:0] es_rkd_value   ;
+ wire [31:0] es_pc          ;
+-wire [ 4:0] es_excp_num    ;
++wire [ 7:0] es_excp_num    ;
+ wire        es_ertn        ;
+ wire        es_excp        ;
+ wire        es_res_from_csr;
+@@ -75,7 +90,7 @@ wire        es_inst_tlbwr  ;
+ wire        es_inst_tlbfill;
+ wire        es_inst_invtlb ;
+ 
+-assign {es_excp_num    ,  //220:216
++assign {es_excp_num    ,  //223:216
+         es_ertn        ,  //215:215
+         es_excp        ,  //214:214
+         es_inst_tlbsrch,  //213:213
+@@ -118,10 +133,15 @@ wire [31:0] csr_final_wdata;
+ wire [31:0] es_final_result;
+ 
+ wire excp;
+-wire [ 5:0] excp_num;
++wire [13:0] excp_num;
+ wire excp_ale;
++wire excp_tlbr;
++wire excp_pil;
++wire excp_pis;
++wire excp_ppi;
++wire excp_pme;
+ 
+-assign es_to_ms_bus = {excp_num       ,  //204:199
++assign es_to_ms_bus = {excp_num       ,  //212:199
+                        es_ertn        ,  //198:198
+                        excp           ,  //197:197
+                        es_inst_tlbrd  ,  //196:196
+@@ -192,7 +212,14 @@ wire dep_need_stall = es_valid && (es_res_from_mem | es_div_enable | es_mul_enab
+ assign es_to_ds_forward_bus = {dep_need_stall, es_valid && es_gr_we, es_dest, es_final_result};
+ 
+ // mem
+-assign data_vaddr = {csr_vppn, 13'b0};
++wire pg_mode = !csr_da && csr_pg;
++wire da_mode =  csr_da && !csr_pg;
++
++assign data_addr_trans_en = pg_mode && !dmw0_en && !dmw1_en;
++assign dmw0_en = pg_mode && ((csr_dmw0[`PLV0] && csr_plv == 2'd0) || (csr_dmw0[`PLV3] && csr_plv == 2'd3)) && (es_alu_result[31:29] == csr_dmw0[`VSEG]);
++assign dmw1_en = pg_mode && ((csr_dmw1[`PLV0] && csr_plv == 2'd0) || (csr_dmw1[`PLV3] && csr_plv == 2'd3)) && (es_alu_result[31:29] == csr_dmw1[`VSEG]);
++
++assign data_vaddr = es_inst_tlbsrch ? {csr_vppn, 13'b0} : es_alu_result;
+ 
+ wire [3:0] es_stb_wen = {es_alu_result[1:0]==2'b11  ,
+                          es_alu_result[1:0]==2'b10  ,
+@@ -217,7 +244,7 @@ assign data_wr     = es_mem_we;
+ assign {data_wstrb, data_size}  = ({6{es_mem_size[0]}} & {es_stb_wen, 2'b00}) |
+                                   ({6{es_mem_size[1]}} & {es_sth_wen, 2'b01}) |
+                                   ({6{!es_mem_size  }} & {4'b1111   , 2'b10}) ;
+-assign data_addr  = es_alu_result;
++assign data_addr  = data_paddr;
+ assign data_wdata = ({32{es_mem_size[0]}} & es_stb_data ) |
+                     ({32{es_mem_size[1]}} & es_sth_data ) |
+                     ({32{!es_mem_size  }} & es_rkd_value) ;
+@@ -237,8 +264,15 @@ assign excp_ale        =  (es_res_from_mem || es_mem_we) & es_valid &
+                           ((es_mem_size[0] &  1'b0)                                  | 
+                            (es_mem_size[1] &  es_alu_result[0])                      | 
+                            (!es_mem_size   & (es_alu_result[0] | es_alu_result[1]))) ;
++assign excp_tlbr = es_valid && !data_tlb_found && data_addr_trans_en &&
++                   (es_res_from_mem || es_mem_we);
++assign excp_pil  = es_valid && !data_tlb_v && data_addr_trans_en && 
++                   es_res_from_mem;
++assign excp_pis  = es_valid && es_mem_we       && !data_tlb_v && data_addr_trans_en;
++assign excp_ppi  = es_valid && (es_res_from_mem || es_mem_we) && data_tlb_v && (csr_plv > data_tlb_plv) && data_addr_trans_en;
++assign excp_pme  = es_valid && es_mem_we && data_tlb_v && (csr_plv <= data_tlb_plv) && !data_tlb_d && data_addr_trans_en;
+ 
+-assign excp     = es_excp && es_valid || excp_ale;
+-assign excp_num = {excp_ale, es_excp_num};
++assign excp     = es_excp && es_valid || excp_ale || excp_pil || excp_pis || excp_ppi || excp_pme || excp_tlbr;
++assign excp_num = {excp_pil, excp_pis, excp_ppi, excp_pme, excp_tlbr, excp_ale, es_excp_num};
+ 
+ endmodule
+diff --git a/id_stage.v b/id_stage.v
+index 3b96db4..c0ad633 100644
+--- a/id_stage.v
++++ b/id_stage.v
+@@ -41,7 +41,7 @@ reg  [`FS_TO_DS_BUS_WD -1:0] fs_to_ds_bus_r;
+ wire [31:0] ds_inst;
+ wire [31:0] ds_pc  ;
+ wire        ds_excp;
+-wire [ 0:0] ds_excp_num;
++wire [ 3:0] ds_excp_num;
+ assign {ds_excp    ,
+         ds_excp_num,
+         ds_inst    ,
+@@ -232,10 +232,10 @@ assign br_bus       = {br_stall,br_taken,br_target};
+ 
+ // excp
+ wire excp;
+-wire [ 4:0] excp_num;
++wire [ 7:0] excp_num;
+ wire excp_ine;
+ 
+-assign ds_to_es_bus = {excp_num    ,  //220:216
++assign ds_to_es_bus = {excp_num    ,  //223:216
+                        inst_ertn   ,  //215:215
+                        excp        ,  //214:214
+                        inst_tlbsrch,  //213:213
+diff --git a/if_stage.v b/if_stage.v
+index 8c5a8e3..7563a9b 100644
+--- a/if_stage.v
++++ b/if_stage.v
+@@ -14,9 +14,30 @@ module if_stage(
+     input  wire                         excp_flush       ,
+     input  wire                         ertn_flush       ,
+     input  wire                         refetch_flush    ,
++    input  wire                         excp_tlbrefill   ,
+     input  wire [31:0]                  ws_pc            ,
+     input  wire [31:0]                  csr_eentry       ,
+     input  wire [31:0]                  csr_era          ,
++    input  wire [31:0]                  csr_tlbrentry    ,
++    //from csr
++    input  wire                         csr_pg            ,
++    input  wire                         csr_da            ,
++    input  wire [31:0]                  csr_dmw0          ,
++    input  wire [31:0]                  csr_dmw1          ,
++    input  wire [ 1:0]                  csr_plv           ,
++    input  wire [ 1:0]                  csr_datf          ,
++    //to addr trans
++    output wire [31:0]                  inst_vaddr        ,
++    output wire                         inst_addr_trans_en,
++    output wire                         dmw0_en           ,
++    output wire                         dmw1_en           ,
++    //tlb
++    input  wire [31:0]                  inst_paddr        ,
++    input  wire                         inst_tlb_found    ,
++    input  wire                         inst_tlb_v        ,
++    input  wire                         inst_tlb_d        ,
++    input  wire [ 1:0]                  inst_tlb_mat      ,
++    input  wire [ 1:0]                  inst_tlb_plv      ,
+     // inst sram interface
+     output wire        inst_req    ,
+     output wire        inst_wr     ,
+@@ -35,7 +56,7 @@ wire        fs_allowin;
+ wire        to_fs_valid;
+ wire        pfs_readg_go;
+ wire        pfs_excp;
+-wire [ 0:0] pfs_excp_num;
++wire [ 3:0] pfs_excp_num;
+ 
+ wire flush_sign = excp_flush || ertn_flush || refetch_flush;
+ 
+@@ -49,7 +70,7 @@ reg         fs_inst_valid;
+ reg  [31:0] fs_inst_r;
+ reg  [31:0] fs_pc;
+ reg         fs_excp;
+-reg  [ 0:0] fs_excp_num;
++reg  [ 3:0] fs_excp_num;
+ assign fs_to_ds_bus = {fs_excp    ,
+                        fs_excp_num,
+                        fs_inst    ,
+@@ -67,10 +88,14 @@ always @(posedge clk) begin
+         flush_valid <= 1'b0;
+     end
+     else if (!(inst_req && inst_addr_ok)) begin
+-        if (excp_flush) begin
++        if (excp_flush && !excp_tlbrefill) begin
+             flush_valid <= 1'b1;
+             flush_target  <= csr_eentry;
+         end
++        else if (excp_flush && excp_tlbrefill) begin
++            flush_valid <= 1'b1;
++            flush_target  <= csr_tlbrentry;
++        end
+         else if (ertn_flush) begin
+             flush_valid <= 1'b1;
+             flush_target  <= csr_era;
+@@ -86,12 +111,19 @@ always @(posedge clk) begin
+     end 
+ end
+ 
++//addr trans
++assign inst_addr_trans_en = csr_pg && !csr_da && !dmw0_en && !dmw1_en;
++assign dmw0_en = csr_pg && !csr_da && ((csr_dmw0[`PLV0] && csr_plv == 2'd0) || (csr_dmw0[`PLV3] && csr_plv == 2'd3)) && (nextpc[31:29] == csr_dmw0[`VSEG]);
++assign dmw1_en = csr_pg && !csr_da && ((csr_dmw1[`PLV0] && csr_plv == 2'd0) || (csr_dmw1[`PLV3] && csr_plv == 2'd3)) && (nextpc[31:29] == csr_dmw1[`VSEG]);
++assign inst_vaddr = nextpc;
++
+ wire [31:0] seq_pc;
+ wire [31:0] nextpc;
+ assign to_fs_valid  = ~reset && pfs_readg_go;
+ assign pfs_readg_go = inst_req && inst_addr_ok || pfs_excp;
+ assign seq_pc       = fs_pc + 3'h4;
+-assign nextpc       = excp_flush                   ? csr_eentry :
++assign nextpc       = excp_flush &  excp_tlbrefill ? csr_tlbrentry :
++                      excp_flush & !excp_tlbrefill ? csr_eentry    :
+                       ertn_flush                   ? csr_era    :
+                       refetch_flush                ? ws_pc + 3'h4 :
+                       flush_valid                  ? flush_target :
+@@ -103,15 +135,17 @@ reg wait_data_ok;
+ assign inst_req    = fs_allowin && !wait_data_ok && !br_stall && !pfs_excp;
+ assign inst_wr     = 1'h0;
+ assign inst_size   = 2'h2;
+-assign inst_addr   = nextpc;
++assign inst_addr   = inst_paddr;
+ assign inst_wstrb  = 4'b0;
+ assign inst_wdata  = 32'b0;
+ 
+ wire pfs_excp_adef = (nextpc[0] || nextpc[1]);
++wire pfs_excp_tlbr = !inst_tlb_found && inst_addr_trans_en;
++wire pfs_excp_pif  = !inst_tlb_v && inst_addr_trans_en;
++wire pfs_excp_ppi  = (csr_plv > inst_tlb_plv) && inst_addr_trans_en;
+ 
+-assign pfs_excp = pfs_excp_adef;
+-assign pfs_excp_num = {pfs_excp_adef};
+-
++assign pfs_excp = pfs_excp_ppi || pfs_excp_pif || pfs_excp_tlbr || pfs_excp_adef;
++assign pfs_excp_num = {pfs_excp_ppi, pfs_excp_pif, pfs_excp_tlbr, pfs_excp_adef};
+ 
+ always @(posedge clk) begin
+     if (reset) begin
+@@ -143,7 +177,7 @@ always @(posedge clk) begin
+     if (reset) begin
+         fs_pc <= 32'h1bfffffc;  //trick: to make nextpc be 0x1c000000 during reset 
+         fs_excp      <= 1'b0;
+-        fs_excp_num  <= 1'b0;
++        fs_excp_num  <= 4'b0;
+     end
+     else if (to_fs_valid && fs_allowin) begin
+         fs_pc <= nextpc;
+diff --git a/mem_stage.v b/mem_stage.v
+index 7e1ae1f..aa359f5 100644
+--- a/mem_stage.v
++++ b/mem_stage.v
+@@ -44,7 +44,7 @@ wire [31:0] ms_pc;
+ wire [ 1:0] ms_mem_size;
+ wire        ms_mem_sign_ext;
+ wire [31:0] ms_mem_addr;
+-wire [ 5:0] ms_excp_num;
++wire [13:0] ms_excp_num;
+ wire        ms_ertn;
+ wire        ms_excp;
+ wire        ms_csr_we;
+@@ -59,7 +59,7 @@ wire [18:0] ms_invtlb_vpn;
+ wire        ms_inst_tlbsrch;
+ wire        data_tlb_found;
+ wire [ 3:0] data_tlb_index;
+-assign {ms_excp_num    ,  //204:199
++assign {ms_excp_num    ,  //212:199
+         ms_ertn        ,  //198:198
+         ms_excp        ,  //197:197
+         ms_inst_tlbrd  ,  //196:196
+@@ -91,10 +91,10 @@ reg  [31:0] mem_result_r;
+ wire [31:0] mem_result;
+ wire [31:0] ms_final_result;
+ wire        excp;
+-wire [ 5:0] excp_num;
++wire [13:0] excp_num;
+ 
+-assign ms_to_ws_bus = {ms_mem_addr    ,  //195:164
+-                       excp_num       ,  //163:158
++assign ms_to_ws_bus = {ms_mem_addr    ,  //203:172
++                       excp_num       ,  //171:158
+                        ms_ertn        ,  //157:157
+                        excp           ,  //156:156
+                        ms_inst_tlbrd  ,  //155:155
+diff --git a/mycpu.h b/mycpu.h
+index 45c60ec..38a6227 100644
+--- a/mycpu.h
++++ b/mycpu.h
+@@ -2,10 +2,10 @@
+     `define MYCPU_H
+ 
+     `define BR_BUS_WD       34
+-    `define FS_TO_DS_BUS_WD 66
+-    `define DS_TO_ES_BUS_WD 221
+-    `define ES_TO_MS_BUS_WD 205
+-    `define MS_TO_WS_BUS_WD 196
++    `define FS_TO_DS_BUS_WD 69
++    `define DS_TO_ES_BUS_WD 224
++    `define ES_TO_MS_BUS_WD 213
++    `define MS_TO_WS_BUS_WD 204
+     `define WS_TO_RF_BUS_WD 38
+     `define ES_TO_DS_FORWARD_BUS 39
+     `define MS_TO_DS_FORWARD_BUS 39
+diff --git a/mycpu_top.v b/mycpu_top.v
+index b70b060..e76e1c1 100644
+--- a/mycpu_top.v
++++ b/mycpu_top.v
+@@ -120,15 +120,26 @@ wire [ 8:0] ws_csr_esubcode;
+ wire [ 5:0] ws_csr_ecode  ;
+ wire        va_error      ;
+ wire [31:0] bad_va        ;
++wire        excp_tlbrefill;
++wire        excp_tlb      ;
++wire [18:0] excp_tlb_vppn ;
+ wire        tlbsrch_en    ;
+ wire        tlbsrch_found ;
+ wire [ 3:0] tlbsrch_index ;
+ wire        has_int       ;
+ wire [31:0] fs_csr_eentry ;
+ wire [31:0] fs_csr_era    ;
++wire [31:0] csr_tlbrentry ;
+ 
++wire [ 1:0] csr_plv       ;
+ wire [18:0] csr_vppn      ; 
+ wire [ 9:0] csr_asid      ;
++wire        csr_pg        ;
++wire        csr_da        ;
++wire [31:0] csr_dmw0      ;
++wire [31:0] csr_dmw1      ;
++wire [ 1:0] csr_datf      ;
++wire [ 1:0] csr_datm      ;
+ wire [ 4:0] csr_rand_index;
+ wire [31:0] csr_tlbehi    ;
+ wire [31:0] csr_tlbelo0   ;
+@@ -150,8 +161,26 @@ wire [18:0] invtlb_vpn    ;
+ wire [ 4:0] invtlb_op     ;
+ 
+ wire [31:0] data_vaddr        ;
++wire        data_addr_trans_en;
++wire        data_dmw0_en      ;
++wire        data_dmw1_en      ;
++wire [31:0] data_paddr        ;
+ wire        data_tlb_found    ;
+ wire [ 3:0] data_tlb_index    ;
++wire        data_tlb_v        ;
++wire        data_tlb_d        ;
++wire [ 1:0] data_tlb_mat      ;
++wire [ 1:0] data_tlb_plv      ;
++wire [31:0] inst_vaddr        ;
++wire        inst_addr_trans_en;
++wire        inst_dmw0_en      ;
++wire        inst_dmw1_en      ;
++wire [31:0] inst_paddr        ;
++wire        inst_tlb_found    ;
++wire        inst_tlb_v        ;
++wire        inst_tlb_d        ;
++wire [ 1:0] inst_tlb_mat      ;
++wire [ 1:0] inst_tlb_plv      ;
+ 
+ // IF stage
+ if_stage if_stage(
+@@ -168,9 +197,30 @@ if_stage if_stage(
+     .excp_flush     (excp_flush     ),
+     .ertn_flush     (ertn_flush     ),
+     .refetch_flush  (refetch_flush  ),
++    .excp_tlbrefill (excp_tlbrefill ),
+     .ws_pc          (ws_csr_era     ),
+     .csr_eentry     (fs_csr_eentry  ),
+     .csr_era        (fs_csr_era     ),
++    .csr_tlbrentry  (csr_tlbrentry  ),
++    //from csr
++    .csr_pg         (csr_pg     ),
++    .csr_da         (csr_da     ),
++    .csr_dmw0       (csr_dmw0   ),
++    .csr_dmw1       (csr_dmw1   ),
++    .csr_plv        (csr_plv    ),
++    .csr_datf       (csr_datf   ),
++    //to addr trans
++    .inst_vaddr        (inst_vaddr          ),
++    .inst_addr_trans_en(inst_addr_trans_en  ),
++    .dmw0_en           (inst_dmw0_en        ),
++    .dmw1_en           (inst_dmw1_en        ),
++    //tlb
++    .inst_paddr        (inst_paddr      ),
++    .inst_tlb_found    (inst_tlb_found  ),
++    .inst_tlb_v        (inst_tlb_v      ),
++    .inst_tlb_d        (inst_tlb_d      ),
++    .inst_tlb_mat      (inst_tlb_mat    ),
++    .inst_tlb_plv      (inst_tlb_plv    ),
+     //inst sram interface
+     .inst_req       (inst_req    ),
+     .inst_wr        (inst_wr     ),
+@@ -240,11 +290,26 @@ exe_stage exe_stage(
+     .refetch_flush  (refetch_flush  ),
+     .ms_excp        (ms_excp        ),
+     //from csr 
++    .csr_pg         (csr_pg         ),
++    .csr_da         (csr_da         ),
++    .csr_dmw0       (csr_dmw0       ),
++    .csr_dmw1       (csr_dmw1       ),
++    .csr_plv        (csr_plv        ),
++    .csr_datm       (csr_datm       ),
+     .csr_vppn       (csr_vppn       ),
+     //to addr trans 
+-    .data_vaddr     (data_vaddr     ),
++    .data_vaddr        (data_vaddr          ),
++    .data_addr_trans_en(data_addr_trans_en  ),   
++    .dmw0_en           (data_dmw0_en        ),
++    .dmw1_en           (data_dmw1_en        ),  
++    //tlb 
++    .data_paddr     (data_paddr     ),
+     .data_tlb_found (data_tlb_found ),
+     .data_tlb_index (data_tlb_index ),
++    .data_tlb_v     (data_tlb_v     ),
++    .data_tlb_d     (data_tlb_d     ),
++    .data_tlb_mat   (data_tlb_mat   ),
++    .data_tlb_plv   (data_tlb_plv   ),
+     //data sram interface
+     .data_req       (data_req    ),
+     .data_wr        (data_wr     ),
+@@ -323,6 +388,9 @@ wb_stage wb_stage(
+     .csr_ecode      (ws_csr_ecode   ),
+     .va_error       (va_error       ),
+     .bad_va         (bad_va         ),
++    .excp_tlbrefill (excp_tlbrefill ),
++    .excp_tlb       (excp_tlb       ),
++    .excp_tlb_vppn  (excp_tlb_vppn  ),
+     .excp_flush     (excp_flush     ),
+     .ertn_flush     (ertn_flush     ),
+     .refetch_flush  (refetch_flush  ),
+@@ -367,6 +435,9 @@ csr u_csr(
+     .ecode_in    (ws_csr_ecode   ),
+     .va_error_in (va_error       ),
+     .bad_va_in   (bad_va         ),
++    .excp_tlbrefill (excp_tlbrefill ),
++    .excp_tlb       (excp_tlb       ),
++    .excp_tlb_vppn  (excp_tlb_vppn  ),
+     .tlbsrch_en   (tlbsrch_en    ),
+     .tlbsrch_found(tlbsrch_found ),
+     .tlbsrch_index(tlbsrch_index ),
+@@ -382,6 +453,12 @@ csr u_csr(
+     .tlbelo0_out  (csr_tlbelo0   ),
+     .tlbelo1_out  (csr_tlbelo1   ),
+     .tlbidx_out   (csr_tlbidx    ),
++    .pg_out       (csr_pg        ),
++    .da_out       (csr_da        ),
++    .dmw0_out     (csr_dmw0      ),
++    .dmw1_out     (csr_dmw1      ),
++    .datf_out     (csr_datf      ),
++    .datm_out     (csr_datm      ),
+     //from addr trans 
+     .tlbrd_en     (tlbrd_en      ),
+     .tlbehi_in    (wr_tlbehi     ),
+@@ -389,17 +466,38 @@ csr u_csr(
+     .tlbelo1_in   (wr_tlbelo1    ),
+     .tlbidx_in    (wr_tlbidx     ),
+     .asid_in      (wr_asid       ),
++    //general use
++    .plv_out      (csr_plv       ),
+     //to fs 
+     .eentry_out  (fs_csr_eentry  ),
+-    .era_out     (fs_csr_era     )
++    .era_out     (fs_csr_era     ),
++    .tlbrentry_out(csr_tlbrentry )
+ );
+ 
+ addr_trans u_addr_trans(
+     .clk                  (aclk),
+     .asid                 (csr_asid     ),
++    .inst_addr_trans_en   (inst_addr_trans_en),
++    .data_addr_trans_en   (data_addr_trans_en),
++    .inst_vaddr           (inst_vaddr),
++    .inst_dmw0_en         (inst_dmw0_en),
++    .inst_dmw1_en         (inst_dmw1_en),
++    .inst_paddr           (inst_paddr),
++    .inst_tlb_found       (inst_tlb_found),
++    .inst_tlb_v           (inst_tlb_v),
++    .inst_tlb_d           (inst_tlb_d),
++    .inst_tlb_mat         (inst_tlb_mat),
++    .inst_tlb_plv         (inst_tlb_plv),
+     .data_vaddr           (data_vaddr),
++    .data_dmw0_en         (data_dmw0_en),
++    .data_dmw1_en         (data_dmw1_en),
++    .data_paddr           (data_paddr),
+     .data_tlb_found       (data_tlb_found),
+     .data_tlb_index       (data_tlb_index),
++    .data_tlb_v           (data_tlb_v),
++    .data_tlb_d           (data_tlb_d),
++    .data_tlb_mat         (data_tlb_mat),
++    .data_tlb_plv         (data_tlb_plv),
+ 
+     .tlbfill_en           (tlbfill_en),
+     .tlbwr_en             (tlbwr_en),
+@@ -416,7 +514,11 @@ addr_trans u_addr_trans(
+     .invtlb_en            (invtlb_en),
+     .invtlb_asid          (invtlb_asid),
+     .invtlb_vpn           (invtlb_vpn),
+-    .invtlb_op            (invtlb_op)
++    .invtlb_op            (invtlb_op),
++    .csr_dmw0             (csr_dmw0),
++    .csr_dmw1             (csr_dmw1),
++    .csr_da               (csr_da),
++    .csr_pg               (csr_pg)
+ );
+ 
+ axi_bridge u_axi_brige(
+diff --git a/wb_stage.v b/wb_stage.v
+index 20c1fcb..415c4c1 100644
+--- a/wb_stage.v
++++ b/wb_stage.v
+@@ -18,6 +18,9 @@ module wb_stage(
+     output wire [ 5:0] csr_ecode                        ,
+     output wire        va_error                         ,
+     output wire [31:0] bad_va                           ,
++    output wire        excp_tlbrefill                   ,
++    output wire        excp_tlb                         ,
++    output wire [18:0] excp_tlb_vppn                    ,
+     output wire        excp_flush                       ,
+     output wire        ertn_flush                       ,
+     output wire        refetch_flush                    ,
+@@ -54,7 +57,7 @@ wire        ws_gr_we;
+ wire [ 4:0] ws_dest;
+ wire [31:0] ws_final_result;
+ wire [31:0] ws_pc;
+-wire [ 5:0] ws_excp_num;
++wire [13:0] ws_excp_num;
+ wire        ws_ertn;
+ wire        ws_excp;
+ wire        ws_csr_we;
+@@ -69,8 +72,8 @@ wire [18:0] ws_invtlb_vpn;
+ wire        ws_inst_tlbsrch;
+ wire        data_tlb_found;
+ wire [ 3:0] data_tlb_index;
+-assign {ws_error_va    ,  //195:163
+-        ws_excp_num    ,  //163:158
++assign {ws_error_va    ,  //203:172
++        ws_excp_num    ,  //171:158
+         ws_ertn        ,  //157:157
+         ws_excp        ,  //156:156
+         ws_inst_tlbrd  ,  //155:155
+@@ -144,13 +147,25 @@ assign csr_era      = ws_pc;
+ assign {csr_ecode, 
+         va_error,
+         bad_va, 
+-        csr_esubcode} = ws_excp_num[ 0] ? {`ECODE_INT ,       1'b0, 32'b0      , 9'b0          } :
+-                        ws_excp_num[ 1] ? {`ECODE_ADEF, excp_flush, ws_pc      , `ESUBCODE_ADEF} :
+-                        ws_excp_num[ 2] ? {`ECODE_SYS ,       1'b0, 32'b0      , 9'b0          } :
+-                        ws_excp_num[ 3] ? {`ECODE_BRK ,       1'b0, 32'b0      , 9'b0          } :
+-                        ws_excp_num[ 4] ? {`ECODE_INE ,       1'b0, 32'b0      , 9'b0          } :
+-                        ws_excp_num[ 5] ? {`ECODE_ALE , excp_flush, ws_error_va, 9'b0          } :
+-                        47'b0;
++        csr_esubcode,
++        excp_tlbrefill,
++        excp_tlb, 
++        excp_tlb_vppn}= ws_excp_num[ 0] ? {`ECODE_INT ,       1'b0, 32'b0      , 9'b0          ,       1'b0,       1'b0,              19'b0} :
++                        ws_excp_num[ 1] ? {`ECODE_ADEF, excp_flush, ws_pc      , `ESUBCODE_ADEF,       1'b0,       1'b0,              19'b0} :
++                        ws_excp_num[ 2] ? {`ECODE_TLBR, excp_flush, ws_pc      , 9'b0          , excp_flush, excp_flush,       ws_pc[31:13]} :
++                        ws_excp_num[ 3] ? {`ECODE_PIF , excp_flush, ws_pc      , 9'b0          ,       1'b0, excp_flush,       ws_pc[31:13]} :
++                        ws_excp_num[ 4] ? {`ECODE_PPI , excp_flush, ws_pc      , 9'b0          ,       1'b0, excp_flush,       ws_pc[31:13]} :
++                        ws_excp_num[ 5] ? {`ECODE_SYS ,       1'b0, 32'b0      , 9'b0          ,       1'b0,       1'b0,              19'b0} :
++                        ws_excp_num[ 6] ? {`ECODE_BRK ,       1'b0, 32'b0      , 9'b0          ,       1'b0,       1'b0,              19'b0} :
++                        ws_excp_num[ 7] ? {`ECODE_INE ,       1'b0, 32'b0      , 9'b0          ,       1'b0,       1'b0,              19'b0} :
++                        ws_excp_num[ 8] ? {`ECODE_ALE , excp_flush, ws_error_va, 9'b0          ,       1'b0,       1'b0,              19'b0} :
++                        ws_excp_num[ 9] ? {`ECODE_TLBR, excp_flush, ws_error_va, 9'b0          , excp_flush, excp_flush, ws_error_va[31:13]} :
++                        ws_excp_num[10] ? {`ECODE_PME , excp_flush, ws_error_va, 9'b0          ,       1'b0, excp_flush, ws_error_va[31:13]} :
++                        ws_excp_num[11] ? {`ECODE_PPI , excp_flush, ws_error_va, 9'b0          ,       1'b0, excp_flush, ws_error_va[31:13]} :
++                        ws_excp_num[12] ? {`ECODE_PIS , excp_flush, ws_error_va, 9'b0          ,       1'b0, excp_flush, ws_error_va[31:13]} :
++                        ws_excp_num[13] ? {`ECODE_PIL , excp_flush, ws_error_va, 9'b0          ,       1'b0, excp_flush, ws_error_va[31:13]} :
++                        69'b0;
++
+ assign excp_flush   = ws_excp && ws_valid;
+ assign ertn_flush   = ws_ertn && ws_valid;
+ assign refetch_flush= (ws_csr_we        ||
+-- 
+2.34.1
+
