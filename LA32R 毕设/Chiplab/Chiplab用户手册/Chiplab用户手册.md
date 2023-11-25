@@ -203,7 +203,7 @@ export PATH=${CHIPLAB_HOME}/toolchains/loongarch32r-linux-gnusf-${TOOLCHAINS_DAT
 
     在[https://gitee.com/loongson-edu/la32r-toolchains/releases](https://gitee.com/loongson-edu/la32r-toolchains/releases "https://gitee.com/loongson-edu/la32r-toolchains/releases")链接下载x86-64架构的交叉编译器
 
-    ![](image/image_o_usW9AVc-.png)
+    ![](image/image_bPQUUhYJzN.png)
 
     TOOLCHAINS\_DATE为2022-05-20
 
@@ -225,7 +225,7 @@ export PATH=${CHIPLAB_HOME}/toolchains/loongarch32r-linux-gnusf-${TOOLCHAINS_DAT
 
     在[https://gitee.com/wwt\_panache/la32r-nemu/releases](https://gitee.com/wwt_panache/la32r-nemu/releases "https://gitee.com/wwt_panache/la32r-nemu/releases")下载la32r-nemu-interpreter-so
 
-    ![](image/image_Z1KyVd-GOb.png)
+    ![](image/image_3jfRpX6xbg.png)
 4.  在toolchains下解压下载的压缩包
 
     在[https://gitee.com/chenzes/la32r-newlib/releases/tag/newlib\_0609](https://gitee.com/chenzes/la32r-newlib/releases/tag/newlib_0609 "https://gitee.com/chenzes/la32r-newlib/releases/tag/newlib_0609")下下载[system\_newlib.tar](https://gitee.com/chenzes/la32r-newlib/releases/download/newlib_0609/system_newlib.tar "system_newlib.tar")并解压到toolchains目录下
@@ -286,3 +286,5 @@ sudo apt install verilator gtkwave
     -   `run_prog` : 该工作目录下可运行`func`测试用例、`dhrystone`、`coremark`性能测试程序、`linux`以及自定义C程序。
     -   `run_random` : 该工作目录下可进行随机指令序列测试。
         具体仿真使用方法参考[verilator仿真环境说明](../verilator仿真环境说明/verilator仿真环境说明.md "verilator仿真环境说明")
+4.  综合
+5.  板上启动内核
