@@ -239,7 +239,7 @@ DIFFTEST的比对对象是两个核，一个是用户设计的核，一个是参
 
 目前该框架会比对所有的通用寄存器和csr寄存器的值，如果用户希望只比对某些csr寄存器的值，可通过修改`sims/verilator/testbench/difftest.cpp`中的`compare_mask`数组来开关对应csr寄存器的比对使能，`1`即为开启比对，`0`即为关闭比对。`compare_mask`数组中每一项对应的csr寄存器与`reg_name`数组中的csr寄存器一一对应。被关闭比对的csr寄存器在比对时值会变成0。其中，我们强烈建议关闭`estat`寄存器的比对——默认是关闭的
 
-![](image/image_RIbFhnMKPQ.png)
+![](image/image_S2Kl7OnnYd.png)
 
 [^注释1]: Control and Status Register
 

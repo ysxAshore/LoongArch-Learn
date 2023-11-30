@@ -100,7 +100,7 @@ gtkwave simu_trace.fst                   #查看仿真波形
 
 ## 2.3 LA32R-NEMU
 
-使用DIFFTEST帮助用户在仿真环境下调试内核[DIFFTEST使用说明](https://www.wolai.com/waLP97c7L3bMqzQWw96Bfp.md "DIFFTEST使用说明")
+使用DIFFTEST帮助用户在仿真环境下调试内核[DIFFTEST使用说明](../DIFFTEST使用说明/DIFFTEST使用说明.md "DIFFTEST使用说明")
 
 ## 2.4 prog环境
 
@@ -246,13 +246,13 @@ make verilator testbench simulation_run_prog
 
 1.  &#x20;obj文件夹内包括对应func测试点生成的obj文件夹
 
-    ![](image/image_KE_Egow-PH.png)
+    ![](image/image_0-LN__mTlC.png)
 
     test.s是对应的反汇编文件
     mif文件是coe文件的二进制形式，是根据coe文件生成的。 coe文件只会在生成RAM/ROM模块时起作用，其作用就是根据文件内容生成相应的mif文件，而RAM/ROM真正使用的是mif文件。且并不能直接编辑mif文件，因为mif文件是根据coe生成的，每次编辑完mif重新生成的话又会覆盖掉修改
 2.  log文件夹内包含对应func测试点生成的log文件夹
 
-    ![](image/image_TkQOddaD8E.png)
+    ![](image/image_B1d9bsEapp.png)
     -   `simu_trace.txt` : 仿真过程输出信息的备份
     -   `mem_trace.txt` : 仿真过程访存信息的备份
     -   `simu_trace.fst` : 仿真波形文件 可以使用gtkwave打开
@@ -277,7 +277,7 @@ make verilator testbench simulation_run_prog
 
     解压该`random*.tar.bz2`文件可以得到`RES_*`目录，目录内容如下：
 
-    ![](image/image_xZ_pEGsF5Y.png)
+    ![](image/image_fAuMa78Nkt.png)
 
     共有`RES_cluster_00**`和`RES_jump00**` 50个子目录
 
@@ -290,7 +290,7 @@ make verilator testbench simulation_run_prog
 
     移动最后的random\_res目录结构如下：
 
-    ![](image/image_fBxuZt_Ua-.png)
+    ![](image/image_LXF9fGidNt.png)
 
 ### 2.5.3. 编译参数配置
 
@@ -365,13 +365,13 @@ ram.dat:../../../../../software/random_boot/rom.vlog inst.vlog
 
 所有随机序列测试成功或失败的信息存放在`run_random/log/date`目录下中；每个随机序列具体的测试信息存放在`run_random/log/$(TESTCASE)`[^注释2]下
 
-![](image/image_vqkt423aIq.png)
+![](image/image_S34200Oqyh.png)
 
 左图是DUMP\_WAVEFORM=0的目录结构
 
 若测试成功，则fail.log和nopass.log内容为空；此时pass.log内会记录所测试的随机序列的运行日志文件路径
 
-![](image/image_SeevMC7Uqa.png)
+![](image/image_h6ILRGaMmw.png)
 
 cluster的run.log文件记录了对应每个random\_res/RES\_cluster\_00\*目录下的所有随机指令序列文件的TLB运行结果，以及总共用时，总指令数等信息
 jump的run.log文件记录了对应每个random\_res/RES\_jump\_00\*目录下的所有随机指令的PC情况，以及总用时，总指令数等信息
@@ -427,7 +427,7 @@ make ../../../../software/random_res/$(TESTCASE)
 
 1.  func功能测试内obj未清理干净，导致编译func时出现undefined reference错误
 
-    ![](image/image_b1G2c6URvN.png)
+    ![](image/image_7aRr8oSn8L.png)
 2.  不设置Makefile\_run中的`DUMP_WAVEFORM`为1时，make会出现mv /tmp/log/ \*.fst失败，Make报错tmp/log不存在，但这个不影响make进程。设置以后即不出现这个警告
 3.  单个随机指令序列的运行时报错不存在目标rom.vlog，解决这个以后又报错不存在output
 

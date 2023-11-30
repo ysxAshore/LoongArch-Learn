@@ -12,3 +12,5 @@
 [verilator仿真环境说明](verilator仿真环境说明/verilator仿真环境说明.md "verilator仿真环境说明")
 
 [DIFFTEST使用说明](DIFFTEST使用说明/DIFFTEST使用说明.md "DIFFTEST使用说明")
+
+[MyCPU](MyCPU/MyCPU.md "MyCPU")
