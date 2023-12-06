@@ -1,7 +1,0 @@
-本实验实现了TLB模块和TLB指令，新增了TLB相关的CSR寄存器：
-- 新增了TLB模块和MMU模块，在ID级新增了TLB指令的译码逻辑
-- 在EXE级新增tlbsrch指令的查找逻辑，在写回级新增TLB指令的执行逻辑，其中tlbsrch指令直接更新CSR寄存器，tlbrd指令通过MMU模块更新CSR寄存器，tlbwr、tlbfill和invtlb指令通过MMU模块更新TLB
-
-注意事项：
-- invtlb指令在WB级执行而不是EXE级
-- 所有修改CSR寄存器的指令都会触发重取，所以无需阻塞tlbsrch指令
