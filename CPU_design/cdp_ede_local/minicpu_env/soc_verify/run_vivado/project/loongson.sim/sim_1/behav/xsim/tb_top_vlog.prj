@@ -1,0 +1,17 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../loongson.ip_user_files/ipstatic" \
+"../../../../../../rtl/xilinx_ip/clk_pll/clk_pll_clk_wiz.v" \
+"../../../../../../rtl/xilinx_ip/clk_pll/clk_pll.v" \
+"../../../../../../rtl/xilinx_ip/inst_ram/sim/inst_ram.v" \
+"../../../../../../rtl/CONFREG/confreg.v" \
+"../../../../../../../miniCPU/minicpu_top.v" \
+"../../../../../../../miniCPU/regfile.v" \
+"../../../../../../rtl/soc_mini_top.v" \
+"../../../../../../../miniCPU/tools.v" \
+"../../../../../../testbench/mycpu_tb.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
