@@ -1,0 +1,15 @@
+1c000000:       addi.w   $t0,$zero,0x0      //置第1项的0
+1c000004:       addi.w   $t1,$zero,0x1      //置第2项的1
+1c000008:       addi.w   $s0,$zero,0x0      //循环变量i初始化为0
+1c00000c:       addi.w   $s1,$zero,0x1      //循环的步长置为1
+1c000010:       ld.w     $a0,$zero,1024     //读取拨码开关输入的终止值
+          loop:
+1c000014:       add.w    $t2,$t0,$t1        //f(i) = f(i-2) + f(i-1) 
+1c000018:       addi.w   $t0,$t1,0x0        //记录f(i-1)
+1c00001c:       addi.w   $t1,$t2,0x0        //记录f(i) 
+1c000020:       add.w    $s0,$s0,$s1        //i++
+1c000024:       bne      $s0,$a0,loop       //if i!=n, goto loop
+1c000028:       st.w     $t2,$zero,1028     //将f(n)的值输出到数码管上
+          end:
+1c00002c:       bne      $s1, $zero, end    //测试完毕，进入死循环
+
