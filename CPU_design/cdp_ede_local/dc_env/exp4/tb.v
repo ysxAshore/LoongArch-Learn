@@ -1,22 +1,20 @@
 module tb;
-reg        clk   ;
-reg        resetn;     
-reg [3 :0] switch;    //input
+  reg         clk;
+  reg         resetn;
+  reg [3 : 0] switch;  //input
 
-initial
-begin
+  initial begin
     #100;
     clk    = 1'b0;
     resetn = 1'b0;
 
     #500;
     resetn = 1'b1;
-end
-always #5 clk = ~clk;
+  end
+  always #5 clk = ~clk;
 
-//set switch
-initial
-begin
+  //set switch
+  initial begin
     #100;
     switch = 4'hf;
     #500;
@@ -30,17 +28,21 @@ begin
     switch = 4'h2;  //~switch: d
     #100;
     switch = 4'h0;  //~switch: f
-end
+    #100;
+    switch = 4'b1011;  //~switch: 4
+    #100;
+    switch = 4'b0011;  //~switch: c
+  end
 
-show_sw  u_show_sw(
-    .clk    (clk    ),          
-    .resetn (resetn ),     
+  show_sw u_show_sw (
+      .clk   (clk),
+      .resetn(resetn),
 
-    .switch (switch ),    //input
+      .switch(switch),  //input
 
-    .num_csn(),   //new value   
-    .num_a_g(),      
+      .num_csn(),  //new value   
+      .num_a_g(),
 
-    .led    ()    //previous value
-);
+      .led()  //previous value
+  );
 endmodule
