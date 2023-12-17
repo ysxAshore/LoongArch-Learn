@@ -40,35 +40,27 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //   > Date        : 2017-08-04
 //*************************************************************************
 
-module confreg
-(
+
+//该CPU没有设置数据存储器，对于CPU所发出的写存储器指令STW，所采取的直观做法是将写数据写到LED灯上——当CPU发出写信号且写地址是1028时表示写数据到LED
+//因此conf_wdata是来自于CPU的写存储器数据,conf_we是来自于CPU的写信号且给定写地址是十进制的1028,clk,resetn也都与CPU的clk，resetn相同
+module confreg (
     input  wire        clk,
     input  wire        resetn,
-    // read and write from cpu
     input  wire        conf_we,
     input  wire [31:0] conf_wdata,
-    // read and write to device on board
     output wire [15:0] led
 );
 
-reg  [31:0] led_data;
+  reg [31:0] led_data;
 
-//--------------------------------{led}begin-----------------------------//
-//led display
-//led_data[31:0]
-wire write_led = conf_we;
-assign led = led_data[15:0];
-always @(posedge clk)
-begin
-    if(!resetn)
-    begin
-        led_data <= 32'h0;
+  wire write_led = conf_we;
+  assign led = led_data[15:0];
+  always @(posedge clk) begin
+    if (!resetn) begin
+      led_data <= 32'h0;
+    end else if (write_led) begin
+      led_data <= conf_wdata[31:0];
     end
-    else if(write_led)
-    begin
-        led_data <= conf_wdata[31:0];
-    end
-end
-//---------------------------------{led}end------------------------------//
+  end
 
 endmodule
