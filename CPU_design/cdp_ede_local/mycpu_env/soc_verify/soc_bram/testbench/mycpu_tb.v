@@ -114,6 +114,7 @@ reg        debug_end;
 reg [31:0] ref_wb_pc;
 reg [4 :0] ref_wb_rf_wnum;
 reg [31:0] ref_wb_rf_wdata;
+reg [31:0] ref_wb_inst;
 
 integer a;
 always @(posedge soc_clk)
@@ -124,8 +125,8 @@ begin
         trace_cmp_flag=1'b0;
         while (!trace_cmp_flag && !($feof(trace_ref)))
         begin
-            a = $fscanf(trace_ref, "%h %h %h %h", trace_cmp_flag,
-                    ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata);
+            a = $fscanf(trace_ref, "%h %h %h %h %h", trace_cmp_flag,
+                    ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata , ref_wb_inst);
         end
     end
 end
@@ -159,8 +160,8 @@ begin
         begin
             $display("--------------------------------------------------------------");
             $display("[%t] Error!!!",$time);
-            $display("    reference: PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h",
-                      ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata_v);
+            $display("    reference: PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h,inst = 0x%8h",
+                      ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata_v , ref_wb_inst);
             $display("    mycpu    : PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h",
                       debug_wb_pc, debug_wb_rf_wnum, debug_wb_rf_wdata_v);
             $display("--------------------------------------------------------------");

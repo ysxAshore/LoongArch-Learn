@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Wed Dec 20 22:10:33 2023
+# Process ID: 17830
+# Current directory: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1
+# Command line: vivado -log inst_ram.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source inst_ram.tcl
+# Log file: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram.vds
+# Journal file: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1/vivado.jou
+# Running On: ysxAshore-Ubuntu, OS: Linux, CPU Frequency: 4502.226 MHz, CPU Physical cores: 6, Host memory: 16662 MB
+#-----------------------------------------------------------
+source inst_ram.tcl -notrace
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1276.480 ; gain = 0.023 ; free physical = 8045 ; free virtual = 13916
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: inst_ram
+INFO: [IP_Flow 19-6922] IPCACHE: Exporting cached entry cdd7717f3a482bf3 to dir: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.cache/ip/2023.1/c/d/cdd7717f3a482bf3/inst_ram.dcp to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram.dcp.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.cache/ip/2023.1/c/d/cdd7717f3a482bf3/inst_ram_sim_netlist.v to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_sim_netlist.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.cache/ip/2023.1/c/d/cdd7717f3a482bf3/inst_ram_sim_netlist.vhdl to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_sim_netlist.vhdl.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.cache/ip/2023.1/c/d/cdd7717f3a482bf3/inst_ram_stub.v to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_stub.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.cache/ip/2023.1/c/d/cdd7717f3a482bf3/inst_ram_stub.vhdl to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_dram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_stub.vhdl.
+INFO: [IP_Flow 19-4838] Using cached IP synthesis design for IP inst_ram, cache-ID = cdd7717f3a482bf3.
+INFO: [Common 17-206] Exiting Vivado at Wed Dec 20 22:10:44 2023...

@@ -1,0 +1,75 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
+| Date         : Tue Jan  2 18:04:45 2024
+| Host         : ysxAshore-Ubuntu running 64-bit Ubuntu 22.04.3 LTS
+| Command      : upgrade_ip
+| Device       : xc7a200tfbg676-1
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'inst_ram'
+
+1. Summary
+----------
+
+CAUTION (success, with warnings) in the upgrade of inst_ram (xilinx.com:ip:blk_mem_gen:8.4) from (Rev. 4) to (Rev. 6)
+
+After upgrade, an IP may have parameter and port differences compared to the original customization. Please review the parameters within the IP customization GUI to ensure proper functionality. Also, please review the updated IP instantiation template to ensure proper connectivity, and update your design if required.
+
+2. Connection Warnings
+----------------------
+
+Detected external port differences while upgrading 'inst_ram'. These changes may impact your design.
+
+
+-Upgraded port 'addra' width 18 differs from original width 4
+
+-Upgraded port 'dina' width 32 differs from original width 16
+
+-Upgraded port 'douta' width 32 differs from original width 16
+
+-Upgraded port 'wea' width 4 differs from original width 1
+
+
+
+
+
+
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
+| Date         : Tue Jan  2 18:04:41 2024
+| Host         : ysxAshore-Ubuntu running 64-bit Ubuntu 22.04.3 LTS
+| Command      : upgrade_ip
+| Device       : xc7a200tfbg676-1
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'data_ram'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of data_ram (xilinx.com:ip:blk_mem_gen:8.4) from (Rev. 4) to (Rev. 6)
+
+
+
+
+
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
+| Date         : Tue Jan  2 18:04:41 2024
+| Host         : ysxAshore-Ubuntu running 64-bit Ubuntu 22.04.3 LTS
+| Command      : upgrade_ip
+| Device       : xc7a200tfbg676-1
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'clk_pll'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of clk_pll (xilinx.com:ip:clk_wiz:6.0) from (Rev. 4) to (Rev. 12)
+

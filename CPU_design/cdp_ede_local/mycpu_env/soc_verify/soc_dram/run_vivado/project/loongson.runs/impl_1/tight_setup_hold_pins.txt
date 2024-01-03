@@ -1,0 +1,7 @@
++====================+===================+===================================+
+| Launch Setup Clock | Launch Hold Clock | Pin                               |
++====================+===================+===================================+
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_confreg/num_monitor_reg/D       |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_confreg/open_trace_reg/D        |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_confreg/write_timer_begin_reg/D |
++--------------------+-------------------+-----------------------------------+

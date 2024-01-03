@@ -1,0 +1,2 @@
+instRom.v,verilog,xil_defaultlib,../../../../loongson.gen/sources_1/ip/instRom_1/sim/instRom.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v
