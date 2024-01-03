@@ -1,6 +1,6 @@
 [submodule "CPU_design/nscsccTeamLA"]
 	path = CPU_design/nscsccTeamLA
 	url = https://gitee.com/loongson-edu/nscscc-team-la32r.git
-[submodule "LA32R_GD/Chiplab/chiplab"]
-	path = LA32R_GD/Chiplab/chiplab
+[submodule "LA32R_GD/Chiplab/chiplab_env"]
+	path = LA32R_GD/Chiplab/chiplab_env
 	url = https://gitee.com/loongson-edu/chiplab.git
