@@ -108,6 +108,7 @@ module soc_lite_top #(
     end
   endgenerate
 
+  reg  [  7:0] intrpt;  //先声明为reg类型
   //cpu inst sram
   wire         cpu_inst_en;
   wire [3 : 0] cpu_inst_we;
@@ -134,10 +135,17 @@ module soc_lite_top #(
   wire [ 31:0] conf_wdata;
   wire [ 31:0] conf_rdata;
 
+  always @(posedge clk) begin
+    if (~cpu_resetn) begin
+      intrpt <= 8'b0;
+    end
+  end
+
   //cpu
   mycpu_top cpu (
       .clk   (cpu_clk),
       .resetn(cpu_resetn), //low active
+      .intrpt(intrpt),
 
       .inst_sram_en   (cpu_inst_en),
       .inst_sram_we   (cpu_inst_we),

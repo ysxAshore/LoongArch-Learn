@@ -1,0 +1,10 @@
+0.7
+2020.2
+May  7 2023
+15:10:42
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/gettrace.sim/sim_1/behav/xsim/glbl.v,1683266558,verilog,,,,glbl,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/BRIDGE/bridge_1x2.v,1703051474,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/CONFREG/confreg.v,,bridge_1x2,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/CONFREG/confreg.v,1703051474,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/soc_lite_top.v,,confreg,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/myCPU/SimpleLACoreWrapRAM.v,1703051474,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/BRIDGE/bridge_1x2.v,,SimpleLACore;SimpleLACoreWrapRAM,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/soc_lite_top.v,1703066735,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/tb_top.v,,soc_lite_top,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/gettrace/src/tb_top.v,1703126739,verilog,,,,tb_top,,,,,,,,

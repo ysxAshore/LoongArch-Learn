@@ -3,6 +3,7 @@
 module mycpu_top (
     input  wire        clk,               //系统时钟
     input  wire        resetn,            //复位信号、板载按下复位按钮低电平
+    input  wire [ 7:0] intrpt,
     // inst sram interface
     output wire        inst_sram_en,
     output wire [ 3:0] inst_sram_we,      //指令存储器写信号，设置无效——低电平
@@ -22,6 +23,7 @@ module mycpu_top (
     output wire [31:0] debug_wb_rf_wdata  //写寄存器数据
 );
   wire F_stall;
+  wire F_excp_stall;
   wire F_div_mod_stall;
   wire [31:0] d_pc_next;
   wire [31:0] F_pcAddr;
@@ -31,6 +33,7 @@ module mycpu_top (
       .clk(clk),
       .resetn(resetn),
       .F_stall(F_stall),
+      .F_excp_stall(F_excp_stall),
       .F_div_mod_stall(F_div_mod_stall),
       .d_pc_next(d_pc_next),
       .F_pcAddr(F_pcAddr),
@@ -38,6 +41,7 @@ module mycpu_top (
   );
 
   wire D_stall;
+  wire D_excp_stall;
   wire D_div_mod_stall;
   wire W_regW;
   wire [4:0] W_regWAdd;
@@ -64,55 +68,97 @@ module mycpu_top (
   wire d_branch;
   wire [1:0] D_forwardA;
   wire [1:0] D_forwardB;
+  wire [1:0] D_forwardCSR;
   wire [31:0] e_aluResult;
+  wire [31:0] E_csrWData;
+  wire [31:0] M_csrWData;
   wire [31:0] M_aluResult;
   wire [31:0] m_memReadData;
   wire d_loadu;
   wire d_take_bOrj;
   wire E_take_bOrj;
+  wire d_csr_en;
+  wire [13:0] d_csrAdd;
+  wire [31:0] d_csrWData;
+  wire W_csr_en;
+  wire [13:0] W_csrWAdd;
+  wire [31:0] W_csrWData;
+  wire W_excp;
+  wire W_ertn;
+  wire W_excp_tlbrefill;
+  wire [31:0] W_era;
+  wire [8:0] W_subcode;
+  wire [5:0] W_code;
+  wire W_llbit;
+  wire W_llbit_wen;
+  wire d_ertn;
+  wire d_excp;
+  wire [7:0] d_excp_num;
 
   ID_stage u_ID_stage (
-      .clk            (clk),
-      .resetn         (resetn),
-      .D_stall        (D_stall),
-      .D_div_mod_stall(D_div_mod_stall),
-      .F_inst         (F_inst),
-      .F_pcAddr       (F_pcAddr),
-      .F_pcPlus4      (F_pcPlus4),
-      .D_forwardA     (D_forwardA),
-      .D_forwardB     (D_forwardB),
-      .E_take_bOrj    (E_take_bOrj),
-      .e_aluResult    (e_aluResult),
-      .M_aluResult    (M_aluResult),
-      .m_memReadData  (m_memReadData),
-      .W_regW         (W_regW),
-      .W_regWAdd      (W_regWAdd),
-      .w_regWData     (w_regWData),
-      .D_pcAddr       (D_pcAddr),
-      .d_pc_next      (d_pc_next),
-      .d_aluSrc1      (d_aluSrc1),
-      .d_aluSrc2      (d_aluSrc2),
-      .d_regWAdd      (d_regWAdd),
-      .d_regW         (d_regW),
-      .d_res_from_mem (d_res_from_mem),
-      .d_aluOP        (d_aluOP),
-      .d_memReadE     (d_memReadE),
-      .d_memWriteE    (d_memWriteE),
-      .d_memReadW     (d_memReadW),
-      .d_memWriteW    (d_memWriteW),
-      .d_regDataB     (d_regDataB),
-      .d_mul_alu      (d_mul_alu),
-      .d_mul_div_sign (d_mul_div_sign),
-      .d_mul_high     (d_mul_high),
-      .d_is_mod       (d_is_mod),
-      .d_div_mod_alu  (d_div_mod_alu),
-      .d_csr_data     (d_csr_data),
-      .d_csr_inst     (d_csr_inst),
-      .d_regAddA      (d_regAddA),
-      .d_regAddB      (d_regAddB),
-      .d_branch       (d_branch),
-      .d_loadu        (d_loadu),
-      .d_take_bOrj    (d_take_bOrj)
+      .clk             (clk),
+      .resetn          (resetn),
+      .interrupt       (intrpt),
+      .D_stall         (D_stall),
+      .D_excp_stall    (D_excp_stall),
+      .D_div_mod_stall (D_div_mod_stall),
+      .F_inst          (F_inst),
+      .F_pcAddr        (F_pcAddr),
+      .F_pcPlus4       (F_pcPlus4),
+      .D_forwardA      (D_forwardA),
+      .D_forwardB      (D_forwardB),
+      .D_forwardCSR    (D_forwardCSR),
+      .E_take_bOrj     (E_take_bOrj),
+      .e_aluResult     (e_aluResult),
+      .E_csrWData      (E_csrWData),
+      .M_csrWData      (M_csrWData),
+      .M_aluResult     (M_aluResult),
+      .m_memReadData   (m_memReadData),
+      .W_regW          (W_regW),
+      .W_regWAdd       (W_regWAdd),
+      .w_regWData      (w_regWData),
+      .W_csr_en        (W_csr_en),
+      .W_csrWAdd       (W_csrWAdd),
+      .W_csrWData      (W_csrWData),
+      .W_excp          (W_excp),
+      .W_excp_tlbrefill(W_excp_tlbrefill),
+      .W_ertn          (W_ertn),
+      .W_era           (W_era),
+      .W_subcode       (W_subcode),
+      .W_code          (W_code),
+      .W_llbit         (W_llbit),
+      .W_llbit_wen     (W_llbit_wen),
+      .D_pcAddr        (D_pcAddr),
+      .d_pc_next       (d_pc_next),
+      .d_aluSrc1       (d_aluSrc1),
+      .d_aluSrc2       (d_aluSrc2),
+      .d_regWAdd       (d_regWAdd),
+      .d_regW          (d_regW),
+      .d_res_from_mem  (d_res_from_mem),
+      .d_aluOP         (d_aluOP),
+      .d_memReadE      (d_memReadE),
+      .d_memWriteE     (d_memWriteE),
+      .d_memReadW      (d_memReadW),
+      .d_memWriteW     (d_memWriteW),
+      .d_regDataB      (d_regDataB),
+      .d_mul_alu       (d_mul_alu),
+      .d_mul_div_sign  (d_mul_div_sign),
+      .d_mul_high      (d_mul_high),
+      .d_is_mod        (d_is_mod),
+      .d_div_mod_alu   (d_div_mod_alu),
+      .d_csr_data      (d_csr_data),
+      .d_csr_inst      (d_csr_inst),
+      .d_regAddA       (d_regAddA),
+      .d_regAddB       (d_regAddB),
+      .d_branch        (d_branch),
+      .d_loadu         (d_loadu),
+      .d_take_bOrj     (d_take_bOrj),
+      .d_csrAdd        (d_csrAdd),
+      .d_csrWData      (d_csrWData),
+      .d_csr_en        (d_csr_en),
+      .d_ertn          (d_ertn),
+      .d_excp          (d_excp),
+      .d_excp_num      (d_excp_num)
   );
 
   wire E_fresh;
@@ -130,6 +176,11 @@ module mycpu_top (
   wire E_csr_inst;
   wire E_div_mod_alu;
   wire E_loadu;
+  wire [13:0] E_csrAdd;
+  wire E_csr_en;
+  wire E_ertn;
+  wire E_excp;
+  wire [7:0] E_excp_num;
 
   EXE_stage u_EXE_stage (
       .clk             (clk),
@@ -157,6 +208,12 @@ module mycpu_top (
       .d_div_mod_alu   (d_div_mod_alu),
       .d_csr_data      (d_csr_data),
       .d_csr_inst      (d_csr_inst),
+      .d_csrAdd        (d_csrAdd),
+      .d_csrWData      (d_csrWData),
+      .d_csr_en        (d_csr_en),
+      .d_ertn          (d_ertn),
+      .d_excp          (d_excp),
+      .d_excp_num      (d_excp_num),
       .E_pcAddr        (E_pcAddr),
       .e_complete_delay(e_complete_delay),
       .e_aluResult     (e_aluResult),
@@ -172,10 +229,17 @@ module mycpu_top (
       .E_loadu         (E_loadu),
       .E_csr_data      (E_csr_data),
       .E_csr_inst      (E_csr_inst),
-      .E_take_bOrj     (E_take_bOrj)
+      .E_take_bOrj     (E_take_bOrj),
+      .E_csrWData      (E_csrWData),
+      .E_csr_en        (E_csr_en),
+      .E_csrAdd        (E_csrAdd),
+      .E_ertn          (E_ertn),
+      .E_excp          (E_excp),
+      .E_excp_num      (E_excp_num)
   );
 
   wire M_div_mod_stall;
+  wire M_expc_fresh;
   wire M_memReadE, M_memWriteE;
   wire [4:0] M_regWAdd;
   wire M_regW;
@@ -186,11 +250,17 @@ module mycpu_top (
   wire [31:0] memReadData;
   wire [31:0] M_csr_data;
   wire M_csr_inst;
+  wire [13:0] M_csrAdd;
+  wire M_csr_en;
+  wire M_ertn;
+  wire M_excp;
+  wire [7:0] M_excp_num;
 
   MEM_stage u_MEM_stage (
       .clk            (clk),
       .resetn         (resetn),
       .M_div_mod_stall(M_div_mod_stall),
+      .M_expc_fresh   (M_expc_fresh),
       .E_pcAddr       (E_pcAddr),
       .e_aluResult    (e_aluResult),
       .E_regWAdd      (E_regWAdd),
@@ -204,6 +274,12 @@ module mycpu_top (
       .E_csr_data     (E_csr_data),
       .E_csr_inst     (E_csr_inst),
       .E_loadu        (E_loadu),
+      .E_csrWData     (E_csrWData),
+      .E_csr_en       (E_csr_en),
+      .E_csrAdd       (E_csrAdd),
+      .E_ertn         (E_ertn),
+      .E_excp         (E_excp),
+      .E_excp_num     (E_excp_num),
       .memReadData    (memReadData),
       .M_memReadE     (M_memReadE),
       .M_memWriteE    (M_memWriteE),
@@ -216,14 +292,22 @@ module mycpu_top (
       .m_memWriteData (m_memWriteData),
       .M_pcAddr       (M_pcAddr),
       .M_csr_data     (M_csr_data),
-      .M_csr_inst     (M_csr_inst)
+      .M_csr_inst     (M_csr_inst),
+      .M_csrWData     (M_csrWData),
+      .M_csr_en       (M_csr_en),
+      .M_csrAdd       (M_csrAdd),
+      .M_ertn         (M_ertn),
+      .M_excp         (M_excp),
+      .M_excp_num     (M_excp_num)
   );
 
   wire W_div_mod_stall;
+  wire W_expc_fresh;
   wire [31:0] W_pcAddr;
   WB_stage u_WB_stage (
       .clk            (clk),
       .resetn         (resetn),
+      .W_expc_fresh   (W_expc_fresh),
       .W_div_mod_stall(W_div_mod_stall),
       .M_aluResult    (M_aluResult),
       .M_regW         (M_regW),
@@ -233,36 +317,64 @@ module mycpu_top (
       .M_csr_data     (M_csr_data),
       .M_csr_inst     (M_csr_inst),
       .M_pcAddr       (M_pcAddr),
+      .M_csrWData     (M_csrWData),
+      .M_csr_en       (M_csr_en),
+      .M_csrAdd       (M_csrAdd),
+      .M_ertn         (M_ertn),
+      .M_excp         (M_excp),
+      .M_excp_num     (M_excp_num),
       .W_regW         (W_regW),
       .W_regWAdd      (W_regWAdd),
       .w_regWData     (w_regWData),
-      .W_pcAddr       (W_pcAddr)
+      .W_pcAddr       (W_pcAddr),
+      .W_csrWData     (W_csrWData),
+      .W_csr_en       (W_csr_en),
+      .W_csrAdd       (W_csrWAdd),
+      .W_ertn         (W_ertn),
+      .W_excp         (W_excp),
+      .W_excp_num     (W_excp_num),
+      .W_code         (W_code),
+      .W_subcode      (W_subcode),
+      .W_era          (W_era)
   );
-
   hazard u_hazard (
       .d_regAddA       (d_regAddA),
       .d_regAddB       (d_regAddB),
+      .d_csrWAdd       (d_csrAdd),
+      .d_excp          (d_excp),
+      .W_excp          (W_excp),
+      .F_excp_stall    (F_excp_stall),
+      .D_excp_stall    (D_excp_stall),
       .E_div_mod_alu   (E_div_mod_alu),
       .e_complete_delay(e_complete_delay),
       .E_res_from_mem  (E_res_from_mem),
       .M_res_from_mem  (M_res_from_mem),
       .d_branch        (d_branch),
       .E_regW          (E_regW),
+      .E_csr_en        (E_csr_en),
       .M_regW          (M_regW),
+      .M_csr_en        (M_csr_en),
       .W_regW          (W_regW),
+      .W_csr_en        (W_csr_en),
       .E_regWAdd       (E_regWAdd),
+      .E_csrWAdd       (E_csrAdd),
       .M_regWAdd       (M_regWAdd),
-      .W_regWAdd       (W_regWAdd),
+      .M_csrWAdd       (M_csrAdd),
+      .W_regWAdd       (W_csrWAdd),
+      .W_csrWAdd       (W_csrWAdd),
       .F_stall         (F_stall),
       .D_stall         (D_stall),
       .E_fresh         (E_fresh),
-      .D_div_mod_stall (D_div_mod_stall),
       .F_div_mod_stall (F_div_mod_stall),
+      .D_div_mod_stall (D_div_mod_stall),
       .E_div_mod_stall (E_div_mod_stall),
       .M_div_mod_stall (M_div_mod_stall),
       .W_div_mod_stall (W_div_mod_stall),
+      .M_expc_fresh    (M_expc_fresh),
+      .W_expc_fresh    (W_expc_fresh),
       .D_forwardA      (D_forwardA),
-      .D_forwardB      (D_forwardB)
+      .D_forwardB      (D_forwardB),
+      .D_forwardCSR    (D_forwardCSR)
   );
 
   assign inst_sram_en = 1'b1;

@@ -126,7 +126,7 @@ begin
         while (!trace_cmp_flag && !($feof(trace_ref)))
         begin
             a = $fscanf(trace_ref, "%h %h %h %h %h", trace_cmp_flag,
-                    ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata , ref_wb_inst);
+                    ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata);
         end
     end
 end
@@ -160,8 +160,8 @@ begin
         begin
             $display("--------------------------------------------------------------");
             $display("[%t] Error!!!",$time);
-            $display("    reference: PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h,inst = 0x%8h",
-                      ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata_v , ref_wb_inst);
+            $display("    reference: PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h",
+                      ref_wb_pc, ref_wb_rf_wnum, ref_wb_rf_wdata_v);
             $display("    mycpu    : PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h",
                       debug_wb_pc, debug_wb_rf_wnum, debug_wb_rf_wdata_v);
             $display("--------------------------------------------------------------");

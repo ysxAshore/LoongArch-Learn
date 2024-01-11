@@ -3,6 +3,7 @@ module MEM_stage (
     input clk,
     input resetn,
     input M_div_mod_stall,
+    input M_expc_fresh,
 
     input [31:0] E_pcAddr,
     input [31:0] e_aluResult,
@@ -17,6 +18,12 @@ module MEM_stage (
     input [31:0] E_csr_data,
     input E_csr_inst,
     input E_loadu,
+    input [13:0] E_csrAdd,
+    input [31:0] E_csrWData,
+    input E_csr_en,
+    input E_ertn,
+    input E_excp,
+    input [7:0] E_excp_num,
 
     input [31:0] memReadData,
 
@@ -31,19 +38,26 @@ module MEM_stage (
     output [31:0] m_memWriteData,
     output [31:0] M_pcAddr,
     output [31:0] M_csr_data,
-    output M_csr_inst
+    output M_csr_inst,
+    output [13:0] M_csrAdd,
+    output [31:0] M_csrWData,
+    output M_csr_en,
+    output M_ertn,
+    output M_excp,
+    output [7:0] M_excp_num
 );
   wire [31:0] M_memWriteData;
   wire [3:0] M_memReadW, M_memWriteW;
   wire M_loadu;
 
-  parameter WIDTH = 211;
-  flopenr #(
+  parameter WIDTH = 268;
+  flopenrc #(
       .WIDTH(WIDTH)
-  ) u_flopenr (
+  ) u_flopenrc (
       .clk(clk),
       .rst(~resetn),
       .enable(~M_div_mod_stall),
+      .clear(M_expc_fresh),
       .d({
         E_pcAddr,
         e_aluResult,
@@ -58,7 +72,13 @@ module MEM_stage (
         E_csr_data,
         E_csr_inst,
         E_loadu,
-        e_aluResult
+        e_aluResult,
+        E_csr_en,
+        E_csrAdd,
+        E_csrWData,
+        E_ertn,
+        E_excp,
+        E_excp_num
       }),
       .q({
         M_pcAddr,
@@ -74,7 +94,13 @@ module MEM_stage (
         M_csr_data,
         M_csr_inst,
         M_loadu,
-        M_memAdd
+        M_memAdd,
+        M_csr_en,
+        M_csrAdd,
+        M_csrWData,
+        M_ertn,
+        M_excp,
+        M_excp_num
       })
   );
 

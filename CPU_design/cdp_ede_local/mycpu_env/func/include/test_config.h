@@ -34,17 +34,17 @@
   #define TEST8 1
   #define TEST9 1
 #elif EXP==6
-  define SHORT_TEST1 1
-  define NOP_INSERT 0
-  define TEST1 1
-  define TEST2 0
-  define TEST3 0
-  define TEST4 0
-  define TEST5 0
-  define TEST6 0
-  define TEST7 0
-  define TEST8 0
-  define TEST9 0
+  #define SHORT_TEST1 1
+  #define NOP_INSERT 0
+  #define TEST1 1
+  #define TEST2 0
+  #define TEST3 0
+  #define TEST4 0
+  #define TEST5 0
+  #define TEST6 0
+  #define TEST7 0
+  #define TEST8 0
+  #define TEST9 0
 #elif  EXP==7
   #define SHORT_TEST1 0
   #define NOP_INSERT 1
@@ -94,17 +94,17 @@
   #define TEST8 0
   #define TEST9 0
 #elif  EXP==12
-  #define SHORT_TEST1 0
-  #define NOP_INSERT 0
-  #define TEST1 1
-  #define TEST2 1
-  #define TEST3 1
-  #define TEST4 1
-  #define TEST5 0
-  #define TEST6 0
-  #define TEST7 0
-  #define TEST8 0
-  #define TEST9 0
+  define SHORT_TEST1 0
+  define NOP_INSERT 0
+  define TEST1 1
+  define TEST2 1
+  define TEST3 1
+  define TEST4 1
+  define TEST5 0
+  define TEST6 0
+  define TEST7 0
+  define TEST8 0
+  define TEST9 0
 #elif  (EXP==13 || EXP==14 || EXP==15 || EXP==16)
   #define SHORT_TEST1 0
   #define NOP_INSERT 0

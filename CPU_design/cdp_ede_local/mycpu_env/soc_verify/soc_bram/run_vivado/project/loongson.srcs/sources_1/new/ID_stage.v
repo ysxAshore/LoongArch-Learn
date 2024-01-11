@@ -4,24 +4,42 @@
 module ID_stage (
     input clk,
     input resetn,
+    input [7:0] interrupt,
+
     input D_stall,
     input D_div_mod_stall,
+    input D_excp_stall,
     input [31:0] F_inst,
     input [31:0] F_pcAddr,
     input [31:0] F_pcPlus4,
 
     input [1:0] D_forwardA,
     input [1:0] D_forwardB,
+    input [1:0] D_forwardCSR,
 
     input E_take_bOrj,
 
     input [31:0] e_aluResult,
+    input [31:0] E_csrWData,
     input [31:0] M_aluResult,
+    input [31:0] M_csrWData,
     input [31:0] m_memReadData,
 
     input W_regW,
     input [4:0] W_regWAdd,
     input [31:0] w_regWData,
+    input W_csr_en,
+    input [13:0] W_csrWAdd,
+    input [31:0] W_csrWData,
+    input W_excp,
+    input W_excp_tlbrefill,
+    input W_ertn,
+    input [31:0] W_era,
+    input [8:0] W_subcode,
+    input [5:0] W_code,
+    input W_llbit,
+    input W_llbit_wen,
+
 
     output [31:0] D_pcAddr,
     output [31:0] d_pc_next,
@@ -41,13 +59,19 @@ module ID_stage (
     output d_mul_high,
     output d_is_mod,
     output d_div_mod_alu,
-    output reg [31:0] d_csr_data,
+    output [31:0] d_csr_data,
     output d_csr_inst,
     output [4:0] d_regAddA,
     output [4:0] d_regAddB,
     output d_branch,
     output d_loadu,
-    output d_take_bOrj
+    output d_take_bOrj,
+    output [13:0] d_csrAdd,
+    output [31:0] d_csrWData,
+    output d_csr_en,
+    output d_ertn,
+    output d_excp,
+    output [7:0] d_excp_num
 );
   wire [31:0] inst;
   wire [31:0] D_pcPlus4;
@@ -58,11 +82,19 @@ module ID_stage (
   ) id_init (
       .clk(clk),
       .rst(~resetn),
-      .enable(~D_stall & ~D_div_mod_stall),  //阻塞——complete_delay + 前递 + 分支
+      .enable(~D_stall & ~D_div_mod_stall & ~D_excp_stall),  //阻塞——complete_delay + 前递 + 分支
       .d({F_inst, F_pcAddr, F_pcPlus4}),
       .q({inst, D_pcAddr, D_pcPlus4})
   );
 
+  reg wait_expcF;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      wait_expcF <= 1'b0;
+    end else begin
+      wait_expcF <= W_excp;
+    end
+  end
   wire [ 5:0] d_op_31_26;  //inst[31:26]
   wire [ 3:0] d_op_25_22;  //inst[25:22]
   wire [ 1:0] d_op_21_20;  //inst[21:20]
@@ -113,75 +145,75 @@ module ID_stage (
       .out(d_op_19_15_d)
   );
 
-  wire inst_rdcntid = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h0] & d_rk == 5'h18 & d_rd == 5'h00 & ~E_take_bOrj;
-  wire inst_rdcntvl = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h0] & d_rk == 5'h18 & d_rj == 5'h00 & ~E_take_bOrj;
-  wire inst_rdcntvh = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h0] & d_rk == 5'h19 & d_rj == 5'h00 & ~E_take_bOrj;
-  wire inst_add = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h00] & ~E_take_bOrj;
-  wire inst_sub = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h02] & ~E_take_bOrj;
-  wire inst_slt = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h04] & ~E_take_bOrj;
-  wire inst_sltu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h05] & ~E_take_bOrj;
-  wire inst_nor = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h08] & ~E_take_bOrj;
-  wire inst_and = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h09] & ~E_take_bOrj;
-  wire inst_or = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0a] & ~E_take_bOrj;
-  wire inst_xor = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0b] & ~E_take_bOrj;
-  wire inst_sll = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0e] & ~E_take_bOrj;
-  wire inst_srl = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0f] & ~E_take_bOrj;
-  wire inst_sra = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h10] & ~E_take_bOrj;
-  wire inst_mul = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h18] & ~E_take_bOrj;
-  wire inst_mulh = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h19] & ~E_take_bOrj;
-  wire inst_mulhu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h1a] & ~E_take_bOrj;
-  wire inst_div = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h00] & ~E_take_bOrj;
-  wire inst_mod = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h01] & ~E_take_bOrj;
-  wire inst_divu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h02] & ~E_take_bOrj;
-  wire inst_modu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h03] & ~E_take_bOrj;
-  wire inst_break = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h14] & ~E_take_bOrj;
-  wire inst_syscall = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h16] & ~E_take_bOrj;
-  wire inst_slli = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h01] & ~E_take_bOrj;
-  wire inst_srli = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h09] & ~E_take_bOrj;
-  wire inst_srai = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h11] & ~E_take_bOrj;
-  wire inst_slti = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h8] & ~E_take_bOrj;
-  wire inst_sltui = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h9] & ~E_take_bOrj;
-  wire inst_addi = d_op_31_26_d[6'h00] & d_op_25_22_d[4'ha] & ~E_take_bOrj;
-  wire inst_andi = d_op_31_26_d[6'h00] & d_op_25_22_d[4'hd] & ~E_take_bOrj;
-  wire inst_ori = d_op_31_26_d[6'h00] & d_op_25_22_d[4'he] & ~E_take_bOrj;
-  wire inst_xori = d_op_31_26_d[6'h00] & d_op_25_22_d[4'hf] & ~E_take_bOrj;
-  wire inst_csrrd = d_op_31_26_d[6'h01] & ~inst[25] & ~inst[24] & d_rj == 5'h00 & ~E_take_bOrj;
-  wire inst_csrwr = d_op_31_26_d[6'h01] & ~inst[25] & ~inst[24] & d_rj == 5'h01 & ~E_take_bOrj;
-  wire inst_csrxchg = d_op_31_26_d[6'h01] & ~inst[25] & ~inst[24] & ~inst_csrrd & ~inst_csrwr  & ~E_take_bOrj;
-  wire inst_cacop = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h8] & ~E_take_bOrj;
-  wire inst_tlbsrch = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0a & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj;
-  wire inst_tlbrd = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0b & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj;
-  wire inst_tlbwr = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0c & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj;
-  wire inst_tlbfill = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0d & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj;
-  wire inst_ertn = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0e & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj;
-  wire inst_idle = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h11] & ~E_take_bOrj;
-  wire inst_invtlb = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h13] & ~E_take_bOrj;
-  wire inst_lu12i = d_op_31_26_d[6'h05] & ~inst[25] & ~E_take_bOrj;
-  wire inst_pcaddu12i = d_op_31_26_d[6'h07] & ~inst[25] & ~E_take_bOrj;
-  wire inst_ll = d_op_31_26_d[6'h08] & ~inst[25] & ~inst[24] & ~E_take_bOrj;
-  wire inst_sc = d_op_31_26_d[6'h08] & ~inst[25] & inst[24] & ~E_take_bOrj;
-  wire inst_ld_b = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h0] & ~E_take_bOrj;
-  wire inst_ld_h = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h1] & ~E_take_bOrj;
-  wire inst_ld_w = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h2] & ~E_take_bOrj;
-  wire inst_st_b = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h4] & ~E_take_bOrj;
-  wire inst_st_h = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h5] & ~E_take_bOrj;
-  wire inst_st_w = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h6] & ~E_take_bOrj;
-  wire inst_ld_bu = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h8] & ~E_take_bOrj;
-  wire inst_ld_hu = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h9] & ~E_take_bOrj;
-  wire inst_preld = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'hb] & ~E_take_bOrj;
-  wire inst_dbar = d_op_31_26_d[6'h0e] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h3] & d_op_19_15_d[5'h04] & ~E_take_bOrj;
-  wire inst_ibar = d_op_31_26_d[6'h0e] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h3] & d_op_19_15_d[5'h05] & ~E_take_bOrj;
-  wire inst_bceqz = d_op_31_26_d[6'h12] & ~inst[9] & ~inst[8] & ~E_take_bOrj;
-  wire inst_bcnez = d_op_31_26_d[6'h12] & ~inst[9] & inst[8] & ~E_take_bOrj;
-  wire inst_jirl = d_op_31_26_d[6'h13] & ~E_take_bOrj;
-  wire inst_b = d_op_31_26_d[6'h14] & ~E_take_bOrj;
-  wire inst_bl = d_op_31_26_d[6'h15] & ~E_take_bOrj;
-  wire inst_beq = d_op_31_26_d[6'h16] & ~E_take_bOrj;
-  wire inst_bne = d_op_31_26_d[6'h17] & ~E_take_bOrj;
-  wire inst_blt = d_op_31_26_d[6'h18] & ~E_take_bOrj;
-  wire inst_bge = d_op_31_26_d[6'h19] & ~E_take_bOrj;
-  wire inst_bltu = d_op_31_26_d[6'h1a] & ~E_take_bOrj;
-  wire inst_bgeu = d_op_31_26_d[6'h1b] & ~E_take_bOrj;
+  wire inst_rdcntid = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h0] & d_rk == 5'h18 & d_rd == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_rdcntvl = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h0] & d_rk == 5'h18 & d_rj == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_rdcntvh = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h0] & d_rk == 5'h19 & d_rj == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_add = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h00] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_sub = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h02] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_slt = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h04] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_sltu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h05] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_nor = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h08] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_and = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h09] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_or = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0a] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_xor = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0b] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_sll = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0e] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_srl = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h0f] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_sra = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h10] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_mul = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h18] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_mulh = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h19] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_mulhu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h1] &d_op_19_15_d[5'h1a] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_div = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h00] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_mod = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h01] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_divu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h02] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_modu = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h03] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_break = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h14] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_syscall = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h0] & d_op_21_20_d[2'h2] &d_op_19_15_d[5'h16] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_slli = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h01] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_srli = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h09] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_srai = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h11] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_slti = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h8] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_sltui = d_op_31_26_d[6'h00] & d_op_25_22_d[4'h9] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_addi = d_op_31_26_d[6'h00] & d_op_25_22_d[4'ha] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_andi = d_op_31_26_d[6'h00] & d_op_25_22_d[4'hd] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ori = d_op_31_26_d[6'h00] & d_op_25_22_d[4'he] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_xori = d_op_31_26_d[6'h00] & d_op_25_22_d[4'hf] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_csrrd = d_op_31_26_d[6'h01] & ~inst[25] & ~inst[24] & d_rj == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_csrwr = d_op_31_26_d[6'h01] & ~inst[25] & ~inst[24] & d_rj == 5'h01 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_csrxchg = d_op_31_26_d[6'h01] & ~inst[25] & ~inst[24] & ~inst_csrrd & ~inst_csrwr  & ~E_take_bOrj & ~wait_expcF;
+  wire inst_cacop = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h8] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_tlbsrch = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0a & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_tlbrd = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0b & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_tlbwr = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0c & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_tlbfill = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0d & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ertn = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h10] & d_rk == 5'h0e & d_rj == 5'h00 & d_rd == 5'h00 & ~E_take_bOrj & ~wait_expcF;
+  wire inst_idle = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h11] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_invtlb = d_op_31_26_d[6'h01] & d_op_25_22_d[4'h9] & d_op_21_20_d[2'h0] & d_op_19_15_d[5'h13] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_lu12i = d_op_31_26_d[6'h05] & ~inst[25] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_pcaddu12i = d_op_31_26_d[6'h07] & ~inst[25] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ll = d_op_31_26_d[6'h08] & ~inst[25] & ~inst[24] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_sc = d_op_31_26_d[6'h08] & ~inst[25] & inst[24] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ld_b = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h0] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ld_h = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h1] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ld_w = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h2] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_st_b = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h4] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_st_h = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h5] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_st_w = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h6] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ld_bu = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h8] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ld_hu = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'h9] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_preld = d_op_31_26_d[6'h0a] & d_op_25_22_d[4'hb] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_dbar = d_op_31_26_d[6'h0e] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h3] & d_op_19_15_d[5'h04] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_ibar = d_op_31_26_d[6'h0e] & d_op_25_22_d[4'h1] & d_op_21_20_d[2'h3] & d_op_19_15_d[5'h05] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_bceqz = d_op_31_26_d[6'h12] & ~inst[9] & ~inst[8] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_bcnez = d_op_31_26_d[6'h12] & ~inst[9] & inst[8] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_jirl = d_op_31_26_d[6'h13] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_b = d_op_31_26_d[6'h14] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_bl = d_op_31_26_d[6'h15] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_beq = d_op_31_26_d[6'h16] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_bne = d_op_31_26_d[6'h17] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_blt = d_op_31_26_d[6'h18] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_bge = d_op_31_26_d[6'h19] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_bltu = d_op_31_26_d[6'h1a] & ~E_take_bOrj & ~wait_expcF;
+  wire inst_bgeu = d_op_31_26_d[6'h1b] & ~E_take_bOrj & ~wait_expcF;
 
   wire [1:0] d_selPC;
   wire d_src1_is_pc;
@@ -218,7 +250,7 @@ module ID_stage (
                     ~inst_cacop   &
                     ~inst_preld   &
                     ~inst_dbar    &
-                    ~inst_ibar     & ~E_take_bOrj;
+                    ~inst_ibar     & ~E_take_bOrj & ~wait_expcF;
   assign d_loadu = inst_ld_bu | inst_ld_hu;
   assign d_selPC[0] = (inst_bl 
                     | inst_b 
@@ -338,7 +370,7 @@ module ID_stage (
   assign d_is_mod = inst_mod | inst_modu;
   assign d_mul_high = inst_mulh | inst_mulhu;
   assign d_branch = inst_beq | inst_bne | inst_bge | inst_blt | inst_bgeu | inst_bltu;
-  assign d_take_bOrj = ~(d_selPC == 2'b00);
+  assign d_take_bOrj = ~(d_selPC == 2'b00);  //使得ertn在第二个周期即计算完成
 
 
   wire [31:0] d_regDataA;
@@ -398,15 +430,62 @@ module ID_stage (
                       (D_forwardB == 2'b10 ? m_memReadData :
                       (D_forwardB == 2'b01 ? M_aluResult :
                       d__regDataB));
-  assign d_pc_next = d_selPC[1] ? d_pcJ : (d_selPC[0] ? d_pcBranch : F_pcPlus4);
 
-  reg [31:0] d_csr[385:0];
-  always @(*) begin
-    if (~resetn) begin
-      d_csr[0] <= 32'h8;
-    end
-    d_csr_data <= {{32{d_csr_inst}} & d_csr[d_i14]};  //CSR的三条指令实现不完全
-  end
-  assign d_csr_inst = inst_csrwr | inst_csrrd;
-
+  wire [31:0] d__csr_data;
+  wire d_tid_out;
+  wire d_timer_64_out;
+  wire d_has_int;
+  wire d_excp;
+  wire d_excp_tlbrefill;
+  wire d_ertn;
+  wire d_llbit;
+  wire d_llbit_wenl;
+  wire [31:0] d_eentry_out;
+  wire [31:0] d_tlbrentry_out;
+  wire [31:0] d_era_out;
+  wire d_plv;
+  csr u_csr (
+      .clk             (clk),
+      .resetn          (resetn),
+      .d_csrAdd        (d_csrAdd),
+      .d_csrRead       (d__csr_data),
+      .W_csr_en        (W_csr_en),
+      .W_csrWAdd       (W_csrWAdd),
+      .W_csrWData      (W_csrWData),
+      .tid_out         (d_tid_out),
+      .timer_64_out    (d_timer_64_out),
+      .interrupt       (interrupt),
+      .has_int         (d_has_int),
+      .W_excp          (W_excp & ~W_ertn),
+      .W_excp_tlbrefill(W_excp_tlbrefill),
+      .W_ertn          (W_ertn),
+      .W_era           (W_era),
+      .W_subcode       (W_subcode),
+      .W_code          (W_code),
+      .W_llbit         (W_llbit),
+      .W_llbit_wen     (W_llbit_wen),
+      .eentry_out      (d_eentry_out),
+      .tlbrentry_out   (d_tlbrentry_out),
+      .era_out         (d_era_out),
+      .plv             (d_plv)
+  );
+  assign d_csrAdd = d_i14;
+  assign d_csr_data = {32{D_forwardCSR == 2'b11}} & E_csrWData |
+                      {32{D_forwardCSR == 2'b10}} & M_csrWData |
+                      {32{D_forwardCSR == 2'b01}} & W_csrWData |
+                      {32{D_forwardCSR == 2'b00}} & d__csr_data;
+  assign d_csr_inst = inst_csrwr | inst_csrrd | inst_csrxchg;
+  assign d_csrWData = inst_csrwr ? d_regDataB : (d_regDataB & d_regDataA) | (d_csr_data & ~d_regDataA);
+  assign d_csr_en = inst_csrwr | inst_csrxchg;
+  wire syscall_excp = inst_syscall;
+  assign d_ertn = inst_ertn;
+  assign d_excp = syscall_excp | d_has_int | d_ertn;  //这里把ertn和excp合并来给hazard产生阻塞信号
+  assign d_excp_num = {6'b0, syscall_excp, d_has_int};
+  //因此异常入口需要满足W_excp & ~W_ertn 的情况
+  //软件实现了对ERA的加4还是不加
+  assign d_pc_next = W_excp & ~W_ertn ? d_eentry_out :
+                    (W_ertn ? d_era_out: 
+                    (d_selPC[1] ? d_pcJ : 
+                    (d_selPC[0] ? d_pcBranch : 
+                    F_pcPlus4)));
 endmodule

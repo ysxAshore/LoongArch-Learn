@@ -1,8 +1,16 @@
 `timescale 1ns / 1ps
 
 module hazard (
-    input [4:0] d_regAddA,
-    input [4:0] d_regAddB,
+    input [ 4:0] d_regAddA,
+    input [ 4:0] d_regAddB,
+    input [13:0] d_csrWAdd,
+
+    input  d_excp,
+    // input  d_excp_tlbrefill,
+    input  W_excp,
+    // input  W_excp_tlbrefill,
+    output F_excp_stall,
+    output D_excp_stall,
 
     input E_div_mod_alu,
     input e_complete_delay,
@@ -10,11 +18,17 @@ module hazard (
     input M_res_from_mem,
     input d_branch,
     input E_regW,
+    E_csr_en,
     input M_regW,
+    M_csr_en,
     input W_regW,
+    W_csr_en,
     input [4:0] E_regWAdd,
+    input [13:0] E_csrWAdd,
     input [4:0] M_regWAdd,
+    input [13:0] M_csrWAdd,
     input [4:0] W_regWAdd,
+    input [13:0] W_csrWAdd,
 
     output F_stall,
     D_stall,
@@ -24,18 +38,25 @@ module hazard (
     E_div_mod_stall,
     M_div_mod_stall,
     W_div_mod_stall,
+    M_expc_fresh,
+    W_expc_fresh,
 
     output [1:0] D_forwardA,
-    D_forwardB
+    D_forwardB,
+    D_forwardCSR
 );
   wire lwStall, branchStall;
-  assign D_forwardA = (E_regWAdd == d_regAddA) & E_regW ? 2'b11 : 
-                      ((M_regWAdd == d_regAddA) & M_res_from_mem ? 2'b10 :
-                      (M_regWAdd == d_regAddA) & M_regW ? 2'b01 : 2'b00);
+  assign D_forwardA = (E_regWAdd == d_regAddA) & d_regAddA != 5'b0 & E_regW ? 2'b11 : 
+                      ((M_regWAdd == d_regAddA) & d_regAddA != 5'b0 & M_res_from_mem ? 2'b10 :
+                      (M_regWAdd == d_regAddA) & d_regAddA != 5'b0 & M_regW ? 2'b01 : 2'b00);
 
-  assign D_forwardB = (E_regWAdd == d_regAddB) & E_regW ? 2'b11 : 
-                      ((M_regWAdd == d_regAddB) & M_res_from_mem ? 2'b10 :
-                      (M_regWAdd == d_regAddB) & M_regW ? 2'b01 : 2'b00);
+  assign D_forwardB = (E_regWAdd == d_regAddB) & d_regAddB != 5'b0 & E_regW ? 2'b11 : 
+                      ((M_regWAdd == d_regAddB) & d_regAddB != 5'b0 & M_res_from_mem ? 2'b10 :
+                      (M_regWAdd == d_regAddB) & d_regAddB != 5'b0 & M_regW ? 2'b01 : 2'b00);
+  assign D_forwardCSR = (E_csrWAdd == d_csrWAdd) & E_csr_en ? 2'b11 : 
+                      ((M_csrWAdd == d_csrWAdd) & M_csr_en ? 2'b10 :
+                      (W_csrWAdd == d_csrWAdd) & W_csr_en ? 2'b01 : 2'b00);
+
   //稍微的处理延迟——便于观察
   //load id和exe
   //branch 判断寄存器分支——rj和rk
@@ -46,10 +67,14 @@ module hazard (
                         M_res_from_mem & (d_regAddA == M_regWAdd | d_regAddB == M_regWAdd));
   assign #1 D_stall = lwStall | branchStall;
   assign #1 F_stall = D_stall;
-  assign #1 E_fresh = D_stall;
+  assign #1 E_fresh = D_stall | W_excp;
   assign #1 D_div_mod_stall = E_div_mod_alu & ~e_complete_delay;
   assign #1 F_div_mod_stall = D_div_mod_stall;
   assign #1 E_div_mod_stall = D_div_mod_stall;
   assign #1 M_div_mod_stall = D_div_mod_stall;
   assign #1 W_div_mod_stall = D_div_mod_stall;
+  assign #1 D_excp_stall = ~W_excp & (d_excp);
+  assign #1 F_excp_stall = D_excp_stall;
+  assign #1 W_expc_fresh = W_excp;
+  assign #1 M_expc_fresh = W_expc_fresh;
 endmodule

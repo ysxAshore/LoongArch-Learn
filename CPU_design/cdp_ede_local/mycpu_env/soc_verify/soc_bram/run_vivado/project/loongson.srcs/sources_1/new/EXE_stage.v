@@ -27,6 +27,12 @@ module EXE_stage (
     input d_csr_inst,
     input d_loadu,
     input d_take_bOrj,
+    input [13:0] d_csrAdd,
+    input [31:0] d_csrWData,
+    input d_csr_en,
+    input d_ertn,
+    input d_excp,
+    input [7:0] d_excp_num,
 
     output [31:0] E_pcAddr,
     output e_complete_delay,
@@ -43,7 +49,13 @@ module EXE_stage (
     output E_loadu,
     output [31:0] E_csr_data,
     output E_csr_inst,
-    output E_take_bOrj
+    output E_take_bOrj,
+    output [13:0] E_csrAdd,
+    output [31:0] E_csrWData,
+    output E_csr_en,
+    output E_ertn,
+    output E_excp,
+    output [7:0] E_excp_num
 );
   wire [31:0] E_aluSrc1, E_aluSrc2;
   wire [11:0] E_aluOP;
@@ -53,7 +65,7 @@ module EXE_stage (
   wire E_is_mod;
 
 
-  parameter WIDTH_EX_init = 197;
+  parameter WIDTH_EX_init = 264;
   flopenrc #(
       .WIDTH(WIDTH_EX_init)
   ) flopenrc_EX1 (
@@ -82,7 +94,13 @@ module EXE_stage (
         d_csr_inst,
         D_pcAddr,
         d_loadu,
-        d_take_bOrj
+        d_take_bOrj,
+        d_csr_en,
+        d_csrAdd,
+        d_csrWData,
+        d_ertn,
+        d_excp,
+        d_excp_num
       }),
       .q({
         E_aluSrc1,
@@ -105,7 +123,13 @@ module EXE_stage (
         E_csr_inst,
         E_pcAddr,
         E_loadu,
-        E_take_bOrj
+        E_take_bOrj,
+        E_csr_en,
+        E_csrAdd,
+        E_csrWData,
+        E_ertn,
+        E_excp,
+        E_excp_num
       })
   );
   wire [31:0] aluResult;
@@ -141,6 +165,7 @@ module EXE_stage (
   );
 
   wire [31:0] div_mod_res_reg = E_div_mod_alu ? (E_is_mod ? r : s) : aluResult;
-  assign e_aluResult = E_mul_alu ? (E_mul_high ? mul_result[63:32] : mul_result[31:0]) : div_mod_res_reg;
+  wire [31:0] e_csr_data = E_csr_inst ? E_csr_data : div_mod_res_reg;
+  assign e_aluResult = E_mul_alu ? (E_mul_high ? mul_result[63:32] : mul_result[31:0]) : e_csr_data;
 
 endmodule

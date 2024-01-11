@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../src/myCPU/SimpleLACoreWrapRAM.v" \
+"../../../../src/BRIDGE/bridge_1x2.v" \
+"../../../../src/CONFREG/confreg.v" \
+"../../../../src/soc_lite_top.v" \
+"../../../../src/tb_top.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
