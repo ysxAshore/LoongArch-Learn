@@ -35,10 +35,12 @@
             -   [2.4.1.1 tools.v](#2411-toolsv)
             -   [2.4.1.2 regfile.v](#2412-regfilev)
             -   [2.4.1.3 alu.v](#2413-aluv)
-            -   [2.4.1.4 mycpu\_top.v](#2414-mycpu_topv)
-            -   [2.4.1.5 bridge\_1x2.v](#2415-bridge_1x2v)
-            -   [2.4.1.6 confreg.v](#2416-confregv)
-            -   [2.4.1.7 inst\_ram、data\_ram、clk\_pll IP](#2417-inst_ramdata_ramclk_pll-IP)
+            -   [2.4.1.4 mul.v](#2414-mulv)
+            -   [2.4.1.5 div.v](#2415-divv)
+            -   [2.4.1.6 mycpu\_top.v](#2416-mycpu_topv)
+            -   [2.4.1.7 bridge\_1x2.v](#2417-bridge_1x2v)
+            -   [2.4.1.8 confreg.v](#2418-confregv)
+            -   [2.4.1.9 inst\_ram、data\_ram、clk\_pll IP](#2419-inst_ramdata_ramclk_pll-IP)
         -   [2.4.2 编译测试程序](#242-编译测试程序)
         -   [2.4.3 生成golden\_trace](#243-生成golden_trace)
         -   [2.4.4 仿真验证设计的CPU](#244-仿真验证设计的CPU)
@@ -419,10 +421,10 @@ end:
     解决方法：
     1.  点击Report–>Report IP Status
 
-        ![](image/image_zfAaS5-4Ay.png)
+        ![](image/image_b1kdL5yv9W.png)
     2.  勾选被锁的IP核，点击Upgrade Selected
 
-        ![](image/image_o4nntiBRkL.png)
+        ![](image/image_t3DIKFEucm.png)
 
         如果upgrade Selected无法点击时，在`Tcl Console`执行命令：`upgrade_ip [get_ips]`
 
@@ -619,7 +621,7 @@ set_false_path -from [get_clocks -of_objects [get_pins pll.clk_pll/inst/plle2_ad
 
 SoC\_lite内部结构如下：
 
-![](image/image_3iUJ6513PZ.png)
+![](image/image_7UZkKj5VaM.png)
 
 相比之前的SoC\_mini，SoC\_lite多了数据存储器以及mycpu与数据存储器、confreg之间的通信部件
 
@@ -1114,7 +1116,7 @@ func程序分为func/start.S和func/inst/ \*.S，都是LoongArch32汇编程序:
 
 ### 2.3.2 LoongArch-GCC交叉编译工具的安装
 
-<https://gitee.com/loongson-edu/la32r-toolchains/releases>
+[ la32r-toolchains 发行版 - Gitee.com 仓库 LoongsonEdu/la32r-toolchains 的 Releases https://gitee.com/loongson-edu/la32r-toolchains/releases](https://gitee.com/loongson-edu/la32r-toolchains/releases " la32r-toolchains 发行版 - Gitee.com 仓库 LoongsonEdu/la32r-toolchains 的 Releases https://gitee.com/loongson-edu/la32r-toolchains/releases")
 
 在上述链接中选择对应的系统架构安装包解压安装——同Chiplab
 
@@ -1230,7 +1232,7 @@ coe和mif数据内容完全相同，只是格式信息存在差异。mif文件�
 
 1.  观察Vivado控制台的打印信息——PASS通过、ERROR失败
 
-    ![](image/image_6IMtL9qeyI.png)
+    ![](image/image_QKIqCO4_He.png)
 2.  通过波形窗口观察程序执行结果func正确的执行行为
 
     观察confreg模块的信号`led_data`、`led_rg0_data`、`led_rg1_data`、`num_data`
@@ -1305,7 +1307,7 @@ module decoder_5_32 (
 
   genvar i;
   generate
-    for (i = 0; i < 32; i = i + 1) begin : gen_for_dec_5_32
+    for (i = 0; i < 32; i = i + 1) begin : gen_fo_dec_5_32
       assign out[i] = (in == i);
     end
   endgenerate
@@ -1350,7 +1352,7 @@ module regfile (
   reg [31:0] rf[31:0];  //定义寄存器文件
 
   //写数据
-  always @(posedge clk) begin  //clk上升沿写
+  always @(negedge clk) begin  //clk上升沿写
     if (we) rf[waddr] <= wdata;  //同步写
   end
 
@@ -1361,7 +1363,6 @@ module regfile (
   assign rdata2 = (raddr2 == 5'b0) ? 32'b0 : rf[raddr2];
 
 endmodule
-
 
 ```
 
@@ -1483,7 +1484,406 @@ endmodule
 
 ```
 
-#### 2.4.1.4 mycpu\_top.v
+#### 2.4.1.4 mul.v
+
+```verilog
+//mul采用两位Booth算法实现
+//YDecoder是进行i-1,i,i+1的比较 (i-1)+(i)-2(i+1)
+module YDecoder (
+    input  yc,
+    yb,
+    ya,  //yc为i+1,yb为i,yc为i-1
+    output negx,
+    x,
+    neg2x,
+    _2x  //输出-1,1,-2,2
+);
+  //这里为什么不输出0是因为这几个情况均不符合的或就是0
+  assign negx = (yc & yb & ~ya) | (yc & ~yb & ya);  //-1 yc是1 yb和ya中有一个1
+  assign x = (~yc & ~yb & ya) | (~yc & yb & ~ya);  //1 yc是0,yb和ya中有一个1
+  assign neg2x = (yc & ~yb & ~ya);  //-2 yc是1 yb和ya都是0
+  assign _2x = (~yc & yb & ya);  //2 yc是0 yb和ya都是1
+endmodule
+
+
+module BoothBase (
+    input negx,
+    x,
+    neg2x,
+    _2x,  //得到的y三项的计算项
+    input InX,  //x本位值
+    input PosLastX,
+    NegLastX,  //正上一位的位值，负上一位的位值
+    output PosNextX,
+    NegNextX,  //正下一位的位值，负下一位的位值
+    output OutX  //当前位的计算结果
+);
+
+  //negx,neg2x需要和当前位或者上一位的位值取反相与
+  //x,_2x需要和当前位或者上一位的位值相与
+  assign OutX = (negx & ~InX) | (x & InX) | (neg2x & NegLastX) | (_2x & PosLastX);
+  assign PosNextX = InX;  //计算2倍项所需要的正位值
+  assign NegNextX = ~InX;  //计算2倍项所需要的位值取反
+
+endmodule
+
+
+module BoothInterBase (
+    input [2:0] y,
+    input [63:0] InX,
+    output [63:0] OutX,
+    output Carry
+);
+
+  wire negx, x, neg2x, _2x;  //当前三位y所计算出的结果 y[0]+y[1]-2y[2]
+  wire [1:0] CarrySig[64:0];  //用来存储每次的NextX的正结果和取反结果
+
+  YDecoder uu (
+      .yc(y[2]),
+      .yb(y[1]),
+      .ya(y[0]),
+      .negx(negx),
+      .x(x),
+      .neg2x(neg2x),
+      ._2x(_2x)
+  );  //计算negx, x, neg2x, _2x
+
+  BoothBase fir (
+      .negx(negx),
+      .x(x),
+      .neg2x(neg2x),
+      ._2x(_2x),
+      .InX(InX[0]),
+      .PosLastX(1'b0),
+      .NegLastX(1'b1),
+      .PosNextX(CarrySig[1][0]),
+      .NegNextX(CarrySig[1][1]),
+      .OutX(OutX[0])
+  );  //进行部分积最低位值的计算
+
+  //循环计算部分积的1-63位
+  generate
+    genvar i;
+    for (i = 1; i < 64; i = i + 1) begin : gfor
+      BoothBase ui (
+          .negx(negx),
+          .x(x),
+          .neg2x(neg2x),
+          ._2x(_2x),
+          .InX(InX[i]),
+          .PosLastX(CarrySig[i][0]),
+          .NegLastX(CarrySig[i][1]),
+          .PosNextX(CarrySig[i+1][0]),
+          .NegNextX(CarrySig[i+1][1]),
+          .OutX(OutX[i])
+      );
+    end
+  endgenerate
+
+  //赋进位值，当-1/-2时需要作减法，进位值为1
+  assign Carry = negx || neg2x;
+
+endmodule
+
+
+module add64 (
+    input  [63:0] A,
+    B,
+    C,
+    output [63:0] Carry,
+    S
+);
+  genvar i;
+  generate
+    for (i = 0; i < 64; i = i + 1) begin  //循环64位赋值
+      assign {Carry[i], S[i]} = A[i] + B[i] + C[i];
+    end
+  endgenerate
+  //产生的进位应该是加到下一位的，所以使用Carry时，整体左移一位
+endmodule
+
+module mul (
+    input mul_clk,
+    reset,  //reset高低电平有效
+    input mul_signed,  //进行有符号乘法还是无符号乘法
+    input [31:0] x,
+    y,  //x扩展至64位 y扩展至33位 区别有无符号
+    output [63:0] result
+);
+
+  //整合赋值，扩展被乘数x和乘数y
+  wire [63:0] CalX = mul_signed ? {{32{x[31]}}, x} : {32'b0, x};
+  wire [32:0] CalY = mul_signed ? {y[31], y} : {1'b0, y};
+
+  //计算Booth部分积  33/2向上取整为17个
+  wire [16:0] Carry;  //booth计算得到的进位
+  wire [63:0] BoothRes[16:0];  //booth的计算结果
+  BoothInterBase fir (
+      .y({CalY[1], CalY[0], 1'b0}),
+      .InX(CalX),
+      .OutX(BoothRes[0]),
+      .Carry(Carry[0])
+  );  //y1 y0 y-1
+
+  generate
+    genvar i;
+    for (i = 2; i < 32; i = i + 2) begin : boothfor
+      BoothInterBase ai (
+          .y(CalY[i+1:i-1]),  //y3 y2 y1~y31 y30 y29
+          .InX(CalX << i),  //被乘数左移位
+          .OutX(BoothRes[i>>1]),
+          .Carry(Carry[i>>1])
+      );
+    end
+  endgenerate
+
+  BoothInterBase las (
+      .y({CalY[32], CalY[32], CalY[31]}),
+      .InX(CalX << 32),
+      .OutX(BoothRes[16]),
+      .Carry(Carry[16])
+  );  //奇数位的Booth两位乘，最后一次是再加上最高位进行比较
+
+
+  reg [63:0] SecStageBoothRes[16:0];  //存储最终相加的部分积
+  integer p;
+
+  always @(*) begin
+    if (~reset) begin  //同步时钟，低电平有效
+      for (p = 0; p < 17; p = p + 1) begin
+        SecStageBoothRes[p] <= Carry[p]+BoothRes[p];//BoothRes结果和减法变加法的进位相加
+      end
+    end
+  end
+
+  //Wallace Tree 因为Verilog的模块定义不允许使用数组，因此若将Wallace模块抽离出来，传参时需要传递17个数据，比较麻烦，因此这里直接嵌套Wallace
+  wire [63:0] COut, SOut;
+
+  wire [63:0] firSig[4:0];
+  wire [63:0] firC  [4:0];
+  add64 fir1 (
+      .A(SecStageBoothRes[0]),
+      .B(SecStageBoothRes[1]),
+      .C(SecStageBoothRes[2]),
+      .Carry(firC[0]),
+      .S(firSig[0])
+  );
+  add64 fir2 (
+      .A(SecStageBoothRes[3]),
+      .B(SecStageBoothRes[4]),
+      .C(SecStageBoothRes[5]),
+      .Carry(firC[1]),
+      .S(firSig[1])
+  );
+  add64 fir3 (
+      .A(SecStageBoothRes[6]),
+      .B(SecStageBoothRes[7]),
+      .C(SecStageBoothRes[8]),
+      .Carry(firC[2]),
+      .S(firSig[2])
+  );
+  add64 fir4 (
+      .A(SecStageBoothRes[9]),
+      .B(SecStageBoothRes[10]),
+      .C(SecStageBoothRes[11]),
+      .Carry(firC[3]),
+      .S(firSig[3])
+  );
+  add64 fir5 (
+      .A(SecStageBoothRes[12]),
+      .B(SecStageBoothRes[13]),
+      .C(SecStageBoothRes[14]),
+      .Carry(firC[4]),
+      .S(firSig[4])
+  );
+
+  wire [63:0] secSig[3:0];
+  wire [63:0] secC  [3:0];
+  add64 sec1 (
+      .A(SecStageBoothRes[15]),
+      .B(SecStageBoothRes[16]),
+      .C(firSig[0]),
+      .Carry(secC[0]),
+      .S(secSig[0])
+  );
+  add64 sec2 (
+      .A(firC[0] << 1),
+      .B(firSig[1]),
+      .C(firC[1] << 1),
+      .Carry(secC[1]),
+      .S(secSig[1])
+  );
+  add64 sec3 (
+      .A(firSig[2]),
+      .B(firC[2] << 1),
+      .C(firSig[3]),
+      .Carry(secC[2]),
+      .S(secSig[2])
+  );
+  add64 sec4 (
+      .A(firC[3] << 1),
+      .B(firSig[4]),
+      .C(firC[4] << 1),
+      .Carry(secC[3]),
+      .S(secSig[3])
+  );
+
+  wire [63:0] thiSig[1:0];
+  wire [63:0] thiC  [1:0];
+  add64 thi1 (
+      .A(secC[0] << 1),
+      .B(secSig[0]),
+      .C(secC[1] << 1),
+      .Carry(thiC[0]),
+      .S(thiSig[0])
+  );
+  add64 thi2 (
+      .A(secSig[1]),
+      .B(secC[2] << 1),
+      .C(secSig[2]),
+      .Carry(thiC[1]),
+      .S(thiSig[1])
+  );
+
+  wire [63:0] forSig[1:0];
+  wire [63:0] forC  [1:0];
+  add64 for1 (
+      .A(secC[3] << 1),
+      .B(secSig[3]),
+      .C(thiC[0] << 1),
+      .Carry(forC[0]),
+      .S(forSig[0])
+  );
+  add64 for2 (
+      .A(thiSig[0]),
+      .B(thiC[1] << 1),
+      .C(thiSig[1]),
+      .Carry(forC[1]),
+      .S(forSig[1])
+  );
+
+  wire [63:0] fifSig, fifC;
+  add64 fif1 (
+      .A(forC[0] << 1),
+      .B(forSig[0]),
+      .C(forC[1] << 1),
+      .Carry(fifC),
+      .S(fifSig)
+  );
+
+  add64 six1 (
+      .A(forSig[1]),
+      .B(fifSig),
+      .C(fifC << 1),
+      .Carry(COut),
+      .S(SOut)
+  );
+
+  assign result = SOut + (COut << 1);  //+的运算优先级高于<<
+
+endmodule
+```
+
+#### 2.4.1.5 div.v
+
+```verilog
+//x/y   //32位操作数，同mul的处理，根据有无符号需要扩展，因此除数33位，从32到0需要33个时钟周期，再加上0的计算，到34时钟周期上沿时得到结果
+module div (
+    input div_clk,
+    reset,  //div时钟，复位信号高有效
+    input div,  //表示当前进行的操作是除法——计算过程中div始终保持有效
+    input div_signed,  //高电平有符号除
+    input [31:0] x,
+    y,  //被除数、除数
+    output [31:0] s,
+    r,  //商、余数
+    output complete_delay  //这里直接输出complete_delay,有效时即得到商和余数
+);
+
+
+  reg [32:0] UnsignS, UnsignR;  //不经过符号处理的商和余数
+  reg [32:0] tmp_r;  //存储计算过程中的余数
+  reg [ 7:0] count;  //计算周期
+  wire [32:0] tmp_d,tmp_add,tmp_sub;//存储新计算得到的余数，余数加除数，余数减除数
+  wire [32:0] result_r;  //新产生的余数
+  wire [32:0] UnsignX, UnsignY;//根据是否进行有符号除法，进行扩展转换成无符号数
+
+  reg  div_signed_buffer; //因为涉及到多个周期，为了防止中途有新的输入，需要暂存当前计算的符合
+  reg x_31_buffer;  //缓存x符号
+  reg y_31_buffer;  //缓存y符号
+  wire real_div_signed;  //在刚开始时的div_signed和结束时的div_signed_buffer中选择
+  wire real_x_31;  //在刚开始时的y_31和结束时的div_signed_buffer中选择
+  wire real_y_31;  //在刚开始时的y_31和结束时的div_signed_buffer中选择
+  wire complete;  //商计算完成
+  wire real_complete;  //余数和商产生的整个时间
+  assign complete_delay = (count == 8'hf0);  //余数计算完成
+  assign real_complete  = complete_delay || complete;
+
+
+  always @(posedge div_clk) begin
+    if (reset) begin  //初始化
+      div_signed_buffer <= 1'b0;
+      x_31_buffer <= 1'b0;
+      y_31_buffer <= 1'b0;
+    end else if (div) begin  //进行除法
+      div_signed_buffer <= div_signed;
+      x_31_buffer <= x[31];
+      y_31_buffer <= y[31];
+    end
+  end
+
+  //计算刚开始时，需要根据div_signed作处理，计算结束时，根据div_signed_buffer处理
+  assign real_div_signed = real_complete ? div_signed_buffer : div_signed;
+  assign real_x_31 = real_complete ? x_31_buffer : x[31];
+  assign real_y_31 = real_complete ? y_31_buffer : y[31];
+
+  assign UnsignX = {1'b0, (real_div_signed ? (x[31] ? (~x + 32'b1) : x) : x)};  //按无符号处理
+  assign UnsignY = {1'b0, (real_div_signed ? (y[31] ? (~y + 32'b1) : y) : y)};
+
+  always @(posedge div_clk) begin  //除法计算 采用同步赋值
+    if (reset || ~div || complete_delay) begin
+      count <= 8'd32;
+      tmp_r <= 33'b0;
+    end else if (~(count[7])) begin  //count为8'ff 
+      if (tmp_d[32]) begin  //当前结果为负数，那么商上0
+        UnsignS <= {UnsignS[31:0], 1'b0};
+      end else begin  //当前结果为正数，商上1
+        UnsignS <= {UnsignS[31:0], 1'b1};
+      end
+      tmp_r <= tmp_d;
+      count <= count - 8'd1;
+    end else begin  //计算余数
+      if (tmp_r[32]) begin  //余数结果为负，加除数修复
+        UnsignR <= tmp_r + UnsignY;
+      end else begin
+        UnsignR <= tmp_r;
+      end
+      count <= 8'hf0;
+    end
+
+  end
+
+  assign complete = (count == 8'hff);  //商计算完成
+
+  assign result_r = {
+    tmp_r[31:0], UnsignX[count]
+  };  //相当于不移动被除数，但也做到了低位补充被除数当前运算要补充到剩余余数的数
+  assign tmp_sub = result_r - UnsignY;  //余数-除数
+  assign tmp_add = result_r + UnsignY;  //余数+除数
+  assign tmp_d = tmp_r[32]?tmp_add:tmp_sub;//若上一次余数为负，则选择tmp_add否则选择tmp_sub
+
+  //根据要进行的有无符号计算，对无符号结果进行处理 被除数和除数异号那么商就是负，余数和被除数符号相同
+  wire [32:0] TmpS, TmpR;
+  assign TmpS = (real_div_signed ? ((real_x_31 == real_y_31) ? UnsignS : ~(UnsignS - 1)) : UnsignS);
+  assign TmpR = (real_div_signed ? (real_x_31 ? ~(UnsignR - 1) : UnsignR) : UnsignR);
+
+  assign s = TmpS[31:0];
+  assign r = TmpR[31:0];
+
+endmodule
+```
+
+#### 2.4.1.6 mycpu\_top.v
 
 需要修改错误
 
@@ -1507,6 +1907,8 @@ module mycpu_top (
     output wire [ 4:0] debug_wb_rf_wnum,  //写寄存器编号
     output wire [31:0] debug_wb_rf_wdata  //写寄存器数据
 );
+  //CSR
+  reg [31:0] csr;
   reg reset;//高电平复位信号，这个可以不用，直接使用低电平的复位信号即可
   always @(posedge clk) reset <= ~resetn;
 
@@ -1514,6 +1916,7 @@ module mycpu_top (
   always @(posedge clk) begin
     if (reset) begin
       valid <= 1'b0;
+      csr   <= 32'h8;
     end else begin
       valid <= 1'b1;
     end
@@ -1523,7 +1926,7 @@ module mycpu_top (
   wire [31:0] nextpc;  //最终的下一条指令地址，在seq_pc和分支地址中选择
   wire br_taken;  //是否采取分支
   wire [31:0] br_target;  //分支目标地址
-  wire [31:0] inst;  //读出的inst_ram数据——指令
+  wire [31:0] instF;  //读出的inst_ram数据——指令
   reg [31:0] pc;  //当前正在执行的指令的地址
 
   wire [11:0] alu_op;  //alu操作译码
@@ -1567,10 +1970,18 @@ module mycpu_top (
   wire inst_and;
   wire inst_or;
   wire inst_xor;
+  wire inst_sll;
+  wire inst_srl;
+  wire inst_sra;
   wire inst_slli_w;
   wire inst_srli_w;
   wire inst_srai_w;
   wire inst_addi_w;
+  wire inst_andi;
+  wire inst_xori;
+  wire inst_ori;
+  wire inst_slti;
+  wire inst_sltui;
   wire inst_ld_w;
   wire inst_st_w;
   wire inst_jirl;
@@ -1579,9 +1990,29 @@ module mycpu_top (
   wire inst_beq;
   wire inst_bne;
   wire inst_lu12i_w;
+  wire inst_csrwr;
+  wire inst_pcaddu12i;
+  wire inst_mul;
+  wire inst_mulh;
+  wire inst_mulhu;
+  wire inst_div;
+  wire inst_mod;
+  wire inst_modu;
+  wire inst_divu;
+  wire inst_bge;
+  wire inst_blt;
+  wire inst_bgeu;
+  wire inst_bltu;
+  wire inst_ld_b;
+  wire inst_ld_h;
+  wire inst_ld_bu;
+  wire inst_ld_hu;
+  wire inst_st_b;
+  wire inst_st_h;
 
   wire need_ui5;  //指令是否需要5位的无符号立即数——移位指令
   wire need_si12;  //指令是否需要12位的有符号立即数
+  wire need_ui12;  //指令是否需要12位的无符号立即数——立即数逻辑运算指令
   wire need_si16;  //指令是否需要16位的有符号立即数
   wire need_si20;  //指令是否需要16位的有符号立即数
   wire need_si26;  //指令是否需要16位的有符号立即数
@@ -1600,37 +2031,69 @@ module mycpu_top (
   wire [31:0] alu_src2;  //ALU操作数B
   wire [31:0] alu_result;  //alu计算结果
 
-  wire [31:0] mem_result;  //数据存储器读出的数据
+  wire [31:0] final_result;  //最后写寄存器的值
 
-  assign seq_pc = pc + 3'h4;
+  wire [31:0] mul_a;
+  wire [31:0] mul_b;
+  wire [31:0] div_a;
+  wire [31:0] div_b;
+  wire mul_div_sign;
+  wire mul_alu;
+  wire div_mod_alu;
+  wire mul_high;
+  wire is_mod;
+  wire complete_delay;
+
+  assign mul_div_sign = inst_mul | inst_mulh | inst_mod | inst_div;
+  assign mul_high = inst_mulh | inst_mulhu;
+  assign is_mod = inst_mod | inst_modu;
+  assign mul_alu = inst_mul | inst_mulh | inst_mulh | inst_mulhu;
+  assign div_mod_alu = inst_mod | inst_div | inst_modu | inst_divu;
+
+  assign seq_pc = pc + 32'h4;
   assign nextpc = br_taken ? br_target : seq_pc;
 
   always @(posedge clk) begin
     if (reset) begin
       pc <= 32'h1bfffffc;  //trick: to make nextpc be 0x1c000000 during reset 
-    end else begin
+    end else if (~div_mod_alu) begin
       pc <= nextpc;
     end
   end
 
   assign inst_sram_we    = 1'b0;
-  assign inst_sram_addr  = pc;
+  assign inst_sram_addr  = nextpc;
   assign inst_sram_wdata = 32'b0;
-  assign inst            = inst_sram_rdata;
+  assign instF           = inst_sram_rdata;
 
-  assign op_31_26        = inst[31:26];
-  assign op_25_22        = inst[25:22];
-  assign op_21_20        = inst[21:20];
-  assign op_19_15        = inst[19:15];
+  reg [31:0] inst;
+  always @(*) begin
+    if (reset) begin
+      inst <= instF;
+    end else if (~div_mod_alu) begin
+      inst <= instF;
+    end
+  end
+  always @(negedge clk) begin
+    if (complete_delay) begin
+      inst <= instF;
+    end
+  end
 
-  assign rd              = inst[4:0];
-  assign rj              = inst[9:5];
-  assign rk              = inst[14:10];
 
-  assign i12             = inst[21:10];
-  assign i20             = inst[24:5];
-  assign i16             = inst[25:10];
-  assign i26             = {inst[9:0], inst[25:10]};
+  assign op_31_26 = inst[31:26];
+  assign op_25_22 = inst[25:22];
+  assign op_21_20 = inst[21:20];
+  assign op_19_15 = inst[19:15];
+
+  assign rd       = inst[4:0];
+  assign rj       = inst[9:5];
+  assign rk       = inst[14:10];
+
+  assign i12      = inst[21:10];
+  assign i20      = inst[24:5];
+  assign i16      = inst[25:10];
+  assign i26      = {inst[9:0], inst[25:10]};
 
   decoder_6_64 u_dec0 (
       .in (op_31_26),
@@ -1648,7 +2111,9 @@ module mycpu_top (
       .in (op_19_15),
       .out(op_19_15_d)
   );
-
+  //02810084
+  //0000 0010 1000 0001 0000 0000 1000 0100
+  //addi $4  64 $4
   assign inst_add_w = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h00];
   assign inst_sub_w = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h02];
   assign inst_slt = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h04];
@@ -1657,10 +2122,18 @@ module mycpu_top (
   assign inst_and = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h09];
   assign inst_or = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0a];
   assign inst_xor = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0b];
+  assign inst_sll = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0e];
+  assign inst_srl = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0f];
+  assign inst_sra = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h10];
   assign inst_slli_w = op_31_26_d[6'h00] & op_25_22_d[4'h1] & op_21_20_d[2'h0] & op_19_15_d[5'h01];
   assign inst_srli_w = op_31_26_d[6'h00] & op_25_22_d[4'h1] & op_21_20_d[2'h0] & op_19_15_d[5'h09];
   assign inst_srai_w = op_31_26_d[6'h00] & op_25_22_d[4'h1] & op_21_20_d[2'h0] & op_19_15_d[5'h11];
   assign inst_addi_w = op_31_26_d[6'h00] & op_25_22_d[4'ha];
+  assign inst_andi = op_31_26_d[6'h00] & op_25_22_d[4'hd];
+  assign inst_ori = op_31_26_d[6'h00] & op_25_22_d[4'he];
+  assign inst_xori = op_31_26_d[6'h00] & op_25_22_d[4'hf];
+  assign inst_slti = op_31_26_d[6'h00] & op_25_22_d[4'h8];
+  assign inst_sltui = op_31_26_d[6'h0] & op_25_22_d[4'h9];
   assign inst_ld_w = op_31_26_d[6'h0a] & op_25_22_d[4'h2];
   assign inst_st_w = op_31_26_d[6'h0a] & op_25_22_d[4'h6];
   assign inst_jirl = op_31_26_d[6'h13];
@@ -1669,51 +2142,84 @@ module mycpu_top (
   assign inst_beq = op_31_26_d[6'h16];
   assign inst_bne = op_31_26_d[6'h17];
   assign inst_lu12i_w = op_31_26_d[6'h05] & ~inst[25];
+  assign inst_csrwr = op_31_26_d[6'h01] & op_25_22_d[4'h0];
+  assign inst_pcaddu12i = op_31_26_d[6'h07] & ~inst[25];
+  assign inst_mul = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h18];
+  assign inst_mulh = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h19];
+  assign inst_mulhu = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h1a];
+  assign inst_div = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h00];
+  assign inst_mod = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h01];
+  assign inst_divu = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h02];
+  assign inst_modu = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h2] & op_19_15_d[5'h03];
+  assign inst_blt = op_31_26_d[6'h18];
+  assign inst_bge = op_31_26_d[6'h19];
+  assign inst_bltu = op_31_26_d[6'h1a];
+  assign inst_bgeu = op_31_26_d[6'h1b];
+  assign inst_ld_b = op_31_26_d[6'h0a] & op_25_22_d[4'h0];
+  assign inst_ld_h = op_31_26_d[6'h0a] & op_25_22_d[4'h1];
+  assign inst_st_b = op_31_26_d[6'h0a] & op_25_22_d[4'h4];
+  assign inst_st_h = op_31_26_d[6'h0a] & op_25_22_d[4'h5];
+  assign inst_ld_bu = op_31_26_d[6'h0a] & op_25_22_d[4'h8];
+  assign inst_ld_hu = op_31_26_d[6'h0a] & op_25_22_d[4'h9];
 
-  assign alu_op[0] = inst_add_w | inst_addi_w | inst_ld_w | inst_st_w | inst_jirl | inst_bl;  //add
+  assign alu_op[0] = inst_add_w | inst_addi_w | inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_st_b | inst_st_h | inst_st_w | inst_jirl | inst_bl | inst_pcaddu12i;  //add
   assign alu_op[1] = inst_sub_w;  //sub
-  assign alu_op[2] = inst_slt;  //slt
-  assign alu_op[3] = inst_sltu;  //sltu
-  assign alu_op[4] = inst_and;  //&
+  assign alu_op[2] = inst_slt | inst_slti | inst_blt | inst_bge;  //slt
+  assign alu_op[3] = inst_sltu | inst_sltui | inst_bltu | inst_bgeu;  //sltu
+  assign alu_op[4] = inst_and | inst_andi;  //&
   assign alu_op[5] = inst_nor;  //~(|)
-  assign alu_op[6] = inst_or;  //|
-  assign alu_op[7] = inst_xor;  //^
-  assign alu_op[8] = inst_slli_w;  //sll ui
-  assign alu_op[9] = inst_srli_w;  //srl ui
-  assign alu_op[10] = inst_srai_w;  //sra ui
+  assign alu_op[6] = inst_or | inst_ori;  //|
+  assign alu_op[7] = inst_xor | inst_xori;  //^
+  assign alu_op[8] = inst_slli_w | inst_sll;  //sll
+  assign alu_op[9] = inst_srli_w | inst_srl;  //srl 
+  assign alu_op[10] = inst_srai_w | inst_sra;  //sra 
   assign alu_op[11] = inst_lu12i_w;  //lu12i
 
   assign need_ui5 = inst_slli_w | inst_srli_w | inst_srai_w;
-  assign need_si12 = inst_addi_w | inst_ld_w | inst_st_w;
-  assign need_si16 = inst_jirl | inst_beq | inst_bne;
-  assign need_si20 = inst_lu12i_w;
+  assign need_ui12 = inst_andi | inst_ori | inst_xori;
+  assign need_si12 = inst_addi_w | inst_slti | inst_sltui | inst_ld_w | inst_st_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_st_b | inst_st_h;
+  assign need_si16 = inst_jirl | inst_beq | inst_bne | inst_bge | inst_bgeu | inst_blt | inst_bltu;
+  assign need_si20 = inst_lu12i_w | inst_pcaddu12i;
   assign need_si26 = inst_b | inst_bl;
   assign src2_is_4 = inst_jirl | inst_bl;
 
-  assign imm = src2_is_4 ? 32'h4 : need_si20 ? {i20[19:0], 12'b0} : {{20{i12[11]}}, i12[11:0]};
+  assign imm = src2_is_4 ? 32'h4 : (need_si20 ? {i20[19:0], 12'b0} : (need_ui12 ? {20'b0 , i12} : {{20{i12[11]}}, i12}));
 
   assign br_offs = need_si26 ? {{4{i26[25]}}, i26[25:0], 2'b0} : {{14{i16[15]}}, i16[15:0], 2'b0};//分支地址立即数左移两位再符号扩展
 
   assign jirl_offs = {{14{i16[15]}}, i16[15:0], 2'b0};
 
-  assign src_reg_is_rd = inst_beq | inst_bne | inst_st_w;  //rj==rd->off Reg[rd]->(rj+12si)
+  assign src_reg_is_rd = inst_beq | inst_bne | inst_bge | inst_bgeu | inst_blt | inst_bltu | inst_st_w | inst_st_b | inst_st_h;  //rj==rd->off Reg[rd]->(rj+12si)
 
-  assign src1_is_pc = inst_jirl | inst_bl;  //PC+4->rd rd=1
+  assign src1_is_pc = inst_jirl | inst_bl | inst_pcaddu12i;  //PC+4->rd rd=1
 
   assign src2_is_imm = inst_slli_w |  //5ui
       inst_srli_w |  //5ui
       inst_srai_w |  //5ui
       inst_addi_w |  //addi
+      inst_andi |  //andi
+      inst_ori |  //ori 
+      inst_xori |  //xori
+      inst_slti |  //sti
+      inst_sltui |  //sltui
       inst_ld_w |  //计算访存地址
       inst_st_w |  //计算访存地址
+      inst_ld_b | 
+      inst_ld_h | 
+      inst_ld_bu | 
+      inst_ld_hu | 
+      inst_st_b | 
+      inst_st_h |
       inst_lu12i_w |  //20高->寄存器
+      inst_pcaddu12i |  //20高+PC->寄存器
       inst_jirl |  //4
       inst_bl;  //4
 
-  assign res_from_mem = inst_ld_w;
+  assign res_from_mem = inst_ld_w | inst_ld_b | inst_ld_bu | inst_ld_h | inst_ld_hu | inst_ld_w;
   assign dst_is_r1 = inst_bl;
-  assign gr_we = ~inst_st_w & ~inst_beq & ~inst_bne & ~inst_b;  //不写寄存器的指令与
-  assign mem_we = inst_st_w;
+  assign gr_we = ~inst_st_w & ~inst_st_b & ~inst_st_h & ~inst_beq & ~inst_bne & ~inst_bge & ~inst_bgeu & ~inst_blt & ~inst_bltu & ~inst_b;  //不写寄存器的指令与
+  assign mem_we = inst_st_w | inst_st_b | inst_st_h;
+
   assign dest = dst_is_r1 ? 5'd1 : rd;
 
   assign rf_raddr1 = rj;
@@ -1732,48 +2238,103 @@ module mycpu_top (
   assign rj_value = rf_rdata1;
   assign rkd_value = rf_rdata2;
 
-  assign rj_eq_rd = (rj_value == rkd_value);
-  assign br_taken = (   inst_beq  &&  rj_eq_rd
-                   | inst_bne  && !rj_eq_rd
+  assign rj_eq_rd = (rj_value === rkd_value);  //也比较不定态x和高阻态z
+  assign br_taken = (   (inst_beq  &  rj_eq_rd)
+                   | (inst_bne  & !rj_eq_rd)
+                   | (inst_bge  & ~alu_result[0])
+                   | (inst_bgeu & ~alu_result[0])
+                   | (inst_blt  & alu_result[0])
+                   | (inst_bltu & alu_result[0])
                    | inst_jirl
                    | inst_bl
                    | inst_b
                   ) && valid;
-  assign br_target = (inst_beq | inst_bne | inst_bl | inst_b) ? (pc + br_offs) :
+  assign br_target = (inst_beq | inst_bne | inst_bge | inst_bgeu | inst_blt | inst_bltu | inst_bl | inst_b) ? (pc + br_offs) :
        (rj_value + jirl_offs);
 
-  assign alu_src1 = src1_is_pc ? pc[31:0] : rj_value;
+  assign alu_src1 = src1_is_pc ? pc : rj_value;
   assign alu_src2 = src2_is_imm ? imm : rkd_value;
 
+  assign mul_a = rj_value;
+  assign div_a = rj_value;
+  assign mul_b = rkd_value;
+  assign div_b = rkd_value;
+
+  wire [63:0] mul_result;
+  mul mul_inst (
+      .mul_clk(clk),
+      .reset(reset),
+      .mul_signed(mul_div_sign),
+      .x(mul_a),
+      .y(mul_b),
+      .result(mul_result)
+  );
+
+  wire [31:0] s;
+  wire [31:0] r;
+  div div_init (
+      .div_clk(clk),
+      .reset(reset),
+      .div(div_mod_alu),
+      .div_signed(mul_div_sign),
+      .x(div_a),
+      .y(div_b),
+      .s(s),
+      .r(r),
+      .complete_delay(complete_delay)
+  );
+
   alu u_alu (
-      .alu_op    (alu_op),
-      .alu_src1  (alu_src2),
+      .alu_op    ({2'b0, alu_op}),
+      .alu_src1  (alu_src1),
       .alu_src2  (alu_src2),
       .alu_result(alu_result)
   );
 
-  assign data_sram_we      = mem_we && valid;
-  assign data_sram_addr    = alu_result;
-  assign data_sram_wdata   = rkd_value;  //stw rd->(rj+12si)
+  assign data_sram_we   = mem_we && valid;
+  assign data_sram_addr = alu_result;
 
-  assign mem_result        = data_sram_rdata;
-  assign final_result      = res_from_mem ? mem_result : alu_result;
+  wire [31:0] mem_byteStored = data_sram_addr[1:0] == 2'b00 ? {data_sram_rdata[31:8],rkd_value[7:0]} :
+                              (data_sram_addr[1:0] == 2'b01 ? {data_sram_rdata[31:16],rkd_value[7:0],data_sram_rdata[7:0]} :
+                              (data_sram_addr[1:0] == 2'b10 ? {data_sram_rdata[31:24],rkd_value[7:0],data_sram_rdata[15:0]} :
+                              {rkd_value[7:0],data_sram_rdata[23:0]}));
+  wire [31:0] mem_halfStored = {32{data_sram_addr[1:0] == 2'b00}} & {data_sram_rdata[31:16],rkd_value[15:0]} |
+                               {32{data_sram_addr[1:0] == 2'b10}} & {rkd_value[15:0],data_sram_rdata[15:0]};
+  assign data_sram_wdata = inst_st_w ? rkd_value : (inst_st_h ? mem_halfStored : mem_byteStored);  //stw rd->(rj+12si)
 
-  assign rf_we             = gr_we && valid;
-  assign rf_waddr          = dest;
-  assign rf_wdata          = final_result;
+  wire [7:0] mem_byteLoaded = ({8{data_sram_addr[1:0]==2'b00}} & data_sram_rdata[ 7: 0]) |
+                            ({8{data_sram_addr[1:0]==2'b01}} & data_sram_rdata[15: 8]) |
+                            ({8{data_sram_addr[1:0]==2'b10}} & data_sram_rdata[23:16]) |
+                            ({8{data_sram_addr[1:0]==2'b11}} & data_sram_rdata[31:24]) ;
+  wire [15:0] mem_halfLoaded = ({16{data_sram_addr[1:0]==2'b00}} & data_sram_rdata[15: 0]) |
+                             ({16{data_sram_addr[1:0]==2'b10}} & data_sram_rdata[31:16]) ;
+
+  wire [31:0] mem_writeResult = inst_ld_b ? {{24{mem_byteLoaded[7]}},mem_byteLoaded} : 
+                                (inst_ld_h ? {{16{mem_halfLoaded[15]}},mem_halfLoaded} :
+                                (inst_ld_bu ? {24'b0,mem_byteLoaded} : 
+                                (inst_ld_hu ? {16'b0,mem_halfLoaded} : data_sram_rdata)));
+
+  assign final_result = res_from_mem ? mem_writeResult : alu_result;
+
+  assign rf_we = (gr_we && valid && ~div_mod_alu) | (div_mod_alu & complete_delay);
+  assign rf_waddr = dest;
+
+  wire [31:0] mul_alu_res = mul_high ? mul_result[63:32] : mul_result[31:0];
+  wire [31:0] div_mod_res_F = div_mod_alu ? (is_mod ? r : s) : final_result;
+
+  assign rf_wdata          = inst_csrwr ? csr : (mul_alu ? mul_alu_res : div_mod_res_F);
 
   // debug info generate
   assign debug_wb_pc       = pc;
-  assign debug_wb_rf_wen   = {4{rf_we}};  //默认写寄存器就是写32为
+  assign debug_wb_rf_we    = {4{rf_we}};  //默认写寄存器就是写32位
   assign debug_wb_rf_wnum  = dest;
-  assign debug_wb_rf_wdata = final_result;
+  assign debug_wb_rf_wdata = inst_csrwr ? csr : (mul_alu ? mul_alu_res : div_mod_res_F);
 
 endmodule
 
 ```
 
-#### 2.4.1.5 bridge\_1x2.v
+#### 2.4.1.7 bridge\_1x2.v
 
 该RTL模块根据访存地址确定是访问数据存储器还是访问外设
 
@@ -1840,7 +2401,7 @@ endmodule
 
 ```
 
-#### 2.4.1.6 confreg.v
+#### 2.4.1.8 confreg.v
 
 该RTL模块是控制实验箱板载外设
 
@@ -2385,7 +2946,7 @@ endmodule
 
 ```
 
-#### 2.4.1.7 inst\_ram、data\_ram、clk\_pll IP
+#### 2.4.1.9 inst\_ram、data\_ram、clk\_pll IP
 
 inst\_ram和data\_ram均采用异步RAM的IP核创建，均是单端口的RAM
 
@@ -2401,7 +2962,7 @@ clk\_pll是为了时钟降频
 
 这里要做的是实验六，因此取消掉对应的注释即可
 
-![](image/image_Kx-tLkSzvd.png)
+![](image/image_Z3FJgoXLjw.png)
 
 make成功后即在obj目录下生成data\_ram.coe  data\_ram.mif  inst\_ram.coe  inst\_ram.mif  rom.vlog  test.s
 
@@ -2443,15 +3004,19 @@ run: Time (s): cpu = 00:00:09 ; elapsed = 00:00:17 . Memory (MB): peak = 11492.6
 
 注意同2.4.3一样，仿真时间要设置的长一些
 
-这里可以得到——inst\_ram设置的深度有问题、命名wen和we、csrwr、pcaddu12i、sltui、andi、xori、sll、srl、sra，逻辑运算采用无符号扩展
+这里可以得到——inst\_ram设置的深度有问题、命名wen和we、csrwr、pcaddu12i、sltui、andi、xori、sll、srl、sra、mul、div，逻辑运算采用无符号扩展
 
 采用的是异步RAM，但深度只是65536，机器指令数远大于这个数量。如果使用同步RAM，那么需要变换PC，在PC之前就已经取出来了指令，所以取指地址是nextpc
 
 此外还有除法、乘法指令未实现，这里先空下
 
-### 2.4.5 上板验证设计的CPU
+~~就做到了mul、div指令实现，其余BGE报错，有时间再补~~
 
-SLL、SRL、SRA
+现在报错csrwr指令，还差大约10000个写寄存器指令，这些剩下再弄
+
+![](image/image_25llmCkK_H.png)
+
+### 2.4.5 上板验证设计的CPU
 
 [^注释1]: cdp\_ede\_local/minicpu\_env
 

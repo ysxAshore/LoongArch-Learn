@@ -30,6 +30,7 @@ module WB_stage (
     output W_csr_en,
     output W_ertn,
     output W_excp,
+    output W_excp_or_ertn,
     output [7:0] W_excp_num,
     output [5:0] W_code,
     output [8:0] W_subcode,
@@ -88,5 +89,6 @@ module WB_stage (
   assign W_code = {6{W_excp_num[0]}} & 6'h0 | {6{W_excp_num[1]}} & 6'hb;
   assign W_subcode = 9'b0;
   assign W_era = W_pcAddr;  //era是当前引起异常或者中断的PC
+  assign W_excp_or_ertn = W_ertn | W_excp;
 
 endmodule

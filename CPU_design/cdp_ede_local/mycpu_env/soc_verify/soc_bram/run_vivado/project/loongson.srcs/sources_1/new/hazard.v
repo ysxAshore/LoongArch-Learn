@@ -5,9 +5,9 @@ module hazard (
     input [ 4:0] d_regAddB,
     input [13:0] d_csrWAdd,
 
-    input  d_excp,
+    input  d_excp_or_ertn,
     // input  d_excp_tlbrefill,
-    input  W_excp,
+    input  W_excp_or_ertn,
     // input  W_excp_tlbrefill,
     output F_excp_stall,
     output D_excp_stall,
@@ -67,14 +67,14 @@ module hazard (
                         M_res_from_mem & (d_regAddA == M_regWAdd | d_regAddB == M_regWAdd));
   assign #1 D_stall = lwStall | branchStall;
   assign #1 F_stall = D_stall;
-  assign #1 E_fresh = D_stall | W_excp;
+  assign #1 E_fresh = D_stall | W_excp_or_ertn;
   assign #1 D_div_mod_stall = E_div_mod_alu & ~e_complete_delay;
   assign #1 F_div_mod_stall = D_div_mod_stall;
   assign #1 E_div_mod_stall = D_div_mod_stall;
   assign #1 M_div_mod_stall = D_div_mod_stall;
   assign #1 W_div_mod_stall = D_div_mod_stall;
-  assign #1 D_excp_stall = ~W_excp & (d_excp);
+  assign #1 D_excp_stall = ~W_excp_or_ertn & (d_excp_or_ertn);
   assign #1 F_excp_stall = D_excp_stall;
-  assign #1 W_expc_fresh = W_excp;
+  assign #1 W_expc_fresh = W_excp_or_ertn;
   assign #1 M_expc_fresh = W_expc_fresh;
 endmodule

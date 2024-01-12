@@ -157,12 +157,6 @@ module csr (
     end
   end
 
-
-
-
-  //pgd
-  assign csr_pgd = csr_badv[31] ? csr_pgdh : csr_pgdl;
-
   //crmd
   always @(posedge clk) begin
     if (~resetn) begin
@@ -183,7 +177,7 @@ module csr (
     end else if (W_ertn) begin
       csr_crmd[`PLV] <= csr_prmd[`PPLV];
       csr_crmd[`IE]  <= csr_prmd[`PIE];
-      if (csr_estat[`ECODE] == 6'h3f) begin
+      if (csr_estat[`ECODE] == 6'h3f) begin  //重填异常
         csr_crmd[`DA] <= 1'b0;
         csr_crmd[`PG] <= 1'b1;
       end
@@ -210,7 +204,7 @@ module csr (
     end
   end
 
-  //euen 目前不实现浮点
+  //euen 目前不实现浮点，故不会有写euen的指令
   always @(posedge clk) begin
     if (~resetn) begin
       csr_euen <= 32'b0;

@@ -71,7 +71,8 @@ module ID_stage (
     output d_csr_en,
     output d_ertn,
     output d_excp,
-    output [7:0] d_excp_num
+    output [7:0] d_excp_num,
+    output d_excp_or_ertn
 );
   wire [31:0] inst;
   wire [31:0] D_pcPlus4;
@@ -479,11 +480,12 @@ module ID_stage (
   assign d_csr_en = inst_csrwr | inst_csrxchg;
   wire syscall_excp = inst_syscall;
   assign d_ertn = inst_ertn;
-  assign d_excp = syscall_excp | d_has_int | d_ertn;  //这里把ertn和excp合并来给hazard产生阻塞信号
+  assign d_excp = syscall_excp | d_has_int;  //这里把ertn和excp合并来给hazard产生阻塞信号
   assign d_excp_num = {6'b0, syscall_excp, d_has_int};
+  assign d_excp_or_ertn = d_excp | d_ertn;
   //因此异常入口需要满足W_excp & ~W_ertn 的情况
   //软件实现了对ERA的加4还是不加
-  assign d_pc_next = W_excp & ~W_ertn ? d_eentry_out :
+  assign d_pc_next = W_excp ? d_eentry_out :
                     (W_ertn ? d_era_out: 
                     (d_selPC[1] ? d_pcJ : 
                     (d_selPC[0] ? d_pcBranch : 

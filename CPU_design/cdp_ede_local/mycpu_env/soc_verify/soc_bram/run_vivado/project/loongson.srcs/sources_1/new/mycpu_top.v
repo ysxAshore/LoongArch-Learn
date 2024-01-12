@@ -93,6 +93,7 @@ module mycpu_top (
   wire W_llbit_wen;
   wire d_ertn;
   wire d_excp;
+  wire d_excp_or_ertn;
   wire [7:0] d_excp_num;
 
   ID_stage u_ID_stage (
@@ -158,7 +159,8 @@ module mycpu_top (
       .d_csr_en        (d_csr_en),
       .d_ertn          (d_ertn),
       .d_excp          (d_excp),
-      .d_excp_num      (d_excp_num)
+      .d_excp_num      (d_excp_num),
+      .d_excp_or_ertn  (d_excp_or_ertn)
   );
 
   wire E_fresh;
@@ -303,6 +305,7 @@ module mycpu_top (
 
   wire W_div_mod_stall;
   wire W_expc_fresh;
+  wire W_excp_or_ertn;
   wire [31:0] W_pcAddr;
   WB_stage u_WB_stage (
       .clk            (clk),
@@ -335,14 +338,15 @@ module mycpu_top (
       .W_excp_num     (W_excp_num),
       .W_code         (W_code),
       .W_subcode      (W_subcode),
-      .W_era          (W_era)
+      .W_era          (W_era),
+      .W_excp_or_ertn (W_excp_or_ertn)
   );
   hazard u_hazard (
       .d_regAddA       (d_regAddA),
       .d_regAddB       (d_regAddB),
       .d_csrWAdd       (d_csrAdd),
-      .d_excp          (d_excp),
-      .W_excp          (W_excp),
+      .d_excp_or_ertn  (d_excp_or_ertn),
+      .W_excp_or_ertn  (W_excp_or_ertn),
       .F_excp_stall    (F_excp_stall),
       .D_excp_stall    (D_excp_stall),
       .E_div_mod_alu   (E_div_mod_alu),

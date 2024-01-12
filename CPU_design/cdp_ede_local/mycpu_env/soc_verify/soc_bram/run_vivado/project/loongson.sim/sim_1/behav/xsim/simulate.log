@@ -200,4 +200,4 @@ Test begin!
 Test end!
 ----PASS!!!
 $finish called at time : 1456345 ns : File "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_bram/testbench/mycpu_tb.v" Line 271
-INFO: xsimkernel Simulation Memory Usage: 130544 KB (Peak: 171528 KB), Simulation CPU Usage: 764880 ms
+INFO: xsimkernel Simulation Memory Usage: 130548 KB (Peak: 171532 KB), Simulation CPU Usage: 461510 ms
