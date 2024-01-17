@@ -32,6 +32,9 @@ module csr (
     //输入给csr.estat的异常编号 来自写回阶段
     input [8:0] W_subcode,
     input [5:0] W_code,
+    //输入给csr.badv 的adef异常
+    input [31:0] W_badv_pc,
+    input W_excp_adef,
     //ll sc设置llbit 来自写回阶段
     input W_llbit,
     input W_llbit_wen,
@@ -263,6 +266,8 @@ module csr (
   always @(posedge clk) begin
     if (badv_wen) begin
       csr_badv <= W_csrWData;
+    end else if (W_excp_adef) begin
+      csr_badv <= W_badv_pc;
     end
   end
 
@@ -487,6 +492,15 @@ module csr (
     end
   end
 
+  //cntc
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_cntc <= 32'b0;
+    end else if (cntc_wen) begin
+      csr_cntc <= W_csrWData;
+    end
+  end
+
   //output port
   assign d_csrRead = {32{d_csrAdd == CRMD}} & csr_crmd |
                  {32{d_csrAdd == PRMD }}  & csr_prmd    |
@@ -518,7 +532,7 @@ module csr (
                  {32{d_csrAdd == DMW0}}    & csr_dmw0    |
                  {32{d_csrAdd == DMW1}}    & csr_dmw1    ;
   assign tid_out = csr_tid;
-  assign timer_64_out = timer_64;
+  assign timer_64_out = timer_64 + {{32{csr_cntc[31]}}, csr_cntc};
   assign has_int = csr_crmd[`IE] & ((csr_ecfg[`LIE] & csr_estat[`IS]) != 13'b0);
   assign eentry_out = csr_eentry;
   assign tlbrentry_out = csr_tlbrentry;

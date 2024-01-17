@@ -33,6 +33,11 @@ module EXE_stage (
     input d_ertn,
     input d_excp,
     input [7:0] d_excp_num,
+    input d_inst_rdcnt,
+    input [31:0] d_rdcntVal,
+    input [31:0] d_era,
+    input [1:0] d_rdcnt_inst,
+    input [31:0] rdcnt_val,
 
     output [31:0] E_pcAddr,
     output e_complete_delay,
@@ -55,7 +60,11 @@ module EXE_stage (
     output E_csr_en,
     output E_ertn,
     output E_excp,
-    output [7:0] E_excp_num
+    output [7:0] E_excp_num,
+    output e_ALE_excp,
+    output [31:0] E_era,
+    output [31:0] e_badv_add,
+    output [1:0] E_rdcnt_inst
 );
   wire [31:0] E_aluSrc1, E_aluSrc2;
   wire [11:0] E_aluOP;
@@ -63,9 +72,12 @@ module EXE_stage (
   wire E_mul_div_sign;
   wire E_mul_high;
   wire E_is_mod;
+  wire e_excp;
+  wire [7:0] e_excp_num;
+  wire E__regW;
+  wire [31:0] E_rdcnt_val;
 
-
-  parameter WIDTH_EX_init = 264;
+  parameter WIDTH_EX_init = 330;
   flopenrc #(
       .WIDTH(WIDTH_EX_init)
   ) flopenrc_EX1 (
@@ -100,13 +112,16 @@ module EXE_stage (
         d_csrWData,
         d_ertn,
         d_excp,
-        d_excp_num
+        d_excp_num,
+        d_era,
+        d_rdcnt_inst,
+        rdcnt_val
       }),
       .q({
         E_aluSrc1,
         E_aluSrc2,
         E_regWAdd,
-        E_regW,
+        E__regW,
         E_res_from_mem,
         E_aluOP,
         E_memReadE,
@@ -128,8 +143,11 @@ module EXE_stage (
         E_csrAdd,
         E_csrWData,
         E_ertn,
-        E_excp,
-        E_excp_num
+        e_excp,
+        e_excp_num,
+        E_era,
+        E_rdcnt_inst,
+        E_rdcnt_val
       })
   );
   wire [31:0] aluResult;
@@ -164,8 +182,21 @@ module EXE_stage (
       .complete_delay(e_complete_delay)
   );
 
-  wire [31:0] div_mod_res_reg = E_div_mod_alu ? (E_is_mod ? r : s) : aluResult;
+
+  wire [31:0] div_mod_res_reg = E_div_mod_alu ? (E_is_mod ? r : s) : (~(E_rdcnt_inst == 2'b00) ? E_rdcnt_val : aluResult);
   wire [31:0] e_csr_data = E_csr_inst ? E_csr_data : div_mod_res_reg;
   assign e_aluResult = E_mul_alu ? (E_mul_high ? mul_result[63:32] : mul_result[31:0]) : e_csr_data;
+
+  wire [1:0] e_mem_size;
+  assign e_mem_size[0] = ~E_memReadW[3] & ~E_memReadW[1] & E_memReadW[0] | ~E_memWriteW[3] & ~E_memWriteW[1] & E_memWriteW[0];
+  assign e_mem_size[1] = ~E_memReadW[3] & E_memReadW[1] | ~E_memWriteW[3] & E_memWriteW[1];
+  assign e_ALE_excp = (E_memReadE | E_memWriteE) & ((e_mem_size[0] &  1'b0)        | 
+                                       (e_mem_size[1] &  aluResult[0])           | 
+                                       (!e_mem_size   & (aluResult[0] | aluResult[1]))) ;
+  assign E_excp = e_ALE_excp | e_excp;
+  assign E_regW = E__regW & ~e_ALE_excp;  //当访存地址错误时，那么load就不写寄存器
+  assign E_excp_num = {e_excp_num[7:2], e_ALE_excp, 1'b0};
+  assign e_badv_add = e_ALE_excp ? aluResult : E_era;
+
 
 endmodule

@@ -8,6 +8,7 @@ module IF_stage (
     input F_div_mod_stall,
     input [31:0] d_pc_next,
 
+    output f_ADEF_excp,
     output [31:0] F_pcAddr,
     output [31:0] F_pcPlus4
 );
@@ -19,6 +20,6 @@ module IF_stage (
       .d     (d_pc_next),
       .q     (F_pcAddr)
   );
-
   assign F_pcPlus4 = F_pcAddr + 32'h4;
+  assign f_ADEF_excp = F_pcAddr[0] | F_pcAddr[1];//取指地址错异常——即末两位不全为0
 endmodule

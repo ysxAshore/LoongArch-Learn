@@ -24,6 +24,8 @@ module MEM_stage (
     input E_ertn,
     input E_excp,
     input [7:0] E_excp_num,
+    input [31:0] E_era,
+    input [31:0] e_badv_add,
 
     input [31:0] memReadData,
 
@@ -44,13 +46,16 @@ module MEM_stage (
     output M_csr_en,
     output M_ertn,
     output M_excp,
-    output [7:0] M_excp_num
+    output [7:0] M_excp_num,
+    output [31:0] M_era,
+    output [31:0] M_badv_add
 );
   wire [31:0] M_memWriteData;
   wire [3:0] M_memReadW, M_memWriteW;
   wire M_loadu;
+  wire m_memWriteE;
 
-  parameter WIDTH = 268;
+  parameter WIDTH = 332;
   flopenrc #(
       .WIDTH(WIDTH)
   ) u_flopenrc (
@@ -78,7 +83,9 @@ module MEM_stage (
         E_csrWData,
         E_ertn,
         E_excp,
-        E_excp_num
+        E_excp_num,
+        E_era,
+        e_badv_add
       }),
       .q({
         M_pcAddr,
@@ -87,7 +94,7 @@ module MEM_stage (
         M_regW,
         M_res_from_mem,
         M_memReadE,
-        M_memWriteE,
+        m_memWriteE,
         M_memReadW,
         M_memWriteW,
         M_memWriteData,
@@ -100,7 +107,9 @@ module MEM_stage (
         M_csrWData,
         M_ertn,
         M_excp,
-        M_excp_num
+        M_excp_num,
+        M_era,
+        M_badv_add
       })
   );
 
@@ -122,4 +131,5 @@ module MEM_stage (
   assign m_memReadData = M_memReadW[3] ? memReadData :
                          (M_memReadW[1] ? (M_loadu ? {16'b0,mem_halfLoaded} : {{16{mem_halfLoaded[15]}},mem_halfLoaded}) :
                          (M_memReadW[0] ? (M_loadu ? {24'b0,mem_byteLoaded} : {{24{mem_byteLoaded[7]}},mem_byteLoaded}) : 32'b0));
+  assign M_memWriteE = m_memWriteE & ~M_excp_num[1];
 endmodule

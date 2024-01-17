@@ -10,8 +10,7 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/
 INFO: [VRFC 10-311] analyzing module EXE_stage
 INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/ID_stage.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module ID_stage
-WARNING: [VRFC 10-9336] redeclaration of ANSI port 'd_excp' is not allowed [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/ID_stage.v:439]
-WARNING: [VRFC 10-9336] redeclaration of ANSI port 'd_ertn' is not allowed [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/ID_stage.v:441]
+WARNING: [VRFC 10-3380] identifier 'd_selPC' is used before its declaration [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/ID_stage.v:113]
 INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/IF_stage.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module IF_stage
 INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/MEM_stage.v" into library xil_defaultlib
