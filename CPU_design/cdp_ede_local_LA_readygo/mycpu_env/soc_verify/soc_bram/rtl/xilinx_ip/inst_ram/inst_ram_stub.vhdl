@@ -2,10 +2,10 @@
 -- Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
--- Date        : Wed Feb 21 19:15:19 2024
+-- Date        : Wed Feb 21 19:15:15 2024
 -- Host        : ysxAshore-Ubuntu running 64-bit Ubuntu 22.04.3 LTS
--- Command     : write_vhdl -force -mode synth_stub
---               /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/rtl/xilinx_ip/inst_ram/inst_ram_stub.vhdl
+-- Command     : write_vhdl -force -mode synth_stub -rename_top inst_ram -prefix
+--               inst_ram_ inst_ram_stub.vhdl
 -- Design      : inst_ram
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a200tfbg676-1
