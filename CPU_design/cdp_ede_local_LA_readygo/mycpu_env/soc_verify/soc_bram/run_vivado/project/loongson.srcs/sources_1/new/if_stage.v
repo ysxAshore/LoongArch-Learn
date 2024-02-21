@@ -33,8 +33,9 @@ module if_stage (
 
   //拆解id组合逻辑传递给if组合逻辑的数据
   wire br_taken;
+  wire br_taken_cancel;
   wire [31:0] br_target;
-  assign {br_taken, br_target} = id_to_if_bus;
+  assign {br_taken, br_target, br_taken_cancel} = id_to_if_bus;
 
   //组合传递给id_reg的数据
   wire [31:0] if_inst;
@@ -56,6 +57,8 @@ module if_stage (
       if_pc <= 32'h1bff_fffc;
     end else if (if_allowin) begin
       if_valid <= preIf_to_if_valid;
+    end else if (br_taken_cancel) begin  //if_valid & (~id_allowin | ~if_ready_go)
+      if_valid <= 1'b0;
     end
     if (if_allowin & preIf_to_if_valid) begin
       if_pc <= nextpc;

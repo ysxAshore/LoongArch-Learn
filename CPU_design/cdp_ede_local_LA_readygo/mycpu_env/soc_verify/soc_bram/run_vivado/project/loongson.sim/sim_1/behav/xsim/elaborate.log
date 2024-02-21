@@ -5,8 +5,8 @@ Running: /home/ysxashore/App/Xilinx/Vivado/2023.1/bin/unwrapped/lnx64.o/xelab --
 Using 8 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'inst_sram_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:49]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'debug_wb_rf_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:99]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'inst_sram_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:51]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'debug_wb_rf_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:108]
 Completed static elaboration
 Starting simulation data flow analysis
 Completed simulation data flow analysis

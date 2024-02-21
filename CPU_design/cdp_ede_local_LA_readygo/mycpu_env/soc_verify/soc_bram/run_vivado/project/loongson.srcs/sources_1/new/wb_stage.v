@@ -46,7 +46,7 @@ module wb_stage (
   assign {wb_regW, wb_regWAddr, wb_regWData, wb_pc} = wb_data;
 
   //封包传递给id组合逻辑的数据
-  assign wb_to_id_bus                               = {wb_regW, wb_regWAddr, wb_regWData};
+  assign wb_to_id_bus                               = {wb_valid, wb_regW, wb_regWAddr, wb_regWData};
 
   //对接debug trace
   assign debug_wb_pc                                = wb_pc;

@@ -18,6 +18,12 @@ module id_stage (
     //id组合逻辑传递给if组合逻辑的一些用于生成nextpc的信号
     output wire [`ID_TO_IF_WD-1:0] id_to_if_bus,
 
+    //exe组合逻辑传递给id组合逻辑的用于写寄存器的信号
+    input wire [`EXE_TO_ID_WD-1:0] exe_to_id_bus,
+
+    //mem组合逻辑传递给id组合逻辑的用于写寄存器的信号
+    input wire [`MEM_TO_ID_WD-1:0] mem_to_id_bus,
+
     //wb组合逻辑传递给id组合逻辑的用于写寄存器的信号
     input wire [`WB_TO_ID_WD-1:0] wb_to_id_bus
 );
@@ -26,15 +32,15 @@ module id_stage (
   wire id_ready_go;
   reg [`IF_TO_ID_WD-1:0] id_data;  //id_reg的数据
   wire br_taken;
+  wire br_taken_cancel;
 
-  assign id_ready_go = 1'b1;
   assign id_allowin = ~id_valid | id_ready_go & exe_allowin;
   assign id_to_exe_valid = id_valid & id_ready_go;
 
   always @(posedge clk) begin
     if (~resetn) begin
       id_valid <= 1'b0;
-    end else if (br_taken) begin //如果采取分支，那么当前指令的执行阶段即相当于执行idle指令
+    end else if (br_taken_cancel) begin  //如果采取分支，那么取消当前IF阶段的指令
       id_valid <= 1'b0;
     end else if (id_allowin) begin
       id_valid <= if_to_id_valid;
@@ -49,11 +55,26 @@ module id_stage (
   wire [31:0] id_inst;
   assign {id_pc, id_inst} = id_data;
 
+  //拆解exe组合逻辑送来的数据
+  wire exe_valid;
+  wire exe_regW;
+  wire [4:0] exe_regWAddr;
+  wire [31:0] exe_regWData;
+  assign {exe_valid, exe_regW, exe_regWAddr, exe_regWData} = exe_to_id_bus;
+
+  //拆解mem组合逻辑送来的数据
+  wire mem_valid;
+  wire mem_regW;
+  wire [4:0] mem_regWAddr;
+  wire [31:0] mem_regWData;
+  assign {mem_valid, mem_regW, mem_regWAddr, mem_regWData} = mem_to_id_bus;
+
   //拆解wb组合逻辑传递过来的数据
+  wire wb_valid;
   wire wb_regW;
   wire [4:0] wb_regWAddr;
   wire [31:0] wb_regWData;
-  assign {wb_regW, wb_regWAddr, wb_regWData} = wb_to_id_bus;
+  assign {wb_valid, wb_regW, wb_regWAddr, wb_regWData} = wb_to_id_bus;
 
   //指令拆解
   wire [ 5:0] op_31_26;
@@ -140,6 +161,8 @@ module id_stage (
   wire need_si16;
   wire need_si20;
   wire need_si26;
+  wire need_rj;
+  wire need_rkd;
 
   assign alu_op[0] = inst_add | inst_addi | inst_ld_w | inst_st_w | inst_jirl | inst_bl;
   assign alu_op[1] = inst_sub;
@@ -174,6 +197,9 @@ module id_stage (
   assign need_si16 = inst_jirl | inst_beq | inst_bne;
   assign need_si20 = inst_lu12i;
   assign need_si26 = inst_b | inst_bl;
+  assign need_rj = ~inst_b | inst_bl;
+  assign need_rkd = ~inst_slli | ~inst_srli | ~inst_srai | ~inst_addi | ~inst_ld_w 
+                  | ~inst_st_w | ~inst_jirl | ~inst_b | ~inst_bl | ~inst_beq | ~inst_bne;
 
   //id阶段组合逻辑数据生成
   wire [31:0] imm;
@@ -210,6 +236,19 @@ module id_stage (
       .wdata (wb_regWData)
   );
 
+  //RAW阻塞
+  wire addrA_equal;
+  wire addrB_equal;
+
+  assign addrA_equal = need_rj & (regAddrA!=5'b0) & ((exe_valid & exe_regW & exe_regWAddr == regAddrA)
+                       | (mem_valid & mem_regW & mem_regWAddr == regAddrA)
+                       | (wb_valid & wb_regW & wb_regWAddr == regAddrA));
+  assign addrB_equal = need_rkd & (regAddrB!=5'b0) & ((exe_valid & exe_regW & exe_regWAddr == regAddrB)
+                       | (mem_valid & mem_regW & mem_regWAddr == regAddrB)
+                       | (wb_valid & wb_regW & wb_regWAddr == regAddrB));
+  assign id_ready_go = ~addrA_equal & ~addrB_equal;
+
+
   //分支判断
   wire [31:0] DataA;
   wire [31:0] DataB;
@@ -225,10 +264,12 @@ module id_stage (
                      inst_bl              |
                      inst_b
   ) && id_valid;
+
   assign br_target = (inst_beq | inst_bne | inst_bl | inst_b) ? (id_pc + br_offs) : (regDataA + jirl_offs);
+  assign br_taken_cancel = br_taken & id_ready_go;  //当阻塞完成时，br_taken_cancel才与br_taken一致有效
 
   //封包id组合逻辑传递给if组合逻辑preIF的数据
-  assign id_to_if_bus = {br_taken, br_target};
+  assign id_to_if_bus = {br_taken, br_target, br_taken_cancel};
 
   //封包id组合逻辑传递给exe_reg的数据
   assign id_to_exe_bus = {alu_op, res_from_mem, id_regW, id_memW, id_regWAddr, DataA, DataB, id_pc};

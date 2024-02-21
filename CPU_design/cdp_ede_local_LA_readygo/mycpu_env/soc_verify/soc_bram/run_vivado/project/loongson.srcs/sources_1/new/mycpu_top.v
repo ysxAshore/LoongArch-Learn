@@ -37,6 +37,8 @@ module mycpu_top (
   wire [`EXE_TO_MEM_WD-1:0] exe_to_mem_bus;
   wire [`MEM_TO_WB_WD-1:0] mem_to_wb_bus;
   wire [`WB_TO_ID_WD-1:0] wb_to_id_bus;
+  wire [`EXE_TO_ID_WD-1:0] exe_to_id_bus;
+  wire [`MEM_TO_ID_WD-1:0] mem_to_id_bus;
 
   if_stage u_if_stage (
       .clk            (clk),
@@ -61,8 +63,11 @@ module mycpu_top (
       .id_to_exe_valid(id_to_exe_valid),
       .id_to_exe_bus  (id_to_exe_bus),
       .id_to_if_bus   (id_to_if_bus),
+      .exe_to_id_bus  (exe_to_id_bus),
+      .mem_to_id_bus  (mem_to_id_bus),
       .wb_to_id_bus   (wb_to_id_bus)
   );
+
   exe_stage u_exe_stage (
       .clk             (clk),
       .resetn          (resetn),
@@ -72,11 +77,13 @@ module mycpu_top (
       .mem_allowin     (mem_allowin),
       .exe_to_mem_valid(exe_to_mem_valid),
       .exe_to_mem_bus  (exe_to_mem_bus),
+      .exe_to_id_bus   (exe_to_id_bus),
       .data_sram_en    (data_sram_en),
       .data_sram_we    (data_sram_we),
       .data_sram_addr  (data_sram_addr),
       .data_sram_wdata (data_sram_wdata)
   );
+
   mem_stage u_mem_stage (
       .clk             (clk),
       .resetn          (resetn),
@@ -86,8 +93,10 @@ module mycpu_top (
       .wb_allowin      (wb_allowin),
       .mem_to_wb_valid (mem_to_wb_valid),
       .mem_to_wb_bus   (mem_to_wb_bus),
+      .mem_to_id_bus   (mem_to_id_bus),
       .data_sram_rdata (data_sram_rdata)
   );
+
   wb_stage u_wb_stage (
       .clk              (clk),
       .resetn           (resetn),

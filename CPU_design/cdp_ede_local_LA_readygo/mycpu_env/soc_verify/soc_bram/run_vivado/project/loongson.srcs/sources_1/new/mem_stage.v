@@ -15,6 +15,10 @@ module mem_stage (
     output wire mem_to_wb_valid,
     output wire [`MEM_TO_WB_WD-1:0] mem_to_wb_bus,
 
+    //传递给id阶段的RAW相关判断
+    output wire [`MEM_TO_ID_WD-1:0] mem_to_id_bus,
+
+    //dataRAM读数据
     input [31:0] data_sram_rdata
 );
 
@@ -55,4 +59,7 @@ module mem_stage (
 
   //封包传递给wb_reg数据
   assign mem_to_wb_bus = {mem_regW, mem_regWAddr, mem_regWData, mem_pc};
+
+  //封包传递给id阶段的数据
+  assign mem_to_id_bus = {mem_valid, mem_regW, mem_regWAddr, mem_regWData};
 endmodule

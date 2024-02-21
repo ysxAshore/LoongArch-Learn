@@ -15,6 +15,9 @@ module exe_stage (
     output wire exe_to_mem_valid,
     output wire [`EXE_TO_MEM_WD-1:0] exe_to_mem_bus,
 
+    //传递给ID阶段的RAW相关判断
+    output wire [`EXE_TO_ID_WD-1:0] exe_to_id_bus,
+
     //访dataRAM端口
     output wire        data_sram_en,
     output wire [ 3:0] data_sram_we,
@@ -68,5 +71,8 @@ module exe_stage (
 
   //封包exe组合逻辑传递给mem_reg的数据
   assign exe_to_mem_bus = {exe_regW, exe_regWAddr, res_from_mem, exe_aluResult, exe_pc};
+
+  //封包exe传递给id的RAW相关判断
+  assign exe_to_id_bus = {exe_valid, exe_regW, exe_regWAddr, exe_aluResult};
 
 endmodule
