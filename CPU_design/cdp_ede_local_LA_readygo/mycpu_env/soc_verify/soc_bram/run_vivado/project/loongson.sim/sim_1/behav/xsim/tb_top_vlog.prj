@@ -7,14 +7,15 @@ verilog xil_defaultlib  --include "../../../../loongson.srcs/sources_1/new" --in
 "../../../../loongson.srcs/sources_1/new/alu.v" \
 "../../../../../../rtl/BRIDGE/bridge_1x2.v" \
 "../../../../../../rtl/CONFREG/confreg.v" \
+"../../../../loongson.srcs/sources_1/new/div.v" \
 "../../../../loongson.srcs/sources_1/new/exe_stage.v" \
 "../../../../loongson.srcs/sources_1/new/id_stage.v" \
 "../../../../loongson.srcs/sources_1/new/if_stage.v" \
 "../../../../loongson.srcs/sources_1/new/mem_stage.v" \
+"../../../../loongson.srcs/sources_1/new/mul.v" \
 "../../../../loongson.srcs/sources_1/new/mycpu_top.v" \
 "../../../../loongson.srcs/sources_1/new/regfile.v" \
 "../../../../../../rtl/soc_lite_top.v" \
-"../../../../../../testbench/sync_ram.v" \
 "../../../../loongson.srcs/sources_1/new/tools.v" \
 "../../../../loongson.srcs/sources_1/new/wb_stage.v" \
 "../../../../../../testbench/mycpu_tb.v" \

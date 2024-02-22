@@ -1,65 +1,116 @@
 Time resolution is 1 ps
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module tb_top.soc_lite.inst_ram.inst.\native_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module tb_top.soc_lite.data_ram.inst.\native_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
 ==============================================================
 Test begin!
-        [  22000 ns] Test is running, debug_wb_pc = 0x1c039738
-        [  32000 ns] Test is running, debug_wb_pc = 0x1c03a6d8
-        [  42000 ns] Test is running, debug_wb_pc = 0x1c03b614
-        [  52000 ns] Test is running, debug_wb_pc = 0x1c03c5b4
-        [  62000 ns] Test is running, debug_wb_pc = 0x1c03d4f0
-        [  72000 ns] Test is running, debug_wb_pc = 0x1c03e490
-        [  82000 ns] Test is running, debug_wb_pc = 0x1c03f3cc
-        [  92000 ns] Test is running, debug_wb_pc = 0x1c04036c
-        [ 102000 ns] Test is running, debug_wb_pc = 0x1c04130c
-        [ 112000 ns] Test is running, debug_wb_pc = 0x1c042248
-        [ 122000 ns] Test is running, debug_wb_pc = 0x1c0431e8
-        [ 132000 ns] Test is running, debug_wb_pc = 0x1c044124
-        [ 142000 ns] Test is running, debug_wb_pc = 0x1c0450c4
-        [ 152000 ns] Test is running, debug_wb_pc = 0x1c046064
-        [ 162000 ns] Test is running, debug_wb_pc = 0x1c046fa0
-        [ 172000 ns] Test is running, debug_wb_pc = 0x1c047f40
-        [ 182000 ns] Test is running, debug_wb_pc = 0x1c048e7c
-        [ 192000 ns] Test is running, debug_wb_pc = 0x1c049e1c
-        [ 202000 ns] Test is running, debug_wb_pc = 0x1c0106f0
-        [ 212000 ns] Test is running, debug_wb_pc = 0x1c011690
-        [ 222000 ns] Test is running, debug_wb_pc = 0x1c012630
-        [ 232000 ns] Test is running, debug_wb_pc = 0x1c01356c
-        [ 242000 ns] Test is running, debug_wb_pc = 0x1c01450c
-        [ 252000 ns] Test is running, debug_wb_pc = 0x1c015448
-        [ 262000 ns] Test is running, debug_wb_pc = 0x1c0163e8
-        [ 272000 ns] Test is running, debug_wb_pc = 0x1c017324
-        [ 282000 ns] Test is running, debug_wb_pc = 0x1c010168
-        [ 292000 ns] Test is running, debug_wb_pc = 0x1c01b4e8
-        [ 302000 ns] Test is running, debug_wb_pc = 0x1c01c780
-        [ 312000 ns] Test is running, debug_wb_pc = 0x1c01d6f8
-        [ 322000 ns] Test is running, debug_wb_pc = 0x1c01e60c
-        [ 332000 ns] Test is running, debug_wb_pc = 0x1c01f5fc
-        [ 342000 ns] Test is running, debug_wb_pc = 0x1c0208a0
-        [ 352000 ns] Test is running, debug_wb_pc = 0x1c021a1c
-        [ 362000 ns] Test is running, debug_wb_pc = 0x1c022940
-        [ 372000 ns] Test is running, debug_wb_pc = 0x1c02382c
-        [ 382000 ns] Test is running, debug_wb_pc = 0x1c02492c
-        [ 392000 ns] Test is running, debug_wb_pc = 0x1c025bc8
-        [ 402000 ns] Test is running, debug_wb_pc = 0x1c026cdc
-        [ 412000 ns] Test is running, debug_wb_pc = 0x1c027bc4
-        [ 422000 ns] Test is running, debug_wb_pc = 0x1c028ae8
-        [ 432000 ns] Test is running, debug_wb_pc = 0x1c0299a4
-        [ 442000 ns] Test is running, debug_wb_pc = 0x1c02a8c8
-        [ 452000 ns] Test is running, debug_wb_pc = 0x1c02b7d0
-        [ 462000 ns] Test is running, debug_wb_pc = 0x1c02c6f4
-        [ 472000 ns] Test is running, debug_wb_pc = 0x1c02d618
-        [ 482000 ns] Test is running, debug_wb_pc = 0x1c02e520
-        [ 492000 ns] Test is running, debug_wb_pc = 0x1c02f34c
-        [ 502000 ns] Test is running, debug_wb_pc = 0x1c0301d0
-        [ 512000 ns] Test is running, debug_wb_pc = 0x1c031050
-        [ 522000 ns] Test is running, debug_wb_pc = 0x1c031edc
-        [ 532000 ns] Test is running, debug_wb_pc = 0x1c032d58
-        [ 542000 ns] Test is running, debug_wb_pc = 0x1c034af4
-        [ 552000 ns] Test is running, debug_wb_pc = 0x1c0359e0
-        [ 562000 ns] Test is running, debug_wb_pc = 0x1c0368bc
-        [ 572000 ns] Test is running, debug_wb_pc = 0x1c0377b4
-        [ 582000 ns] Test is running, debug_wb_pc = 0x1c038694
+        [  22000 ns] Test is running, debug_wb_pc = 0x1c04c128
+        [  32000 ns] Test is running, debug_wb_pc = 0x1c04d0c8
+        [  42000 ns] Test is running, debug_wb_pc = 0x1c055e1c
+        [  52000 ns] Test is running, debug_wb_pc = 0x1c056dbc
+        [  62000 ns] Test is running, debug_wb_pc = 0x1c057cf8
+        [  72000 ns] Test is running, debug_wb_pc = 0x1c058c98
+        [  82000 ns] Test is running, debug_wb_pc = 0x1c059bd4
+        [  92000 ns] Test is running, debug_wb_pc = 0x1c05ab74
+        [ 102000 ns] Test is running, debug_wb_pc = 0x1c05bb14
+        [ 112000 ns] Test is running, debug_wb_pc = 0x1c05ca50
+        [ 122000 ns] Test is running, debug_wb_pc = 0x1c05d9f0
+        [ 132000 ns] Test is running, debug_wb_pc = 0x1c05e92c
+        [ 142000 ns] Test is running, debug_wb_pc = 0x1c05f8cc
+        [ 152000 ns] Test is running, debug_wb_pc = 0x1c06086c
+        [ 162000 ns] Test is running, debug_wb_pc = 0x1c0617a8
+        [ 172000 ns] Test is running, debug_wb_pc = 0x1c062748
+        [ 182000 ns] Test is running, debug_wb_pc = 0x1c063684
+        [ 192000 ns] Test is running, debug_wb_pc = 0x1c064624
+        [ 202000 ns] Test is running, debug_wb_pc = 0x1c010770
+        [ 212000 ns] Test is running, debug_wb_pc = 0x1c011710
+        [ 222000 ns] Test is running, debug_wb_pc = 0x1c0126b0
+        [ 232000 ns] Test is running, debug_wb_pc = 0x1c0135ec
+        [ 242000 ns] Test is running, debug_wb_pc = 0x1c01458c
+        [ 252000 ns] Test is running, debug_wb_pc = 0x1c0154c8
+        [ 262000 ns] Test is running, debug_wb_pc = 0x1c016468
+        [ 272000 ns] Test is running, debug_wb_pc = 0x1c0173a4
+        [ 282000 ns] Test is running, debug_wb_pc = 0x1c0101e8
+        [ 292000 ns] Test is running, debug_wb_pc = 0x1c01b568
+        [ 302000 ns] Test is running, debug_wb_pc = 0x1c01c800
+        [ 312000 ns] Test is running, debug_wb_pc = 0x1c01d778
+        [ 322000 ns] Test is running, debug_wb_pc = 0x1c01e68c
+        [ 332000 ns] Test is running, debug_wb_pc = 0x1c01f67c
+        [ 342000 ns] Test is running, debug_wb_pc = 0x1c020920
+        [ 352000 ns] Test is running, debug_wb_pc = 0x1c021a9c
+        [ 362000 ns] Test is running, debug_wb_pc = 0x1c0229c0
+        [ 372000 ns] Test is running, debug_wb_pc = 0x1c0238ac
+        [ 382000 ns] Test is running, debug_wb_pc = 0x1c0249ac
+        [ 392000 ns] Test is running, debug_wb_pc = 0x1c025c48
+        [ 402000 ns] Test is running, debug_wb_pc = 0x1c026d5c
+        [ 412000 ns] Test is running, debug_wb_pc = 0x1c027c44
+        [ 422000 ns] Test is running, debug_wb_pc = 0x1c028b68
+        [ 432000 ns] Test is running, debug_wb_pc = 0x1c029a24
+        [ 442000 ns] Test is running, debug_wb_pc = 0x1c02a948
+        [ 452000 ns] Test is running, debug_wb_pc = 0x1c02b850
+        [ 462000 ns] Test is running, debug_wb_pc = 0x1c02c774
+        [ 472000 ns] Test is running, debug_wb_pc = 0x1c02d698
+        [ 482000 ns] Test is running, debug_wb_pc = 0x1c02e5a0
+        [ 492000 ns] Test is running, debug_wb_pc = 0x1c02f3cc
+        [ 502000 ns] Test is running, debug_wb_pc = 0x1c030250
+        [ 512000 ns] Test is running, debug_wb_pc = 0x1c0310d0
+        [ 522000 ns] Test is running, debug_wb_pc = 0x1c031f5c
+        [ 532000 ns] Test is running, debug_wb_pc = 0x1c032dd8
+        [ 542000 ns] Test is running, debug_wb_pc = 0x1c034b74
+        [ 552000 ns] Test is running, debug_wb_pc = 0x1c035a60
+        [ 562000 ns] Test is running, debug_wb_pc = 0x1c03693c
+        [ 572000 ns] Test is running, debug_wb_pc = 0x1c037834
+        [ 582000 ns] Test is running, debug_wb_pc = 0x1c038714
+        [ 592000 ns] Test is running, debug_wb_pc = 0x1c03c03c
+        [ 602000 ns] Test is running, debug_wb_pc = 0x1c010100
+        [ 612000 ns] Test is running, debug_wb_pc = 0x1c03df18
+        [ 622000 ns] Test is running, debug_wb_pc = 0x1c03ee54
+        [ 632000 ns] Test is running, debug_wb_pc = 0x1c03fdf4
+        [ 642000 ns] Test is running, debug_wb_pc = 0x1c040d30
+        [ 652000 ns] Test is running, debug_wb_pc = 0x1c041cd0
+        [ 662000 ns] Test is running, debug_wb_pc = 0x1c042c0c
+        [ 672000 ns] Test is running, debug_wb_pc = 0x1c043bac
+        [ 682000 ns] Test is running, debug_wb_pc = 0x1c044ae8
+        [ 692000 ns] Test is running, debug_wb_pc = 0x1c045a88
+        [ 702000 ns] Test is running, debug_wb_pc = 0x1c0469c4
+        [ 712000 ns] Test is running, debug_wb_pc = 0x1c047964
+        [ 722000 ns] Test is running, debug_wb_pc = 0x1c048904
+        [ 732000 ns] Test is running, debug_wb_pc = 0x1c049840
+        [ 742000 ns] Test is running, debug_wb_pc = 0x1c04a7e0
+        [ 752000 ns] Test is running, debug_wb_pc = 0x1c04d8b8
+        [ 762000 ns] Test is running, debug_wb_pc = 0x1c04db74
+        [ 772000 ns] Test is running, debug_wb_pc = 0x1c04de14
+        [ 782000 ns] Test is running, debug_wb_pc = 0x1c04e0b4
+        [ 792000 ns] Test is running, debug_wb_pc = 0x1c04e36c
+        [ 802000 ns] Test is running, debug_wb_pc = 0x1c04e610
+        [ 812000 ns] Test is running, debug_wb_pc = 0x1c04e8c0
+        [ 822000 ns] Test is running, debug_wb_pc = 0x1c04eb60
+        [ 832000 ns] Test is running, debug_wb_pc = 0x1c04ee18
+        [ 842000 ns] Test is running, debug_wb_pc = 0x1c04f0b4
+        [ 852000 ns] Test is running, debug_wb_pc = 0x1c04f360
+        [ 862000 ns] Test is running, debug_wb_pc = 0x1c04f610
+        [ 872000 ns] Test is running, debug_wb_pc = 0x1c04f898
+        [ 882000 ns] Test is running, debug_wb_pc = 0x1c0507d8
+        [ 892000 ns] Test is running, debug_wb_pc = 0x1c051714
+        [ 902000 ns] Test is running, debug_wb_pc = 0x1c052650
+        [ 912000 ns] Test is running, debug_wb_pc = 0x1c053184
+        [ 922000 ns] Test is running, debug_wb_pc = 0x1c053484
+        [ 932000 ns] Test is running, debug_wb_pc = 0x1c053784
+        [ 942000 ns] Test is running, debug_wb_pc = 0x1c053a74
+        [ 952000 ns] Test is running, debug_wb_pc = 0x1c053d60
+        [ 962000 ns] Test is running, debug_wb_pc = 0x1c05405c
+        [ 972000 ns] Test is running, debug_wb_pc = 0x1c05434c
+        [ 982000 ns] Test is running, debug_wb_pc = 0x1c05464c
+        [ 992000 ns] Test is running, debug_wb_pc = 0x1c054948
+        [1002000 ns] Test is running, debug_wb_pc = 0x1c054c40
+        [1012000 ns] Test is running, debug_wb_pc = 0x1c054f40
+        [1022000 ns] Test is running, debug_wb_pc = 0x1c055224
+        [1032000 ns] Test is running, debug_wb_pc = 0x1c055520
 ==============================================================
 Test end!
 ----PASS!!!
-$finish called at time : 583515 ns : File "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/testbench/mycpu_tb.v" Line 270
-INFO: xsimkernel Simulation Memory Usage: 115160 KB (Peak: 165768 KB), Simulation CPU Usage: 14100 ms
+$finish called at time : 1035445 ns : File "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/testbench/mycpu_tb.v" Line 270
+INFO: xsimkernel Simulation Memory Usage: 130100 KB (Peak: 171280 KB), Simulation CPU Usage: 490040 ms
