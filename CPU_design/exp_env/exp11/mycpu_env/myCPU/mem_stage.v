@@ -54,8 +54,15 @@ module mem_stage (
 
   //获得访存数据
   wire [31:0] mem_memReadData;
-  assign mem_memReadData = {32{memINS_rec == 2'b01}} & {{24{load_sign}},data_sram_rdata[7:0]} |
-                           {32{memINS_rec == 2'b10}} & {{16{load_sign}},data_sram_rdata[15:0]} |
+  wire [ 7:0] byteReadData = ({8{mem_aluResult[1:0]==2'b00}} & data_sram_rdata[ 7: 0]) |
+                            ({8{mem_aluResult[1:0]==2'b01}} & data_sram_rdata[15: 8]) |
+                            ({8{mem_aluResult[1:0]==2'b10}} & data_sram_rdata[23:16]) |
+                            ({8{mem_aluResult[1:0]==2'b11}} & data_sram_rdata[31:24]) ;
+  wire [15:0] halfReadData = ({16{mem_aluResult[1:0]==2'b00}} & data_sram_rdata[15: 0]) |
+                             ({16{mem_aluResult[1:0]==2'b10}} & data_sram_rdata[31:16]) ;
+
+  assign mem_memReadData = {32{memINS_rec == 2'b01}} & {{24{load_sign & byteReadData[7]}},byteReadData} |
+                           {32{memINS_rec == 2'b10}} & {{16{load_sign & halfReadData[15]}},halfReadData} |
                            {32{memINS_rec == 2'b11}} & data_sram_rdata;
 
   //写reg数据

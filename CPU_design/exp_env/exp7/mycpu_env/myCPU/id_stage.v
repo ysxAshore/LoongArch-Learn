@@ -231,6 +231,6 @@ module id_stage (
   assign id_to_if_bus = {br_taken, br_target};
 
   //封包id组合逻辑传递给exe_reg的数据
-  assign id_to_exe_bus = {alu_op, res_from_mem, id_regW, id_memW, id_regWAddr, DataA, DataB, id_pc};
+  assign id_to_exe_bus = {alu_op, res_from_mem, id_regW, id_memW, id_regWAddr, regDataB, DataA, DataB, id_pc};
 
 endmodule

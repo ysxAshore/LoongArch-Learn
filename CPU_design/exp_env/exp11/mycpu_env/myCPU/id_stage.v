@@ -314,12 +314,12 @@ module id_stage (
   assign DataA = src1_is_pc ? id_pc : forwardDataA;
   assign DataB = src2_is_imm ? imm : forwardDataB;
 
-  assign ltA = DataA;
-  assign ltB = ~DataB;
+  assign ltA = forwardDataA;
+  assign ltB = ~forwardDataB;
   assign cin = 1;
   assign {cout, ltResult} = ltA + ltB + cin;
 
-  assign rj_lt_rd = (~DataA[31] & DataB[31]) | (~(DataA[31] ^ DataB[31]) & ltResult[31]);
+  assign rj_lt_rd = (forwardDataA[31] & ~forwardDataB[31]) | (~(forwardDataA[31] ^ forwardDataB[31]) & ltResult[31]);
   assign rj_ltu_rd = ~cout;
   assign rj_eq_rd = (DataA == DataB);
   assign br_taken = (inst_beq  &  rj_eq_rd |
@@ -333,7 +333,7 @@ module id_stage (
                      inst_b
   ) && id_valid;
 
-  assign br_target = (inst_beq | inst_bne | inst_bge | inst_blt | inst_bltu | inst_bgeu | inst_bl | inst_b) ? (id_pc + br_offs) : (regDataA + jirl_offs);
+  assign br_target = (inst_beq | inst_bne | inst_bge | inst_blt | inst_bltu | inst_bgeu | inst_bl | inst_b) ? (id_pc + br_offs) : (forwardDataA + jirl_offs);
   assign br_taken_cancel = br_taken & id_ready_go;  //当阻塞完成时，br_taken_cancel才与br_taken一致有效
 
   //乘除相关控制信号
@@ -369,6 +369,7 @@ module id_stage (
     id_regW,
     id_memW,
     id_regWAddr,
+    forwardDataB,
     DataA,
     DataB,
     div_signed,

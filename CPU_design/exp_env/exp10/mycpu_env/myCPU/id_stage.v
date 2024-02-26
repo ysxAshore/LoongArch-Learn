@@ -324,6 +324,7 @@ module id_stage (
     id_regW,
     id_memW,
     id_regWAddr,
+    forwardDataB,
     DataA,
     DataB,
     div_signed,

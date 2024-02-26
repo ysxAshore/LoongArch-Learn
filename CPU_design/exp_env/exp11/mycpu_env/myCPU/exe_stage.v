@@ -48,6 +48,7 @@ module exe_stage (
   wire exe_regW;
   wire exe_memW;
   wire [4:0] exe_regWAddr;
+  wire [31:0] forwardDataB;
   wire [31:0] DataA;
   wire [31:0] DataB;
   wire div_signed;
@@ -58,7 +59,7 @@ module exe_stage (
   wire load_sign;
   wire [31:0] exe_pc;
 
-  assign {alu_op, res_from_mem, exe_regW, exe_memW, exe_regWAddr, DataA, DataB, div_signed, mul_signed, div, aluMD_resSelect, 
+  assign {alu_op, res_from_mem, exe_regW, exe_memW, exe_regWAddr, forwardDataB, DataA, DataB, div_signed, mul_signed, div, aluMD_resSelect, 
           memINS_rec, load_sign, exe_pc} = exe_data;
 
   //alu
@@ -112,9 +113,9 @@ module exe_stage (
                           {4{exe_aluResult[1:0] == 2'b10}} & 4'b1100)
                       :(memINS_rec == 2'b11 ? 4'b1111 : 4'b0000)));
   assign data_sram_addr = exe_aluResult;
-  assign data_sram_wdata = {32{memINS_rec == 2'b01}} & {4{DataB[7:0]}} |
-                           {32{memINS_rec == 2'b10}} & {2{DataB[15:0]}}|
-                           {32{memINS_rec == 2'b11}} & DataB;
+  assign data_sram_wdata = {32{memINS_rec == 2'b01}} & {4{forwardDataB[7:0]}} |
+                           {32{memINS_rec == 2'b10}} & {2{forwardDataB[15:0]}}|
+                           {32{memINS_rec == 2'b11}} & forwardDataB;
 
   //选择最后exe计算数据
   wire [31:0] exe_finalResult;
