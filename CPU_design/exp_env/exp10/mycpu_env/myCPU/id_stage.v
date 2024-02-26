@@ -297,7 +297,7 @@ module id_stage (
                      inst_b
   ) && id_valid;
 
-  assign br_target = (inst_beq | inst_bne | inst_bl | inst_b) ? (id_pc + br_offs) : (regDataA + jirl_offs);
+  assign br_target = (inst_beq | inst_bne | inst_bl | inst_b) ? (id_pc + br_offs) : (forwardDataA + jirl_offs);
   assign br_taken_cancel = br_taken & id_ready_go;  //当阻塞完成时，br_taken_cancel才与br_taken一致有效
 
   //乘除相关控制信号
