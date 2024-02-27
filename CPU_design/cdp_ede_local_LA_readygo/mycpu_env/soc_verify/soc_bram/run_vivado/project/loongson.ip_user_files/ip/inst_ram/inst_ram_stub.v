@@ -2,7 +2,7 @@
 // Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
-// Date        : Sun Feb 25 21:52:42 2024
+// Date        : Mon Feb 26 22:33:43 2024
 // Host        : ysxAshore-Ubuntu running 64-bit Ubuntu 22.04.4 LTS
 // Command     : write_verilog -force -mode synth_stub
 //               /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/rtl/xilinx_ip/inst_ram/inst_ram_stub.v

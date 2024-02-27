@@ -5,12 +5,10 @@ Running: /home/ysxashore/App/Xilinx/Vivado/2023.1/bin/unwrapped/lnx64.o/xelab --
 Using 8 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'inst_sram_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:57]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'debug_wb_rf_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:124]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 8 for port 'interrupt' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:160]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'badv_addr' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:168]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'tlbrentry_out' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:173]
-WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 2 for port 'plv' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:175]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'inst_sram_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:60]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'debug_wb_rf_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:130]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'tlbrentry_out' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:181]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 2 for port 'plv' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:183]
 Completed static elaboration
 Starting simulation data flow analysis
 Completed simulation data flow analysis

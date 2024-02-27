@@ -48,7 +48,7 @@ module exe_stage (
   //解压缩id组合逻辑传递给exe_reg的信号
   wire [11:0] alu_op;
   wire res_from_mem;
-  wire exe_regW;
+  wire exe_regW_temp;
   wire exe_memW;
   wire [4:0] exe_regWAddr;
   wire [31:0] DataA;
@@ -62,12 +62,14 @@ module exe_stage (
   wire [13:0] csr_num;
   wire [1:0] csr_instRec;
   wire exe_ertn;
-  wire exe_excp;
+  wire exe_excp_temp;
   wire load_sign;
+  wire [5:0] excp_num_temp;
+  wire [1:0] rdcnt_REC;
   wire [31:0] exe_pc;
 
-  assign {alu_op, res_from_mem, exe_regW, exe_memW, exe_regWAddr, forwardDataB, DataA, DataB, div_signed, mul_signed, div, aluMD_resSelect, 
-          memINS_rec, load_sign, csr_num, csr_instRec, exe_ertn, exe_excp, exe_pc} = exe_data;
+  assign {alu_op, res_from_mem, exe_regW_temp, exe_memW, exe_regWAddr, forwardDataB, DataA, DataB, div_signed, mul_signed, div, aluMD_resSelect, 
+          memINS_rec, load_sign, csr_num, csr_instRec, exe_ertn, exe_excp_temp, excp_num_temp, rdcnt_REC, exe_pc} = exe_data;
 
   //alu
   wire [31:0] exe_aluResult;
@@ -105,12 +107,24 @@ module exe_stage (
       .complete_delay(complete_delay)
   );
 
-  assign exe_ready_go = div ? complete_delay : 1'b1;//如果当前exe阶段组合逻辑正在计算div且complete_delay未高有效，那么阻塞exe
+  assign exe_ready_go = (div ? complete_delay : 1'b1) | mem_to_exe_flush_excp_ertn;//如果当前exe阶段组合逻辑正在计算div且complete_delay未高有效，那么阻塞exe
+
+  //ALE异常
+  wire ALE_EXCP;
+  wire exe_regW;
+  wire exe_excp;
+  wire [5:0] excp_num;
+
+  assign ALE_EXCP = memINS_rec == 2'b11 ? exe_aluResult[1:0] != 2'b0 :
+                    memINS_rec == 2'b10 ? exe_aluResult[0] != 1'b0 : 1'b0;
+  assign exe_regW = exe_regW_temp & ~ALE_EXCP;
+  assign exe_excp = exe_excp_temp | ALE_EXCP;
+  assign excp_num = {excp_num_temp[5:2], ALE_EXCP, excp_num_temp[0]};
 
   //访存接口
-  assign data_sram_en = exe_valid & (exe_memW | res_from_mem);
+  assign data_sram_en = exe_valid & (exe_memW | res_from_mem) & ~excp_num & ~mem_to_exe_flush_excp_ertn;
   //当EXE有标记excp/ertn、MEM级有标记excp/ertn、WB级有excp/ertn
-  assign data_sram_we = {4{exe_valid}} & {4{exe_memW}} & {4{~exe_ertn}} & {4{~exe_excp}} & {4{~mem_to_exe_flush_excp_ertn}}
+  assign data_sram_we = {4{exe_valid}} & {4{exe_memW}} & {4{~exe_excp}} & {4{~mem_to_exe_flush_excp_ertn}}
                       & (memINS_rec == 2'b01 ? 
                          ({4{exe_aluResult[1:0] == 2'b00}} & 4'b0001 |
                           {4{exe_aluResult[1:0] == 2'b01}} & 4'b0010 |
@@ -147,13 +161,15 @@ module exe_stage (
     csr_instRec,
     exe_excp,
     exe_ertn,
+    excp_num,
+    rdcnt_REC,
     exe_pc
   };
 
   //封包exe传递给id的RAW相关判断
-  wire exist_csrW = csr_instRec != 2'b0;
+  wire exist_csrR = csr_instRec != 2'b0 | rdcnt_REC != 2'b0;
   assign exe_to_id_bus = {
-    exe_valid, res_from_mem, exe_regW, exe_regWAddr, exe_finalResult, exist_csrW
+    exe_valid, res_from_mem, exe_regW, exe_regWAddr, exe_finalResult, exist_csrR
   };
 
 endmodule

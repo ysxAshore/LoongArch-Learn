@@ -56,22 +56,29 @@ module if_stage (
 
   //组合传递给id_reg的数据
   wire [31:0] if_inst;
-  reg  [31:0] if_pc;
-  assign if_to_id_bus      = {if_pc, if_inst};
+  reg [31:0] if_pc;
+  reg if_ADEF_EXCP;
+  assign if_to_id_bus      = {if_pc, if_inst, if_ADEF_EXCP};
 
   // preIF
   assign preIf_to_if_valid = resetn;
   assign seq_pc            = if_pc + 32'h4;
   assign nextpc            = excp ? eentry_out : ertn ? era : br_taken ? br_target : seq_pc;
 
+  //ADEF异常检测
+  wire ADEF_EXCP;
+  assign ADEF_EXCP      = nextpc[1:0] != 2'b0;
+
   // if_reg
-  assign if_ready_go       = 1'b1;
-  assign if_allowin        = ~if_valid | if_ready_go & id_allowin;
-  assign if_to_id_valid    = if_valid & if_ready_go;
+  assign if_ready_go    = 1'b1;
+  assign if_allowin     = ~if_valid | if_ready_go & id_allowin;
+  assign if_to_id_valid = if_valid & if_ready_go;
   always @(posedge clk) begin
     if (~resetn) begin
       if_valid <= 1'b0;
       if_pc <= 32'h1bff_fffc;
+    end else if ((excp | ertn) & ~if_allowin) begin //当MEM级触发异常时，取消掉IF级的下一个取指
+      if_valid <= 1'b0;
     end else if (if_allowin) begin
       if_valid <= preIf_to_if_valid;
     end else if (br_taken_cancel) begin  //if_valid & (~id_allowin | ~if_ready_go)
@@ -79,11 +86,12 @@ module if_stage (
     end
     if (if_allowin & preIf_to_if_valid) begin
       if_pc <= nextpc;
+      if_ADEF_EXCP <= ADEF_EXCP;
     end
   end
 
   //赋值instRAM接口
-  assign inst_sram_en    = preIf_to_if_valid & if_allowin;
+  assign inst_sram_en    = preIf_to_if_valid & if_allowin & ~ADEF_EXCP;
   assign inst_sram_wen   = 4'h0;
   assign inst_sram_addr  = nextpc;
   assign inst_sram_wdata = 32'b0;

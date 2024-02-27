@@ -2,8 +2,11 @@
 `include "mycpu.h"
 
 module mycpu_top (
-    input  wire        clk,
-    input  wire        resetn,
+    input wire clk,
+    input wire resetn,
+
+    input [7:0] interrupt,
+
     // inst  wiresram interface
     output wire        inst_sram_en,
     output wire [ 3:0] inst_sram_we,
@@ -61,6 +64,8 @@ module mycpu_top (
   );
 
   wire mem_to_id_flush_excp_ertn;
+  wire has_int;
+
   id_stage u_id_stage (
       .clk                      (clk),
       .resetn                   (resetn),
@@ -74,7 +79,8 @@ module mycpu_top (
       .exe_to_id_bus            (exe_to_id_bus),
       .mem_to_id_bus            (mem_to_id_bus),
       .wb_to_id_bus             (wb_to_id_bus),
-      .mem_to_id_flush_excp_ertn(mem_to_id_flush_excp_ertn)
+      .mem_to_id_flush_excp_ertn(mem_to_id_flush_excp_ertn),
+      .has_int                  (has_int)
   );
 
   wire mem_to_exe_flush_excp_ertn;
@@ -136,8 +142,10 @@ module mycpu_top (
   wire [8:0] subcode;
   wire [5:0] code;
   wire [31:0] era;
+  wire [31:0] badv_addr;
+  wire excpAboutAddr;
 
-  assign {csrRAdd, csrWen, csrWAdd, csrWData, excp, ertn, era, subcode, code} = mem_to_csr_bus;
+  assign {csrRAdd, csrWen, csrWAdd, csrWData, excp, ertn, era, subcode, code, excpAboutAddr, badv_addr} = mem_to_csr_bus;
 
   wire [31:0] tid_out;
   wire [63:0] timer_64_out;

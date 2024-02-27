@@ -71,10 +71,12 @@ module mem_stage (
   wire [1:0] csr_instRec;
   wire mem_excp;
   wire mem_ertn;
+  wire [5:0] excp_num;
+  wire [1:0] rdcnt_REC;
   wire [31:0] mem_pc;
 
   assign {mem_regW, mem_regWAddr, res_from_mem, mem_aluResult, memINS_rec, load_sign, DataA, DataB, 
-          csr_num, csr_instRec, mem_excp, mem_ertn, mem_pc} = mem_data;
+          csr_num, csr_instRec, mem_excp, mem_ertn, excp_num, rdcnt_REC, mem_pc} = mem_data;
 
   //拆解CSR传递过来的数据
   wire [31:0] csrRData;
@@ -99,23 +101,35 @@ module mem_stage (
   //处理csr指令
   wire [13:0] csrRAdd;
   wire csrWen;
+  wire excpAboutAddr;
   wire [13:0] csrWAdd;
   wire [31:0] csrWData;
   wire [8:0] subcode;
   wire [5:0] code;
   wire [31:0] era;
+  wire [31:0] badv_addr;
 
   assign csrRAdd = csr_num;
   assign csrWen = (csr_instRec == 2'b10 | csr_instRec == 2'b11) & mem_valid;
   assign csrWAdd = csr_num;
   assign csrWData = csr_instRec == 2'b10 ? DataB : 
                     csr_instRec == 2'b11 ? DataB & DataA | ~DataA & csrRData : 32'b0;
+  assign excpAboutAddr = excp_num[1] | excp_num[5];
+  assign badv_addr = excp_num[5] ? mem_pc : mem_aluResult;
   assign subcode = 9'b0;
-  assign code = 6'h0B;
+  assign code = excp_num[5] ? 6'h08 :
+                excp_num[4] ? 6'h0B :
+                excp_num[3] ? 6'h0C :
+                excp_num[2] ? 6'h0D :
+                excp_num[1] ? 6'h09 :
+                6'h0;
   assign era = mem_pc;
 
   //写reg数据
-  wire [31:0] mem_regWData = res_from_mem ? mem_memReadData : 
+  wire [31:0] mem_regWData = rdcnt_REC == 2'b01 ? tid_out :
+                             rdcnt_REC == 2'b10 ? timer_64_out[31:0] :
+                             rdcnt_REC == 2'b11 ? timer_64_out[63:32]:
+                             res_from_mem ? mem_memReadData : 
                              csr_instRec == 2'b0 ? mem_aluResult : csrRData;
 
   //触发异常、ertn则刷新ID、EXE，并置preIF的next为新值
@@ -129,7 +143,17 @@ module mem_stage (
 
   //封包传递给CSR的数据
   assign mem_to_csr_bus = {
-    csrRAdd, csrWen, csrWAdd, csrWData, mem_excp, mem_ertn, era, subcode, code
+    csrRAdd,
+    csrWen & mem_valid,
+    csrWAdd,
+    csrWData,
+    mem_excp & mem_valid,
+    mem_ertn & mem_valid,
+    era,
+    subcode,
+    code,
+    excpAboutAddr & mem_valid,
+    badv_addr
   };
 
   //封包传递给id阶段的数据
