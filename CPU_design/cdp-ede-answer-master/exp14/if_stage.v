@@ -35,6 +35,8 @@ wire         br_branch;
 wire         br_stall;
 wire         br_taken;
 wire [ 31:0] br_target;
+//br_stall是新添加的，用于实现“转移未计算完成”的阻塞
+//当br_stall是1时，不发出取指
 assign {br_branch,br_stall,br_taken,br_target} = br_bus_r_valid? br_bus_r :
                                                                  br_bus   ;
 
