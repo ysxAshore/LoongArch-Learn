@@ -445,7 +445,7 @@ module id_stage (
   assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall;
 
   //封包id组合逻辑传递给if组合逻辑preIF的数据
-  assign id_to_if_bus = {br_stall, br_taken, br_target, br_taken_cancel};
+  assign id_to_if_bus = {br_stall, br_taken, br_target};
 
   //封包id组合逻辑传递给exe_reg的数据
   assign id_to_exe_bus = {

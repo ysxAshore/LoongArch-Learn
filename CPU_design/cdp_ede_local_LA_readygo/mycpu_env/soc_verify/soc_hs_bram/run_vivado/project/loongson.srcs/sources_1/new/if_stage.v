@@ -46,9 +46,8 @@ module if_stage (
   //拆解id组合逻辑传递给if组合逻辑的数据
   wire br_stall;
   wire br_taken;
-  wire br_taken_cancel;
   wire [31:0] br_target;
-  assign {br_stall, br_taken, br_target, br_taken_cancel} = id_to_if_bus_r_valid ? id_to_if_bus_r : id_to_if_bus;
+  assign {br_stall, br_taken, br_target} = id_to_if_bus_r_valid ? id_to_if_bus_r : id_to_if_bus;
 
   //拆解MEM传递过来的数据
   wire excp;
@@ -94,6 +93,8 @@ module if_stage (
       if_pc <= 32'h1bff_fffc;
     end else if (if_allowin) begin
       if_valid <= preIf_to_if_valid;
+    end else if (if_ready_go & if_reflush) begin
+      if_valid <= 1'b0;
     end
     if (if_allowin & preIf_to_if_valid) begin //原来在if_valid & (~id_allowin | ~if_ready_go)时利用brcancel取消指令的方法，都用到id阶段处理了，因为现在都能流经到id阶段
       if_pc <= nextpc;
@@ -136,10 +137,10 @@ module if_stage (
   always @(posedge clk) begin
     if (~resetn | if_reflush) begin
       id_to_if_bus_r_valid <= 1'b0;
-    end else if (id_to_if_bus[33] & id_allowin & ~(preIF_ready_go & if_valid & if_allowin)) begin //而转移的取消必须都进入到id阶段，因此这里是也需要if_valid和if_allowin
+    end else if (id_to_if_bus[32] & id_allowin & ~(preIF_ready_go & if_valid & if_allowin)) begin //而转移的取消必须都进入到id阶段，因此这里是也需要if_valid和if_allowin
       id_to_if_bus_r <= id_to_if_bus;
       id_to_if_bus_r_valid <= 1'b1;
-    end else if (bd_done & preIF_ready_go & if_allowin) begin
+    end else if ((bd_done | if_valid) & preIF_ready_go & if_allowin) begin
       id_to_if_bus_r_valid <= 1'b0;
     end
   end
@@ -159,7 +160,7 @@ module if_stage (
   always @(posedge clk) begin
     if (~resetn) begin
       excp_reg <= 1'b0;
-    end else if (if_valid & if_reflush & (~if_allowin & ~if_ready_go)) begin
+    end else if (if_valid & if_reflush & (preIF_ready_go | ~if_allowin & ~if_ready_go)) begin
       excp_reg <= 1'b1;
     end else if (inst_sram_data_ok) begin
       excp_reg <= 1'b0;
