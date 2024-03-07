@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "csr.vh"
-
+`include "mycpu.h"
 module csr (
     input clk,
     input resetn,
@@ -45,7 +45,29 @@ module csr (
     output [31:0] era_out,
 
     //输出给各个需要当前特权等级的阶段
-    output [1:0] plv
+    output [1:0] plv,
+
+    //ASID读写
+    output [9:0] asid_out,
+    input [9:0] asid_in,
+    //VPPN
+    output [18:0] vppn_out,
+    input [18:0] vppn_in,
+    //TLBELO
+    output [31:0] tlbelo0_out,
+    output [31:0] tlbelo1_out,
+    input [31:0] tlbelo0_in,
+    input [31:0] tlbelo1_in,
+    //TLBIDX 5位
+    output [4:0] index_out,
+    output [6:0] ps_out,
+    output e_out,
+    input [4:0] index_in,
+    input [6:0] ps_in,
+    input e_in,
+
+    input tlb_srch_wen,
+    input tlb_rd_wen
 );
   //模块内部使用的常量使用localparam定义，不能通过模块例化修改
   //使用localparam定义csr寄存器的地址
@@ -263,7 +285,7 @@ module csr (
     end
   end
 
-  //badv 先不实现完全
+  //badv
   always @(posedge clk) begin
     if (badv_wen) begin
       csr_badv <= csrWData;
@@ -329,11 +351,19 @@ module csr (
     end
   end
 
-  //tlbidx 没实现完整
+  //tlbidx
   always @(posedge clk) begin
     if (~resetn) begin
-      csr_tlbidx[23:5] <= 11'b0;
-      csr_tlbidx[30]   <= 1'b0;
+      csr_tlbidx[23:$clog2(`TLB_NUM)] <= 11'b0;
+      csr_tlbidx[30] <= 1'b0;
+    end else if (tlb_rd_wen) begin
+      csr_tlbidx[`PS] <= ps_in;
+      csr_tlbidx[`NE] <= ~e_in;
+    end else if (tlb_srch_wen) begin
+      csr_tlbidx[`NE] <= ~e_in;
+      if (e_in) begin
+        csr_tlbidx[`INDEX] <= index_in;
+      end
     end else if (tlbidx_wen) begin
       csr_tlbidx[`INDEX] <= csrWData[`INDEX];
       csr_tlbidx[`PS] <= csrWData[`PS];
@@ -341,19 +371,27 @@ module csr (
     end
   end
 
-  //tlbehi 没实现完整
+  //tlbehi
   always @(posedge clk) begin
     if (~resetn) begin
       csr_tlbehi[12:0] <= 13'b0;
+    end else if (tlb_rd_wen) begin  //这几个条件是互斥的
+      csr_tlbehi[`VPPN] <= vppn_in;
+    end else if (excpAboutAddr) begin
+      csr_tlbehi[`VPPN] <= badv_addr[31:13];
     end else if (tlbehi_wen) begin
       csr_tlbehi[`VPPN] <= csrWData[`VPPN];
     end
   end
 
-  //tlbelo0 没实现完整
+  //tlbelo0
   always @(posedge clk) begin
     if (~resetn) begin
       csr_tlbelo0[7] <= 1'b0;
+      csr_tlbelo0[31:28] <= 4'b0;
+    end else if (tlb_rd_wen) begin
+      csr_tlbelo0[31:8] <= tlbelo0_in[31:8];
+      csr_tlbelo0[6:0]  <= tlbelo0_in[6:0];
     end else if (tlbelo0_wen) begin
       csr_tlbelo0[`TLB_V]   <= csrWData[`TLB_V];
       csr_tlbelo0[`TLB_D]   <= csrWData[`TLB_D];
@@ -364,11 +402,15 @@ module csr (
     end
   end
 
-  //tlbelo1 没实现完整
+  //tlbelo1
   always @(posedge clk) begin
     if (~resetn) begin
       csr_tlbelo1[7] <= 1'b0;
-    end else if (tlbelo0_wen) begin
+      csr_tlbelo1[31:28] <= 4'b0;
+    end else if (tlb_rd_wen) begin
+      csr_tlbelo1[31:8] <= tlbelo1_in[31:8];
+      csr_tlbelo1[6:0]  <= tlbelo1_in[6:0];
+    end else if (tlbelo1_wen) begin
       csr_tlbelo1[`TLB_V]   <= csrWData[`TLB_V];
       csr_tlbelo1[`TLB_D]   <= csrWData[`TLB_D];
       csr_tlbelo1[`TLB_PLV] <= csrWData[`TLB_PLV];
@@ -378,13 +420,15 @@ module csr (
     end
   end
 
-  //asid 没实现完整 少了tlbrd指令写读取TLB表项的ASID域值
+  //asid 
   always @(posedge clk) begin
     if (~resetn) begin
       csr_asid[15:10] <= 6'b0;
       csr_asid[31:24] <= 8'b0;
       //ASID域位宽为10——9:0
       csr_asid[`TLB_ASIDBITS] <= 8'd10;
+    end else if (tlb_rd_wen) begin
+      csr_asid[`TLB_ASID] <= asid_in;
     end else if (asid_wen) begin
       csr_asid[`TLB_ASID] <= csrWData[`TLB_ASID];
     end
@@ -548,4 +592,12 @@ module csr (
                {2{ertn}} & csr_prmd[`PPLV] |
                {2{crmd_wen}} & csrWData[`PLV]   |
                {2{!excp && !ertn && !crmd_wen}} & csr_crmd[`PLV];
+
+  assign asid_out = csr_asid[`TLB_ASID];
+  assign vppn_out = csr_tlbehi[`VPPN];
+  assign tlbelo0_out = csr_tlbelo0;
+  assign tlbelo1_out = csr_tlbelo1;
+  assign index_out = csr_tlbidx[`INDEX];
+  assign ps_out = csr_tlbidx[`PS];
+  assign e_out = csr_estat[`ECODE] != 6'h3f ? ~csr_tlbidx[`NE] : 1'b1;
 endmodule

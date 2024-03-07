@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 `include "mycpu.h"
+`include "csr.vh"
 
 module mycpu_top (  //端口设置AXI从方主方
     input wire aclk,
@@ -78,6 +79,10 @@ module mycpu_top (  //端口设置AXI从方主方
   wire [`CSR_TO_MEM_WD-1:0] csr_to_mem_bus;
   wire [ `CSR_TO_IF_WD-1:0] csr_to_if_bus;
   wire [ `MEM_TO_IF_WD-1:0] mem_to_if_bus;
+  wire [`CSR_TO_EXE_WD-1:0] csr_to_exe_bus;
+  wire [`EXE_TO_TLB_WD-1:0] exe_to_tlb_bus;
+  wire [`TLB_TO_MEM_WD-1:0] tlb_to_mem_bus;
+  wire [`MEM_TO_TLB_WD-1:0] mem_to_tlb_bus;
 
   //类SRAM
   wire                      inst_sram_req;
@@ -151,6 +156,8 @@ module mycpu_top (  //端口设置AXI从方主方
       .exe_to_mem_bus            (exe_to_mem_bus),
       .exe_to_id_bus             (exe_to_id_bus),
       .mem_to_exe_flush_excp_ertn(mem_to_exe_flush_excp_ertn),
+      .csr_to_exe_bus            (csr_to_exe_bus),
+      .exe_to_tlb_bus            (exe_to_tlb_bus),
       .data_sram_req             (data_sram_req),
       .data_sram_wr              (data_sram_wr),
       .data_sram_wstrb           (data_sram_wstrb),
@@ -176,7 +183,9 @@ module mycpu_top (  //端口设置AXI从方主方
       .csr_to_mem_bus            (csr_to_mem_bus),
       .mem_to_exe_flush_excp_ertn(mem_to_exe_flush_excp_ertn),
       .mem_to_id_flush_excp_ertn (mem_to_id_flush_excp_ertn),
-      .mem_to_if_bus             (mem_to_if_bus)
+      .mem_to_if_bus             (mem_to_if_bus),
+      .tlb_to_mem_bus            (tlb_to_mem_bus),
+      .mem_to_tlb_bus            (mem_to_tlb_bus)
   );
 
 
@@ -188,7 +197,7 @@ module mycpu_top (  //端口设置AXI从方主方
       .mem_to_wb_bus    (mem_to_wb_bus),
       .wb_to_id_bus     (wb_to_id_bus),
       .debug_wb_pc      (debug_wb_pc),
-      .debug_wb_rf_wen  (debug_wb_rf_wen),
+      .debug_wb_rf_wen  (debug_wb_rf_we),
       .debug_wb_rf_wnum (debug_wb_rf_wnum),
       .debug_wb_rf_wdata(debug_wb_rf_wdata)
   );
@@ -205,18 +214,59 @@ module mycpu_top (  //端口设置AXI从方主方
   wire [31:0] era;
   wire [31:0] badv_addr;
   wire excpAboutAddr;
+  wire [9:0] asid_in;
+  wire [18:0] vppn_in;
+  wire [31:0] tlbelo0_in;
+  wire [31:0] tlbelo1_in;
+  wire [$clog2(`TLB_NUM)-1:0] index_in;
+  wire [5:0] ps_in;
+  wire e_in;
+  wire tlb_rd_wen;
+  wire tlb_srch_wen;
 
-  assign {csrRAdd, csrWen, csrWAdd, csrWData, excp, ertn, era, subcode, code, excpAboutAddr, badv_addr} = mem_to_csr_bus;
+  assign {csrRAdd, csrWen, csrWAdd, csrWData, excp, ertn, era, subcode, code, excpAboutAddr, badv_addr, asid_in, vppn_in, tlbelo0_in, tlbelo1_in, index_in, ps_in, e_in, tlb_srch_wen, tlb_rd_wen} = mem_to_csr_bus;
+
+  wire [18:0] vppn_out;
+  wire [ 9:0] asid_out;
+  assign csr_to_exe_bus = {vppn_out, asid_out};
 
   wire [31:0] tid_out;
   wire [63:0] timer_64_out;
-  assign csr_to_mem_bus = {csrRData, tid_out, timer_64_out};
+  wire [18:0] vppn_out;
+  wire [9:0] asid_out;
+  wire [$clog2(`TLB_NUM)-1:0] index_out;
+  wire e_out;
+  wire [5:0] ps_out;
+  wire [31:0] tlbelo0_out;
+  wire [31:0] tlbelo1_out;
+  assign csr_to_mem_bus = {
+    csrRData,
+    tid_out,
+    timer_64_out,
+    vppn_out,
+    asid_out,
+    index_out,
+    e_out,
+    ps_out,
+    tlbelo0_out[`TLB_G] & tlbelo1_out[`TLB_G],
+    tlbelo0_out[`TLB_PPN],
+    tlbelo0_out[`TLB_PLV],
+    tlbelo0_out[`TLB_MAT],
+    tlbelo0_out[`TLB_D],
+    tlbelo0_out[`TLB_V],
+    tlbelo1_out[`TLB_PPN],
+    tlbelo1_out[`TLB_PLV],
+    tlbelo1_out[`TLB_MAT],
+    tlbelo1_out[`TLB_D],
+    tlbelo1_out[`TLB_V]
+  };
 
   wire [31:0] era_out;
   wire [31:0] eentry_out;
   assign csr_to_if_bus = {eentry_out, era_out};
 
   wire [7:0] interrupt = 8'b0;
+
   csr u_csr (
       .clk           (aclk),
       .resetn        (aresetn),
@@ -242,8 +292,171 @@ module mycpu_top (  //端口设置AXI从方主方
       .eentry_out    (eentry_out),
       .tlbrentry_out (tlbrentry_out),
       .era_out       (era_out),
-      .plv           (plv)
+      .plv           (plv),
+      .asid_out      (asid_out),
+      .asid_in       (asid_in),
+      .vppn_out      (vppn_out),
+      .vppn_in       (vppn_in),
+      .tlbelo0_out   (tlbelo0_out),
+      .tlbelo1_out   (tlbelo1_out),
+      .tlbelo0_in    (tlbelo0_in),
+      .tlbelo1_in    (tlbelo1_in),
+      .index_out     (index_out),
+      .ps_out        (ps_out),
+      .e_out         (e_out),
+      .index_in      (index_in),
+      .ps_in         (ps_in),
+      .e_in          (e_in),
+      .tlb_srch_wen  (tlb_srch_wen),
+      .tlb_rd_wen    (tlb_rd_wen)
   );
+
+  //tlb
+  wire [18:0] s1_vppn;
+  wire [9:0] s1_asid;
+  wire s1_va_bit12;
+  wire invtlb_valid;
+  wire [4:0] op;
+
+  assign {s1_vppn, s1_asid, s1_va_bit12, invtlb_valid, op} = exe_to_tlb_bus;
+
+  wire r_e;
+  wire [18:0] r_vppn;
+  wire [5:0] r_ps;
+  wire [9:0] r_asid;
+  wire r_g;
+  wire [19:0] r_ppn0;
+  wire [1:0] r_plv0;
+  wire [1:0] r_mat0;
+  wire r_d0;
+  wire r_v0;
+  wire [19:0] r_ppn1;
+  wire [1:0] r_plv1;
+  wire [1:0] r_mat1;
+  wire r_d1;
+  wire r_v1;
+  wire [$clog2(`TLB_NUM)-1:0] s1_findex;
+  wire s1_found;
+
+  assign tlb_to_mem_bus = {
+    r_e,
+    r_vppn,
+    r_ps,
+    r_asid,
+    r_g,
+    r_ppn0,
+    r_plv0,
+    r_mat0,
+    r_d0,
+    r_v0,
+    r_ppn1,
+    r_plv1,
+    r_mat1,
+    r_d1,
+    r_v1,
+    s1_findex,
+    s1_found
+  };
+
+  wire [$clog2(`TLB_NUM)-1:0] r_index;
+  wire we;
+  wire [$clog2(`TLB_NUM)-1:0] w_index;
+  wire w_e;
+  wire [18:0] w_vppn;
+  wire [5:0] w_ps;
+  wire [9:0] w_asid;
+  wire w_g;
+  wire [19:0] w_ppn0;
+  wire [1:0] w_plv0;
+  wire [1:0] w_mat0;
+  wire w_d0;
+  wire w_v0;
+  wire [19:0] w_ppn1;
+  wire [1:0] w_plv1;
+  wire [1:0] w_mat1;
+  wire w_d1;
+  wire w_v1;
+
+  assign {r_index,
+    we,
+    w_index,
+    w_e,
+    w_vppn,
+    w_ps,
+    w_asid,
+    w_g,
+    w_ppn0,
+    w_plv0,
+    w_mat0,
+    w_d0,
+    w_v0,
+    w_ppn1,
+    w_plv1,
+    w_mat1,
+    w_d1,
+    w_v1} = mem_to_tlb_bus;
+
+  tlb u_tlb (
+      .clk         (aclk),
+      .s0_vppn     (s0_vppn),
+      .s0_va_bit12 (s0_va_bit12),
+      .s0_asid     (s0_asid),
+      .s0_found    (s0_found),
+      .s0_ppn      (s0_ppn),
+      .s0_ps       (s0_ps),
+      .s0_plv      (s0_plv),
+      .s0_mat      (s0_mat),
+      .s0_d        (s0_d),
+      .s0_v        (s0_v),
+      .s0_findex   (s0_findex),
+      .s1_vppn     (s1_vppn),
+      .s1_va_bit12 (s1_va_bit12),
+      .s1_asid     (s1_asid),
+      .s1_found    (s1_found),
+      .s1_ppn      (s1_ppn),
+      .s1_ps       (s1_ps),
+      .s1_plv      (s1_plv),
+      .s1_mat      (s1_mat),
+      .s1_d        (s1_d),
+      .s1_v        (s1_v),
+      .s1_findex   (s1_findex),
+      .we          (we),
+      .w_index     (w_index),
+      .w_e         (w_e),
+      .w_vppn      (w_vppn),
+      .w_ps        (w_ps),
+      .w_asid      (w_asid),
+      .w_g         (w_g),
+      .w_ppn0      (w_ppn0),
+      .w_plv0      (w_plv0),
+      .w_mat0      (w_mat0),
+      .w_d0        (w_d0),
+      .w_v0        (w_v0),
+      .w_ppn1      (w_ppn1),
+      .w_plv1      (w_plv1),
+      .w_mat1      (w_mat1),
+      .w_d1        (w_d1),
+      .w_v1        (w_v1),
+      .r_index     (r_index),
+      .r_e         (r_e),
+      .r_vppn      (r_vppn),
+      .r_ps        (r_ps),
+      .r_asid      (r_asid),
+      .r_g         (r_g),
+      .r_ppn0      (r_ppn0),
+      .r_plv0      (r_plv0),
+      .r_mat0      (r_mat0),
+      .r_d0        (r_d0),
+      .r_v0        (r_v0),
+      .r_ppn1      (r_ppn1),
+      .r_plv1      (r_plv1),
+      .r_mat1      (r_mat1),
+      .r_d1        (r_d1),
+      .r_v1        (r_v1),
+      .invtlb_valid(invtlb_valid),
+      .op          (op)
+  );
+
 
   //axi
   axi_bridge u_axi_bridge (

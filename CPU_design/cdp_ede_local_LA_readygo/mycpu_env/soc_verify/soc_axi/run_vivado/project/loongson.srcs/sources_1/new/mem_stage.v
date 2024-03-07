@@ -35,7 +35,14 @@ module mem_stage (
     output wire mem_to_id_flush_excp_ertn,
 
     //传递给IF的preIF
-    output wire [`MEM_TO_IF_WD-1:0] mem_to_if_bus
+    output wire [`MEM_TO_IF_WD-1:0] mem_to_if_bus,
+
+    //接收TLB传输过来的信号
+    input wire [`TLB_TO_MEM_WD-1:0] tlb_to_mem_bus,
+
+    //传输给TLB的信号
+    output wire [`MEM_TO_TLB_WD-1:0] mem_to_tlb_bus
+
 
 );
 
@@ -75,17 +82,55 @@ module mem_stage (
   wire mem_ertn;
   wire [5:0] excp_num;
   wire [1:0] rdcnt_REC;
+  wire [2:0] tlb_ins_rec;
   wire [31:0] mem_pc;
 
   assign {mem_memW,mem_regW, mem_regWAddr, res_from_mem, mem_aluResult, memINS_rec, load_sign, DataA, DataB, 
-          csr_num, csr_instRec, mem_excp, mem_ertn, excp_num, rdcnt_REC, mem_pc} = mem_data;
+          csr_num, csr_instRec, mem_excp, mem_ertn, excp_num, rdcnt_REC, tlb_ins_rec, mem_pc} = mem_data;
 
   //拆解CSR传递过来的数据
   wire [31:0] csrRData;
   wire [31:0] tid_out;
   wire [63:0] timer_64_out;
+  wire [18:0] vppn;
+  wire [9:0] asid;
+  wire [$clog2(`TLB_NUM)-1:0] tlb_index;
+  wire e;
+  wire [5:0] ps;
+  wire g;
+  wire [19:0] ppn0;
+  wire [1:0] plv0;
+  wire [1:0] mat0;
+  wire d0;
+  wire v0;
+  wire [19:0] ppn1;
+  wire [1:0] plv1;
+  wire [1:0] mat1;
+  wire d1;
+  wire v1;
 
-  assign {csrRData, tid_out, timer_64_out} = csr_to_mem_bus;
+  assign {csrRData, tid_out, timer_64_out, vppn, asid, tlb_index, e, ps, g, ppn0, plv0, mat0, d0, v0, ppn1, plv1, mat1, d1, v1} = csr_to_mem_bus;
+
+  //拆解TLB传递过来的数据
+  wire r_e;
+  wire [18:0] r_vppn;
+  wire [5:0] r_ps;
+  wire [9:0] r_asid;
+  wire r_g;
+  wire [19:0] r_ppn0;
+  wire [1:0] r_plv0;
+  wire [1:0] r_mat0;
+  wire r_d0;
+  wire r_v0;
+  wire [19:0] r_ppn1;
+  wire [1:0] r_plv1;
+  wire [1:0] r_mat1;
+  wire r_d1;
+  wire r_v1;
+  wire [$clog2(`TLB_NUM)-1:0] s1_findex;
+  wire s1_found;
+
+  assign {r_e, r_vppn, r_ps, r_asid, r_g, r_ppn0, r_plv0, r_mat0, r_d0, r_v0, r_ppn1, r_plv1, r_mat1, r_d1, r_v1, s1_findex,s1_found} = tlb_to_mem_bus;
 
   //获得访存数据
   wire [31:0] mem_memReadData;
@@ -134,11 +179,49 @@ module mem_stage (
                              res_from_mem ? mem_memReadData : 
                              csr_instRec == 2'b0 ? mem_aluResult : csrRData;
 
+  //refetch pc
+  wire [31:0] refetch_pc = mem_pc + 32'h4;
+  wire refetch = mem_valid & (tlb_ins_rec != 3'b0 | (csr_instRec == 2'b10 | csr_instRec == 2'b11) & (csr_num == 14'h0 | csr_num == 14'h10 | csr_num == 14'h11 | csr_num== 14'h12 | csr_num == 14'h13 | csr_num == 14'h18 | csr_num == 14'h19 | csr_num == 14'h1a));
+
+  //TLB WR FILL
+  wire we = tlb_ins_rec == 3'b011 | tlb_ins_rec == 3'b100;
+  wire [$clog2(`TLB_NUM)-1:0] w_index = tlb_index;
+  wire w_e = e;
+  wire [18:0] w_vppn = vppn;
+  wire [5:0] w_ps = ps;
+  wire [9:0] w_asid = asid;
+  wire w_g = g;
+  wire [19:0] w_ppn0 = ppn0;
+  wire [1:0] w_plv0 = plv0;
+  wire [1:0] w_mat0 = mat0;
+  wire w_d0 = d0;
+  wire w_v0 = v0;
+  wire [19:0] w_ppn1 = ppn1;
+  wire [1:0] w_plv1 = plv1;
+  wire [1:0] w_mat1 = mat1;
+  wire w_d1 = d1;
+  wire w_v1 = v1;
+
+  //TLB R
+  wire [$clog2(`TLB_NUM)-1:0] r_index = tlb_index;
+
+  //TLB RD SRCH得到的数据处理
+  wire [31:0] tlbelo0_in = r_e ? {r_ppn0, 1'b0, r_g, r_mat0, r_plv0, r_d0, r_v0} : 32'b0;
+  wire [31:0] tlbelo1_in = r_e ? {r_ppn1, 1'b1, r_g, r_mat1, r_plv1, r_d1, r_v1} : 32'b0;
+  wire [9:0] asid_in = r_e ? r_asid : 10'b0;
+  wire [18:0] vppn_in = r_e ? r_vppn : 19'b0;
+  wire [5:0] ps_in = r_e ? r_ps : 6'b0;
+
+  wire [$clog2(`TLB_NUM)-1:0] index_in = s1_findex;  //只有SRCH更新index
+  wire e_in = tlb_ins_rec == 3'b001 ? s1_found : r_e;
+
   //触发异常、ertn则刷新ID、EXE，并置preIF的next为新值
-  assign flush_excp_ertn = (mem_excp | mem_ertn) & mem_valid;
+  assign flush_excp_ertn = (mem_excp | mem_ertn | refetch) & mem_valid;
   assign mem_to_id_flush_excp_ertn = flush_excp_ertn;
   assign mem_to_exe_flush_excp_ertn = flush_excp_ertn;
-  assign mem_to_if_bus = {mem_valid & mem_excp, mem_valid & mem_ertn};
+  assign mem_to_if_bus = {
+    refetch_pc, mem_valid & refetch, mem_valid & mem_excp, mem_valid & mem_ertn
+  };
 
   //封包传递给wb_reg数据
   assign mem_to_wb_bus = {mem_regW, mem_regWAddr, mem_regWData, mem_pc};
@@ -155,11 +238,43 @@ module mem_stage (
     subcode,
     code,
     excpAboutAddr & mem_valid,
-    badv_addr
+    badv_addr,
+    asid_in,
+    vppn_in,
+    tlbelo0_in,
+    tlbelo1_in,
+    index_in,
+    ps_in,
+    e_in,
+    tlb_ins_rec == 3'b001 & mem_valid,
+    tlb_ins_rec == 3'b010 & mem_valid  //只写一次
   };
 
   //封包传递给id阶段的数据
   assign mem_to_id_bus = {
     mem_ready_go, mem_to_wb_valid, mem_regW, mem_regWAddr, mem_regWData, mem_pc
   };
+
+  //封包传递给TLB的数据
+  assign mem_to_tlb_bus = {
+    r_index,
+    we,
+    w_index,
+    w_e,
+    w_vppn,
+    w_ps,
+    w_asid,
+    w_g,
+    w_ppn0,
+    w_plv0,
+    w_mat0,
+    w_d0,
+    w_v0,
+    w_ppn1,
+    w_plv1,
+    w_mat1,
+    w_d1,
+    w_v1
+  };
+
 endmodule

@@ -52,7 +52,9 @@ module if_stage (
   //拆解MEM传递过来的数据
   wire excp;
   wire ertn;
-  assign {excp, ertn} = mem_to_if_bus_r_valid ? mem_to_if_bus_r : mem_to_if_bus;
+  wire refetch;
+  wire [31:0] refetch_pc;
+  assign {refetch_pc,refetch,excp, ertn} = mem_to_if_bus_r_valid ? mem_to_if_bus_r : mem_to_if_bus;
 
   //拆解CSR传递过来的数据
   wire [31:0] era;
@@ -68,16 +70,15 @@ module if_stage (
   //刷新信号 这里用if_reflush_r让if_allowin有效 因为会存在需要将异常的nextPC更新到PC时，if_allowin无效的问题——dataok还未到达，这个data_ok用excpreg清除
   //但是为什么要用r  preIF_readygo addrok还没到——直接取消不可以吗？——归成一种处理方式？不需要处理preIF_readygo是什么值了
   wire if_reflush;
-  assign if_reflush = mem_to_if_bus[1] | mem_to_if_bus[0];
+  assign if_reflush = mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0];
   wire if_reflush_r;
-  assign if_reflush_r = excp | ertn;
+  assign if_reflush_r = excp | ertn | refetch;
 
   // preIF
   assign preIF_ready_go = inst_sram_req & inst_sram_addr_ok | ADEF_EXCP;
   assign preIf_to_if_valid = resetn & preIF_ready_go;
   assign seq_pc = if_pc + 32'h4;
-  assign nextpc = excp ? eentry_out : ertn ? era : br_taken & (if_valid | bd_done) ? br_target : seq_pc;
-  //？bddone
+  assign nextpc = excp ? eentry_out : ertn ? era : refetch ? refetch_pc : br_taken & (if_valid | bd_done) ? br_target : seq_pc;
 
   //ADEF异常检测
   wire ADEF_EXCP;
@@ -117,13 +118,14 @@ module if_stage (
     end
   end
 
-  //br信息也需要保持到缓存，以在preIF_ready_go无效时保持进入到IF，同样MEM到ID的更新nextpc的信息也需要保持
+  //br信息也需要保持到缓存，以在preIF_ready_go无效时保持进入到IF，同样MEM到ID的更新nextpc的信息也需要保持 
+  //增加了refetch，那么为了保留reftech时readygo无效不能更新PC的情况，需要保持缓存
   reg [`MEM_TO_ID_WD-1:0] mem_to_if_bus_r;
   reg mem_to_if_bus_r_valid;
   always @(posedge clk) begin
     if (~resetn) begin
       mem_to_if_bus_r_valid <= 1'b0;
-    end else if (~mem_to_if_bus_r_valid & (mem_to_if_bus[1] | mem_to_if_bus[0]) & ~preIF_ready_go) begin
+    end else if (~mem_to_if_bus_r_valid & (mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0]) & ~preIF_ready_go) begin
       mem_to_if_bus_r <= mem_to_if_bus;  //这也应该加一个if_allowin吧？不用，异常针对if_readygo不为1有处理
       mem_to_if_bus_r_valid <= 1'b1;
     end else if (mem_to_if_bus_r_valid & preIF_ready_go) begin

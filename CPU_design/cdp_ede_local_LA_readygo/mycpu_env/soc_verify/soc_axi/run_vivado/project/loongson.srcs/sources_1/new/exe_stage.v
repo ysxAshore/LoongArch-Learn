@@ -21,6 +21,12 @@ module exe_stage (
     //MEM传递过来的异常/ERTN刷新信号
     input wire mem_to_exe_flush_excp_ertn,
 
+    //CSR传递过来的TLB请求相关的信号,
+    input wire [`CSR_TO_EXE_WD-1:0] csr_to_exe_bus,
+
+    //传递给TLB的数据
+    output wire [`EXE_TO_TLB_WD-1:0] exe_to_tlb_bus,
+
     //访dataRAM端口
     output wire        data_sram_req,
     output wire        data_sram_wr,
@@ -69,10 +75,18 @@ module exe_stage (
   wire load_sign;
   wire [5:0] excp_num_temp;
   wire [1:0] rdcnt_REC;
+  wire [4:0] code;
+  wire [2:0] tlb_ins_rec;
   wire [31:0] exe_pc;
 
   assign {alu_op, res_from_mem, exe_regW_temp, exe_memW, exe_regWAddr, forwardDataB, DataA, DataB, div_signed, mul_signed, div, aluMD_resSelect, 
-          memINS_rec, load_sign, csr_num, csr_instRec, exe_ertn, exe_excp_temp, excp_num_temp, rdcnt_REC, exe_pc} = exe_data;
+          memINS_rec, load_sign, csr_num, csr_instRec, exe_ertn, exe_excp_temp, excp_num_temp, rdcnt_REC, tlb_ins_rec, code, exe_pc} = exe_data;
+
+  //解压缩CSR传递过来的信号
+  wire [18:0] vppn;
+  wire [ 9:0] asid;
+
+  assign {vppn, asid} = csr_to_exe_bus;
 
   //alu
   wire [31:0] exe_aluResult;
@@ -87,7 +101,7 @@ module exe_stage (
   wire [63:0] exe_mulResult;
   mul u_mul (
       .mul_clk   (clk),
-      .resetn    (resetn),
+      .resetn    (resetn & ~mem_to_exe_flush_excp_ertn),
       .mul_signed(mul_signed),
       .x         (DataA),
       .y         (DataB),
@@ -100,7 +114,7 @@ module exe_stage (
   wire complete_delay;
   div u_div (
       .div_clk       (clk),
-      .resetn        (resetn),
+      .resetn        (resetn & ~mem_to_exe_flush_excp_ertn),
       .div           (div),
       .div_signed    (div_signed),
       .x             (DataA),
@@ -120,9 +134,16 @@ module exe_stage (
 
   assign ALE_EXCP = memINS_rec == 2'b11 ? exe_aluResult[1:0] != 2'b0 :
                     memINS_rec == 2'b10 ? exe_aluResult[0] != 1'b0 : 1'b0;
-  assign exe_regW = exe_regW_temp & ~ALE_EXCP;
+  assign exe_regW = exe_regW_temp & ~ALE_EXCP & ~mem_to_exe_flush_excp_ertn;
   assign exe_excp = exe_excp_temp | ALE_EXCP;
   assign excp_num = {excp_num_temp[5:2], ALE_EXCP, excp_num_temp[0]};
+
+  //TLB SRCH INVTLB
+  wire invtlb_valid = tlb_ins_rec == 3'b101 & ~mem_to_exe_flush_excp_ertn;
+  wire [18:0] s1_vppn = {19{tlb_ins_rec == 3'b001}} & vppn |
+                        {19{tlb_ins_rec == 3'b101}} & DataB[31:13];  //这里先不考虑访存，只考虑tlbsrch、invtlb的vppn、asid、也需要考虑12bit值，不然读不出来
+  wire [9:0] s1_asid = {19{tlb_ins_rec == 3'b001}} & asid | {19{tlb_ins_rec == 3'b101}} & DataA[9:0];
+  wire s1_va_bit12 = 1'b0;
 
   //访存接口
   assign data_sram_req = exe_valid & (exe_memW | res_from_mem) & ~exe_excp & ~mem_to_exe_flush_excp_ertn & mem_allowin;
@@ -169,6 +190,7 @@ module exe_stage (
     exe_ertn,
     excp_num,
     rdcnt_REC,
+    tlb_ins_rec,
     exe_pc
   };
 
@@ -177,5 +199,8 @@ module exe_stage (
   assign exe_to_id_bus = {
     exe_valid, res_from_mem, exe_regW, exe_regWAddr, exe_finalResult, exist_csrR
   };
+
+  //封包exe传递给tlb的数据
+  assign exe_to_tlb_bus = {s1_vppn, s1_asid, s1_va_bit12, invtlb_valid, code};
 
 endmodule

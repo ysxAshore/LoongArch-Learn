@@ -1,3 +1,4 @@
+`include "mycpu.h"
 //定义CSR各域对应的位段，从而可以在.v文件中直接使用`域名来代替数组位段
 
 //CRMD
@@ -31,20 +32,20 @@
 `define EENTRY_VA 31:6
 
 //TLBIDX n为5
-`define INDEX 4:0
+`define INDEX $clog2(`TLB_NUM)-1:0
 `define PS 29:24
 `define NE 31
 
 //TLBEHI
 `define VPPN 31:13
 
-//TLBELO PALEN=36
+//TLBELO PALEN=32
 `define TLB_V 0
 `define TLB_D 1
 `define TLB_PLV 3:2
 `define TLB_MAT 5:4
 `define TLB_G 6
-`define TLB_PPN 31:8
+`define TLB_PPN 27:8
 
 //ASID
 `define TLB_ASID 9:0
