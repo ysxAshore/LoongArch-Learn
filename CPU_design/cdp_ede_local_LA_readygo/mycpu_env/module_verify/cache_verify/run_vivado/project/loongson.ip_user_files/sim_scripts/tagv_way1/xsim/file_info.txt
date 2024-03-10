@@ -1,0 +1,2 @@
+tagv_way1.v,verilog,xil_defaultlib,../../../../loongson.gen/sources_1/ip/tagv_way1/sim/tagv_way1.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v

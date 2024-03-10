@@ -30,9 +30,10 @@ module cache
     input               wr_rdy         
 );
 
-reg [255:0] way0_d_reg;
+reg [255:0] way0_d_reg; //D用reg存
 reg [255:0] way1_d_reg;
 
+//request buffer
 reg         request_buffer_op         ;
 reg [ 7:0]  request_buffer_index      ;
 reg [19:0]  request_buffer_tag        ;
@@ -40,10 +41,12 @@ reg [ 3:0]  request_buffer_offset     ;
 reg [ 3:0]  request_buffer_wstrb      ;
 reg [31:0]  request_buffer_wdata      ;
 
-reg          miss_buffer_replace_way ;
-reg  [ 1:0]  miss_buffer_ret_num     ;
+//miss buffer
+reg          miss_buffer_replace_way ;//要替换哪一路
+reg  [ 1:0]  miss_buffer_ret_num     ;//有什么用？
 wire [ 1:0]  ret_num_add_one         ;
 
+//write buffer
 reg [ 7:0]  write_buffer_index      ;
 reg [ 3:0]  write_buffer_wstrb      ;
 reg [31:0]  write_buffer_wdata      ;
@@ -111,7 +114,7 @@ wire        wr_match_way1_bank1 ;
 wire        wr_match_way1_bank2 ;
 wire        wr_match_way1_bank3 ;
 
-wire [ 7:0] main_state_index;
+wire [ 7:0] main_state_index;//状态机索引
 
 wire        way0_d      ;
 wire        way1_d      ;
@@ -252,7 +255,7 @@ always @(posedge clk) begin
             end
             else begin
                 if (ret_valid) begin
-                    miss_buffer_ret_num <= ret_num_add_one;
+                    miss_buffer_ret_num <= ret_num_add_one;//读几个数据？
                 end
             end
         end
@@ -307,7 +310,7 @@ end
 assign req_or_inst_valid = valid;
 
 //state change condition, write hit cache block write do not conflict with lookup read
-assign main_idle2lookup   = !(write_state_is_full && (write_buffer_offset[3:2] == offset[3:2]));
+assign main_idle2lookup   = !(write_state_is_full && (write_buffer_offset[3:2] == offset[3:2]));//判断阻塞
 
 //addr_ok logic
 
@@ -367,7 +370,7 @@ assign rd_addr = {request_buffer_tag, request_buffer_index, 4'b0};
 //write process will not block pipeline
 //preld ins will not block pipeline      ps:preld is not real mem inst, this operation is controled in pipeline
 assign data_ok = ((main_state_is_lookup && (cache_hit || request_buffer_op)) || 
-                  (main_state_is_refill && (!request_buffer_op && (ret_valid && ((miss_buffer_ret_num == request_buffer_offset[3:2]) ))))) ; //when rd_req is not set, set data_ok directly.
+                  (main_state_is_refill && (!request_buffer_op && (ret_valid && ((miss_buffer_ret_num == request_buffer_offset[3:2]) ))))) ; //when rd_req is not set, set data_ok directly. 
 //rdate connect with ret_data dirctly. maintain one clock only
 
 assign write_in = {(request_buffer_wstrb[3] ? request_buffer_wdata[31:24] : ret_data[31:24]), 
@@ -381,14 +384,14 @@ assign way0_wr_en = !miss_buffer_replace_way && ret_valid;  //when rd_req is not
 assign way1_wr_en =  miss_buffer_replace_way && ret_valid;
 
 //add one 
-assign ret_num_add_one[0] = miss_buffer_ret_num[0] ^ 1'b1;
-assign ret_num_add_one[1] = miss_buffer_ret_num[1] ^ miss_buffer_ret_num[0];
+assign ret_num_add_one[0] = miss_buffer_ret_num[0] ^ 1'b1;//
+assign ret_num_add_one[1] = miss_buffer_ret_num[1] ^ miss_buffer_ret_num[0];//00 -> 01 01->10 10->11 11->00
 
 always @(posedge clk) begin
     if (reset) begin
         rd_req_buffer <= 1'b0;
     end
-    else if (rd_req) begin
+    else if (rd_req) begin //一直在进行读请求——Brust
         rd_req_buffer <= 1'b1;
     end
     else if (main_state_is_refill && (ret_valid && ret_last)) begin

@@ -1,0 +1,23 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../loongson.ip_user_files/ipstatic" \
+"../../../../loongson.gen/sources_1/ip/tagv_way1/sim/tagv_way1.v" \
+"../../../../loongson.gen/sources_1/ip/tagv_way0/sim/tagv_way0.v" \
+"../../../../loongson.gen/sources_1/ip/data_way1_bank3/sim/data_way1_bank3.v" \
+"../../../../loongson.gen/sources_1/ip/data_way1_bank2/sim/data_way1_bank2.v" \
+"../../../../loongson.gen/sources_1/ip/data_way1_bank1/sim/data_way1_bank1.v" \
+"../../../../loongson.gen/sources_1/ip/data_way1_bank0/sim/data_way1_bank0.v" \
+"../../../../loongson.gen/sources_1/ip/data_way0_bank3/sim/data_way0_bank3.v" \
+"../../../../loongson.gen/sources_1/ip/data_way0_bank2/sim/data_way0_bank2.v" \
+"../../../../loongson.gen/sources_1/ip/data_way0_bank1/sim/data_way0_bank1.v" \
+"../../../../loongson.gen/sources_1/ip/data_way0_bank0/sim/data_way0_bank0.v" \
+"../../../../../../rtl/xilinx_ip/clk_pll_clk_wiz.v" \
+"../../../../../../rtl/xilinx_ip/clk_pll.v" \
+"../../../../loongson.srcs/sources_1/new/cache.v" \
+"../../../../../../rtl/cache_top.v" \
+"../../../../../../testbench/testbench.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
