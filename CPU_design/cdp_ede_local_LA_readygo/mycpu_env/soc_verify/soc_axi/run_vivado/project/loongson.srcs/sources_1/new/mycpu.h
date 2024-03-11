@@ -10,8 +10,8 @@
 `define MEM_TO_CSR_WD 247 + $clog2(`TLB_NUM)
 `define CSR_TO_MEM_WD 217 + $clog2(`TLB_NUM)
 `define MEM_TO_IF_WD 36
-`define CSR_TO_IF_WD 124
-`define CSR_TO_EXE_WD 47
+`define CSR_TO_IF_WD 127
+`define CSR_TO_EXE_WD 50
 `define EXE_TO_TLB_WD 36
 `define TLB_TO_MEM_WD 90 + $clog2(`TLB_NUM)
 `define MEM_TO_TLB_WD 90 + $clog2(`TLB_NUM) + $clog2(`TLB_NUM)

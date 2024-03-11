@@ -591,4 +591,4 @@ module lfsr (
   assign random_val = r_lfsr[7];
 
 endmodule
-//改了lfsr、bank的ena、少了一个rd_req缓存，使能ena由idle判断改成了addr_ok
+//改了lfsr、bank的ena、少了一个rd_req缓存，使能ena由idle判断改成了addr_ok,对计数器的更新方法，多了前递

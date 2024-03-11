@@ -37,7 +37,9 @@ module exe_stage (
     output wire [ 1:0] data_sram_size,
     output wire [31:0] data_sram_addr,
     output wire [31:0] data_sram_wdata,
-    input  wire        data_sram_addr_ok
+    input  wire        data_sram_addr_ok,
+
+    output data_mat
 );
   //exe_reg
   reg exe_valid;
@@ -93,8 +95,10 @@ module exe_stage (
   wire [2:0] dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg;
   wire dmw0_plv0, dmw0_plv3, dmw1_plv0, dmw1_plv3;
   wire [1:0] cur_plv;
+  wire crmd_datm;
+  wire dmw0_mat,dmw1_mat;
 
-  assign {vppn, asid,crmd_da, crmd_pg, dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg, dmw0_plv0, dmw1_plv0, dmw0_plv3, dmw1_plv3, cur_plv} = csr_to_exe_bus;
+  assign {vppn, asid,crmd_da, crmd_pg, dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg, dmw0_plv0, dmw1_plv0, dmw0_plv3, dmw1_plv3, cur_plv,crmd_datm,dmw0_mat,dmw1_mat} = csr_to_exe_bus;
 
   //拆解TLB传递过来的数据
   wire s1_found;
@@ -211,6 +215,9 @@ module exe_stage (
   assign data_sram_wdata = {32{memINS_rec == 2'b01}} & {4{forwardDataB[7:0]}} |
                            {32{memINS_rec == 2'b10}} & {2{forwardDataB[15:0]}}|
                            {32{memINS_rec == 2'b11}} & forwardDataB;
+  assign data_mat = crmd_da == 1'b1 & crmd_pg == 1'b0 ? crmd_datm :
+                    dmw_select != 2'b0 ? (dmw_select[0] ? dmw0_mat : dmw1_mat) :
+                    s1_mat[0];
 
   //选择最后exe计算数据
   wire [31:0] exe_finalResult;

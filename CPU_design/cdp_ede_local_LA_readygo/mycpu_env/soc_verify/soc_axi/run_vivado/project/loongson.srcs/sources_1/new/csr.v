@@ -80,7 +80,9 @@ module csr (
     output wire dmw0_plv0,
     dmw0_plv3,
     dmw1_plv0,
-    dmw1_plv3
+    dmw1_plv3,
+    output wire crmd_datf,crmd_datm,
+    output wire dmw0_mat,dmw1_mat
 );
   //模块内部使用的常量使用localparam定义，不能通过模块例化修改
   //使用localparam定义csr寄存器的地址
@@ -623,4 +625,9 @@ module csr (
   assign dmw1_pseg = csr_dmw1[`DMW_PSEG];
   assign dmw1_plv0 = csr_dmw1[`DMW_PLV0];
   assign dmw1_plv3 = csr_dmw1[`DMW_PLV3];
+  assign dmw0_mat = csr_dmw0[`DMW_MAT] == 2'b01; //1 --cc 0 suc
+  assign dmw1_mat = csr_dmw1[`DMW_MAT] == 2'b01;
+
+  assign crmd_datf = csr_crmd[`DATF] == 2'b01;
+  assign crmd_datm = csr_crmd[`DATM] == 2'b01;
 endmodule

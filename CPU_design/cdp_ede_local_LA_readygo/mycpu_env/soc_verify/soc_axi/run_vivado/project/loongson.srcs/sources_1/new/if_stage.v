@@ -27,7 +27,7 @@ module if_stage (
     //IF传递给TLB的信号
     output wire [`IF_TO_TLB_WD-1:0] if_to_tlb_bus,
 
-    //对接insRAM接口
+    //对接ICACHE接口
     output        inst_sram_req,
     output        inst_sram_wr,
     output [ 3:0] inst_sram_wstrb,
@@ -36,7 +36,9 @@ module if_stage (
     output [31:0] inst_sram_wdata,
     input  [31:0] inst_sram_rdata,
     input         inst_sram_addr_ok,
-    input         inst_sram_data_ok
+    input         inst_sram_data_ok,
+
+    output inst_mat
 );
   reg if_valid;  //表示if_reg内容是否有效
   wire if_ready_go;  //表示if组合逻辑内容是否处理完成，可以向id_reg传递
@@ -71,8 +73,10 @@ module if_stage (
   wire crmd_pg;
   wire [2:0] dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg;
   wire dmw0_plv0, dmw0_plv3, dmw1_plv0, dmw1_plv3;
+  wire dmw0_mat,dmw1_mat;
   wire [1:0] cur_plv;
-  assign {eentry_out, era, tlbenrty_out, asid_out, crmd_da, crmd_pg, dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg, dmw0_plv0, dmw1_plv0, dmw0_plv3, dmw1_plv3, cur_plv} = csr_to_if_bus;
+  wire crmd_dataF;
+  assign {eentry_out, era, tlbenrty_out, asid_out, crmd_da, crmd_pg, dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg, dmw0_plv0, dmw1_plv0, dmw0_plv3, dmw1_plv3, cur_plv, dmw0_mat, dmw1_mat, crmd_dataF} = csr_to_if_bus;
 
   //拆解TLB传递过来的数据
   wire s0_found;
@@ -236,4 +240,8 @@ module if_stage (
   assign inst_sram_wdata = 32'b0;
 
   assign if_inst = inst_sram_data_ok ? inst_sram_rdata : inst_sram_rdata_r;
+
+  assign inst_mat = crmd_da == 1'b1 & crmd_pg == 1'b0 ? crmd_dataF :
+                               dmw_select != 2'b0 ? (dmw_select[0] ? dmw0_mat : dmw1_mat) :
+                               s0_mat[0];
 endmodule

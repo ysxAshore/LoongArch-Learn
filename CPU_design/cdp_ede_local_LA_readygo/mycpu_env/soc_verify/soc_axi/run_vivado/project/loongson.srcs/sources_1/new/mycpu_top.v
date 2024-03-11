@@ -107,6 +107,8 @@ module mycpu_top (  //端口设置AXI从方主方
   wire                      data_sram_addr_ok;
   wire                      data_sram_data_ok;
 
+  wire inst_mat;
+
   if_stage u_if_stage (
       .clk              (aclk),
       .resetn           (aresetn),
@@ -126,7 +128,8 @@ module mycpu_top (  //端口设置AXI从方主方
       .inst_sram_wdata  (inst_sram_wdata),
       .inst_sram_rdata  (inst_sram_rdata),
       .inst_sram_addr_ok(inst_sram_addr_ok),
-      .inst_sram_data_ok(inst_sram_data_ok)
+      .inst_sram_data_ok(inst_sram_data_ok),
+      .inst_mat         (inst_mat)
   );
 
   wire mem_to_id_flush_excp_ertn;
@@ -150,6 +153,7 @@ module mycpu_top (  //端口设置AXI从方主方
   );
 
   wire mem_to_exe_flush_excp_ertn;
+  wire data_mat;
   exe_stage u_exe_stage (
       .clk                       (aclk),
       .resetn                    (aresetn),
@@ -170,7 +174,8 @@ module mycpu_top (  //端口设置AXI从方主方
       .data_sram_size            (data_sram_size),
       .data_sram_addr            (data_sram_addr),
       .data_sram_wdata           (data_sram_wdata),
-      .data_sram_addr_ok         (data_sram_addr_ok)
+      .data_sram_addr_ok         (data_sram_addr_ok),
+      .data_mat                  (data_mat)
   );
 
   mem_stage u_mem_stage (
@@ -241,6 +246,8 @@ module mycpu_top (  //端口设置AXI从方主方
   wire [2:0] dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg;
   wire dmw0_plv0, dmw0_plv3, dmw1_plv0, dmw1_plv3;
   wire [1:0] cur_plv;
+  wire crmd_datm;
+  wire dmw0_mat,dmw1_mat;
   assign csr_to_exe_bus = {
     vppn_out,
     asid_out,
@@ -254,13 +261,14 @@ module mycpu_top (  //端口设置AXI从方主方
     dmw1_plv0,
     dmw0_plv3,
     dmw1_plv3,
-    cur_plv
+    cur_plv,
+    crmd_datm,
+    dmw0_mat,
+    dmw1_mat
   };
 
   wire [31:0] tid_out;
   wire [63:0] timer_64_out;
-  wire [18:0] vppn_out;
-  wire [9:0] asid_out;
   wire [$clog2(`TLB_NUM)-1:0] index_out;
   wire e_out;
   wire [5:0] ps_out;
@@ -291,12 +299,7 @@ module mycpu_top (  //端口设置AXI从方主方
   wire [31:0] era_out;
   wire [31:0] eentry_out;
   wire [31:0] tlbenrty_out;
-  wire [9:0] asid_out;
-  wire crmd_da;
-  wire crmd_pg;
-  wire [2:0] dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg;
-  wire dmw0_plv0, dmw0_plv3, dmw1_plv0, dmw1_plv3;
-  wire [1:0] cur_plv;
+  wire crmd_datf;
   assign csr_to_if_bus = {
     eentry_out,
     era_out,
@@ -312,7 +315,10 @@ module mycpu_top (  //端口设置AXI从方主方
     dmw1_plv0,
     dmw0_plv3,
     dmw1_plv3,
-    cur_plv
+    cur_plv,
+    dmw0_mat,
+    dmw1_mat,
+    crmd_datf
   };
 
   wire [7:0] interrupt = 8'b0;
@@ -369,7 +375,11 @@ module mycpu_top (  //端口设置AXI从方主方
       .dmw0_plv0     (dmw0_plv0),
       .dmw0_plv3     (dmw0_plv3),
       .dmw1_plv0     (dmw1_plv0),
-      .dmw1_plv3     (dmw1_plv3)
+      .dmw1_plv3     (dmw1_plv3),
+      .dmw0_mat      (dmw0_mat),
+      .dmw1_mat      (dmw1_mat),
+      .crmd_datf     (crmd_datf),
+      .crmd_datm     (crmd_datm)
   );
 
 
@@ -474,14 +484,12 @@ module mycpu_top (  //端口设置AXI从方主方
   wire [9:0] s0_asid;
   assign {s0_vppn, s0_asid, s0_va_12bit} = if_to_tlb_bus;
 
-  wire s1_found;
   wire [19:0] s1_ppn;
   wire [5:0] s1_ps;
   wire [1:0] s1_plv;
   wire [1:0] s1_mat;
   wire s1_d;
   wire s1_v;
-  wire [$clog2(`TLB_NUM)-1:0] s1_findex;
   assign tlb_to_exe_bus = {s1_found, s1_ppn, s1_ps, s1_plv, s1_mat, s1_d, s1_v, s1_findex};
 
   tlb u_tlb (
@@ -545,66 +553,151 @@ module mycpu_top (  //端口设置AXI从方主方
       .op          (op)
   );
 
+  wire inst_rd_req;
+  wire [2:0] inst_rd_type;
+  wire [31:0] inst_rd_addr;
+  wire inst_rd_rdy;
+  wire inst_ret_last;
+  wire [31:0] inst_ret_data;
+  wire inst_ret_valid;
+
+  icache i_cache(
+    .clk       (aclk      ),
+    .resetn    (aresetn    ),
+    .valid     (inst_sram_req     ),
+    .op        (inst_sram_wr        ),
+    .index     (inst_sram_addr[11:4]     ),
+    .tag       (inst_sram_addr[31:12]       ),
+    .offset    (inst_sram_addr[3:0]    ),
+    .wstrb     (inst_sram_wstrb     ),
+    .wdata     (inst_sram_wdata     ),
+    .uncache   (~inst_mat   ),
+    .size      ({1'b0,inst_sram_size}      ),
+    .addr_ok   (inst_sram_addr_ok  ),
+    .data_ok   (inst_sram_data_ok  ),
+    .rdata     (inst_sram_rdata     ),
+    .rd_req    (inst_rd_req    ),
+    .rd_type   (inst_rd_type   ),
+    .rd_addr   (inst_rd_addr   ),
+    .rd_rdy    (inst_rd_rdy    ),
+    .ret_valid (inst_ret_valid ),
+    .ret_last  (inst_ret_last  ),
+    .ret_data  (inst_ret_data  ),
+    .wr_req    (   ),
+    .wr_type   (   ),
+    .wr_addr   (   ),
+    .wr_wstrb  (   ),
+    .wr_data   (   ),
+    .wr_rdy    (   )
+  );
+
+  wire data_rd_req;
+  wire [2:0] data_rd_type;
+  wire [31:0] data_rd_addr;
+  wire data_rd_rdy;
+  wire data_ret_last;
+  wire [31:0] data_ret_data;
+  wire data_ret_valid;
+  wire data_wr_req;
+  wire [2:0] data_wr_type;
+  wire [31:0] data_wr_addr;
+  wire [3:0] data_wr_wstrb;
+  wire [127:0] data_wr_data;
+  wire data_wr_rdy;
+
+  dcache d_cache(
+    .clk       (aclk       ),
+    .resetn    (aresetn    ),
+    .valid     (data_sram_req     ),
+    .op        (data_sram_wr        ),
+    .index     (data_sram_addr[11:4]     ),
+    .tag       (data_sram_addr[31:12]       ),
+    .offset    (data_sram_addr[3:0]    ),
+    .wstrb     (data_sram_wstrb     ),
+    .wdata     (data_sram_wdata     ),
+    .uncache   (~data_mat   ),
+    .size      ({1'b0,data_sram_size}      ),
+    .addr_ok   (data_sram_addr_ok   ),
+    .data_ok   (data_sram_data_ok   ),
+    .rdata     (data_sram_rdata     ),
+    .rd_req    (data_rd_req   ),
+    .rd_type   (data_rd_type   ),
+    .rd_addr   (data_rd_addr   ),
+    .rd_rdy    (data_rd_rdy    ),
+    .ret_valid (data_ret_valid ),
+    .ret_last  (data_ret_last  ),
+    .ret_data  (data_ret_data  ),
+    .wr_req    (data_wr_req    ),
+    .wr_type   (data_wr_type   ),
+    .wr_addr   (data_wr_addr   ),
+    .wr_wstrb  (data_wr_wstrb  ),
+    .wr_data   (data_wr_data   ),
+    .wr_rdy    (data_wr_rdy    )
+  );
+  
 
   //axi
-  axi_bridge u_axi_bridge (
-      .clk              (aclk),
-      .aresetn          (aresetn),
-      .arid             (arid),
-      .araddr           (araddr),
-      .arlen            (arlen),
-      .arsize           (arsize),
-      .arburst          (arburst),
-      .arlock           (arlock),
-      .arcache          (arcache),
-      .arprot           (arprot),
-      .arvalid          (arvalid),
-      .arready          (arready),
-      .rid              (rid),
-      .rdata            (rdata),
-      .rresp            (rresp),
-      .rlast            (rlast),
-      .rvalid           (rvalid),
-      .rready           (rready),
-      .awid             (awid),
-      .awaddr           (awaddr),
-      .awlen            (awlen),
-      .awsize           (awsize),
-      .awburst          (awburst),
-      .awlock           (awlock),
-      .awcache          (awcache),
-      .awprot           (awprot),
-      .awvalid          (awvalid),
-      .awready          (awready),
-      .wid              (wid),
-      .wdata            (wdata),
-      .wstrb            (wstrb),
-      .wlast            (wlast),
-      .wvalid           (wvalid),
-      .wready           (wready),
-      .bid              (bid),
-      .bresp            (bresp),
-      .bvalid           (bvalid),
-      .bready           (bready),
-      .inst_sram_req    (inst_sram_req),
-      .inst_sram_wr     (inst_sram_wr),
-      .inst_sram_size   (inst_sram_size),
-      .inst_sram_wstrb  (inst_sram_wstrb),
-      .inst_sram_addr   (inst_sram_addr),
-      .inst_sram_wdata  (inst_sram_wdata),
-      .inst_sram_addr_ok(inst_sram_addr_ok),
-      .inst_sram_data_ok(inst_sram_data_ok),
-      .inst_sram_rdata  (inst_sram_rdata),
-      .data_sram_req    (data_sram_req),
-      .data_sram_wr     (data_sram_wr),
-      .data_sram_size   (data_sram_size),
-      .data_sram_wstrb  (data_sram_wstrb),
-      .data_sram_addr   (data_sram_addr),
-      .data_sram_wdata  (data_sram_wdata),
-      .data_sram_addr_ok(data_sram_addr_ok),
-      .data_sram_data_ok(data_sram_data_ok),
-      .data_sram_rdata  (data_sram_rdata)
+  axi_bridge u_axi_bridge(
+    .clk            (aclk            ),
+    .aresetn        (aresetn        ),
+    .arid           (arid           ),
+    .araddr         (araddr         ),
+    .arlen          (arlen          ),
+    .arsize         (arsize         ),
+    .arburst        (arburst        ),
+    .arlock         (arlock         ),
+    .arcache        (arcache        ),
+    .arprot         (arprot         ),
+    .arvalid        (arvalid        ),
+    .arready        (arready        ),
+    .rid            (rid            ),
+    .rdata          (rdata          ),
+    .rresp          (rresp          ),
+    .rlast          (rlast          ),
+    .rvalid         (rvalid         ),
+    .rready         (rready         ),
+    .awid           (awid           ),
+    .awaddr         (awaddr         ),
+    .awlen          (awlen          ),
+    .awsize         (awsize         ),
+    .awburst        (awburst        ),
+    .awlock         (awlock         ),
+    .awcache        (awcache        ),
+    .awprot         (awprot         ),
+    .awvalid        (awvalid        ),
+    .awready        (awready        ),
+    .wid            (wid            ),
+    .wdata          (wdata          ),
+    .wstrb          (wstrb          ),
+    .wlast          (wlast          ),
+    .wvalid         (wvalid         ),
+    .wready         (wready         ),
+    .bid            (bid            ),
+    .bresp          (bresp          ),
+    .bvalid         (bvalid         ),
+    .bready         (bready         ),
+    .inst_rd_req    (inst_rd_req    ),
+    .inst_rd_type   (inst_rd_type   ),
+    .inst_rd_addr   (inst_rd_addr   ),
+    .inst_rd_rdy    (inst_rd_rdy    ),
+    .inst_ret_last  (inst_ret_last  ),
+    .inst_ret_data  (inst_ret_data  ),
+    .inst_ret_valid (inst_ret_valid ),
+    .data_rd_req    (data_rd_req    ),
+    .data_rd_type   (data_rd_type   ),
+    .data_rd_addr   (data_rd_addr   ),
+    .data_rd_rdy    (data_rd_rdy    ),
+    .data_ret_last  (data_ret_last  ),
+    .data_ret_data  (data_ret_data  ),
+    .data_ret_valid (data_ret_valid ),
+    .data_wr_req    (data_wr_req    ),
+    .data_wr_type   (data_wr_type   ),
+    .data_wr_addr   (data_wr_addr   ),
+    .data_wr_wstrb  (data_wr_wstrb  ),
+    .data_wr_data   (data_wr_data   ),
+    .data_wr_rdy    (data_wr_rdy    )
   );
+
 
 
 endmodule
