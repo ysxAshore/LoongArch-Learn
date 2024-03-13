@@ -2,10 +2,10 @@
 // Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
-// Date        : Thu Mar  7 22:17:53 2024
+// Date        : Tue Mar 12 15:55:33 2024
 // Host        : ysxAshore-Ubuntu running 64-bit Ubuntu 22.04.4 LTS
-// Command     : write_verilog -force -mode synth_stub
-//               /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/rtl/xilinx_ip/axi_ram/axi_ram_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top axi_ram -prefix
+//               axi_ram_ axi_ram_stub.v
 // Design      : axi_ram
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a200tfbg676-1

@@ -1,2 +1,2 @@
-run 1000ns
+run
 quit

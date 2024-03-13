@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenRun Id="axi_crossbar_1x2_synth_1" LaunchPart="xc7a200tfbg676-1" LaunchTime="1709624478">
-  <File Type="RDS-RDS" Name="axi_crossbar_1x2.vds"/>
-  <File Type="REPORTS-TCL" Name="axi_crossbar_1x2_reports.tcl"/>
   <File Type="PA-TCL" Name="axi_crossbar_1x2.tcl"/>
-  <File Type="RDS-DCP" Name="axi_crossbar_1x2.dcp"/>
+  <File Type="REPORTS-TCL" Name="axi_crossbar_1x2_reports.tcl"/>
+  <File Type="RDS-RDS" Name="axi_crossbar_1x2.vds"/>
   <File Type="RDS-UTIL" Name="axi_crossbar_1x2_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="axi_crossbar_1x2_utilization_synth.pb"/>
+  <File Type="RDS-DCP" Name="axi_crossbar_1x2.dcp"/>
   <FileSet Name="sources" Type="BlockSrcs" RelSrcDir="$PSRCDIR/axi_crossbar_1x2" RelGenDir="$PGENDIR/axi_crossbar_1x2">
     <File Path="$PPRDIR/../../rtl/xilinx_ip/axi_crossbar_1x2/axi_crossbar_1x2.xci">
       <FileInfo>
