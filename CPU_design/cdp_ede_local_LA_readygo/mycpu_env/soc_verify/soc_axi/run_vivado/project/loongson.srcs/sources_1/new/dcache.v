@@ -137,7 +137,7 @@ module dcache (
   reg         requestBuffer_dcacop_en  ;
   reg [ 1:0]  requestBuffer_dcacop_mode;
 
-  reg cache_hit_r; //为什么要设置
+  reg cache_hit_r; //保存命中信息，为了cacop指令模式2后面的选择判断
   reg way0_hit_r;
   reg way1_hit_r;
 
@@ -269,8 +269,8 @@ module dcache (
             missBuffer_replaceWay <= replace_way;
             wr_req <= replace_d & replace_v & ~requestBuffer_uncache  | 
                       requestBuffer_uncache & requestBuffer_op |
-                      requestBuffer_dcacop_mode == 2'h2 & cache_hit_r & requestBuffer_dcacop_en |
-                      requestBuffer_dcacop_mode == 2'h1 & requestBuffer_dcacop_en ;//不管脏不脏都写回，有效与否都写回
+                      requestBuffer_dcacop_mode == 2'h2 & cache_hit_r & requestBuffer_dcacop_en & replace_d & replace_v|
+                      requestBuffer_dcacop_mode == 2'h1 & requestBuffer_dcacop_en & replace_d & replace_v;//不管脏不脏都写回，有效与否都写回
           end
         end
 
@@ -287,7 +287,7 @@ module dcache (
         end
 
         MAIN_REFILL: begin
-          if (ret_valid & ret_last | ~rd_req_buffer | requestBuffer_op & requestBuffer_uncache | requestBuffer_dcacop_en) begin  //答案上多了一个缓存判断是否有读请求
+          if (ret_valid & ret_last | ~rd_req_buffer | requestBuffer_op & requestBuffer_uncache | requestBuffer_dcacop_en) begin 
             cache_state <= MAIN_IDLE;
           end else if (ret_valid) begin
             missBuffer_retNum <= missBuffer_retNum + 2'b01;

@@ -129,7 +129,7 @@
 
 其中关于TLB域和TCFG域的边界值和做了以下定义：
 
-1.  TLBIDX的n值为5
+1.  TLBIDX的n值为5→32个TLB项
 2.  TLBELO的PALEN为36
 3.  TCFG的n值为32
 

@@ -681,4 +681,4 @@ Test begin!
 Test end!
 ----PASS!!!
 $finish called at time : 5359165 ns : File "E:/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/testbench/mycpu_tb.v" Line 267
-INFO: xsimkernel Simulation Memory Usage: 35616 KB (Peak: 35616 KB), Simulation CPU Usage: 60780 ms
+INFO: xsimkernel Simulation Memory Usage: 35604 KB (Peak: 35604 KB), Simulation CPU Usage: 86265 ms

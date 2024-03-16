@@ -16,7 +16,7 @@
 
 例如下图的LA3A5000，处理器芯片中集成了4个处理器核，此外还有多核共享的Cache、高速总线接口控制器和内存控制器等功能模块
 
-![](image/image_9dqf9UWD0G.png)
+![](image/image_EkRk28aetG.png)
 
 # 2 芯片产品的研制过程
 

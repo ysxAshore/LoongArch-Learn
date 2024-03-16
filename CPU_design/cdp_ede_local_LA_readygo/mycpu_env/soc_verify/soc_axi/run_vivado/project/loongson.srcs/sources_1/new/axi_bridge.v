@@ -191,16 +191,16 @@ module axi_bridge (
   assign arcache = 1'b0;
   assign arprot = 1'b0;
 
-  assign data_rd_rdy = //这为什么不用data_read_wait load优先级大于取指 设置了有写请求就暂停读 addr_ok无效
-      (~data_read_wait & ~arvalid & data_rd_req == 1'b1) ? 1'b1 : 1'b0; //读通道没有被占用且进行读数据RAM请求
+  assign data_rd_rdy = //load优先级大于取指
+      (~data_read_wait & ~arvalid & data_rd_req == 1'b1) ? 1'b1 : 1'b0; 
   assign inst_rd_rdy = 
-        (~inst_read_wait & ~arvalid & inst_rd_req == 1'b1 &  data_rd_req == 1'b0) ? 1'b1 : 1'b0;//load优先级大于取指，需要判断没有读数据请求或者有但是是写数据
+        (~inst_read_wait & ~arvalid & inst_rd_req == 1'b1 &  data_rd_req == 1'b0) ? 1'b1 : 1'b0;
 
   //-----------------------------------读响应相关信号-------------------------------------//
   always @(posedge clk) begin
     if (~aresetn) 
       rready <= 1'b0;
-    else if (rready & rvalid & rlast) 
+    else if (rready & rvalid & rlast) //突发传输，当读最后一个有效时，再置rready为1'b0
       rready <= 1'b0; //当读到最后一个时，才置rready是1'b0
     else if (inst_read_wait | data_read_wait)  //等待准备接收数据
       rready <= 1'b1;
@@ -239,7 +239,7 @@ module axi_bridge (
       data_sram_wdata_r <= 128'b0;
     else if (data_wr_req & data_wr_rdy) 
       data_sram_wdata_r <= data_wr_data;
-    else if (wvalid & wready & awlen == 8'b11) begin
+    else if (wvalid & wready & awlen == 8'b11) begin 
       data_sram_wdata_r <= {32'b0,data_sram_wdata_r[127:32]};  //写128位时，每次都采取右移32位，使得AXI传给总线的32位数据始终赋值[31:0]
     end
   end
@@ -253,7 +253,7 @@ module axi_bridge (
       wdata_sram_wstrb_r <= wdata_sram_wstrb_r;
   end
 
-  //写多个数据时，需要使之后的写等待
+  //写多个数据时，需要使之后的写等待 
   always @(posedge clk) begin
     if (~aresetn) w_wait <= 1'b0;
     else if (wvalid & wready & awlen == 8'h3 & w_num != 3'b001) 

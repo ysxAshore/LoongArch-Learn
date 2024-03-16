@@ -20,18 +20,19 @@
 
 实验箱采用龙芯实验箱，如下图，实验箱配备一块FPGA开发板、一个电源适配器、一个FPGA下载适配器的USB线缆JTAG（官网显示的网线、USB延长线那些这里没有）
 
-![](image/image_Xy9QkRotHc.png)
+![](image/image__1DwGHZEY0.png)
 
 开发板具体如下：
 
-![](image/image_QdjvalijjY.png)
+![](image/image_Xj7qJlbfUU.png)
 
 上图的PHY芯片一般是为模数混合电路，负责接收电、光这类模拟信号，经过解调和A/D转换后通过MII接口将信号交给MAC芯片进行处理；PS2接口用来链接键盘或者鼠标
+
 JTAG接口在开发板下方的白色接口处
 
 下图是板载外设的引脚对应关系表
 
-[引脚对应关系.xlsx](file/引脚对应关系_ti8vuqGwOr.xlsx "引脚对应关系.xlsx")
+[引脚对应关系.xlsx](file/引脚对应关系_a-1LM_V8pH.xlsx "引脚对应关系.xlsx")
 
 # 2 FPGA的设计流程
 

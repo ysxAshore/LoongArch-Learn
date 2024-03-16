@@ -35,7 +35,7 @@
 
 参照C4中20条单周期CPU实验，soc片上系统的层次结构如下：
 
-![图中的时钟信号、复位信号省去](image/image_HN7HH4dv51.png "图中的时钟信号、复位信号省去")
+![图中的时钟信号、复位信号省去](image/image_aQcxMKRjvH.png "图中的时钟信号、复位信号省去")
 
 myCPU模块是SOC的核心模块，也是所需要实现的五级流水CPU
 
@@ -1629,4 +1629,4 @@ endmodule
 2.  mem的Read、Write使用clk下降沿
 3.  前递顺序：EXE alu>memload>mem alu
 4.  W GR使用clk下降沿
-5.  div阻塞
+5.  div阻塞                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     &#x20;
