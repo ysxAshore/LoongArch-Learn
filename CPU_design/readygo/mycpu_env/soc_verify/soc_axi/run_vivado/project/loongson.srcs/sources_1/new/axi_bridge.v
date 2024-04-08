@@ -1,369 +1,306 @@
-`include "mycpu.h"
-module axi_bridge (
-    //AXI信号 主方
-    input clk,
-    input aresetn,
+module axi_bridge(
+    input   clk,
+    input   aresetn,
 
-    //读请求通道
-    output [ 3:0] arid,
-    output [31:0] araddr,
-    output [ 7:0] arlen,    //0
-    output [ 2:0] arsize,
-    output [ 1:0] arburst,  //2b'01
-    output [ 1:0] arlock,   //0
-    output [ 3:0] arcache,  //0
-    output [ 2:0] arprot,   //0
-    output        arvalid,
-    input         arready,
+    output   reg[ 3:0] arid,
+    output   reg[31:0] araddr,
+    output   reg[ 7:0] arlen,
+    output   reg[ 2:0] arsize,
+    output      [ 1:0] arburst,
+    output      [ 1:0] arlock,
+    output      [ 3:0] arcache,
+    output      [ 2:0] arprot,
+    output   reg       arvalid,
+    input              arready,
 
-    //读响应通道
-    input      [ 3:0] rid,
-    input      [31:0] rdata,
-    input      [ 1:0] rresp,
-    input             rlast,
-    input             rvalid,
-    output reg        rready,
+    input    [ 3:0] rid,
+    input    [31:0] rdata,
+    input    [ 1:0] rresp,
+    input           rlast,
+    input           rvalid,
+    output   reg    rready,
 
-    //写请求通道              
-    output     [ 3:0] awid,
-    output     [31:0] awaddr,
-    output     [ 7:0] awlen,
-    output     [ 2:0] awsize,
-    output     [ 1:0] awburst,
-    output     [ 1:0] awlock,
-    output     [ 3:0] awcache,
-    output     [ 2:0] awprot,
-    output reg        awvalid,
-    input             awready,
+    output      [ 3:0] awid,
+    output   reg[31:0] awaddr,
+    output   reg[ 7:0] awlen,
+    output   reg[ 2:0] awsize,
+    output      [ 1:0] awburst,
+    output      [ 1:0] awlock,
+    output      [ 3:0] awcache,
+    output      [ 2:0] awprot,
+    output   reg       awvalid,
+    input              awready,
 
-    //写数据通道
-    output     [ 3:0] wid,
-    output     [31:0] wdata,
-    output     [ 3:0] wstrb,
-    output reg        wlast,
-    output reg        wvalid,
-    input             wready,
+    output      [ 3:0] wid,
+    output   reg[31:0] wdata,
+    output   reg[ 3:0] wstrb,
+    output   reg       wlast,
+    output   reg       wvalid,
+    input              wready,
 
-    //写响应通道
-    input      [3:0] bid,
-    input      [1:0] bresp,
-    input            bvalid,
-    output reg       bready,
+    input    [ 3:0] bid,
+    input    [ 1:0] bresp,
+    input           bvalid,
+    output   reg    bready,
+    //cache sign
+    input            inst_rd_req     ,
+    input  [ 2:0]    inst_rd_type    ,
+    input  [31:0]    inst_rd_addr    ,
+    output           inst_rd_rdy     ,
+    output           inst_ret_valid  ,
+    output           inst_ret_last   ,
+    output [31:0]    inst_ret_data   ,
 
-    //类SRAM信号 从方
-    //inst
-    input wire inst_rd_req,
-    input wire [2:0] inst_rd_type,
-    input wire [31:0] inst_rd_addr,
-    output wire inst_rd_rdy,
-    output wire inst_ret_last,
-    output wire [31:0] inst_ret_data,
-    output wire inst_ret_valid,
-
-    
-    //data
-    input wire data_rd_req,
-    input wire [2:0] data_rd_type,
-    input wire [31:0] data_rd_addr,
-    output wire data_rd_rdy,
-    output wire data_ret_last,
-    output wire [31:0] data_ret_data,
-    output wire data_ret_valid,
-    input wire data_wr_req,
-    input wire [2:0] data_wr_type,
-    input  wire [31:0] data_wr_addr,
-    input wire [3:0] data_wr_wstrb,
-    input wire [127:0] data_wr_data,
-    output wire data_wr_rdy 
+    input            data_rd_req     ,
+    input  [ 2:0]    data_rd_type    ,
+    input  [31:0]    data_rd_addr    ,
+    output           data_rd_rdy     ,
+    output           data_ret_valid  ,
+    output           data_ret_last   ,
+    output [31:0]    data_ret_data   ,
+    input            data_wr_req     ,
+    input  [ 2:0]    data_wr_type    ,
+    input  [31:0]    data_wr_addr    ,
+    input  [ 3:0]    data_wr_wstrb   ,
+    input  [127:0]   data_wr_data    ,
+    output           data_wr_rdy     
 );
-  //读请求通道 触发器Q端信号
-  reg arvalid_r;  //输出arvalid
-  reg [ 3:0]  arid_r;    //输出arid 根据arid在指令addr、size和数据addr、size选择生成arsize、araddr
-  reg [2:0] inst_sram_size_r;  //输出访指令arsize
-  reg [31:0] inst_sram_addr_r;  //输出访指令存araddr
-  reg [2:0] rdata_sram_size_r;  //输出访数据arsize
-  reg [31:0] rdata_sram_addr_r;  //输出访指令存araddr 
 
-  //请求完毕，等待读响应
-  reg data_read_wait;
-  reg inst_read_wait;
+//fixed signal
+assign  arburst = 2'b1;
+assign  arlock  = 2'b0;
+assign  arcache = 4'b0;
+assign  arprot  = 3'b0;
+assign  awid    = 4'b1;
+assign  awburst = 2'b1;
+assign  awlock  = 2'b0;
+assign  awcache = 4'b0;
+assign  awprot  = 3'b0;
+assign  wid     = 4'b1;
 
-  reg [2:0] wdata_sram_size_r;  //输出awsize
-  reg [3:0] wdata_sram_wstrb_r;  //输出wstrb
-  reg [31:0] wdata_sram_addr_r;  //输出awaddr
-  reg [7:0] awlen_r; //
-  reg [2:0] w_num;
-  reg w_wait;
+localparam read_requst_empty = 1'b0;
+localparam read_requst_ready = 1'b1;
+localparam read_respond_empty = 1'b0;
+localparam read_respond_transfer = 1'b1;
+localparam write_request_empty = 3'b000;
+localparam write_addr_ready = 3'b001;
+localparam write_data_ready = 3'b010;
+localparam write_all_ready = 3'b011;
+localparam write_data_transform = 3'b100;
+localparam write_data_wait = 3'b101;
+localparam write_wait_b = 3'b110;
 
-  reg [127:0] data_sram_wdata_r;  //输出awaddr
+reg       read_requst_state;
+reg       read_respond_state;
+reg [2:0] write_requst_state;
 
-  reg wdata_received;  //表示从设备已收到写数据，wready可再有效
-  reg waddr_received;  //表示从设备已收到写地址，awready可再有效
+wire      write_wait_enable;
 
-  //-----------------------------------读请求相关信号--------------------------------------//
-  //因为读请求时，需要传输地址等信息，所以需要在req和addr_ok确认对应请求并且类SRAM总线从方收到地址后再设置
-  //arid_r  不同事务都用同一个id，先请求的先响应
-  always @(posedge clk) begin
-    if (~aresetn) 
-        arid_r <= 4'b0000;
-    else if(inst_rd_req & inst_rd_rdy)//读指令存储请求且读指令地址成功收到
-        arid_r <= 4'b0000;
-    else if(data_rd_req & data_rd_rdy)//读数据存储请求且读数据地址成功收到
-        arid_r <= 4'b0001;
-    else
-        arid_r <= arid_r;//存在阻塞、等待时的处理 是不是实现的不改变值 ready还未为1时
-  end
+wire         rd_requst_state_is_empty;
+wire         rd_requst_can_receive;
 
-  //arsize_r选择之一 inst_sram_size_r
-  always @(posedge clk) begin
-    if (~aresetn) 
-        inst_sram_size_r <= 3'b0;
-    else if (inst_rd_req & inst_rd_rdy) 
-        inst_sram_size_r <= inst_rd_type == 3'b100 ? 3'b010 : inst_rd_type; //如果是一行cache，那么每个是要读写32bit
-    else 
-        inst_sram_size_r <= inst_sram_size_r;
-  end
+assign rd_requst_state_is_empty = read_requst_state == read_requst_empty;
 
-  //araddr_r选择之一 inst_sram_addr_r
-  always @(posedge clk) begin
-    if (~aresetn) 
-        inst_sram_addr_r <= 32'b0;
-    else if (inst_rd_req & inst_rd_rdy) 
-        inst_sram_addr_r <= inst_rd_addr;
-    else 
-        inst_sram_addr_r <= inst_sram_addr_r;
-  end
+wire        data_rd_cache_line;
+wire        inst_rd_cache_line;
+wire [ 2:0] data_real_rd_size;
+wire [ 7:0] data_real_rd_len ;
+wire [ 2:0] inst_real_rd_size;
+wire [ 7:0] inst_real_rd_len ;
+wire        data_wr_cache_line;
+wire [ 2:0] data_real_wr_size;
+wire [ 7:0] data_real_wr_len ;
 
-  //arsize_r选择之一 data_sram_size_r
-  always @(posedge clk) begin
-    if (~aresetn) 
-        rdata_sram_size_r <= 3'b0;
-    else if (data_rd_req & data_rd_rdy) 
-        rdata_sram_size_r <= data_rd_type == 3'b100 ? 3'b010 : data_rd_type;
-    else 
-        rdata_sram_size_r <= rdata_sram_size_r;
-  end
+reg [127:0] write_buffer_data;
+reg [ 2:0]  write_buffer_num;
 
-  //araddr_r选择之一 data_sram_addr_r
-  always @(posedge clk) begin
-    if (~aresetn) 
-        rdata_sram_addr_r <= 32'b0;
-    else if (data_rd_req & data_rd_rdy) 
-        rdata_sram_addr_r <= data_rd_addr;
-    else 
-        rdata_sram_addr_r <= rdata_sram_addr_r;
-  end
+wire        write_buffer_last;
 
-  //读通道正在进行读指令，等待读响应
-  always @(posedge clk) begin
-    if (~aresetn) 
-        inst_read_wait <= 1'b0;
-    else if (arvalid & arready & arid_r == 4'b0000) 
-        inst_read_wait <= 1'b1;
-    else if (rvalid & rready & rid == 4'b0000 & rlast)  //读响应已收到，且是读指令,可能会读多个——需要增加rlast信号判断
-        inst_read_wait <= 1'b0;
-  end
+assign rd_requst_can_receive = rd_requst_state_is_empty && !(write_wait_enable && !(bvalid && bready));
 
-  //读通道正在进行读数据，等待读响应
-  always @(posedge clk) begin
-    if (~aresetn) 
-        data_read_wait <= 1'b0;
-    else if (arvalid & arready & arid_r == 4'b0001) 
-        data_read_wait <= 1'b1;
-    else if (rvalid & rready & rid == 4'b0001 & rlast)  //读响应已收到，且是读数据
-        data_read_wait <= 1'b0;
-  end
+assign data_rd_rdy = rd_requst_can_receive;
+assign inst_rd_rdy = !data_rd_req && rd_requst_can_receive;
 
-  //arvalid
-  always @(posedge clk) begin
-    if (~aresetn)  //
-        arvalid_r <= 1'b0;
-    else if (arvalid & arready)  //读请求收到响应则复位
-        arvalid_r <= 1'b0; 
-    else if(data_rd_req & data_rd_rdy | inst_rd_req & inst_rd_rdy) //这里可以加req吧？加req更好理解 Brust时保持
-        arvalid_r <= 1'b1;
-  end
+//read type must be cache line
+assign data_rd_cache_line = data_rd_type == 3'b100                   ;
+assign data_real_rd_size  = data_rd_cache_line ? 3'b10 : data_rd_type;
+assign data_real_rd_len   = data_rd_cache_line ? 8'b11 : 8'b0        ;
 
-  //AXI主方，除了常量，其余输出信号的均来自触发器Q端 
-  //读请求通道输出信号
-  assign arvalid = arvalid_r;
-  assign arid = arid_r;
-  assign araddr = (arid == 4'b0000) ? inst_sram_addr_r : rdata_sram_addr_r;
-  //size是3位，000->1B 001->2B 010->4B 011->8B 100->16B 101->32B 110->64B 111->128B
-  assign arsize = (arid == 4'b0000) ? inst_sram_size_r: rdata_sram_size_r;
+assign inst_rd_cache_line = inst_rd_type == 3'b100                   ;
+assign inst_real_rd_size  = inst_rd_cache_line ? 3'b10 : inst_rd_type;
+assign inst_real_rd_len   = inst_rd_cache_line ? 8'b11 : 8'b0        ;
 
-  assign arlen = (inst_rd_type == 3'b100 | data_rd_type == 3'b100) ? 8'h3 : 8'h0;//当是cahce行时需要读4个
-  assign arburst = 2'b01;
-  assign arlock = 2'b0;
-  assign arcache = 4'b0;
-  assign arprot = 3'b0;
+//write size can be special
+assign data_wr_cache_line = data_wr_type == 3'b100;
+assign data_real_wr_size  = data_wr_cache_line ? 3'b10 : data_wr_type;
+assign data_real_wr_len   = data_wr_cache_line ? 8'b11 : 8'b0             ;
 
-  assign data_rd_rdy = //load优先级大于取指
-      (~data_read_wait & ~arvalid & data_rd_req == 1'b1) ? 1'b1 : 1'b0; 
-  assign inst_rd_rdy = 
-        (~inst_read_wait & ~arvalid & inst_rd_req == 1'b1 &  data_rd_req == 1'b0) ? 1'b1 : 1'b0;
+assign inst_ret_valid = !rid[0] && rvalid;
+assign inst_ret_last  = !rid[0] && rlast;
+assign inst_ret_data  = rdata;    //this signal needed buffer???
+assign data_ret_valid =  rid[0] && rvalid;
+assign data_ret_last  =  rid[0] && rlast;
+assign data_ret_data  = rdata;
 
-  //-----------------------------------读响应相关信号-------------------------------------//
-  always @(posedge clk) begin
-    if (~aresetn) 
-        rready <= 1'b0;
-    else if (rready & rvalid & rlast) //突发传输，当读最后一个有效时，再置rready为1'b0
-        rready <= 1'b0; //当读到最后一个时，才置rready是1'b0
-    else if (inst_read_wait | data_read_wait)  //等待准备接收数据
+assign data_wr_rdy = (write_requst_state == write_request_empty);
+
+assign write_buffer_last = write_buffer_num == 3'b1;
+
+always @(posedge clk) begin
+    if (~aresetn) begin
+        read_requst_state <= read_requst_empty;
+        arvalid <= 1'b0;
+    end
+    else case (read_requst_state)
+        read_requst_empty: begin
+            if (data_rd_req) begin
+                if (write_wait_enable) begin
+                    if (bvalid && bready) begin   //when wait write back, stop send read request. easiest way.
+                        read_requst_state <= read_requst_ready;
+                        arid <= 4'b1;
+                        araddr <= data_rd_addr;
+                        arsize <= data_real_rd_size;
+                        arlen  <= data_real_rd_len;
+                        arvalid <= 1'b1;
+                    end
+                end
+                else begin
+                    read_requst_state <= read_requst_ready;
+                    arid <= 4'b1;
+                    araddr <= data_rd_addr;
+                    arsize <= data_real_rd_size;
+                    arlen  <= data_real_rd_len;
+                    arvalid <= 1'b1;
+                end
+            end
+            else if (inst_rd_req) begin
+                if (write_wait_enable) begin
+                    if (bvalid && bready) begin
+                        read_requst_state <= read_requst_ready;
+                        arid <= 4'b0;
+                        araddr <= inst_rd_addr;
+                        arsize <= inst_real_rd_size;
+                        arlen  <= inst_real_rd_len;
+                        arvalid <= 1'b1;
+                    end
+                end
+                else begin
+                    read_requst_state <= read_requst_ready;
+                    arid <= 4'b0;
+                    araddr <= inst_rd_addr;
+                    arsize <= inst_real_rd_size;
+                    arlen  <= inst_real_rd_len;
+                    arvalid <= 1'b1;
+                end
+            end
+        end
+        read_requst_ready: begin
+            if (arready && arid[0]) begin
+                read_requst_state <= read_requst_empty;
+                arvalid <= 1'b0;
+            end
+            else if (arready && !arid[0]) begin 
+                read_requst_state <= read_requst_empty;
+                arvalid <= 1'b0;
+            end
+        end
+    endcase
+end
+
+always @(posedge clk) begin
+    if (~aresetn) begin
+        read_respond_state <= read_respond_empty;
         rready <= 1'b1;
-  end
-
-  assign inst_ret_data = (rvalid & rready & rid == 4'b0000) ? rdata : 32'b0;
-  assign inst_ret_valid = rvalid & rready & rid == 4'b0000;
-  assign data_ret_data = (rvalid & rready & rid == 4'b0001) ? rdata : 32'b0;
-  assign data_ret_valid = rvalid & rready & rid == 4'b0001;
-  assign inst_ret_last = rid == 4'b0000 & rlast;
-  assign data_ret_last = rid == 4'b0001 & rlast;
-  //-----------------------------------写请求相关信号-------------------------------------//
-  //处理写地址
-  always @(posedge clk) begin
-    if (~aresetn) 
-        wdata_sram_addr_r <= 32'b0;
-    else if (data_wr_req) 
-        wdata_sram_addr_r <= data_wr_addr;
-    else 
-        wdata_sram_addr_r <= wdata_sram_addr_r;
-  end
-
-  //处理写长度
-  always @(posedge clk) begin
-    if (~aresetn) 
-        wdata_sram_size_r <= 3'b0;
-    else if (data_wr_req) //wr_rdy有效时 req不一定有效
-        wdata_sram_size_r <= data_wr_type == 3'b100 ? 3'b010 : data_wr_type;
-    else 
-        wdata_sram_size_r <= wdata_sram_size_r;
-  end
-
-  //处理写数据 写请求和写数据同时设置
-  always @(posedge clk) begin
-    if (~aresetn) 
-        data_sram_wdata_r <= 128'b0;
-    else if (data_wr_req) 
-        data_sram_wdata_r <= data_wr_data;
-    else if (wvalid & wready & awlen == 8'h3) begin 
-        data_sram_wdata_r <= {32'b0,data_sram_wdata_r[127:32]};  //写128位时，每次都采取右移32位，使得AXI传给总线的32位数据始终赋值[31:0]
     end
-  end
+    else case (read_respond_state)
+        read_respond_empty: begin
+            if (rvalid && rready) begin 
+                read_respond_state <= read_respond_transfer;
+            end
+        end
+        read_respond_transfer: begin
+            if (rlast && rvalid) begin
+                read_respond_state <= read_respond_empty;
+            end
+        end
+    endcase
+end
 
-  //处理写选通
-  always @(posedge clk) begin
-    if (~aresetn) 
-        wdata_sram_wstrb_r <= 4'b0000;
-    else if (data_wr_req) //有请求时就
-        wdata_sram_wstrb_r <= data_wr_wstrb;
-    else 
-        wdata_sram_wstrb_r <= wdata_sram_wstrb_r;
-  end
-
-  //写多个数据时，需要使之后的写等待 
-  always @(posedge clk) begin
-    if (~aresetn) 
-        w_wait <= 1'b0;
-    else if (wvalid & wready & awlen == 8'h3 & w_num != 3'b1) 
-        w_wait <= 1'b1;
-    else 
-        w_wait <= 1'b0;
-  end
-
-  //从设备已收到写数据
-  always @(posedge clk) begin
-    if (~aresetn) 
-        wdata_received <= 1'b0;
-    else if (wvalid & wready & wlast) 
-        wdata_received <= 1'b1;
-    else if (wdata_received & waddr_received) 
-        wdata_received <= 1'b0;
-  end
-
-  //从设备已收到写地址
-  always @(posedge clk) begin
-    if (~aresetn) 
-        waddr_received <= 1'b0;
-    else if (awvalid & awready) 
-        waddr_received <= 1'b1;
-    else if(wdata_received & waddr_received) //写地址和写数据都被从设备收到后再开始新的写请求
-        waddr_received <= 1'b0;
-  end
-
-  //写请求 valid信号的发送
-  always @(posedge clk) begin
-    if (~aresetn) 
-        awvalid <= 1'b0;
-    else if(data_wr_req)
-        awvalid <= 1'b1;
-    else if (awvalid & awready) 
-        awvalid <= 1'b0;
-  end
-
-  always @(posedge clk) begin
-    if (~aresetn) 
-        wvalid <= 1'b0;
-    else if (data_wr_req | w_wait)  //写请求和写数据同时置有效
-        wvalid <= 1'b1;
-    else if (wvalid & wready) 
-        wvalid <= 1'b0;
-  end
-
-  always @(posedge clk) begin
+always @(posedge clk) begin
     if (~aresetn) begin
-        awlen_r <= 8'b0;
-    end else if (data_wr_req) begin
-        awlen_r <= data_wr_type == 3'b100 ? 8'h3 : 8'h0;
+        write_requst_state <= write_request_empty;
+        awvalid <= 1'b0;
+        wvalid  <= 1'b0;
+        wlast   <= 1'b0;
+        bready  <= 1'b0;
+        
+        write_buffer_num   <= 3'b0;
+        write_buffer_data  <= 128'b0;
     end
-  end
+    else case (write_requst_state)
+        write_request_empty: begin
+            if (data_wr_req) begin
+                write_requst_state <= write_data_wait;
+                //end
+                awaddr  <= data_wr_addr;
+                awsize  <= data_real_wr_size;
+                awlen   <= data_real_wr_len;
+                awvalid <= 1'b1;
+                wdata   <= data_wr_data[31:0];  //from write 128 bit buffer
+                wstrb   <= data_wr_wstrb;
 
-  always @(posedge clk) begin
-    if (~aresetn) begin
-        w_num <= 3'b000;
-    end else if (data_wr_req & awlen == 8'h3) begin
-        w_num <= 3'b100;
-    end else if (wvalid & wready & awlen == 8'h3) begin
-        w_num <= w_num -3'b1;
-    end
-  end
+                write_buffer_data <= {32'b0, data_wr_data[127:32]};
 
-  always @(posedge clk)begin
-    if(~aresetn) 
-        wlast <= 1'b0;
-    else if(w_num==3'b1 & awlen==8'h3 | data_wr_req & awlen==8'h0)
-        wlast <= 1'b1;
-    else if(w_num==3'b0 & awlen==8'h3 | wvalid & wready & awlen==8'h0)
-        wlast <= 1'b0;
-  end
+                if (data_wr_type == 3'b100) begin
+                    write_buffer_num <= 3'b011;
+                end
+                else begin
+                    write_buffer_num <= 3'b0;
+                    wlast <= 1'b1;
+                end
+            end
+        end
+        write_data_wait: begin
+            if (awready) begin
+                write_requst_state <= write_data_transform;
+                awvalid <= 1'b0;
+		wvalid  <= 1'b1;
+            end
+        end 
+        write_data_transform: begin
+            if (wready) begin
+                if (wlast) begin
+                    write_requst_state <= write_wait_b;
+                    wvalid <= 1'b0;
+                    wlast <= 1'b0;
+        	    bready <= 1'b1;
+                end
+                else begin
+                    if (write_buffer_last) begin
+                        wlast <= 1'b1;
+                    end
+                
+                    write_requst_state <= write_data_transform;
+    
+                    wdata   <= write_buffer_data[31:0];
+                    wvalid  <= 1'b1;
+                    write_buffer_data <= {32'b0, write_buffer_data[127:32]};
+                    write_buffer_num  <= write_buffer_num - 3'b1;
+                end
+            end
+        end
+	write_wait_b: begin
+		if (bvalid && bready) begin
+                    write_requst_state <= write_request_empty;
+		    bready <= 1'b0;
+		end
+	end
+        default: begin
+            write_requst_state <= write_request_empty;
+        end
+    endcase
+end
 
-  assign awaddr             = wdata_sram_addr_r;
-  assign awsize             = wdata_sram_size_r;
-  assign awid               = 4'b0001;
-  assign awlen              = data_wr_req ? (data_wr_type == 3'b100 ? 8'h3 : 8'h0) : awlen_r;
-  assign awburst            = 2'b01;
-  assign awlock             = 2'b0;
-  assign awcache            = 4'b0;
-  assign awprot             = 3'b0;
-
-  assign wdata              = data_sram_wdata_r[31:0];
-  assign wstrb              = wdata_sram_wstrb_r;
-  assign wid                = 4'b0001;
-
-  assign data_wr_rdy = ~awvalid & ~wvalid;
-
-  //-------------------------------------写响应相关信号-----------------------------------//
-  always @(posedge clk) begin
-    if (!aresetn) 
-        bready <= 1'b0;
-    else if (wvalid & wready & awvalid & awready)
-        bready <= 1'b1;
-    else if (wdata_received & awvalid & awready)
-        bready <= 1'b1;
-    else if (wvalid & wready & waddr_received)
-        bready <= 1'b1;
-    else if (bvalid & bready)
-        bready <= 1'b0;
-  end
+assign write_wait_enable = ~(write_requst_state == write_request_empty);
 
 endmodule

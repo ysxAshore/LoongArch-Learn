@@ -643,9 +643,9 @@ module d_lfsr (
     if (~resetn) begin
       r_lfsr <= 8'b0101_1001;  //种子
     end else begin
-      r_lfsr[0] <= r_lfsr[7] ^ r_lfsr[5] ^ r_lfsr[3] ^ r_lfsr[2];
-      r_lfsr[1] <= r_lfsr[0];
-      r_lfsr[2] <= r_lfsr[1];
+      r_lfsr[0] <= r_lfsr[7] ^ r_lfsr[5];
+      r_lfsr[1] <= r_lfsr[0] ^ r_lfsr[3];
+      r_lfsr[2] <= r_lfsr[1] ^ r_lfsr[2];
       r_lfsr[3] <= r_lfsr[2];
       r_lfsr[4] <= r_lfsr[3];
       r_lfsr[5] <= r_lfsr[4];
