@@ -137,7 +137,7 @@ module dcache (
   reg         requestBuffer_dcacop_en  ;
   reg [ 1:0]  requestBuffer_dcacop_mode;
 
-  reg cache_hit_r; //为什么要设置
+  reg cache_hit_r; //保存命中信息，为了cacop指令模式2后面的选择判断
   reg way0_hit_r;
   reg way1_hit_r;
 
@@ -206,6 +206,7 @@ module dcache (
       requestBuffer_offset  <= 4'b0;
       requestBuffer_wstrb   <= 4'b0;
       requestBuffer_wdata   <= 32'b0;
+
       requestBuffer_size <= 3'b0;
       requestBuffer_uncache <= 1'b0;
 
@@ -267,10 +268,10 @@ module dcache (
             cache_state <= MAIN_REPLACE; 
 
             missBuffer_replaceWay <= replace_way;
-            wr_req <= replace_d & replace_v & ~requestBuffer_uncache  | 
+            wr_req <= replace_d & replace_v & ~requestBuffer_uncache & ~requestBuffer_dcacop_en | //模式0时不以写回 
                       requestBuffer_uncache & requestBuffer_op |
-                      requestBuffer_dcacop_mode == 2'h2 & cache_hit_r & requestBuffer_dcacop_en |
-                      requestBuffer_dcacop_mode == 2'h1 & requestBuffer_dcacop_en ;//不管脏不脏都写回，有效与否都写回
+                      requestBuffer_dcacop_mode == 2'h2 & cache_hit_r & requestBuffer_dcacop_en & replace_d & replace_v|
+                      requestBuffer_dcacop_mode == 2'h1 & requestBuffer_dcacop_en & replace_d & replace_v;//不管脏不脏都写回，有效与否都写回
           end
         end
 
@@ -287,7 +288,7 @@ module dcache (
         end
 
         MAIN_REFILL: begin
-          if (ret_valid & ret_last | ~rd_req_buffer | requestBuffer_op & requestBuffer_uncache | requestBuffer_dcacop_en) begin  //答案上多了一个缓存判断是否有读请求
+          if (ret_valid & ret_last | ~rd_req_buffer | requestBuffer_op & requestBuffer_uncache | requestBuffer_dcacop_en) begin 
             cache_state <= MAIN_IDLE;
           end else if (ret_valid) begin
             missBuffer_retNum <= missBuffer_retNum + 2'b01;
@@ -368,7 +369,7 @@ module dcache (
     end else if (loadForward) begin
       loadForward <= 1'b0;
     end else begin
-      loadForward <=  cache_state == MAIN_LOOKUP & requestBuffer_op  && !op && requestBuffer_offset[3:2] == offset[3:2] & requestBuffer_index == index & requestBuffer_tag == tag & cache_hit;
+      loadForward <=  cache_state == MAIN_LOOKUP & requestBuffer_op  & ~op & requestBuffer_offset[3:2] == offset[3:2] & requestBuffer_index == index & requestBuffer_tag == tag & cache_hit;
     end
   end
   //这个write_buffer_wdata   assign data_sram_wdata = {32{memINS_rec == 2'b01}} & {4{forwardDataB[7:0]}} |{32{memINS_rec == 2'b10}} & {2{forwardDataB[15:0]}}|{32{memINS_rec == 2'b11}} & forwardDataB;
@@ -386,7 +387,7 @@ module dcache (
                        requestBuffer_dcacop_mode == 2'h2 & requestBuffer_dcacop_en & cache_hit_r ? way1_hit_r :
                       (~way1_v | chosen_way) & way0_v;  //画真值表 复用cacop写回
   assign way0_d = way0_D[requestBuffer_index];
-  assign way1_d = way0_D[requestBuffer_index];
+  assign way1_d = way1_D[requestBuffer_index];
   assign replace_d = replace_way ? way1_d : way0_d;
   assign replace_v = replace_way ? way1_v : way0_v;
 
@@ -461,7 +462,7 @@ module dcache (
                          cache_state == MAIN_REFILL & requestBuffer_dcacop_en & (requestBuffer_dcacop_mode == 2'h0 | requestBuffer_dcacop_mode == 2'h1 & requestBuffer_offset[0] | requestBuffer_dcacop_mode == 2'h2 & way1_hit_r) ;
   assign way0_tagv_dina = requestBuffer_dcacop_mode == 2'h0 & cache_state == MAIN_REPLACE & requestBuffer_dcacop_en ? {20'b0,way0_v} :
                           requestBuffer_dcacop_mode == 2'h1 & cache_state == MAIN_REPLACE & requestBuffer_dcacop_en | requestBuffer_dcacop_mode == 2'h2 & cache_hit_r & requestBuffer_dcacop_en & cache_state == MAIN_REPLACE ? {way0_tag,1'b0} :
-                          {requestBuffer_tag, 1'b1};;
+                          {requestBuffer_tag, 1'b1};
   assign way1_tagv_dina = requestBuffer_dcacop_mode == 2'h0 & cache_state == MAIN_REPLACE & requestBuffer_dcacop_en ? {20'b0,way1_v} :
                           requestBuffer_dcacop_mode == 2'h1 & cache_state == MAIN_REPLACE & requestBuffer_dcacop_en | requestBuffer_dcacop_mode == 2'h2 & cache_hit_r & requestBuffer_dcacop_en & cache_state == MAIN_REPLACE ? {way1_tag,1'b0} :
                           {requestBuffer_tag, 1'b1};
@@ -525,7 +526,7 @@ module dcache (
   /*----------------------------------------------------外部信号--------------------------------------------*/
   assign addr_ok = (cache_state == MAIN_IDLE & idle2lookup_able) | (cache_state == MAIN_LOOKUP & lookup2lookup_able);
   assign data_ok = (cache_hit | requestBuffer_op) & cache_state == MAIN_LOOKUP |
-                    (cache_state == MAIN_REFILL & ~requestBuffer_op & ret_valid & (requestBuffer_offset[3:2] == missBuffer_retNum[1:0] |
+                   (cache_state == MAIN_REFILL & ~requestBuffer_op & ret_valid & (requestBuffer_offset[3:2] == missBuffer_retNum[1:0] |
                     requestBuffer_uncache));//当读时只读了1个
   //写时不需要使用这个互锁，读时是需要的；因为写时，如果写还在lookup那么可以直接前递，此时data_ok有效即可;如果不在，那么在writebuffer会阻塞读；如果读不命中，那么在refill完之后，写也就完成了，所以直接data_ok无影响
   assign rdata = cache_hit ? load_res : ret_data; //这里这么写也没问题，因为cache_hit时data_ok也有效了，cahce没有hit，那就是refill
@@ -622,14 +623,14 @@ module dcache (
       .wea  (way1_tagv_wea)
   );
 
-  lfsr lfsr (
+  d_lfsr lfsr (
       .clk       (clk),
       .resetn    (resetn),
       .random_val(chosen_way)
   );
 endmodule
 
-module lfsr (
+module d_lfsr (
     input clk,
     input resetn,
 

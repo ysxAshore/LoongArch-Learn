@@ -14,7 +14,7 @@ module mycpu_top (  //端口设置AXI从方主方
     output wire [1:0] arburst,
     output wire [1:0] arlock,
     output wire [3:0] arcache,
-    output wire arprot,
+    output wire [2:0] arprot,
     output wire arvalid,
     input wire arready,
 
@@ -34,7 +34,7 @@ module mycpu_top (  //端口设置AXI从方主方
     output wire [1:0] awburst,
     output wire [1:0] awlock,
     output wire [3:0] awcache,
-    output wire awprot,
+    output wire [2:0] awprot,
     output wire awvalid,
     input wire awready,
 
@@ -355,8 +355,6 @@ module mycpu_top (  //端口设置AXI从方主方
       .badv_addr     (badv_addr),
       .excpAboutAddr (excpAboutAddr),
       .tlb_addr_excp (tlb_addr_excp),
-      .llbitWData    (llbitWData),
-      .llbitWen      (llbitWen),
       .eentry_out    (eentry_out),
       .tlbrentry_out (tlbenrty_out),
       .era_out       (era_out),

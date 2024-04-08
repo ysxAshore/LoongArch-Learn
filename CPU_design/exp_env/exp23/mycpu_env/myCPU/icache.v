@@ -2,19 +2,19 @@ module icache (
     input clk,
     input resetn,
 
-    //与CPU交互的信�?
+    //与CPU交互的信号
     input  wire        valid,    //访存有效信号
-    input  wire        op,       //高表示写，低表示�?
+    input  wire        op,       //高表示写，低表示读
     input  wire [ 7:0] index,    //va[11:4]
     input  wire [19:0] tag,      //pa[31:12]
     input  wire [ 3:0] offset,   //va[3:0]
-    input  wire [ 3:0] wstrb,    //字节写�??
-    input  wire [31:0] wdata,    //写数�?
+    input  wire [ 3:0] wstrb,    //字节写使能有效信号
+    input  wire [31:0] wdata,    //写数据
     input  wire        uncache,
     input  wire [2:0]  size,
-    output wire        addr_ok,  //握手信号—�?�类似类SRAM
+    output wire        addr_ok,  //握手信号—类似类SRAM
     output wire        data_ok,
-    output wire [31:0] rdata,    //读数�?
+    output wire [31:0] rdata,    //读数据
 
     input               icacop_en    ,
     input  [ 1:0]       icacop_mode  ,
@@ -24,20 +24,19 @@ module icache (
     output              icacop_ok    ,
  
     //与AXI交互
-    output wire rd_req,  //发�?�给AXI总线转接桥的读请求信�?
+    output wire rd_req,  //发送给AXI总线转接桥的读请求信号
     output wire [2:0] rd_type,  //读类型，也表示了原来类SRAM-AXI转接桥的size信号
-    output wire [31:0] rd_addr,  //读地�?
+    output wire [31:0] rd_addr,  //读地址
     input wire rd_rdy,  //转接桥返回的握手信号，请求可以被接受
     input wire ret_valid,  //返回的是有效数据
-    input wire ret_last,  //是否是最后一个有效数据返�?
-    input wire [31:0] ret_data,  //读数�?
+    input wire ret_last,  //是否是最后一个有效数据返回
+    input wire [31:0] ret_data,  //读数据
     output reg wr_req,  //写AXI请求
-    output wire [2:0] wr_type,  //写类�?
+    output wire [2:0] wr_type,  //写类型
     output wire [31:0] wr_addr,
     output wire [3:0] wr_wstrb,
     output wire [127:0] wr_data,
-    input wire wr_rdy //因为写是�?次�?�将128个全写到AXI总线的写缓冲上，由它来Brust，所以需要有写缓冲空可以接收新请求的wr_rdy信号
-                      //对于ICache，wr_rdy始终�?1
+    input wire wr_rdy //因为写是一次性将128个全写到AXI总线的写缓冲上，由它来Brust，所以需要有写缓冲空可以接收新请求的wr_rdy信号，对于icache始终为1'b1
 );
   //D
   reg [255:0] way0_D;
@@ -58,54 +57,54 @@ module icache (
 
   //Data Bank
   wire way0_bank0_ena;
-  wire [3:0] way0_bank0_wea;  //字节�?
+  wire [3:0] way0_bank0_wea;  
   wire [7:0] way0_bank0_addr;
   wire [31:0] way0_bank0_dina;
   wire [31:0] way0_bank0_dout;
 
   wire way0_bank1_ena;
-  wire [3:0] way0_bank1_wea;  //字节�?
+  wire [3:0] way0_bank1_wea;  
   wire [7:0] way0_bank1_addr;
   wire [31:0] way0_bank1_dina;
   wire [31:0] way0_bank1_dout;
 
   wire way0_bank2_ena;
-  wire [3:0] way0_bank2_wea;  //字节�?
+  wire [3:0] way0_bank2_wea;  
   wire [7:0] way0_bank2_addr;
   wire [31:0] way0_bank2_dina;
   wire [31:0] way0_bank2_dout;
 
   wire way0_bank3_ena;
-  wire [3:0] way0_bank3_wea;  //字节�?
+  wire [3:0] way0_bank3_wea; 
   wire [7:0] way0_bank3_addr;
   wire [31:0] way0_bank3_dina;
   wire [31:0] way0_bank3_dout;
 
   wire way1_bank0_ena;
-  wire [3:0] way1_bank0_wea;  //字节�?
+  wire [3:0] way1_bank0_wea;  
   wire [7:0] way1_bank0_addr;
   wire [31:0] way1_bank0_dina;
   wire [31:0] way1_bank0_dout;
 
   wire way1_bank1_ena;
-  wire [3:0] way1_bank1_wea;  //字节�?
+  wire [3:0] way1_bank1_wea;  
   wire [7:0] way1_bank1_addr;
   wire [31:0] way1_bank1_dina;
   wire [31:0] way1_bank1_dout;
 
   wire way1_bank2_ena;
-  wire [3:0] way1_bank2_wea;  //字节�?
+  wire [3:0] way1_bank2_wea;  
   wire [7:0] way1_bank2_addr;
   wire [31:0] way1_bank2_dina;
   wire [31:0] way1_bank2_dout;
 
   wire way1_bank3_ena;
-  wire [3:0] way1_bank3_wea;  //字节�?
+  wire [3:0] way1_bank3_wea;  
   wire [7:0] way1_bank3_addr;
   wire [31:0] way1_bank3_dina;
   wire [31:0] way1_bank3_dout;
 
-  //状�?�常量定�?
+  //状态常量定义
   parameter MAIN_IDLE = 3'b000;
   parameter MAIN_LOOKUP = 3'b001;
   parameter MAIN_MISS = 3'b010;
@@ -121,8 +120,8 @@ module icache (
   reg [3:0] writeBuffer_wstrb;
   reg [31:0] writeBuffer_wdata;
 
-  reg [2:0] cache_state;  //主状态机当前状�??
-  reg write_state;
+  reg [2:0] cache_state;  //主状态机当前状态
+  reg write_state; //写状态机状态
 
   /* -------------------------IDLE相关信号-------------------------------*/
   wire idle2lookup_able;  //当写已经进入Write Buffer发出写请求时的阻�?
@@ -159,7 +158,7 @@ module icache (
   wire [31:0] way1_load_word;
   wire [127:0] replace_data;
 
-  wire lookup2lookup_able;  //当写已经进入Write Buffer发出写请求时的阻�?
+  wire lookup2lookup_able;  //当写已经进入Write Buffer发出写请求时的阻塞信号
   reg loadForward;
   wire [31:0] forwardData;
   wire [31:0] hitData;
@@ -175,8 +174,8 @@ module icache (
   wire [19:0] replace_tag;
 
   //Miss Buffer相关信息
-  reg missBuffer_replaceWay;  //因为到达refill时有好几个时钟，�?以需要缓�?
-  reg [1:0] missBuffer_retNum;  //这里参�?�答案的用了�?个wire 异或对它进行赋�??
+  reg missBuffer_replaceWay;  //因为到达refill时有好几个时钟，所以需要缓存被替换路的信息
+  reg [1:0] missBuffer_retNum;  //记录当前已经读了几个数据，以支持Brust
 
   /* -------------------------REFILL相关信号-----------------------------*/
   wire [31:0] write_in;
@@ -186,7 +185,7 @@ module icache (
 
   reg rd_req_buffer; //缓存rd_req,当没有rd_req时，REFILL直接到IDLE
 
-  //写信�?
+  //Write Buffer写bank匹配信号
   wire match_way0_bank0;
   wire match_way0_bank1;
   wire match_way0_bank2;
@@ -196,7 +195,7 @@ module icache (
   wire match_way1_bank2;
   wire match_way1_bank3;
 
-  wire [31:0] bank_dina;
+  wire [31:0] bank_dina;//输入到bank中的数据，涉及到多选1
   //主状态机
   always @(posedge clk) begin
     if (~resetn) begin
@@ -265,7 +264,7 @@ module icache (
         end
 
         MAIN_MISS: begin
-          //如果当前是非缓存读，那么就不存在写AXI，也就不�?要等待wr_rdy
+          //如果当前是非缓存读，那么就不存在写AXI，也就不需要等待wr_rdy
           if (wr_rdy) begin  //req要在rdy之后有效，这里始终为1'b1
             cache_state <= MAIN_REPLACE; 
 
@@ -278,7 +277,7 @@ module icache (
           if (rd_rdy) begin 
             cache_state <= MAIN_REFILL;
 
-            //�?始记录读了几�? 当是100时已读完
+            //记录读了几个数据
             missBuffer_retNum <= 2'b0;
           end
           if (wr_req) begin
@@ -298,7 +297,7 @@ module icache (
     end
   end
 
-  //Write状�?�机
+  //Write状态机
   always @(posedge clk) begin
     if (~resetn) begin
       write_state <= WRITE_IDLE;
@@ -342,10 +341,10 @@ module icache (
   end
 
   /* ---------------------------------------------MAIN IDLE信号生成---------------------------------------------- */
-  //icache不存在写，因此idle2lookup始终�?1'b1
+  //icache不存在写，因此idle2lookup始终为1'b1
   assign idle2lookup_able = 1'b1;
 
-  assign icacop_ok = (cache_state == MAIN_IDLE) & icacop_en;//已经在idle时响应了icacop_en，流水线可以�?后移�?
+  assign icacop_ok = (cache_state == MAIN_IDLE) & icacop_en;//已经在idle时响应了icacop_en，流水线可以继续向后传递?
 
   /* ---------------------------------------------MAIN LOOKUP信号生成-------------------------------------------- */
   //icache不存在写，因此lookup2lookup即为cache_hit
@@ -358,11 +357,11 @@ module icache (
 
   assign way0_hit = way0_v & (requestBuffer_tag == way0_tag);
   assign way1_hit = way1_v & (requestBuffer_tag == way1_tag);
-  assign cache_hit = (way0_hit | way1_hit) & ~requestBuffer_uncache; //当icacop时cache hit不能命中uncache�?1时一定不命中
+  assign cache_hit = (way0_hit | way1_hit) & ~requestBuffer_uncache; //当icacop时cache hit不能命中 uncache为1时一定不命中
 
   assign way0_data = {way0_bank3_dout, way0_bank2_dout, way0_bank1_dout, way0_bank0_dout};
   assign way1_data = {way1_bank3_dout, way1_bank2_dout, way1_bank1_dout, way1_bank0_dout};
-  assign way0_load_word = way0_data[32*requestBuffer_offset[3:2]+:32];//�?32*requestBuffer_offset位置�?高位�?32位数�?
+  assign way0_load_word = way0_data[32*requestBuffer_offset[3:2]+:32];//从32*requestBuffer_offset位置向高位读取32位数据
   assign way1_load_word = way1_data[32*requestBuffer_offset[3:2]+:32];
 
   always @(posedge clk) begin
@@ -371,7 +370,7 @@ module icache (
     end else if (loadForward) begin
       loadForward <= 1'b0;
     end else begin
-      loadForward <=  requestBuffer_op  && !op && requestBuffer_offset[3:2] == offset[3:2] & requestBuffer_index == index & requestBuffer_tag == tag & cache_hit;
+      loadForward <= cache_state == MAIN_LOOKUP & requestBuffer_op  & !op & requestBuffer_offset[3:2] == offset[3:2] & requestBuffer_index == index & requestBuffer_tag == tag & cache_hit;
     end
   end
   //这个write_buffer_wdata   assign data_sram_wdata = {32{memINS_rec == 2'b01}} & {4{forwardDataB[7:0]}} |{32{memINS_rec == 2'b10}} & {2{forwardDataB[15:0]}}|{32{memINS_rec == 2'b11}} & forwardDataB;
@@ -392,7 +391,7 @@ module icache (
   assign replace_v = replace_way ? way1_v : way0_v;
 
   /* ---------------------------------------------MAIN REPLACE信号生成-------------------------------------------- */
-  assign replace_data = missBuffer_replaceWay ? way1_data : way0_data; //这里也可以用replace way 在即将进入replace�?
+  assign replace_data = missBuffer_replaceWay ? way1_data : way0_data; //这里也可以用replace way 在即将进入RELACE状态
   assign replace_tag = missBuffer_replaceWay ? way1_tag : way0_tag;
 
   assign wr_addr = requestBuffer_uncache ? {requestBuffer_tag,requestBuffer_index,requestBuffer_offset} : {replace_tag, requestBuffer_index, 4'b0};  //起始地址
@@ -400,7 +399,7 @@ module icache (
   assign wr_data = requestBuffer_uncache ? {96'b0, requestBuffer_wdata} :replace_data;
   assign wr_wstrb = requestBuffer_uncache ? requestBuffer_wstrb : 4'b1111;
 
-  assign rd_req = cache_state == MAIN_REPLACE & ~(requestBuffer_uncache & requestBuffer_op);//在REPLACE且不是非缓存�?
+  assign rd_req = cache_state == MAIN_REPLACE & ~(requestBuffer_uncache & requestBuffer_op);//在REPLACE且不是非缓存写
   assign rd_type = requestBuffer_uncache ? requestBuffer_size : 3'b100;
   assign rd_addr = requestBuffer_uncache ? {requestBuffer_tag,requestBuffer_index,requestBuffer_offset} : {requestBuffer_tag, requestBuffer_index, 4'b0};
 
@@ -415,7 +414,7 @@ module icache (
     else if (cache_state == MAIN_REFILL & ret_valid & ret_last) begin
         rd_req_buffer <= 1'b0;
     end
-end
+  end
   
   assign write_in = {
     requestBuffer_wstrb[3] ? requestBuffer_wdata[31:24] : ret_data[31:24],
@@ -427,7 +426,7 @@ end
   assign refill_write_way0 = ~missBuffer_replaceWay & ret_valid;
   assign refill_write_way1 = missBuffer_replaceWay & ret_valid;
   /*-----------------------------------------------CACOP Hit-------------------------------------------------------- */
-  //设置是不�?要到后面，在idle lookup就完�?
+  //icache中cacop的处理不需要写回，因此统一在idle、lookup时即处理完成
   wire way0_cacop_hit;
   wire way1_cacop_hit;
   wire cache_cacop_hit;
@@ -460,20 +459,20 @@ end
   //SRMA write only valid when wea & ena equal 1'b1
 
   //写TAG,V 写命中时不需要更改TAG和V
-  //cacop code[4:3] = 2'h0 清空�?有路的tag
-  //cacop code[4:3] = 2'h1 清空offset[0]路的V D不可能是脏的，所以也不需要写�?
+  //cacop code[4:3] = 2'h0 清空所有路的tag
+  //cacop code[4:3] = 2'h1 清空offset[0]路的V，D不可能是脏的，所以也不需要写D
   //cacop code[4:3] = 2'h2 清空命中路的V
 
   assign way0_tagv_addra = addr_ok | icacop_en & cache_state == MAIN_IDLE ? (icacop_en ? icacop_index : index) : 
-                           requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? requestBuffer_icacop_index : requestBuffer_index;//读的时�?�要在进入LOOKUP之前就得到信�?
+                           requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? requestBuffer_icacop_index : requestBuffer_index;//读的时候要在进入LOOKUP之前就得到信息，在lookup比较
   assign way1_tagv_addra = addr_ok | icacop_en & cache_state == MAIN_IDLE ? (icacop_en ? icacop_index : index) : 
-                           requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? requestBuffer_icacop_index : requestBuffer_index;//读的时�?�要在进入LOOKUP之前就得到信�?
+                           requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? requestBuffer_icacop_index : requestBuffer_index;//读的时候要在进入LOOKUP之前就得到信息，在lookup比较
   assign way0_tagv_ena = cache_state == MAIN_IDLE | ~requestBuffer_uncache;
   assign way1_tagv_ena = cache_state == MAIN_IDLE | ~requestBuffer_uncache;
   assign way0_tagv_wea = cache_state == MAIN_REFILL & (ret_valid & ret_last == 1'b1) & ~missBuffer_replaceWay & ~requestBuffer_uncache |
-                         (cache_state == MAIN_IDLE & icacop_en & (icacop_mode == 2'h0 | icacop_mode == 2'h1 & ~icacop_offset[0]) | (requestBuffer_icacop_mode == 2'h2 & way0_cacop_hit));
+                         (cache_state == MAIN_IDLE & icacop_en & (icacop_mode == 2'h0 | icacop_mode == 2'h1 & ~icacop_offset[0])) | (requestBuffer_icacop_mode == 2'h2 & way0_cacop_hit);
   assign way1_tagv_wea = cache_state == MAIN_REFILL & (ret_valid & ret_last == 1'b1) & missBuffer_replaceWay & ~requestBuffer_uncache |
-                         (cache_state == MAIN_IDLE & icacop_en & (icacop_mode == 2'h0 | icacop_mode == 2'h1 & icacop_offset[0]) | (requestBuffer_icacop_mode == 2'h2 & way1_cacop_hit));
+                         (cache_state == MAIN_IDLE & icacop_en & (icacop_mode == 2'h0 | icacop_mode == 2'h1 & icacop_offset[0])) | (requestBuffer_icacop_mode == 2'h2 & way1_cacop_hit);
   assign way0_tagv_dina = icacop_mode == 2'h0 & cache_state == MAIN_IDLE & icacop_en ? {20'b0,way0_v} :
                           icacop_mode == 2'h1 & cache_state == MAIN_IDLE & icacop_en | requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? {way0_tag,1'b0} :
                           {requestBuffer_tag, 1'b1};
@@ -541,8 +540,8 @@ end
   assign addr_ok = ((cache_state == MAIN_IDLE & idle2lookup_able) | (cache_state == MAIN_LOOKUP & lookup2lookup_able)) & ~requestBuffer_icacop_en ;
   assign data_ok =  cache_hit & cache_state == MAIN_LOOKUP |
                     (cache_state == MAIN_REFILL & ret_valid & (requestBuffer_offset[3:2] == missBuffer_retNum[1:0] |
-                    requestBuffer_uncache));//当读时只读了1�?
-  //写时不需要使用这个互锁，读时是需要的；因为写时，如果写还在lookup那么可以直接前�?�，此时data_ok有效即可;如果不在，那么在writebuffer会阻塞读；如果读不命中，那么在refill完之后，写也就完成了，所以直接data_ok无影�?
+                    requestBuffer_uncache));//当读时只读对应offset的那一字节
+  //写时不需要使用这个互锁，读时是需要的；因为写时，如果写还在lookup那么可以直接前递，此时data_ok有效即可;如果不在，那么在writebuffer会阻塞读；如果读不命中，那么在refill完之后，写也就完成了，所以直接data_ok无影响
   assign rdata = cache_hit ? load_res : ret_data; //这里这么写也没问题，因为cache_hit时data_ok也有效了，cahce没有hit，那就是refill
 
   /*----------------------------------------------------例化模块--------------------------------------------*/
@@ -637,14 +636,14 @@ end
       .wea  (way1_tagv_wea)
   );
 
-  lfsr lfsr (
+  i_lfsr lfsr (
       .clk       (clk),
       .resetn    (resetn),
       .random_val(chosen_way)
   );
 endmodule
 
-module lfsr (
+module i_lfsr (
     input clk,
     input resetn,
 
@@ -671,4 +670,3 @@ module lfsr (
   assign random_val = r_lfsr[7];
 
 endmodule
-//改了lfsr、bank的ena、少了一个rd_req缓存，使能ena由idle判断改成了addr_ok

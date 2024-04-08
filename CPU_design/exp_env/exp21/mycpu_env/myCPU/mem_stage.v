@@ -83,10 +83,13 @@ module mem_stage (
   wire [13:0] excp_num;
   wire [1:0] rdcnt_REC;
   wire [2:0] tlb_ins_rec;
+  wire cacop_inst;
+  wire s1_found;
+  wire [$clog2(`TLB_NUM)-1:0] s1_findex;
   wire [31:0] mem_pc;
 
   assign {mem_memW,mem_regW, mem_regWAddr, res_from_mem, mem_aluResult, memINS_rec, load_sign, DataA, DataB, 
-          csr_num, csr_instRec, mem_excp, mem_ertn, excp_num, rdcnt_REC, tlb_ins_rec, mem_pc} = mem_data;
+          csr_num, csr_instRec, mem_excp, mem_ertn, excp_num, rdcnt_REC, tlb_ins_rec, cacop_inst, s1_found,s1_findex,mem_pc} = mem_data;
 
   //拆解CSR传递过来的数据
   wire [31:0] csrRData;
@@ -127,10 +130,8 @@ module mem_stage (
   wire [1:0] r_mat1;
   wire r_d1;
   wire r_v1;
-  wire [$clog2(`TLB_NUM)-1:0] s1_findex;
-  wire s1_found;
 
-  assign {r_e, r_vppn, r_ps, r_asid, r_g, r_ppn0, r_plv0, r_mat0, r_d0, r_v0, r_ppn1, r_plv1, r_mat1, r_d1, r_v1, s1_findex,s1_found} = tlb_to_mem_bus;
+  assign {r_e, r_vppn, r_ps, r_asid, r_g, r_ppn0, r_plv0, r_mat0, r_d0, r_v0, r_ppn1, r_plv1, r_mat1, r_d1, r_v1} = tlb_to_mem_bus;
 
   //获得访存数据
   wire [31:0] mem_memReadData;
@@ -193,7 +194,7 @@ module mem_stage (
 
   //refetch pc
   wire [31:0] refetch_pc = mem_pc + 32'h4;
-  wire refetch = mem_valid & (tlb_ins_rec != 3'b0 | (csr_instRec == 2'b10 | csr_instRec == 2'b11) & (csr_num == 14'h0 | csr_num == 14'h10 | csr_num == 14'h11 | csr_num== 14'h12 | csr_num == 14'h13 | csr_num == 14'h18 | csr_num == 14'h19 | csr_num == 14'h1a));
+  wire refetch = mem_valid & (tlb_ins_rec != 3'b0 | (csr_instRec == 2'b10 | csr_instRec == 2'b11) & (csr_num == 14'h0 | csr_num == 14'h10 | csr_num == 14'h11 | csr_num== 14'h12 | csr_num == 14'h13 | csr_num == 14'h18 | csr_num == 14'h19 | csr_num == 14'h1a) | cacop_inst);
 
   //TLB WR FILL
   wire we = tlb_ins_rec == 3'b011 | tlb_ins_rec == 3'b100;
@@ -270,7 +271,7 @@ module mem_stage (
 
   //封包传递给id阶段的数据
   assign mem_to_id_bus = {
-    mem_ready_go, mem_to_wb_valid, mem_regW, mem_regWAddr, mem_regWData, mem_pc
+    mem_ready_go, mem_to_wb_valid, mem_regW, mem_valid ? mem_regWAddr : 5'b0, mem_regWData, mem_pc
   };
 
   //封包传递给TLB的数据

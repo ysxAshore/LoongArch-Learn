@@ -47,7 +47,7 @@ module id_stage (
   wire br_taken_cancel;
   reg  br_cancel_r;
   reg  br_cancel_r_valid;
-  assign br_cancel = br_taken;
+  assign br_cancel = br_taken & id_ready_go;
   assign br_taken_cancel = br_cancel_r_valid ? br_cancel_r : br_cancel;
 
   always @(posedge clk) begin
@@ -193,6 +193,7 @@ module id_stage (
   wire inst_csrrd = op_31_26_d[6'h01] & (id_inst[25:24] == 2'b00) & (id_inst[9:5] == 5'h00);
   wire inst_csrwr = op_31_26_d[6'h01] & (id_inst[25:24] == 2'b00) & (id_inst[9:5] == 5'h01);
   wire inst_csrxchg= op_31_26_d[6'h01] & (id_inst[25:24]==2'b00) & (id_inst[9:5]!=5'h00) & (id_inst[9:5]!=5'h01);
+  wire inst_cacop = op_31_26_d[6'h01] & op_25_22_d[4'h8];
   wire inst_tlbsrch = op_31_26_d[6'h01] &op_25_22_d[4'h9] &op_21_20_d[2'h0] & op_19_15_d[5'h10] & id_inst[14:10] == 5'h0a & id_inst[9:0] == 10'b0;
   wire inst_tlbrd = op_31_26_d[6'h01] &op_25_22_d[4'h9] &op_21_20_d[2'h0] & op_19_15_d[5'h10] & id_inst[14:10] == 5'h0b & id_inst[9:0] == 10'b0;
   wire inst_tlbwr = op_31_26_d[6'h01] &op_25_22_d[4'h9] &op_21_20_d[2'h0] & op_19_15_d[5'h10] & id_inst[14:10] == 5'h0c & id_inst[9:0] == 10'b0;
@@ -240,7 +241,7 @@ module id_stage (
   wire need_rkd;
 
   assign alu_op[0] = inst_add | inst_addi | inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_st_w 
-                   | inst_st_b | inst_st_h | inst_jirl | inst_bl | inst_pcaddu12i;
+                   | inst_st_b | inst_st_h | inst_jirl | inst_bl | inst_pcaddu12i | inst_cacop;
   assign alu_op[1] = inst_sub;
   assign alu_op[2] = inst_slt | inst_slti;
   assign alu_op[3] = inst_sltu | inst_sltui;
@@ -275,14 +276,15 @@ module id_stage (
                        inst_andi     |
                        inst_ori      |
                        inst_xori     |
-                       inst_pcaddu12i;
+                       inst_pcaddu12i|
+                       inst_cacop;
   assign src2_is_4 = inst_jirl | inst_bl;
   assign dst_is_r1 = inst_bl;
   assign dst_is_rj = inst_rdcntid;
   assign id_memW = (inst_st_w | inst_st_b | inst_st_h) & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & ~inst_ine;
-  assign id_regW = ~inst_st_w & ~inst_st_b & ~inst_st_h & ~inst_beq & ~inst_bne & ~inst_blt & ~inst_bge & ~inst_bltu & ~inst_bgeu & ~inst_b & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & ~inst_ine;
+  assign id_regW = ~inst_st_w & ~inst_st_b & ~inst_st_h & ~inst_beq & ~inst_bne & ~inst_blt & ~inst_bge & ~inst_bltu & ~inst_bgeu & ~inst_b & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & ~inst_ine & ~inst_cacop;
   assign need_ui5 = inst_slli | inst_srli | inst_srai;
-  assign need_si12 = inst_addi | inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_st_w | inst_st_b | inst_st_h |inst_slti | inst_sltui;
+  assign need_si12 = inst_addi | inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_st_w | inst_st_b | inst_st_h |inst_slti | inst_sltui | inst_cacop;
   assign need_ui12 = inst_andi | inst_ori | inst_xori;
   assign need_si16 = inst_jirl | inst_beq | inst_bne | inst_blt | inst_bge | inst_bltu | inst_bgeu;
   assign need_si20 = inst_lu12i | inst_pcaddu12i;
@@ -290,7 +292,7 @@ module id_stage (
   assign need_rj = ~inst_b & ~inst_bl & ~inst_lu12i & ~inst_pcaddu12i & ~inst_csrrd & ~inst_csrwr & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_rdcntid & ~inst_rdcntvl & ~inst_rdcntvh & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill;
   assign need_rkd = ~inst_slli & ~inst_srli & ~inst_srai & ~inst_addi & ~inst_slti & ~inst_sltui & ~inst_andi & ~inst_ori & ~inst_xori
                   & ~inst_lu12i & ~inst_pcaddu12i & ~inst_ld_w & ~inst_ld_b & ~inst_ld_bu & ~inst_ld_h & ~inst_ld_hu & ~inst_jirl & ~inst_b & ~inst_bl
-                  & ~inst_csrrd & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_rdcntid & ~inst_rdcntvl & ~inst_rdcntvh & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill;
+                  & ~inst_csrrd & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_rdcntid & ~inst_rdcntvl & ~inst_rdcntvh & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill & ~inst_cacop;
 
   //id阶段组合逻辑数据生成
   wire [31:0] imm;
@@ -433,7 +435,7 @@ module id_stage (
                   & ~inst_srl & ~inst_sra & ~inst_mul & ~inst_mulh & ~inst_mulhu & ~inst_div & ~inst_mod & ~inst_divu & ~inst_modu
                   & ~inst_break & ~inst_syscall & ~inst_slli & ~inst_srli & ~inst_srai & ~inst_slti & ~inst_sltui & ~inst_addi 
                   & ~inst_andi & ~inst_ori & ~inst_xori & ~inst_csrrd & ~inst_csrwr & ~inst_csrxchg & ~inst_tlbsrch & ~inst_tlbrd
-                  & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~inst_ertn & ~inst_lu12i
+                  & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~inst_ertn & ~inst_lu12i & ~inst_cacop 
                   & ~inst_pcaddu12i & ~inst_ld_b & ~inst_ld_h & ~inst_ld_w & ~inst_st_b & ~inst_st_h & ~inst_st_w & ~inst_ld_bu
                   & ~inst_ld_hu & ~inst_jirl & ~inst_b & ~inst_bl & ~inst_beq & ~inst_bne & ~inst_blt & ~inst_bge & ~inst_bltu 
                   & ~inst_bgeu;
@@ -453,8 +455,8 @@ module id_stage (
                      {2{inst_rdcntvh}} & 2'b11;
 
   //mem等待data_ok时涉及到的阻塞 mem阶段当memreadygo不满足时写只能是load写
-  wire mem_data_ok_stall = ~mem_ready_go & mem_regW & id_valid & ((need_rj & regAddrA != 5'b0 & mem_regWAddr == regAddrA) |
-                                  (need_rkd & regAddrB != 5'b0 & mem_regWAddr == regAddrB)) & (mem_pc != wb_pc);
+  wire mem_data_ok_stall = ~mem_ready_go & id_valid & ((need_rj & regAddrA != 5'b0 & (exe_regWAddr == regAddrA | mem_regWAddr == regAddrA | wb_regWAddr == exe_regWAddr)) |
+                                  (need_rkd & regAddrB != 5'b0 & (exe_regWAddr == regAddrB | mem_regWAddr == regAddrB | wb_regWAddr == regAddrB))) & (mem_pc != wb_pc);
   assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall;
 
   //TLB INS
@@ -491,6 +493,7 @@ module id_stage (
     rdcnt_REC,
     tlb_ins_rec,
     rd,
+    inst_cacop,
     id_pc
   };
 

@@ -141,19 +141,46 @@ module exe_stage (
   wire [31:0] s;
   wire [31:0] r;
   wire complete_delay;
-  div u_div (
-      .div_clk       (clk),
-      .resetn        (resetn & ~mem_to_exe_flush_excp_ertn),
-      .div           (div),
-      .div_signed    (div_signed),
-      .x             (DataA),
-      .y             (DataB),
-      .s             (s),
-      .r             (r),
-      .complete_delay(complete_delay)
-  );
+  wire divisor_is_zero_o;
+  wire div_start_ready_o;
+  reg div_finish_ready_i;
+  always @(posedge clk) begin
+    if (~resetn | mem_to_exe_flush_excp_ertn) begin
+      div_finish_ready_i <= 1'b0;
+    end else if (div & div_start_ready_o) begin
+      div_finish_ready_i <= 1'b1;
+    end else if (complete_delay) begin
+      div_finish_ready_i <= 1'b0;
+    end
+  end
 
-  assign exe_ready_go = ~(div & ~complete_delay) & ~((exe_memW | res_from_mem) & ~(data_sram_req & data_sram_addr_ok)) & ~(inst_cacop & ~cacop_ok) | mem_to_exe_flush_excp_ertn | exe_excp;//如果当前exe阶段组合逻辑正在计算div且complete_delay未高有效，那么阻塞exe
+
+  // div u_div (
+  //     .div_clk       (clk),
+  //     .resetn        (resetn & ~mem_to_exe_flush_excp_ertn),
+  //     .div           (div),
+  //     .div_signed    (div_signed),
+  //     .x             (DataA),
+  //     .y             (DataB),
+  //     .s             (s),
+  //     .r             (r),
+  //     .complete_delay(complete_delay)
+  // );
+    int_div_radix_4_v1 u_int_div_radix_4_v1(
+        .flush_i            (1'b0             ),
+        .div_start_valid_i  (div),
+        .div_start_ready_o  (div_start_ready_o),
+        .signed_op_i        (div_signed),
+        .dividend_i         (DataA),
+        .divisor_i          (DataB),
+        .div_finish_valid_o (complete_delay),
+        .div_finish_ready_i (div_finish_ready_i),
+        .quotient_o         (s),
+        .remainder_o        (r),
+        .divisor_is_zero_o  (divisor_is_zero_o),
+        .clk                (clk              ),
+        .rst_n              (resetn & ~mem_to_exe_flush_excp_ertn)
+      );
 
   //ALE异常
   wire cacop_load;//cacop访存
@@ -179,6 +206,8 @@ module exe_stage (
   assign exe_regW = exe_regW_temp & ~ALE_EXCP & ~TLBR & ~PIL & ~PIS & ~PPI & ~PME & ~mem_to_exe_flush_excp_ertn;
   assign exe_excp = exe_excp_temp | ALE_EXCP | TLBR | PIL | PIS | PPI | PME;
   assign excp_num = {excp_num_temp[13:7], ALE_EXCP, TLBR, PIL, PIS, PPI, PME, excp_num_temp[0]};
+
+  assign exe_ready_go = ~(div & ~(complete_delay & div_finish_ready_i)) & ~((exe_memW | res_from_mem) & ~(data_sram_req & data_sram_addr_ok)) & ~(inst_cacop & ~cacop_ok) | mem_to_exe_flush_excp_ertn | exe_excp;//如果当前exe阶段组合逻辑正在计算div且complete_delay未高有效，那么阻塞exe
 
   //TLB SRCH INVTLB cacop模式2当作普通的load，所以也需要地址转换，只不过不用真的访存
   wire invtlb_valid = tlb_ins_rec == 3'b101 & ~mem_to_exe_flush_excp_ertn;
@@ -267,7 +296,7 @@ module exe_stage (
   //封包exe传递给id的RAW相关判断
   wire exist_csrR = csr_instRec != 2'b0 | rdcnt_REC != 2'b0;
   assign exe_to_id_bus = {
-    exe_valid, res_from_mem, exe_regW, exe_regWAddr, exe_finalResult, exist_csrR
+    exe_valid, res_from_mem, exe_regW, exe_valid ? exe_regWAddr : 5'b0, exe_finalResult, exist_csrR
   };
 
   //封包exe传递给tlb的数据

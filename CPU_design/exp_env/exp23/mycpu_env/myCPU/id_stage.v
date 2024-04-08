@@ -47,7 +47,7 @@ module id_stage (
   wire br_taken_cancel;
   reg  br_cancel_r;
   reg  br_cancel_r_valid;
-  assign br_cancel = br_taken;
+  assign br_cancel = br_taken & id_ready_go;
   assign br_taken_cancel = br_cancel_r_valid ? br_cancel_r : br_cancel;
 
   always @(posedge clk) begin
@@ -455,8 +455,8 @@ module id_stage (
                      {2{inst_rdcntvh}} & 2'b11;
 
   //mem等待data_ok时涉及到的阻塞 mem阶段当memreadygo不满足时写只能是load写
-  wire mem_data_ok_stall = ~mem_ready_go & mem_regW & id_valid & ((need_rj & regAddrA != 5'b0 & mem_regWAddr == regAddrA) |
-                                  (need_rkd & regAddrB != 5'b0 & mem_regWAddr == regAddrB)) & (mem_pc != wb_pc);
+  wire mem_data_ok_stall = ~mem_ready_go & id_valid & ((need_rj & regAddrA != 5'b0 & (exe_regWAddr == regAddrA | mem_regWAddr == regAddrA | wb_regWAddr == exe_regWAddr)) |
+                                  (need_rkd & regAddrB != 5'b0 & (exe_regWAddr == regAddrB | mem_regWAddr == regAddrB | wb_regWAddr == regAddrB))) & (mem_pc != wb_pc);
   assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall;
 
   //TLB INS

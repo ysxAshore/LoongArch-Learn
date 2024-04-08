@@ -14,7 +14,7 @@ module mycpu_top (  //端口设置AXI从方主方
     output wire [1:0] arburst,
     output wire [1:0] arlock,
     output wire [3:0] arcache,
-    output wire arprot,
+    output wire [2:0] arprot,
     output wire arvalid,
     input wire arready,
 
@@ -34,7 +34,7 @@ module mycpu_top (  //端口设置AXI从方主方
     output wire [1:0] awburst,
     output wire [1:0] awlock,
     output wire [3:0] awcache,
-    output wire awprot,
+    output wire [2:0] awprot,
     output wire awvalid,
     input wire awready,
 
@@ -154,29 +154,40 @@ module mycpu_top (  //端口设置AXI从方主方
 
   wire mem_to_exe_flush_excp_ertn;
   wire data_mat;
-  exe_stage u_exe_stage (
-      .clk                       (aclk),
-      .resetn                    (aresetn),
-      .exe_allowin               (exe_allowin),
-      .id_to_exe_valid           (id_to_exe_valid),
-      .id_to_exe_bus             (id_to_exe_bus),
-      .mem_allowin               (mem_allowin),
-      .exe_to_mem_valid          (exe_to_mem_valid),
-      .exe_to_mem_bus            (exe_to_mem_bus),
-      .exe_to_id_bus             (exe_to_id_bus),
-      .mem_to_exe_flush_excp_ertn(mem_to_exe_flush_excp_ertn),
-      .csr_to_exe_bus            (csr_to_exe_bus),
-      .exe_to_tlb_bus            (exe_to_tlb_bus),
-      .tlb_to_exe_bus            (tlb_to_exe_bus),
-      .data_sram_req             (data_sram_req),
-      .data_sram_wr              (data_sram_wr),
-      .data_sram_wstrb           (data_sram_wstrb),
-      .data_sram_size            (data_sram_size),
-      .data_sram_addr            (data_sram_addr),
-      .data_sram_wdata           (data_sram_wdata),
-      .data_sram_addr_ok         (data_sram_addr_ok),
-      .data_mat                  (data_mat)
+  wire icacop_en;
+  wire dcacop_en;
+  wire [1:0]cacop_mode;
+  wire icacop_ok;
+  wire dcacop_ok;
+
+  exe_stage u_exe_stage(
+    .clk                        (aclk                        ),
+    .resetn                     (aresetn                     ),
+    .exe_allowin                (exe_allowin                ),
+    .id_to_exe_valid            (id_to_exe_valid            ),
+    .id_to_exe_bus              (id_to_exe_bus              ),
+    .mem_allowin                (mem_allowin                ),
+    .exe_to_mem_valid           (exe_to_mem_valid           ),
+    .exe_to_mem_bus             (exe_to_mem_bus             ),
+    .exe_to_id_bus              (exe_to_id_bus              ),
+    .mem_to_exe_flush_excp_ertn (mem_to_exe_flush_excp_ertn ),
+    .csr_to_exe_bus             (csr_to_exe_bus             ),
+    .exe_to_tlb_bus             (exe_to_tlb_bus             ),
+    .tlb_to_exe_bus             (tlb_to_exe_bus             ),
+    .data_sram_req              (data_sram_req              ),
+    .data_sram_wr               (data_sram_wr               ),
+    .data_sram_wstrb            (data_sram_wstrb            ),
+    .data_sram_size             (data_sram_size             ),
+    .data_sram_addr             (data_sram_addr             ),
+    .data_sram_wdata            (data_sram_wdata            ),
+    .data_sram_addr_ok          (data_sram_addr_ok          ),
+    .data_mat                   (data_mat                   ),
+    .icacop_en                  (icacop_en                  ),
+    .dcacop_en                  (dcacop_en                  ),
+    .cacop_mode                 (cacop_mode                 ),
+    .cacop_ok                   (icacop_ok | dcacop_ok      )
   );
+  
 
   mem_stage u_mem_stage (
       .clk                       (aclk),
@@ -344,8 +355,6 @@ module mycpu_top (  //端口设置AXI从方主方
       .badv_addr     (badv_addr),
       .excpAboutAddr (excpAboutAddr),
       .tlb_addr_excp (tlb_addr_excp),
-      .llbitWData    (llbitWData),
-      .llbitWen      (llbitWen),
       .eentry_out    (eentry_out),
       .tlbrentry_out (tlbenrty_out),
       .era_out       (era_out),
@@ -425,9 +434,7 @@ module mycpu_top (  //端口设置AXI从方主方
     r_plv1,
     r_mat1,
     r_d1,
-    r_v1,
-    s1_findex,
-    s1_found
+    r_v1
   };
 
   wire [$clog2(`TLB_NUM)-1:0] r_index;
@@ -576,6 +583,12 @@ module mycpu_top (  //端口设置AXI从方主方
     .addr_ok   (inst_sram_addr_ok  ),
     .data_ok   (inst_sram_data_ok  ),
     .rdata     (inst_sram_rdata     ),
+    .icacop_en (icacop_en),
+    .icacop_mode(cacop_mode),
+    .icacop_tag(data_sram_addr[31:12]),
+    .icacop_index(data_sram_addr[11:4]),
+    .icacop_offset(data_sram_addr[3:0]),
+    .icacop_ok(icacop_ok),
     .rd_req    (inst_rd_req    ),
     .rd_type   (inst_rd_type   ),
     .rd_addr   (inst_rd_addr   ),
@@ -588,7 +601,7 @@ module mycpu_top (  //端口设置AXI从方主方
     .wr_addr   (   ),
     .wr_wstrb  (   ),
     .wr_data   (   ),
-    .wr_rdy    (   )
+    .wr_rdy    (1'b1)
   );
 
   wire data_rd_req;
@@ -620,6 +633,9 @@ module mycpu_top (  //端口设置AXI从方主方
     .addr_ok   (data_sram_addr_ok   ),
     .data_ok   (data_sram_data_ok   ),
     .rdata     (data_sram_rdata     ),
+    .dcacop_en (dcacop_en),
+    .dcacop_mode(cacop_mode),
+    .dcacop_ok (dcacop_ok),
     .rd_req    (data_rd_req   ),
     .rd_type   (data_rd_type   ),
     .rd_addr   (data_rd_addr   ),

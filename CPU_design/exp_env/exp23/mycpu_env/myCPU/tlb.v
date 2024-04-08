@@ -3,7 +3,7 @@ module tlb #(
     parameter NUM = `TLB_NUM
 ) (
     input wire clk,
-    //不用硬件初始化，因此不需要赋值信号 
+    //不用硬件初始化，因此不需要赋值信号?
 
     //取指
     input wire [18:0] s0_vppn,
@@ -18,7 +18,7 @@ module tlb #(
     output wire s0_v,
     output wire [$clog2(
 NUM
-)-1:0] s0_findex,  //输出index，默认是5位——TLBHI里的index也设置了5位
+)-1:0] s0_findex,  //输出index，默认是5位�?��?�TLBHI里的index也设置了5�?
 
     //访存
     input wire [18:0] s1_vppn,
@@ -95,7 +95,6 @@ NUM
   //WRITE
   always @(posedge clk) begin
     if (we) begin
-      tlb_e[w_index] <= w_e;
       tlb_vppn[w_index] <= w_vppn;
       tlb_ps[w_index] <= w_ps;
       tlb_asid[w_index] <= w_asid;
@@ -134,7 +133,7 @@ NUM
   wire [NUM-1:0] match_item0;  //取指
   wire [NUM-1:0] match_item1;  //访存+TLBSRCH
 
-  //找一个命中的就行，出现多个命中时处理器的结果不确定 这里给定一个优先级 序号小的先被找到
+  //找一个命中的就行，出现多个命中时处理器的结果不确�? 这里给定�?个优先级 序号小的先被找到
   assign match_item0[0] = tlb_e[0] 
                             & (tlb_g[0] | tlb_asid[0] == s0_asid) 
                             & tlb_vppn[0][18:9] == s0_vppn[18:9] & (tlb_ps[0] == 6'd21 | tlb_vppn[0][8:0] == s0_vppn[8:0]);
@@ -210,25 +209,28 @@ NUM
   assign {s0_ppn, s0_ps, s0_plv, s0_mat, s0_d, s0_v, s0_findex} = res_temp0[NUM-1];
   assign {s1_ppn, s1_ps, s1_plv, s1_mat, s1_d, s1_v, s1_findex} = res_temp1[NUM-1];
 
-  // invtlb 这样的综合结果是？
-  integer k;
-  always @(posedge clk) begin
-    if (invtlb_valid) begin
-      for (k = 0; k < NUM; k = k + 1) begin
-        if (op == 5'h0 | op == 5'h1) begin
-          tlb_e[k] <= 1'b0;
-        end else if (op == 5'h2 & tlb_g[k]) begin
-          tlb_e[k] <= 1'b0;
-        end else if (op == 5'h3 & ~tlb_g[k]) begin
-          tlb_e[k] <= 1'b0;
-        end else if (op == 5'h4 & ~tlb_g[k] & tlb_asid[k] == s1_asid) begin
-          tlb_e[k] <= 1'b0;
-        end else if (op == 5'h5 & ~tlb_g[k] & tlb_asid[k] == s1_asid & tlb_vppn[k][18:9] == s1_vppn[18:9] & (tlb_ps[0] == 6'd21 | tlb_vppn[k][8:0] == s1_vppn[8:0])) begin
-          tlb_e[k] <= 1'b0;
-        end else if (op == 5'h6 & (tlb_g[k] | tlb_asid[k] == s1_asid) & tlb_vppn[k][18:9] == s1_vppn[18:9] & (tlb_ps[0] == 6'd21 | tlb_vppn[k][8:0] == s1_vppn[8:0])) begin
-          tlb_e[k] <= 1'b0;
+  genvar  k;
+  generate
+    for (k = 0; k < NUM; k = k + 1) begin
+      always @(posedge clk) begin
+        if (k == w_index & we) begin
+          tlb_e[k] <= w_e;
+        end else if (invtlb_valid) begin
+          if (op == 5'h0 | op == 5'h1) begin
+            tlb_e[k] <= 1'b0;
+          end else if (op == 5'h2 & tlb_g[k]) begin
+            tlb_e[k] <= 1'b0;
+          end else if (op == 5'h3 & ~tlb_g[k]) begin
+            tlb_e[k] <= 1'b0;
+          end else if (op == 5'h4 & ~tlb_g[k] & tlb_asid[k] == s1_asid) begin
+            tlb_e[k] <= 1'b0;
+          end else if (op == 5'h5 & ~tlb_g[k] & tlb_asid[k] == s1_asid & tlb_vppn[k][18:9] == s1_vppn[18:9] & (tlb_ps[0] == 6'd21 | tlb_vppn[k][8:0] == s1_vppn[8:0])) begin
+            tlb_e[k] <= 1'b0;
+          end else if (op == 5'h6 & (tlb_g[k] | tlb_asid[k] == s1_asid) & tlb_vppn[k][18:9] == s1_vppn[18:9] & (tlb_ps[0] == 6'd21 | tlb_vppn[k][8:0] == s1_vppn[8:0])) begin
+            tlb_e[k] <= 1'b0;
+          end
         end
       end
     end
-  end
+  endgenerate  
 endmodule

@@ -64,7 +64,7 @@ module csr (
     output [5:0] ps_out,
     output e_out,
     input [$clog2(`TLB_NUM)-1:0] index_in,
-    input [6:0] ps_in,
+    input [5:0] ps_in,
     input e_in,
 
     input tlb_srch_wen,
@@ -530,7 +530,6 @@ module csr (
       csr_tcfg[`EN] <= csrWData[`EN];
       csr_tcfg[`PERIODIC] <= csrWData[`PERIODIC];
       csr_tcfg[`INITVAL] <= csrWData[`INITVAL];
-      csr_tval <= {csrWData[`INITVAL], 2'b0};
     end
   end
 

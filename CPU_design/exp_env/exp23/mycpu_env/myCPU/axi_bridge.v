@@ -104,77 +104,84 @@ module axi_bridge (
   //因为读请求时，需要传输地址等信息，所以需要在req和addr_ok确认对应请求并且类SRAM总线从方收到地址后再设置
   //arid_r  不同事务都用同一个id，先请求的先响应
   always @(posedge clk) begin
-    if (~aresetn) arid_r <= 4'b0000;
+    if (~aresetn) 
+        arid_r <= 4'b0000;
     else if(inst_rd_req & inst_rd_rdy)//读指令存储请求且读指令地址成功收到
-      arid_r <= 4'b0000;
+        arid_r <= 4'b0000;
     else if(data_rd_req & data_rd_rdy)//读数据存储请求且读数据地址成功收到
-      arid_r <= 4'b0001;
+        arid_r <= 4'b0001;
     else
-      arid_r <= arid_r;//存在阻塞、等待时的处理 是不是实现的不改变值 ready还未为1时
+        arid_r <= arid_r;//存在阻塞、等待时的处理 是不是实现的不改变值 ready还未为1时
   end
 
   //arsize_r选择之一 inst_sram_size_r
   always @(posedge clk) begin
-    if (~aresetn) inst_sram_size_r <= 3'b0;
+    if (~aresetn) 
+        inst_sram_size_r <= 3'b0;
     else if (inst_rd_req & inst_rd_rdy) 
-      inst_sram_size_r <= inst_rd_type == 3'b100 ? 3'b010 : inst_rd_type; //如果是一行cache，那么每个是要读写32bit
+        inst_sram_size_r <= inst_rd_type == 3'b100 ? 3'b010 : inst_rd_type; //如果是一行cache，那么每个是要读写32bit
     else 
-      inst_sram_size_r <= inst_sram_size_r;
+        inst_sram_size_r <= inst_sram_size_r;
   end
 
   //araddr_r选择之一 inst_sram_addr_r
   always @(posedge clk) begin
-    if (~aresetn) inst_sram_addr_r <= 32'b0;
+    if (~aresetn) 
+        inst_sram_addr_r <= 32'b0;
     else if (inst_rd_req & inst_rd_rdy) 
-      inst_sram_addr_r <= inst_rd_addr;
+        inst_sram_addr_r <= inst_rd_addr;
     else 
-      inst_sram_addr_r <= inst_sram_addr_r;
+        inst_sram_addr_r <= inst_sram_addr_r;
   end
 
   //arsize_r选择之一 data_sram_size_r
   always @(posedge clk) begin
-    if (~aresetn) rdata_sram_size_r <= 3'b0;
+    if (~aresetn) 
+        rdata_sram_size_r <= 3'b0;
     else if (data_rd_req & data_rd_rdy) 
-      rdata_sram_size_r <= data_rd_type == 3'b100 ? 3'b010 : data_rd_type;
+        rdata_sram_size_r <= data_rd_type == 3'b100 ? 3'b010 : data_rd_type;
     else 
-      rdata_sram_size_r <= rdata_sram_size_r;
+        rdata_sram_size_r <= rdata_sram_size_r;
   end
 
   //araddr_r选择之一 data_sram_addr_r
   always @(posedge clk) begin
-    if (~aresetn) rdata_sram_addr_r <= 32'b0;
+    if (~aresetn) 
+        rdata_sram_addr_r <= 32'b0;
     else if (data_rd_req & data_rd_rdy) 
-      rdata_sram_addr_r <= data_rd_addr;
+        rdata_sram_addr_r <= data_rd_addr;
     else 
-      rdata_sram_addr_r <= rdata_sram_addr_r;
+        rdata_sram_addr_r <= rdata_sram_addr_r;
   end
 
   //读通道正在进行读指令，等待读响应
   always @(posedge clk) begin
-    if (~aresetn) inst_read_wait <= 1'b0;
+    if (~aresetn) 
+        inst_read_wait <= 1'b0;
     else if (arvalid & arready & arid_r == 4'b0000) 
-      inst_read_wait <= 1'b1;
+        inst_read_wait <= 1'b1;
     else if (rvalid & rready & rid == 4'b0000 & rlast)  //读响应已收到，且是读指令,可能会读多个——需要增加rlast信号判断
-      inst_read_wait <= 1'b0;
+        inst_read_wait <= 1'b0;
   end
 
   //读通道正在进行读数据，等待读响应
   always @(posedge clk) begin
-    if (~aresetn) data_read_wait <= 1'b0;
+    if (~aresetn) 
+        data_read_wait <= 1'b0;
     else if (arvalid & arready & arid_r == 4'b0001) 
-      data_read_wait <= 1'b1;
+        data_read_wait <= 1'b1;
     else if (rvalid & rready & rid == 4'b0001 & rlast)  //读响应已收到，且是读数据
-      data_read_wait <= 1'b0;
+        data_read_wait <= 1'b0;
   end
 
   //arvalid
   always @(posedge clk) begin
     if (~aresetn)  //
-      arvalid_r <= 1'b0;
+        arvalid_r <= 1'b0;
     else if (arvalid & arready)  //读请求收到响应则复位
-      arvalid_r <= 1'b0; 
+        arvalid_r <= 1'b0; 
     else if(data_rd_req & data_rd_rdy | inst_rd_req & inst_rd_rdy) //这里可以加req吧？加req更好理解 Brust时保持
-      arvalid_r <= 1'b1;
+        arvalid_r <= 1'b1;
   end
 
   //AXI主方，除了常量，其余输出信号的均来自触发器Q端 
@@ -187,23 +194,23 @@ module axi_bridge (
 
   assign arlen = (inst_rd_type == 3'b100 | data_rd_type == 3'b100) ? 8'h3 : 8'h0;//当是cahce行时需要读4个
   assign arburst = 2'b01;
-  assign arlock = 1'b0;
-  assign arcache = 1'b0;
-  assign arprot = 1'b0;
+  assign arlock = 2'b0;
+  assign arcache = 4'b0;
+  assign arprot = 3'b0;
 
-  assign data_rd_rdy = //这为什么不用data_read_wait load优先级大于取指 设置了有写请求就暂停读 addr_ok无效
-      (~data_read_wait & ~arvalid & data_rd_req == 1'b1) ? 1'b1 : 1'b0; //读通道没有被占用且进行读数据RAM请求
+  assign data_rd_rdy = //load优先级大于取指
+      (~data_read_wait & ~arvalid & data_rd_req == 1'b1) ? 1'b1 : 1'b0; 
   assign inst_rd_rdy = 
-        (~inst_read_wait & ~arvalid & inst_rd_req == 1'b1 &  data_rd_req == 1'b0) ? 1'b1 : 1'b0;//load优先级大于取指，需要判断没有读数据请求或者有但是是写数据
+        (~inst_read_wait & ~arvalid & inst_rd_req == 1'b1 &  data_rd_req == 1'b0) ? 1'b1 : 1'b0;
 
   //-----------------------------------读响应相关信号-------------------------------------//
   always @(posedge clk) begin
     if (~aresetn) 
-      rready <= 1'b0;
-    else if (rready & rvalid & rlast) 
-      rready <= 1'b0; //当读到最后一个时，才置rready是1'b0
+        rready <= 1'b0;
+    else if (rready & rvalid & rlast) //突发传输，当读最后一个有效时，再置rready为1'b0
+        rready <= 1'b0; //当读到最后一个时，才置rready是1'b0
     else if (inst_read_wait | data_read_wait)  //等待准备接收数据
-      rready <= 1'b1;
+        rready <= 1'b1;
   end
 
   assign inst_ret_data = (rvalid & rready & rid == 4'b0000) ? rdata : 32'b0;
@@ -216,106 +223,118 @@ module axi_bridge (
   //处理写地址
   always @(posedge clk) begin
     if (~aresetn) 
-      wdata_sram_addr_r <= 32'b0;
-    else if (data_wr_req & data_wr_rdy) 
-      wdata_sram_addr_r <= data_wr_addr;
+        wdata_sram_addr_r <= 32'b0;
+    else if (data_wr_req) 
+        wdata_sram_addr_r <= data_wr_addr;
     else 
-      wdata_sram_addr_r <= wdata_sram_addr_r;
+        wdata_sram_addr_r <= wdata_sram_addr_r;
   end
 
   //处理写长度
   always @(posedge clk) begin
     if (~aresetn) 
-      wdata_sram_size_r <= 3'b0;
-    else if (data_wr_req & data_wr_rdy) 
-      wdata_sram_size_r <= data_wr_type == 3'b100 ? 3'b010 : data_wr_type;
+        wdata_sram_size_r <= 3'b0;
+    else if (data_wr_req) //wr_rdy有效时 req不一定有效
+        wdata_sram_size_r <= data_wr_type == 3'b100 ? 3'b010 : data_wr_type;
     else 
-      wdata_sram_size_r <= wdata_sram_size_r;
+        wdata_sram_size_r <= wdata_sram_size_r;
   end
 
   //处理写数据 写请求和写数据同时设置
   always @(posedge clk) begin
     if (~aresetn) 
-      data_sram_wdata_r <= 128'b0;
-    else if (data_wr_req & data_wr_rdy) 
-      data_sram_wdata_r <= data_wr_data;
-    else if (wvalid & wready & awlen == 8'b11) begin
-      data_sram_wdata_r <= {32'b0,data_sram_wdata_r[127:32]};  //写128位时，每次都采取右移32位，使得AXI传给总线的32位数据始终赋值[31:0]
+        data_sram_wdata_r <= 128'b0;
+    else if (data_wr_req) 
+        data_sram_wdata_r <= data_wr_data;
+    else if (wvalid & wready & awlen == 8'h3) begin 
+        data_sram_wdata_r <= {32'b0,data_sram_wdata_r[127:32]};  //写128位时，每次都采取右移32位，使得AXI传给总线的32位数据始终赋值[31:0]
     end
   end
 
   //处理写选通
   always @(posedge clk) begin
-    if (~aresetn) wdata_sram_wstrb_r <= 4'b0000;
-    else if (data_wr_req & data_wr_rdy) 
-      wdata_sram_wstrb_r <= data_wr_wstrb;
+    if (~aresetn) 
+        wdata_sram_wstrb_r <= 4'b0000;
+    else if (data_wr_req) //有请求时就
+        wdata_sram_wstrb_r <= data_wr_wstrb;
     else 
-      wdata_sram_wstrb_r <= wdata_sram_wstrb_r;
+        wdata_sram_wstrb_r <= wdata_sram_wstrb_r;
   end
 
-  //写多个数据时，需要使之后的写等待
+  //写多个数据时，需要使之后的写等待 
   always @(posedge clk) begin
-    if (~aresetn) w_wait <= 1'b0;
-    else if (wvalid & wready & awlen == 8'h3 & w_num != 3'b001) 
-      w_wait <= 1'b1;
+    if (~aresetn) 
+        w_wait <= 1'b0;
+    else if (wvalid & wready & awlen == 8'h3 & w_num != 3'b1) 
+        w_wait <= 1'b1;
     else 
-      w_wait <= 1'b0;
+        w_wait <= 1'b0;
   end
 
   //从设备已收到写数据
   always @(posedge clk) begin
-    if (!aresetn) wdata_received <= 1'b0;
-    else if (wvalid & wready) wdata_received <= 1'b1;
-    else if (wdata_received & waddr_received) wdata_received <= 1'b0;
+    if (~aresetn) 
+        wdata_received <= 1'b0;
+    else if (wvalid & wready & wlast) 
+        wdata_received <= 1'b1;
+    else if (wdata_received & waddr_received) 
+        wdata_received <= 1'b0;
   end
 
   //从设备已收到写地址
   always @(posedge clk) begin
-    if (~aresetn) waddr_received <= 1'b0;
-    else if (awvalid & awready) waddr_received <= 1'b1;
+    if (~aresetn) 
+        waddr_received <= 1'b0;
+    else if (awvalid & awready) 
+        waddr_received <= 1'b1;
     else if(wdata_received & waddr_received) //写地址和写数据都被从设备收到后再开始新的写请求
-      waddr_received <= 1'b0;
+        waddr_received <= 1'b0;
   end
 
   //写请求 valid信号的发送
   always @(posedge clk) begin
-    if (!aresetn) awvalid <= 1'b0;
-    else if(data_wr_req & data_wr_rdy)
-      awvalid <= 1'b1;
-    else if (awvalid & awready) awvalid <= 1'b0;
+    if (~aresetn) 
+        awvalid <= 1'b0;
+    else if(data_wr_req)
+        awvalid <= 1'b1;
+    else if (awvalid & awready) 
+        awvalid <= 1'b0;
   end
 
   always @(posedge clk) begin
-    if (~aresetn) wvalid <= 1'b0;
-    else if (data_wr_req & data_wr_rdy | w_wait)  //写请求和写数据同时置有效
-      wvalid <= 1'b1;
-    else if (wvalid & wready) wvalid <= 1'b0;
+    if (~aresetn) 
+        wvalid <= 1'b0;
+    else if (data_wr_req | w_wait)  //写请求和写数据同时置有效
+        wvalid <= 1'b1;
+    else if (wvalid & wready) 
+        wvalid <= 1'b0;
   end
 
   always @(posedge clk) begin
     if (~aresetn) begin
-      awlen_r <= 8'b0;
+        awlen_r <= 8'b0;
     end else if (data_wr_req) begin
-      awlen_r <= data_wr_type == 3'b100 ? 8'h3 : 8'h0;
+        awlen_r <= data_wr_type == 3'b100 ? 8'h3 : 8'h0;
     end
   end
 
   always @(posedge clk) begin
     if (~aresetn) begin
-      w_num <= 3'b000;
-    end else if (data_wr_req & data_wr_rdy & awlen == 8'h3) begin
-      w_num <= 3'b100;
+        w_num <= 3'b000;
+    end else if (data_wr_req & awlen == 8'h3) begin
+        w_num <= 3'b100;
     end else if (wvalid & wready & awlen == 8'h3) begin
-      w_num <= w_num -3'b1;
+        w_num <= w_num -3'b1;
     end
   end
 
   always @(posedge clk)begin
-    if(~aresetn) wlast <= 1'b0;
-    else if(w_num==3'b001 && awlen==8'b11 || data_wr_req && awlen==8'b0)
-      wlast <= 1'b1;
-    else if(w_num==3'b000 && awlen==8'b11 || wvalid && wready && awlen==8'b0)
-      wlast <= 1'b0;
+    if(~aresetn) 
+        wlast <= 1'b0;
+    else if(w_num==3'b1 & awlen==8'h3 | data_wr_req & awlen==8'h0)
+        wlast <= 1'b1;
+    else if(w_num==3'b0 & awlen==8'h3 | wvalid & wready & awlen==8'h0)
+        wlast <= 1'b0;
   end
 
   assign awaddr             = wdata_sram_addr_r;
@@ -323,9 +342,9 @@ module axi_bridge (
   assign awid               = 4'b0001;
   assign awlen              = data_wr_req ? (data_wr_type == 3'b100 ? 8'h3 : 8'h0) : awlen_r;
   assign awburst            = 2'b01;
-  assign awlock             = 1'b0;
-  assign awcache            = 1'b0;
-  assign awprot             = 1'b0;
+  assign awlock             = 2'b0;
+  assign awcache            = 4'b0;
+  assign awprot             = 3'b0;
 
   assign wdata              = data_sram_wdata_r[31:0];
   assign wstrb              = wdata_sram_wstrb_r;
@@ -335,17 +354,16 @@ module axi_bridge (
 
   //-------------------------------------写响应相关信号-----------------------------------//
   always @(posedge clk) begin
-    if (!aresetn) begin
-      bready <= 1'b0;
-    end else if (wvalid & wready & awvalid & awready) begin
-      bready <= 1'b1;
-    end else if (wdata_received & awvalid & awready) begin
-      bready <= 1'b1;
-    end else if (wvalid & wready & waddr_received) begin
-      bready <= 1'b1;
-    end else if (bvalid & bready) begin
-      bready <= 1'b0;
-    end
+    if (!aresetn) 
+        bready <= 1'b0;
+    else if (wvalid & wready & awvalid & awready)
+        bready <= 1'b1;
+    else if (wdata_received & awvalid & awready)
+        bready <= 1'b1;
+    else if (wvalid & wready & waddr_received)
+        bready <= 1'b1;
+    else if (bvalid & bready)
+        bready <= 1'b0;
   end
 
 endmodule

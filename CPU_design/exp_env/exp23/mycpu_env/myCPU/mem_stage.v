@@ -271,7 +271,7 @@ module mem_stage (
 
   //封包传递给id阶段的数据
   assign mem_to_id_bus = {
-    mem_ready_go, mem_to_wb_valid, mem_regW, mem_regWAddr, mem_regWData, mem_pc
+    mem_ready_go, mem_to_wb_valid, mem_regW, mem_valid ? mem_regWAddr : 5'b0, mem_regWData, mem_pc
   };
 
   //封包传递给TLB的数据
