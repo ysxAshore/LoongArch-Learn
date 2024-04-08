@@ -1,0 +1,50 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (win64) Build 3865809 Sun May  7 15:05:29 MDT 2023
+| Date         : Fri Mar 22 22:41:02 2024
+| Host         : ysxAshore running 64-bit major release  (build 9200)
+| Command      : report_methodology -file cache_top_methodology_drc_routed.rpt -pb cache_top_methodology_drc_routed.pb -rpx cache_top_methodology_drc_routed.rpx
+| Design       : cache_top
+| Device       : xc7a200tfbg676-1
+| Speed File   : -1
+| Design State : Fully Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Report Methodology
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: design_1
+      Design limits: <entire design considered>
+             Max violations: <unlimited>
+             Violations found: 2
++--------+----------+--------------------------------------------------------+------------+
+| Rule   | Severity | Description                                            | Violations |
++--------+----------+--------------------------------------------------------+------------+
+| XDCC-1 | Warning  | Scoped Clock constraint overwritten with the same name | 1          |
+| XDCC-7 | Warning  | Scoped Clock constraint overwritten on the same source | 1          |
++--------+----------+--------------------------------------------------------+------------+
+
+2. REPORT DETAILS
+-----------------
+XDCC-1#1 Warning
+Scoped Clock constraint overwritten with the same name  
+A new clock constraint create_clock overrides a previous scoped clock constraint with the same name. It is not recommended to override a scoped (typically an IP) clock constraint and could result in unexpected behaviors.
+New: create_clock -period 10.000 -name clk -waveform {0.000 5.000} [get_ports clk] (Source: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/module_verify/cache_verify/run_vivado/constraints/cache_top.xdc (Line: 5))
+Previous: create_clock -period 10.000 [get_ports clk] (Source: e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/module_verify/cache_verify/rtl/xilinx_ip/clk_pll.xdc (Line: 56))
+Related violations: <none>
+
+XDCC-7#1 Warning
+Scoped Clock constraint overwritten on the same source  
+A new clock constraint create_clock overrides a previous scoped clock constraint defined on the same source. It is not recommended to override a scoped (typically an IP) clock constraint and could result in unexpected behaviors.
+New: create_clock -period 10.000 -name clk -waveform {0.000 5.000} [get_ports clk] (Source: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/module_verify/cache_verify/run_vivado/constraints/cache_top.xdc (Line: 5))
+Previous: create_clock -period 10.000 [get_ports clk] (Source: e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/module_verify/cache_verify/rtl/xilinx_ip/clk_pll.xdc (Line: 56))
+Related violations: <none>
+
+

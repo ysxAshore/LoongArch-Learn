@@ -1,0 +1,100 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (win64) Build 3865809 Sun May  7 15:05:29 MDT 2023
+| Date         : Fri Mar 22 17:58:35 2024
+| Host         : ysxAshore running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file tlb_top_control_sets_placed.rpt
+| Design       : tlb_top
+| Device       : xc7a200t
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |    22 |
+|    Minimum number of control sets                        |    22 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |   102 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |    22 |
+| >= 0 to < 4        |     0 |
+| >= 4 to < 6        |     3 |
+| >= 6 to < 8        |     0 |
+| >= 8 to < 10       |     0 |
+| >= 10 to < 12      |     0 |
+| >= 12 to < 14      |     1 |
+| >= 14 to < 16      |     0 |
+| >= 16              |    18 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |              13 |            9 |
+| No           | No                    | Yes                    |               0 |            0 |
+| No           | Yes                   | No                     |              70 |           20 |
+| Yes          | No                    | No                     |             307 |          182 |
+| Yes          | No                    | Yes                    |               0 |            0 |
+| Yes          | Yes                   | No                     |              12 |            3 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++------------------------+-------------------------------+------------------+------------------+----------------+--------------+
+|      Clock Signal      |         Enable Signal         | Set/Reset Signal | Slice Load Count | Bel Load Count | Bels / Slice |
++------------------------+-------------------------------+------------------+------------------+----------------+--------------+
+|  clk_pll/inst/clk_out1 | tlb_w_cnt[3]_i_1_n_0          | clear            |                1 |              4 |         4.00 |
+|  clk_pll/inst/clk_out1 | u_tlb/E[0]                    | clear            |                1 |              4 |         4.00 |
+|  clk_pll/inst/clk_out1 | u_tlb/test_error_reg[0]       | clear            |                1 |              4 |         4.00 |
+|  clk_pll/inst/clk_out1 |                               |                  |                9 |             13 |         1.44 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_vppn[15][3]_i_1_n_0 |                  |               14 |             19 |         1.36 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_vppn[1][3]_i_1_n_0  |                  |               14 |             19 |         1.36 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_vppn[5][3]_i_1_n_0  |                  |               12 |             19 |         1.58 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[12][3]_i_1_n_0 |                  |               12 |             19 |         1.58 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[7][3]_i_1_n_0  |                  |               12 |             19 |         1.58 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[13][3]_i_1_n_0 |                  |               12 |             19 |         1.58 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[6][3]_i_1_n_0  |                  |               10 |             19 |         1.90 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[11][3]_i_1_n_0 |                  |               10 |             19 |         1.90 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[10][3]_i_1_n_0 |                  |               11 |             19 |         1.73 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[8][3]_i_1_n_0  |                  |               13 |             19 |         1.46 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[9][3]_i_1_n_0  |                  |               11 |             19 |         1.73 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[0][3]_i_1_n_0  |                  |                8 |             19 |         2.38 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[3][3]_i_1_n_0  |                  |               11 |             19 |         1.73 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_vppn[4][3]_i_1_n_0  |                  |               12 |             20 |         1.67 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[14][3]_i_1_n_0 |                  |               10 |             20 |         2.00 |
+|  clk_pll/inst/clk_out1 | u_tlb/tlb_asid[2][3]_i_1_n_0  |                  |               10 |             20 |         2.00 |
+|  clk_pll/inst/clk_out1 |                               | wait_cnt0        |                7 |             27 |         3.86 |
+|  clk_pll/inst/clk_out1 |                               | clear            |               13 |             43 |         3.31 |
++------------------------+-------------------------------+------------------+------------------+----------------+--------------+
+
+

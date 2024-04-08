@@ -1,0 +1,16 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
+| Date         : Wed Mar  6 16:00:31 2024
+| Host         : ysxAshore-Ubuntu running 64-bit Ubuntu 22.04.4 LTS
+| Command      : upgrade_ip
+| Device       : xc7a200tfbg676-1
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'clk_pll'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of clk_pll (xilinx.com:ip:clk_wiz:6.0) from (Rev. 4) to (Rev. 12)
+
