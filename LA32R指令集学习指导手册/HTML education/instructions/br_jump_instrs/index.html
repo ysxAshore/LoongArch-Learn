@@ -1,0 +1,1143 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="LoongsonEdu">
+      
+      
+      
+        <link rel="prev" href="../ldst_instrs/index.html">
+      
+      
+        <link rel="next" href="../llsc_instrs/index.html">
+      
+      <link rel="icon" href="../../images/loongson3-image.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>分支跳转类指令 - LA32R指令集学习指导手册</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#la32r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-header__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LA32R指令集学习指导手册
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              分支跳转类指令
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-nav__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    LA32R指令集学习指导手册
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        引言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          LA32R中的用户态整型指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R中的用户态整型指令
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instr_expression/index.html" class="md-nav__link">
+        LA32R的机器语言与汇编语言表达
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compute_instrs/index.html" class="md-nav__link">
+        算术逻辑移位类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ldst_instrs/index.html" class="md-nav__link">
+        数据传输类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          分支跳转类指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        分支跳转类指令
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    分支跳转类指令
+  </a>
+  
+    <nav class="md-nav" aria-label="分支跳转类指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    条件分支指令
+  </a>
+  
+    <nav class="md-nav" aria-label="条件分支指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    条件分支指令速查表
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#labeltaken-target" class="md-nav__link">
+    用标签（Label）来指示跳转目标（Taken Target）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c" class="md-nav__link">
+    常见C语言控制结构对应的汇编表达
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    整数比较置结果的指令
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    无条件跳转指令
+  </a>
+  
+    <nav class="md-nav" aria-label="无条件跳转指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    无条件跳转指令速查
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    函数调用与函数返回
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llsc_instrs/index.html" class="md-nav__link">
+        用LL/SC指令构建基本同步原语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../misc_instrs/index.html" class="md-nav__link">
+        其它用户态指令
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          LA32R汇编编程简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R汇编编程简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/workenv/index.html" class="md-nav__link">
+        LA32R汇编编程学习环境介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/common_directives/index.html" class="md-nav__link">
+        常用汇编器指示
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/pesudo_instrs/index.html" class="md-nav__link">
+        LA32R汇编器支持的伪指令汇总
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/register_convention/index.html" class="md-nav__link">
+        寄存器使用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/calling_convention/index.html" class="md-nav__link">
+        函数调用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/addr_space/index.html" class="md-nav__link">
+        进程虚拟地址空间布局规范
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/stack_frame/index.html" class="md-nav__link">
+        栈帧布局
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/as_example/index.html" class="md-nav__link">
+        汇编编程示例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    分支跳转类指令
+  </a>
+  
+    <nav class="md-nav" aria-label="分支跳转类指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    条件分支指令
+  </a>
+  
+    <nav class="md-nav" aria-label="条件分支指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    条件分支指令速查表
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#labeltaken-target" class="md-nav__link">
+    用标签（Label）来指示跳转目标（Taken Target）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c" class="md-nav__link">
+    常见C语言控制结构对应的汇编表达
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    整数比较置结果的指令
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    无条件跳转指令
+  </a>
+  
+    <nav class="md-nav" aria-label="无条件跳转指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    无条件跳转指令速查
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    函数调用与函数返回
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="la32r">LA32R中的用户态整型指令</h1>
+<h2 id="_1">分支跳转类指令</h2>
+<p>LA32R中的分支跳转类指令用于控制指令执行流流向（Instruction Flow Control），其中需要进行条件判断决定跳转（Taken）还是不跳转（Not Taken）的我们称为条件分支指令，余下的则是无条件跳转指令。</p>
+<h3 id="_2">条件分支指令</h3>
+<h4 id="_3">条件分支指令速查表</h4>
+<p>LA32R中在指令集手册中定义的真实条件分支指令有如下6条：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>beq (<strong><em>b</em></strong><em>ranch if</em> <strong><em>eq</em></strong><em>ual</em>)</td>
+<td>beq $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] == GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bne (<strong><em>b</em></strong><em>ranch if</em> <strong><em>n</em></strong><em>ot</em> <strong><em>e</em></strong><em>qual</em>)</td>
+<td>bne $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] != GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>blt (<strong><em>b</em></strong><em>ranch if</em> <strong><em>l</em></strong><em>ess</em> <strong><em>t</em></strong><em>han signed</em>)</td>
+<td>blt $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &lt;<sub>s</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bge (<strong><em>b</em></strong><em>ranch if</em> <strong><em>g</em></strong><em>reater than or</em> <strong><em>e</em></strong><em>qual signed</em>)</td>
+<td>bge $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &gt;=<sub>s</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bltu (<strong><em>b</em></strong><em>ranch if</em> <strong><em>l</em></strong><em>ess</em> <strong><em>t</em></strong><em>han</em> <strong><em>u</em></strong><em>nsigned</em>)</td>
+<td>bltu $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &lt;<sub>u</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bgeu (<strong><em>b</em></strong><em>ranch if</em> <strong><em>g</em></strong><em>reater than or</em> <strong><em>e</em></strong><em>qual</em> <strong><em>u</em></strong><em>nsigned</em>)</td>
+<td>bgeu $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &gt;=<sub>u</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+</tbody>
+</table>
+<p>有爱好者问，不是说LA的分支指令支持所有的整数比较类型，那么为什么“小于等于”和“大于”没有呢。其实，<code>A</code>小于等于<code>B</code>等价于<code>B</code>大于等于<code>A</code>，<code>A</code>大于<code>B</code>等价于<code>B</code>小于<code>A</code>。调整被比较对象在分支指令中<code>rd</code>和<code>rj</code>域的位置，就能实现所有的整数比较类型。即便如此，LA32R的汇编器还是非常贴心的定义了下面一系列伪指令，让汇编代码更便于阅读。</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bgt (<strong><em>b</em></strong><em>ranch if</em> <strong><em>g</em></strong><em>reater</em> <strong><em>t</em></strong><em>han signed</em>)</td>
+<td>bgt $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &gt;<sub>s</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bgtu (<strong><em>b</em></strong><em>ranch if</em> <strong><em>g</em></strong><em>reater</em> <strong><em>t</em></strong><em>han</em> <strong><em>u</em></strong><em>nsigned</em>)</td>
+<td>bgtu $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &gt;<sub>u</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>ble (<strong><em>b</em></strong><em>ranch if</em> <strong><em>l</em></strong><em>ess than or</em> <strong><em>e</em></strong><em>qual signed</em>)</td>
+<td>ble $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &lt;=<sub>s</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bleu (<strong><em>b</em></strong><em>ranch if</em> <strong><em>l</em></strong><em>ess than or</em> <strong><em>e</em></strong><em>qual</em> <strong><em>u</em></strong><em>nsigned</em>)</td>
+<td>bleu $r<em>x</em>, $r<em>y</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &lt;=<sub>u</sub> GR[<em>y</em>]) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bltz (<strong><em>b</em></strong><em>ranch if</em> <strong><em>l</em></strong><em>ess</em> <strong><em>t</em></strong><em>han</em> <strong><em>z</em></strong><em>ero signed</em>)</td>
+<td>bltz $r<em>x</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &lt;<sub>s</sub> 0) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bgtz (<strong><em>b</em></strong><em>ranch if</em> <strong><em>g</em></strong><em>reater</em> <strong><em>t</em></strong><em>han</em> <strong><em>z</em></strong><em>ero signed</em>)</td>
+<td>bgtz $r<em>x</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &gt;<sub>s</sub> 0) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>blez (<strong><em>b</em></strong><em>ranch if</em> <strong><em>l</em></strong><em>ess than or</em> <strong><em>e</em></strong><em>qual to</em> <strong><em>z</em></strong><em>ero signed</em>)</td>
+<td>blez $r<em>x</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &lt;=<sub>s</sub> 0) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bgez (<strong><em>b</em></strong><em>ranch if</em> <strong><em>g</em></strong><em>reater than or</em> <strong><em>e</em></strong><em>qual to</em> <strong><em>z</em></strong><em>ero signed</em>)</td>
+<td>bgez $r<em>x</em>, <em>off16</em></td>
+<td>if (GR[<em>x</em>] &gt;=<sub>s</sub> 0) PC += sext32(<em>off16</em> &lt;&lt; 2)</td>
+</tr>
+</tbody>
+</table>
+<p>尽管有上述伪指令，细心的读者可能又发现问题了，为什么没有<code>beqz</code>(<strong><em>b</em></strong><em>ranch if</em> <strong><em>eq</em></strong><em>ual</em> <strong><em>z</em></strong><em>ero</em>)和<code>bnez</code>(<strong><em>b</em></strong><em>ranch if</em> <strong><em>n</em></strong><em>ot</em> <strong><em>e</em></strong><em>qual</em> <strong><em>z</em></strong><em>ero</em>)？因为LA64和LA32的指令集中已经定义了<code>beqz</code>和<code>bnez</code>指令，所以LA32R如果定义同名的伪指令会给软件的维护带来困扰。在LA32R汇编编程中，请直接用<code>beq $r##, $zero</code>和<code>bne $r##, $zero</code>来实现所需的功能。</p>
+<h4 id="labeltaken-target">用标签（Label）来指示跳转目标（Taken Target）</h4>
+<p>分支指令的定义中都有一个立即数偏移值<code>off16</code>，那么汇编编程时是不是要自己计算出跳转目标处与这条分支指令的相对偏移量呢？我们<strong>强烈不推荐</strong>这样做。且不说由于伪指令和宏的存在为计算相对偏移量增加难度，就算可以算得准，如果代码有所增减岂不是又要重新计算一遍。通常我们在汇编编程时都是采用<code>beq $r##, $r##, label</code>这种写法，即在这条分支的跳转目标处设置一个标签，然后在分支指令中直接写这个标签的名字就可以了。分支指令中的off16参数具体该填什么，就交给工具链软件了。具体的用法在下一小节的例子中会有看到。</p>
+<h4 id="c">常见C语言控制结构对应的汇编表达</h4>
+<p>先来看if-else结构</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cond_exp</span><span class="p">)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="o">&lt;</span><span class="n">then_statement</span><span class="o">&gt;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">else</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="o">&lt;</span><span class="n">else_statement</span><span class="o">&gt;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">cond_exp</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nf">beq</span><span class="w">     </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="no">.L1</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="err">&lt;</span><span class="nf">then_statement</span><span class="err">&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nf">b</span><span class="w">       </span><span class="no">.L2</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nl">.L1:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="err">&lt;</span><span class="nf">else_statement</span><span class="err">&gt;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nl">.L2:</span>
+</code></pre></div>
+<p>上面示例中的<code>b</code>指令在LA32R中并不是一条伪指令，它实际上就是一条无条件的PC相对跳转指令，完成类似于C语言中<code>goto</code>语句的效果。</p>
+<p>再来看看如何用分支指令构成循环结构。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">test_for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nl">test_for:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nl">.L2:</span><span class="w">    </span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nf">blt</span><span class="w">     </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">.L3</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nf">jr</span><span class="w">      </span><span class="no">$ra</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nl">.L3:</span><span class="w">    </span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">   </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">  </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="nf">b</span><span class="w">       </span><span class="no">.L2</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">test_while</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">        </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nl">test_while:</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nl">.L2:</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nf">blt</span><span class="w">     </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">.L3</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="nf">jr</span><span class="w">      </span><span class="no">$ra</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nl">.L3:</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">   </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">  </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="nf">b</span><span class="w">       </span><span class="no">.L2</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">test_dowhile</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">        </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">        </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">);</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nl">test_dowhile:</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="w"> </span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="no">move</span><span class="w">    </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nl">.L2:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">   </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">  </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t2</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="nf">blt</span><span class="w">     </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">.L2</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nf">move</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nf">jr</span><span class="w">      </span><span class="no">$ra</span>
+</code></pre></div>
+<p>上面的汇编代码中的label沿用了编译器生成出的汇编代码中的风格，在人工开发汇编程序时，如果跳转距离不太远，还有一种常用的命名和标识形式。我们来看下面两段代码：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="w">    </span><span class="na">...</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nl">Target1:</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nf">beq</span><span class="w">     </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="no">Target2</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="na">...</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nf">blt</span><span class="w">     </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">Target1</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="nl">Target2:</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="na">...</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="w">    </span><span class="na">...</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="err">1:</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nf">beq</span><span class="w">     </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$zero</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="no">f</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="na">...</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nf">blt</span><span class="w">     </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="no">b</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="err">1:</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">        </span><span class="na">...</span>
+</code></pre></div>
+<p>上面两段汇编代码实际上是等价的。我们看到第二段汇编中两个标号都是“1”，那么两条分支指令是如何区分它们的呢？其中<code>beq  $t0, $zero, 1f</code>中的<code>1f</code>是这条指令向下（也可以说是向前，forward）遇到的<strong>第一个</strong>标记为<code>1</code>的标号，而<code>blt  $t1, $a0, 1b</code>中的<code>1b</code>是这条指令向上（也可以说是向后，backward）遇到的<strong>第一个</strong>标记为<code>1</code>的标号。可以看到，这对于汇编编程开发提供了便利，毕竟你不用费劲心思保证一个文件内所有的标号的名字都不同。</p>
+<h4 id="_4">整数比较置结果的指令</h4>
+<p>尽管分支指令可以完成两个整型数之间的所有比较操作，但是当涉及多个变量间更复杂的条件表达式时，编译器或汇编语言程序员可以利用整数比较置结果的指令与逻辑指令计算出这类条件表达式的值。这类指令共4条，列举如下：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>slt (<strong><em>s</em></strong><em>et</em> <strong><em>l</em></strong><em>ess</em> <strong><em>t</em></strong><em>han</em>)</td>
+<td>slt $r<em>x</em>, $r<em>y</em>, $r<em>z</em></td>
+<td>GR[<em>x</em>] = (GR[<em>y</em>] &lt;<sub>s</sub> GR[<em>z</em>]) ? 1 : 0</td>
+</tr>
+<tr>
+<td>sltu (<strong><em>s</em></strong><em>et</em> <strong><em>l</em></strong><em>ess</em> <strong><em>t</em></strong><em>han</em> <strong><em>u</em></strong><em>nsigned</em>)</td>
+<td>sltu $r<em>x</em>, $r<em>y</em>, $r<em>z</em></td>
+<td>GR[<em>x</em>] = (GR[<em>y</em>] &lt;<sub>u</sub> GR[<em>z</em>]) ? 1 : 0</td>
+</tr>
+<tr>
+<td>slti (<strong><em>s</em></strong><em>et</em> <strong><em>l</em></strong><em>ess</em> <strong><em>t</em></strong><em>han</em> <strong><em>i</em></strong><em>mmediate</em>)</td>
+<td>slt $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = (GR[<em>y</em>] &lt;<sub>s</sub> sext32(<em>si12</em>)) ? 1 : 0</td>
+</tr>
+<tr>
+<td>sltui (<strong><em>s</em></strong><em>et</em> <strong><em>l</em></strong><em>ess</em> <strong><em>t</em></strong><em>han</em> <strong><em>u</em></strong><em>nsigned</em> <strong><em>i</em></strong><em>mmediate</em>)</td>
+<td>slt $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = (GR[<em>y</em>] &lt;<sub>u</sub> sext32(<em>si12</em>)) ? 1 : 0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_5">无条件跳转指令</h3>
+<h4 id="_6">无条件跳转指令速查</h4>
+<p>LA32R中在指令集手册中定义的真实无条件跳转指令有如下3条：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b (<strong><em>b</em></strong><em>ranch</em>)</td>
+<td>b <em>offs26</em></td>
+<td>PC += sext32(<em>offs26</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>bl (<strong><em>b</em></strong><em>ranch and</em> <strong><em>l</em></strong><em>ink</em>)</td>
+<td>bl <em>offs26</em></td>
+<td>GR[1] = PC + 4; PC += sext32(<em>offs26</em> &lt;&lt; 2)</td>
+</tr>
+<tr>
+<td>jirl (<strong><em>j</em></strong><em>ump</em> <strong><em>i</em></strong><em>ndirect</em> <strong><em>r</em></strong><em>egister</em> <strong><em>l</em></strong><em>ink</em>)</td>
+<td>jirl $r<em>x</em>, $r<em>y</em>, <em>offs16</em></td>
+<td>GR[<em>x</em>] = PC + 4; PC = GR[<em>y</em>] + sext32(<em>offs16</em> &lt;&lt; 2)</td>
+</tr>
+</tbody>
+</table>
+<p>上面的<code>jirl</code>指令的功能比较多，既有基于寄存器的间接跳转功能，又有保存返回地址的Link功能。考虑到很多应用场景中只需要基于寄存器的间接跳转的功能（例如函数返回时的跳转），为了增加代码的可阅读性，LA32R的汇编器支持了<code>jr</code>这条汇编伪指令。</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>jr (<strong><em>j</em></strong><em>ump</em> <strong><em>r</em></strong><em>egister</em>)</td>
+<td>jr $r<em>x</em></td>
+<td>PC = GR[<em>x</em>]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_7">函数调用与函数返回</h4>
+<p>无条件跳转指令最典型的应用场景是函数调用和函数返回。在LA32R中，完成函数调用功能的是<code>bl</code>指令，完成函数返回功能的是<code>jr $ra</code>伪指令。整个函数调用、执行并返回的过程所要进行的操作步骤如下：</p>
+<ul>
+<li>调用者将参数（实参）存入寄存器或栈中；</li>
+<li>调用者使用<code>bl</code>指令调用被调用者；</li>
+<li>被调用者在栈中为自己所需要的局部变量分配空间（栈指针调整下移）；</li>
+<li>被调用者自身执行；</li>
+<li>被调用者释放自身局部变量在栈中的空间（栈指针上移复原）；</li>
+<li>被调用者执行<code>jr $ra</code>返回调用者。</li>
+</ul>
+<p>接下来通过一个具体例子来加深上述过程的认识。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="p">{</span><span class="w"> </span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">;</span><span class="w"> </span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">}</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="kt">int</span><span class="w"> </span><span class="nf">ref</span><span class="p">()</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="p">{</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">t2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">;</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">add</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">);</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nl">add:</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">   </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="no">$a1</span><span class="w">   </span><span class="c1"># a+b</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="nf">jr</span><span class="w">      </span><span class="no">$ra</span><span class="w">             </span><span class="c1"># return</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nl">ref:</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">  </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">-16</span><span class="w">   </span><span class="c1"># stack allocate</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">    </span><span class="no">$a1</span><span class="p">,</span><span class="w"> </span><span class="mi">34</span><span class="w">         </span><span class="c1"># t2=34</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="nf">li.w</span><span class="w">    </span><span class="no">$a0</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="w">         </span><span class="c1"># t1=12</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">    </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">     </span><span class="c1"># save $ra</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">    </span><span class="nf">bl</span><span class="w">      </span><span class="no">add</span><span class="w">             </span><span class="c1"># call add()</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">    </span><span class="no">$ra</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w">     </span><span class="c1"># restore $ra</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">  </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="no">$sp</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="w">    </span><span class="c1"># stack release</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">    </span><span class="nf">jr</span><span class="w">      </span><span class="no">$ra</span><span class="w">             </span><span class="c1"># return</span>
+</code></pre></div>
+<p><code>bl</code>指令的寻址范围是该指令前后各2<sup>27</sup>字节的空间，尽管说这尚不能覆盖整个32位地址空间，但是对于绝大多数32位应用程序的text段来说，这个寻址距离是足够的了。所以汇编编程中的函数调用用<code>bl</code>指令基本就够用了，不再需要使用Link至<code>$ra</code>寄存器的间接跳转指令<code>jirl $ra, $r##, ####</code>。</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../ldst_instrs/index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 数据传输类指令" rel="prev">
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                数据传输类指令
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../llsc_instrs/index.html" class="md-footer__link md-footer__link--next" aria-label="Next: 用LL/SC指令构建基本同步原语" rel="next">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                用LL/SC指令构建基本同步原语
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 LoongsonEdu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://gitee.com/loongson-edu" target="_blank" rel="noopener" title="gitee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.984 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.016 0zm6.09 5.333c.328 0 .593.266.592.593v1.482a.594.594 0 0 1-.593.592H9.777c-.982 0-1.778.796-1.778 1.778v5.63c0 .327.266.592.593.592h5.63c.982 0 1.778-.796 1.778-1.778v-.296a.593.593 0 0 0-.592-.593h-4.15a.592.592 0 0 1-.592-.592v-1.482a.593.593 0 0 1 .593-.592h6.815c.327 0 .593.265.593.592v3.408a4 4 0 0 1-4 4H5.926a.593.593 0 0 1-.593-.593V9.778a4.444 4.444 0 0 1 4.445-4.444h8.296Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.top", "navigation.expand"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
+      
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+      
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+      
+    
+  </body>
+</html>

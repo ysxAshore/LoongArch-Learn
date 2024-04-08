@@ -1,0 +1,1003 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="LoongsonEdu">
+      
+      
+      
+        <link rel="prev" href="../compute_instrs/index.html">
+      
+      
+        <link rel="next" href="../br_jump_instrs/index.html">
+      
+      <link rel="icon" href="../../images/loongson3-image.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
+    
+    
+      
+        <title>数据传输类指令 - LA32R指令集学习指导手册</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="pink">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#la32r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-header__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LA32R指令集学习指导手册
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              数据传输类指令
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="LA32R指令集学习指导手册" class="md-nav__button md-logo" aria-label="LA32R指令集学习指导手册" data-md-component="logo">
+      
+  <img src="../../images/loongson3-image.png" alt="logo">
+
+    </a>
+    LA32R指令集学习指导手册
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        引言
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          LA32R中的用户态整型指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R中的用户态整型指令
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../instr_expression/index.html" class="md-nav__link">
+        LA32R的机器语言与汇编语言表达
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compute_instrs/index.html" class="md-nav__link">
+        算术逻辑移位类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          数据传输类指令
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./index.html" class="md-nav__link md-nav__link--active">
+        数据传输类指令
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    数据传输类指令
+  </a>
+  
+    <nav class="md-nav" aria-label="数据传输类指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    向寄存器中加载立即数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    寄存器间的传输数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    在寄存器和内存之间传输数据
+  </a>
+  
+    <nav class="md-nav" aria-label="在寄存器和内存之间传输数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loadstore" class="md-nav__link">
+    字节和半字load/store指令
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loadstore_1" class="md-nav__link">
+    汇编程序中load/store指令地址的计算
+  </a>
+  
+    <nav class="md-nav" aria-label="汇编程序中load/store指令地址的计算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    动态变量的地址的计算
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    静态变量的地址的确定
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../br_jump_instrs/index.html" class="md-nav__link">
+        分支跳转类指令
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llsc_instrs/index.html" class="md-nav__link">
+        用LL/SC指令构建基本同步原语
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../misc_instrs/index.html" class="md-nav__link">
+        其它用户态指令
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          LA32R汇编编程简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          LA32R汇编编程简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/workenv/index.html" class="md-nav__link">
+        LA32R汇编编程学习环境介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/common_directives/index.html" class="md-nav__link">
+        常用汇编器指示
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/pesudo_instrs/index.html" class="md-nav__link">
+        LA32R汇编器支持的伪指令汇总
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/register_convention/index.html" class="md-nav__link">
+        寄存器使用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/calling_convention/index.html" class="md-nav__link">
+        函数调用约定
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/addr_space/index.html" class="md-nav__link">
+        进程虚拟地址空间布局规范
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/stack_frame/index.html" class="md-nav__link">
+        栈帧布局
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../assembly/as_example/index.html" class="md-nav__link">
+        汇编编程示例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    数据传输类指令
+  </a>
+  
+    <nav class="md-nav" aria-label="数据传输类指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    向寄存器中加载立即数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    寄存器间的传输数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    在寄存器和内存之间传输数据
+  </a>
+  
+    <nav class="md-nav" aria-label="在寄存器和内存之间传输数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loadstore" class="md-nav__link">
+    字节和半字load/store指令
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loadstore_1" class="md-nav__link">
+    汇编程序中load/store指令地址的计算
+  </a>
+  
+    <nav class="md-nav" aria-label="汇编程序中load/store指令地址的计算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    动态变量的地址的计算
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    静态变量的地址的确定
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="la32r">LA32R中的用户态整型指令</h1>
+<h2 id="_1">数据传输类指令</h2>
+<p>前一节中我们介绍了LA32R中主要的运算类指令，那么如何为这些运算指令提供操作数呢，这就涉及到本节所关注的数据传输类指令。</p>
+<h3 id="_2">向寄存器中加载立即数</h3>
+<p>除了<code>addi.w</code>、<code>andi</code>、<code>ori</code>、<code>xori</code>、<code>slli.w</code>、<code>srli.w</code>、<code>srai.w</code>这些指令中以立即数形式存在的操作数外，最直接的提供操作数的方式就是向寄存器中加载一个立即数。为了实现高效的立即数加载，指令中定义了如下一条真实指令：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lu12i (<strong><em>l</em></strong><em>oad</em> <strong><em>u</em></strong><em>pper from bit</em><strong><em>12 i</em></strong><em>mmediate</em>)</td>
+<td>lu12i $r<em>x</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = <em>si20</em> &lt;&lt; 12</td>
+</tr>
+</tbody>
+</table>
+<p>不过，如果你不是在进行CPU硬件设计，那么建议你尽量记住并多使用汇编伪指令<code>li.w</code>。</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>li.w (<strong><em>l</em></strong><em>oad</em> <strong><em>i</em></strong><em>mmediate</em> <strong><em>w</em></strong><em>ord</em>)</td>
+<td>li.w $r<em>x</em>, <em>imm32</em></td>
+<td>GR[<em>x</em>] = <em>imm32</em></td>
+</tr>
+</tbody>
+</table>
+<p>作为一条伪指令，汇编器会根据immediate数值的范围自动生成一条指令或两条指令的序列。汇编器具体是如何实现的，感兴趣的可以自己写个汇编程序编译后再反汇编看一下。</p>
+<p><code>li.w</code>伪指令的立即数immediate的合法取值范围是[-2<sup>31</sup>, 2<sup>32</sup>-1]，这个范围里面上界的指数是32，不是笔误。汇编器的这个设计考虑到了大家的日常使用习惯，毕竟当你想装载一个第31位等于1的二进制数时（例如一个IO设备寄存器的写掩码），你可以直接写这个立即数而不用算出它的负数。譬如，你可以直接写<code>li.w $t0, 0xfefca147</code>，而不用写成<code>li.w $t0, -0x1035eb9</code>。</p>
+<h3 id="_3">寄存器间的传输数据</h3>
+<p>LA32R中可以用伪指令<code>move</code>来完成寄存器间的数据传输。</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>move (<strong><em>move</em></strong>)</td>
+<td>move $r<em>x</em>, $r<em>y</em></td>
+<td>GR[<em>x</em>] = GR[<em>y</em>]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_4">在寄存器和内存之间传输数据</h3>
+<p>RISC型指令集仅通过load/store指令在寄存器和内存之间传输数据。LA32R中普通<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>的load/store指令如下：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ld.b (<strong><em>l</em></strong><em>oa</em><strong><em>d</em></strong> <strong><em>b</em></strong><em>yte signed</em>)</td>
+<td>ld.b $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = sext32(MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][7:0])</td>
+</tr>
+<tr>
+<td>ld.bu (<strong><em>l</em></strong><em>oa</em><strong><em>d</em></strong> <strong><em>b</em></strong><em>yte</em> <strong><em>u</em></strong><em>nsigned</em>)</td>
+<td>ld.bu $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = zext32(MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][7:0])</td>
+</tr>
+<tr>
+<td>ld.h (<strong><em>l</em></strong><em>oa</em><strong><em>d</em></strong> <strong><em>h</em></strong><em>alfword signed</em>)</td>
+<td>ld.h $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = sext32(MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][15:0])</td>
+</tr>
+<tr>
+<td>ld.hu (<strong><em>l</em></strong><em>oa</em><strong><em>d</em></strong> <strong><em>h</em></strong><em>alfword</em> <strong><em>u</em></strong><em>nsigned</em>)</td>
+<td>ld.hu $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = zext32(MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][15:0])</td>
+</tr>
+<tr>
+<td>ld.w (<strong><em>l</em></strong><em>oa</em><strong><em>d</em></strong> <strong><em>w</em></strong><em>ord signed</em>)</td>
+<td>ld.w $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>GR[<em>x</em>] = MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][31:0]</td>
+</tr>
+<tr>
+<td>st.b (<strong><em>st</em></strong><em>ore</em> <strong><em>b</em></strong><em>yte</em>)</td>
+<td>st.b $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][7:0] = GR[<em>x</em>][7:0]</td>
+</tr>
+<tr>
+<td>st.h (<strong><em>st</em></strong><em>ore</em> <strong><em>h</em></strong><em>alfword</em>)</td>
+<td>st.h $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][15:0] = GR[<em>x</em>][15:0]</td>
+</tr>
+<tr>
+<td>st.w (<strong><em>st</em></strong><em>ore</em> <strong><em>w</em></strong><em>ord</em>)</td>
+<td>st.w $r<em>x</em>, $r<em>y</em>, <em>si12</em></td>
+<td>MEM[GR[<em>y</em>] + sext32(<em>si12</em>)][31:0] = GR[<em>x</em>]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="loadstore">字节和半字load/store指令</h4>
+<p>指令集中定义字节和半字load/store指令的目的主要有两个。第一个目的是为了CPU访问一些只能接收字节或半字位宽访问的设备。像LA32R这类RISC指令基本上都采用的是Memory Mapped I/O的方式来访问外设的<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>，如果不通过load指令的类型来区分访问位宽，就无法访问只能接收字节或半字位宽访问的设备。第二个目的是为了加速从内存装载char型、short型数据，否则就只能从内存装载一个字到寄存器，然后再利用移位等操作提取出所需的数据，即需要用花费数条指令才能完成单条字节、半字load指令就可完成的功能。</p>
+<p>字节和半字的load指令都有singed和unsigned两个，是为了适应char和unsigned char、short和unsigned short不同数据类型的访问对象。指令集这样设计是从性能优化的目的来考虑的。否则，只定义有符号扩展的或者无符号扩展的字节、半字load指令，再对取回到寄存器中的数据按照需求用指令完成相应的符号扩展，技术上也是可行的，只不过有的情况会多生成一些用于符号扩展的运算类指令，影响性能罢了。</p>
+<p><strong><em>TODO：对于接触硬件比较少的读者来说，Memory Mapped I/O可能有点难以理解，不过暂时不知道推荐什么参考材料合适。</em></strong></p>
+<h4 id="loadstore_1">汇编程序中load/store指令地址的计算</h4>
+<p>这一小节我们并不是要复习load/store指令采用“寄存器基址+立即数偏移”寻址方式这个知识点。我们主要是想讨论汇编编程时load/store指令基址寄存器和偏移量各自如何计算。</p>
+<p>汇编中load/store指令访问的地址，绝大多数可以看作是C语言中变量的地址。我们知道C语言中有动态变量和静态变量。这两类变量在程序运行时处在不同的内存区域，其中动态变量分配在栈和堆上，而位于Data段和BSS段的静态变量则被系统分配在其它内存区域。我们接下来将按照动态变量和静态变量两种类型做进一步讨论。如果想进一步了解不同类型变量所在内存区域具体如何划分和管理，可以阅读本手册第2部分关于Linux/LA32R系统下进程地址空间划分的介绍内容。</p>
+<h5 id="_5">动态变量的地址的计算</h5>
+<p>堆上数据的分配和释放，全部由程序员自行完成，即堆上的动态变量load/store的地址完全是由你自己来定的，只要你能确保堆上每个变量所用的地址：（1）装载后位于内存中给堆分配的区域，即不会侵入到栈空间或其它代码、数据空间；（2）不会和堆上其它变量的地址冲突。这两点要求在Linux这样的系统上随着你所调试的应用规模增大将变得很有难度，所以除非是一些嵌入式应用场景下程序直接运行在裸金属（baremetal）执行环境中，我们不建议大家在汇编下操作堆上的动态变量。</p>
+<p>存放在栈空间上的动态变量，其load/store的基址寄存器通常就采用栈指针寄存器（<code>$sp</code>）或帧指针寄存器（<code>$fp</code>），即使你因为某些原因而另选其它寄存器做基址寄存器，所用的基址寄存器的值也是需要从这两个寄存器（之一）中推算出来的。编程中需要重点注意的地方是，因为<code>$sp</code>和<code>$fp</code>指向的位置在程序运行过程中会变化，所以编程人员必须清楚当这条load/store指令执行时，其访问变量的地址与<strong>此时</strong><code>$sp</code>或<code>$fp</code>的具体相对位置，对应到指令中就是立即数偏移量的值。</p>
+<h5 id="_6">静态变量的地址的确定</h5>
+<p>静态变量在程序运行时的地址，与链接和装载两个环节有关。为了避免受到装载过程中数据段具体被装载到什么地址这一运行时才能确定的因素的影响，我们<strong>强烈建议</strong>访问静态变量的寻址采用位置无关代码（Position Independent Code, 简称PIC）的风格。在LA32R所用的ABI中，我们主要通过相对指令PC寻址的方式来实现位置无关的寻址。对应到汇编开发中，则是利用伪指令<code>la.local</code>来获取地址。我们可以通过下面所列C代码和汇编代码之间的对应关系来看一下<code>la.local</code>的具体使用方法。</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">data_var_a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">data_var_b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">bss_var_c</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">bss_var_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data_var_a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">data_var_b</span><span class="p">;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="w">    </span><span class="na">.data</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nl">data_var_a:</span><span class="w">     </span><span class="na">.word</span><span class="w">   </span><span class="mi">1</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nl">data_var_b:</span><span class="w">     </span><span class="na">.word</span><span class="w">   </span><span class="mi">2</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="na">.bss</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nl">bss_var_c:</span><span class="w">      </span><span class="na">.skip</span><span class="w">   </span><span class="mi">4</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="na">.text</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="na">......</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">data_var_a</span><span class="w">         </span><span class="c1">#获取data_var_a的地址</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">             </span><span class="c1">#取回data_var_a的值</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">data_var_b</span><span class="w">         </span><span class="c1">#获取data_var_b的地址</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$t2</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">             </span><span class="c1">#取回data_var_b的值</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="nf">add.w</span><span class="w">       </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t2</span><span class="w">           </span><span class="c1">#data_var_a+data_var_b</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">bss_var_c</span><span class="w">          </span><span class="c1">#取回bss_var_c的地址</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="nf">st.w</span><span class="w">        </span><span class="no">$t3</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">             </span><span class="c1">#结果写入bss_var_c中</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="na">......</span>
+</code></pre></div>
+<p>上面例子中<code>la.local $t0, data_var_a</code>这条伪指令会被汇编器翻译成如下的两条指令：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">    </span><span class="nf">pcaddu12i</span><span class="w">   </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">pcrel</span><span class="p">(</span><span class="no">adr</span><span class="p">(</span><span class="no">data_var_a</span><span class="p">)</span><span class="err">+</span><span class="mi">0x800</span><span class="p">)</span><span class="err">&lt;&lt;</span><span class="mi">32</span><span class="err">&gt;&gt;</span><span class="mi">44</span><span class="c1">;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nf">addi.w</span><span class="w">      </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">pcrel</span><span class="p">(</span><span class="no">adr</span><span class="p">(</span><span class="no">data_var_a</span><span class="p">)</span><span class="err">+</span><span class="mi">4</span><span class="p">)-(</span><span class="no">pcrel</span><span class="p">(</span><span class="no">adr</span><span class="p">(</span><span class="no">data_var_a</span><span class="p">)</span><span class="err">+</span><span class="mi">4</span><span class="err">+</span><span class="mi">0x800</span><span class="p">)</span><span class="err">&gt;&gt;</span><span class="mi">12</span><span class="err">&lt;&lt;</span><span class="mi">12</span><span class="p">)</span><span class="c1">;</span>
+</code></pre></div>
+<p>上面的表达式中，adr(L)表示链接后标签L的地址，pcrel(A)表示地址A相对于这条指令PC的偏移量。<code>pcaddu12i</code>指令的速查内容如下：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>汇编表达</th>
+<th>功能简释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pcaddu12i (<strong><em>pc add u</em></strong><em>pper from bit</em><strong><em>12 i</em></strong><em>mmediate</em>)</td>
+<td>pcaddu12i $r<em>x</em>, <em>si20</em></td>
+<td>GR[<em>x</em>] = PC + sext32(<em>si20</em> &lt;&lt; 12)</td>
+</tr>
+</tbody>
+</table>
+<p>可能有的读者已经发现了，原有汇编程序中的</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="w">    </span><span class="nf">la.local</span><span class="w">    </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">data_var_a</span><span class="w">         </span><span class="c1">#获取data_var_a的地址</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">             </span><span class="c1">#取回data_var_a的值</span>
+</code></pre></div>
+<p>可以直接用如下两条指令代替：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="w">    </span><span class="nf">pcaddu12i</span><span class="w">   </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">pcrel</span><span class="p">(</span><span class="no">adr</span><span class="p">(</span><span class="no">data_var_a</span><span class="p">)</span><span class="err">+</span><span class="mi">0x800</span><span class="p">)</span><span class="err">&lt;&lt;</span><span class="mi">32</span><span class="err">&gt;&gt;</span><span class="mi">44</span><span class="c1">;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nf">ld.w</span><span class="w">        </span><span class="no">$t1</span><span class="p">,</span><span class="w"> </span><span class="no">$t0</span><span class="p">,</span><span class="w"> </span><span class="no">pcrel</span><span class="p">(</span><span class="no">adr</span><span class="p">(</span><span class="no">data_var_a</span><span class="p">)</span><span class="err">+</span><span class="mi">4</span><span class="p">)-(</span><span class="no">pcrel</span><span class="p">(</span><span class="no">adr</span><span class="p">(</span><span class="no">data_var_a</span><span class="p">)</span><span class="err">+</span><span class="mi">4</span><span class="err">+</span><span class="mi">0x800</span><span class="p">)</span><span class="err">&gt;&gt;</span><span class="mi">12</span><span class="err">&lt;&lt;</span><span class="mi">12</span><span class="p">)</span><span class="c1">;</span>
+</code></pre></div>
+<p>不过，由于目前LA32R的汇编器还不支持形如<code>ld.w.local $t1, data_var_a</code>这样的伪指令，所以还无法在汇编开发时获得上述的高效代码。</p>
+<p>既然有<code>la.local</code>这样的伪指令，那么有没有<code>la.global</code>这样的伪指令呢？答案是有的。不过，LA32R的工具链对于<code>la.global</code>伪指令展开的位置无关寻址指令序列是基于GOT表的。因为访问GOT表需要一条load指令，所以基于GOT表的PIC寻址的性能开销通常大于相对指令PC寻址方式。在没有装载器（Loader）的裸金属执行环境中开发程序，就更要慎重使用<code>la.global</code>，除非你能确保在其需要访问的GOT表表项位置上已存入正确的数值。<code>la.global</code>通常用来加载位于不同汇编文件中的标签的地址。如果不是十分必要，尽量不要用<code>la.global</code>。</p>
+<p>熟悉MIPS或RISC-V汇编编程的读者，应该经常用<code>la</code>这个宏指令/伪指令。请你们在LA32R下开发汇编时注意<strong>不要习惯性的写了</strong><code>la</code>而不是我们推荐的<code>la.local</code>。因为LA32R的工具链同时也支持<code>la</code>这条伪指令（意味编译过程不会有报错提醒你注意），但是<code>la</code>是与<code>la.global</code>等价的，所以很可能会花费你不少时间去de出这个bug。</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>这里说普通是为了与支持原子访存的<code>ll.w</code>和<code>sc.w</code>指令区别开来。&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>X86指令集有专门用于访问I/O端口空间的I/O指令。不过这并意味着基于X86架构的系统中不可以采用Memory Mapped I/O方式来进行I/O访问。&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../compute_instrs/index.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 算术逻辑移位类指令" rel="prev">
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                算术逻辑移位类指令
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../br_jump_instrs/index.html" class="md-footer__link md-footer__link--next" aria-label="Next: 分支跳转类指令" rel="next">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                分支跳转类指令
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 LoongsonEdu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://gitee.com/loongson-edu" target="_blank" rel="noopener" title="gitee.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.984 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.016 0zm6.09 5.333c.328 0 .593.266.592.593v1.482a.594.594 0 0 1-.593.592H9.777c-.982 0-1.778.796-1.778 1.778v5.63c0 .327.266.592.593.592h5.63c.982 0 1.778-.796 1.778-1.778v-.296a.593.593 0 0 0-.592-.593h-4.15a.592.592 0 0 1-.592-.592v-1.482a.593.593 0 0 1 .593-.592h6.815c.327 0 .593.265.593.592v3.408a4 4 0 0 1-4 4H5.926a.593.593 0 0 1-.593-.593V9.778a4.444 4.444 0 0 1 4.445-4.444h8.296Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.top", "navigation.expand"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
+      
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+      
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+      
+    
+  </body>
+</html>
