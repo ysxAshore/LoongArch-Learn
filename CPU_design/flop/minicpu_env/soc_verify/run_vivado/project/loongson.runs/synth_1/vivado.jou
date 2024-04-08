@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Sun Dec 17 16:43:25 2023
+# Process ID: 50853
+# Current directory: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1
+# Command line: vivado -log soc_mini_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source soc_mini_top.tcl
+# Log file: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1/soc_mini_top.vds
+# Journal file: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1/vivado.jou
+# Running On: ysxAshore-Ubuntu, OS: Linux, CPU Frequency: 4618.655 MHz, CPU Physical cores: 6, Host memory: 16662 MB
+#-----------------------------------------------------------
+source soc_mini_top.tcl -notrace

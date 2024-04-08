@@ -1,0 +1,295 @@
+
+*** Running vivado
+    with args -log soc_mini_top.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source soc_mini_top.tcl
+
+
+****** Vivado v2023.1 (64-bit)
+  **** SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+  **** IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+  **** SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source soc_mini_top.tcl -notrace
+Command: synth_design -top soc_mini_top -part xc7a200tfbg676-1
+Starting synth_design
+WARNING: [Vivado_Tcl 4-393] The 'Synthesis' target of the following IPs are stale, please generate the output products using the generate_target or synth_ip command before running synth_design.
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/xilinx_ip/inst_ram/inst_ram.xci
+
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Device 21-403] Loading part xc7a200tfbg676-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 50920
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 2044.953 ; gain = 377.770 ; free physical = 2595 ; free virtual = 10259
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'soc_mini_top' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/soc_mini_top.v:65]
+INFO: [Synth 8-6157] synthesizing module 'clk_pll' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-50853-ysxAshore-Ubuntu/realtime/clk_pll_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'clk_pll' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-50853-ysxAshore-Ubuntu/realtime/clk_pll_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'minicpu_top' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/minicpu_top.v:1]
+INFO: [Synth 8-6157] synthesizing module 'decoder_6_64' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:40]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_6_64' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:40]
+INFO: [Synth 8-6157] synthesizing module 'decoder_4_16' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:14]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_4_16' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:14]
+INFO: [Synth 8-6157] synthesizing module 'decoder_2_4' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_2_4' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:1]
+INFO: [Synth 8-6157] synthesizing module 'decoder_5_32' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:27]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_5_32' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/tools.v:27]
+INFO: [Synth 8-6157] synthesizing module 'regfile' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/regfile.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'regfile' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/regfile.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'minicpu_top' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/miniCPU/minicpu_top.v:1]
+INFO: [Synth 8-6157] synthesizing module 'inst_ram' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-50853-ysxAshore-Ubuntu/realtime/inst_ram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'inst_ram' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-50853-ysxAshore-Ubuntu/realtime/inst_ram_stub.v:6]
+WARNING: [Synth 8-689] width (16) of port connection 'a' does not match port width (5) of module 'inst_ram' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/soc_mini_top.v:141]
+INFO: [Synth 8-6157] synthesizing module 'confreg' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/CONFREG/confreg.v:46]
+INFO: [Synth 8-6155] done synthesizing module 'confreg' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/CONFREG/confreg.v:46]
+INFO: [Synth 8-6155] done synthesizing module 'soc_mini_top' (0#1) [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/soc_mini_top.v:65]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2113.891 ; gain = 446.707 ; free physical = 2491 ; free virtual = 10164
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2131.703 ; gain = 464.520 ; free physical = 2487 ; free virtual = 10160
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2131.703 ; gain = 464.520 ; free physical = 2487 ; free virtual = 10160
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2131.703 ; gain = 0.000 ; free physical = 2486 ; free virtual = 10159
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/xilinx_ip/inst_ram/inst_ram/inst_ram_in_context.xdc] for cell 'inst_ram'
+Finished Parsing XDC File [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/xilinx_ip/inst_ram/inst_ram/inst_ram_in_context.xdc] for cell 'inst_ram'
+Parsing XDC File [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc] for cell 'pll.clk_pll'
+Finished Parsing XDC File [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc] for cell 'pll.clk_pll'
+Parsing XDC File [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/constraints/soc_mini_top.xdc]
+WARNING: [Constraints 18-619] A clock with name 'clk' already exists, overwriting the previous clock with the same name. [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/constraints/soc_mini_top.xdc:5]
+WARNING: [Vivado 12-508] No pins matched 'pll.clk_pll/inst/plle2_adv_inst/CLKOUT1'. [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/constraints/soc_mini_top.xdc:44]
+WARNING: [Vivado 12-508] No pins matched 'pll.clk_pll/inst/plle2_adv_inst/CLKOUT0'. [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/constraints/soc_mini_top.xdc:45]
+Finished Parsing XDC File [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/constraints/soc_mini_top.xdc]
+WARNING: [Project 1-498] One or more constraints failed evaluation while reading constraint file [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/constraints/soc_mini_top.xdc] and the design contains unresolved black boxes. These constraints will be read post-synthesis (as long as their source constraint file is marked as used_in_implementation) and should be applied correctly then. You should review the constraints listed in the file [.Xil/soc_mini_top_propImpl.xdc] and check the run log file to verify that these constraints were correctly applied.
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/constraints/soc_mini_top.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/soc_mini_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/soc_mini_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2225.453 ; gain = 0.000 ; free physical = 2437 ; free virtual = 10142
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2225.453 ; gain = 0.000 ; free physical = 2437 ; free virtual = 10142
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2434 ; free virtual = 10139
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a200tfbg676-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2434 ; free virtual = 10140
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property IO_BUFFER_TYPE = NONE for clk. (constraint file  /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc, line 4).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for clk. (constraint file  /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc, line 5).
+Applied set_property KEEP_HIERARCHY = SOFT for inst_ram. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for \pll.clk_pll . (constraint file  auto generated constraint).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2434 ; free virtual = 10140
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2431 ; free virtual = 10140
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 1     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 5     
+	   2 Input    8 Bit        Muxes := 1     
+	   2 Input    5 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 740 (col length:100)
+BRAMs: 730 (col length: RAMB18 100 RAMB36 50)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2407 ; free virtual = 10124
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Preliminary Mapping Report (see note below)
++-------------+----------------------+-----------+----------------------+--------------+
+|Module Name  | RTL Object           | Inference | Size (Depth x Width) | Primitives   | 
++-------------+----------------------+-----------+----------------------+--------------+
+|soc_mini_top | cpu/u_regfile/rf_reg | Implied   | 32 x 32              | RAM32M x 12  | 
++-------------+----------------------+-----------+----------------------+--------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-565] redefining clock 'clk'
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2384 ; free virtual = 10104
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:14 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2382 ; free virtual = 10102
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Final Mapping Report
++-------------+----------------------+-----------+----------------------+--------------+
+|Module Name  | RTL Object           | Inference | Size (Depth x Width) | Primitives   | 
++-------------+----------------------+-----------+----------------------+--------------+
+|soc_mini_top | cpu/u_regfile/rf_reg | Implied   | 32 x 32              | RAM32M x 12  | 
++-------------+----------------------+-----------+----------------------+--------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:14 ; elapsed = 00:00:14 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2382 ; free virtual = 10102
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2376 ; free virtual = 10098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2376 ; free virtual = 10098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2376 ; free virtual = 10098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2376 ; free virtual = 10098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2376 ; free virtual = 10098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2376 ; free virtual = 10098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+--------------+----------+
+|      |BlackBox name |Instances |
++------+--------------+----------+
+|1     |clk_pll       |         1|
+|2     |inst_ram      |         1|
++------+--------------+----------+
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |clk_pll  |     1|
+|2     |inst_ram |     1|
+|3     |CARRY4   |    13|
+|4     |LUT1     |    17|
+|5     |LUT2     |    25|
+|6     |LUT3     |     5|
+|7     |LUT4     |     5|
+|8     |LUT5     |    12|
+|9     |LUT6     |   123|
+|10    |RAM32M   |    10|
+|11    |RAM32X1D |     4|
+|12    |FDRE     |    18|
+|13    |FDSE     |     5|
+|14    |IBUF     |     9|
+|15    |OBUF     |    16|
++------+---------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2394 ; free virtual = 10115
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 2 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:15 ; elapsed = 00:00:15 . Memory (MB): peak = 2225.453 ; gain = 464.520 ; free physical = 2394 ; free virtual = 10115
+Synthesis Optimization Complete : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2225.453 ; gain = 558.270 ; free physical = 2394 ; free virtual = 10115
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2225.453 ; gain = 0.000 ; free physical = 2676 ; free virtual = 10400
+INFO: [Netlist 29-17] Analyzing 27 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2225.453 ; gain = 0.000 ; free physical = 2667 ; free virtual = 10391
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 14 instances were transformed.
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 10 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 4 instances
+
+Synth Design complete | Checksum: b40cbfe9
+INFO: [Common 17-83] Releasing license: Synthesis
+35 Infos, 8 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:21 ; elapsed = 00:00:20 . Memory (MB): peak = 2225.453 ; gain = 929.926 ; free physical = 2667 ; free virtual = 10391
+INFO: [Common 17-2834] synth_design peak Physical Memory [PSS] (MB): overall = 1803.032; main = 1497.665; forked = 374.938
+INFO: [Common 17-2834] synth_design peak Virtual Memory [VSS] (MB): overall = 3180.602; main = 2193.441; forked = 987.160
+INFO: [Common 17-1381] The checkpoint '/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/minicpu_env/soc_verify/run_vivado/project/loongson.runs/synth_1/soc_mini_top.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file soc_mini_top_utilization_synth.rpt -pb soc_mini_top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sun Dec 17 16:43:52 2023...
