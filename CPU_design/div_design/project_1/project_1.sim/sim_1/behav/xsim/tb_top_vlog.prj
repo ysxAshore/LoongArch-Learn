@@ -1,0 +1,15 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/tb" \
+"../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/rtl/compressor_3_2.sv" \
+"../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/rtl/int_div_radix_4_v1.sv" \
+"../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/rtl/lzc.sv" \
+"../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/rtl/radix_4_qds_v1.sv" \
+"../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/rtl/radix_4_sign_coder.sv" \
+"../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/rtl/radix_4_sign_detector.sv" \
+"../../../../../../../../../../Download/XS-Verilog-Library-main/XS-Verilog-Library-main/int_div_radix_4_v1/tb/tb_top.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

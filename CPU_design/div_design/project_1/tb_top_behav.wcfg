@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_top_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="std" />
+            <top_module name="tb_top" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="851.833 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,029.634 ns"></ZoomEndTime>
+      <Cursor1Time time="942.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="465"></NameColumnWidth>
+      <ValueColumnWidth column_width="107"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="15" />
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /flush_i" type="logic">
+      <obj_property name="ElementShortName">flush_i</obj_property>
+      <obj_property name="ObjectShortName">flush_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /div_start_valid_i" type="logic">
+      <obj_property name="ElementShortName">div_start_valid_i</obj_property>
+      <obj_property name="ObjectShortName">div_start_valid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /div_start_ready_o" type="logic">
+      <obj_property name="ElementShortName">div_start_ready_o</obj_property>
+      <obj_property name="ObjectShortName">div_start_ready_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /signed_op_i" type="logic">
+      <obj_property name="ElementShortName">signed_op_i</obj_property>
+      <obj_property name="ObjectShortName">signed_op_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /dividend_i" type="array">
+      <obj_property name="ElementShortName">dividend_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dividend_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /divisor_i" type="array">
+      <obj_property name="ElementShortName">divisor_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">divisor_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /div_finish_valid_o" type="logic">
+      <obj_property name="ElementShortName">div_finish_valid_o</obj_property>
+      <obj_property name="ObjectShortName">div_finish_valid_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /div_finish_ready_i" type="logic">
+      <obj_property name="ElementShortName">div_finish_ready_i</obj_property>
+      <obj_property name="ObjectShortName">div_finish_ready_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /quotient_o" type="array">
+      <obj_property name="ElementShortName">quotient_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">quotient_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /remainder_o" type="array">
+      <obj_property name="ElementShortName">remainder_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">remainder_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /divisor_is_zero_o" type="logic">
+      <obj_property name="ElementShortName">divisor_is_zero_o</obj_property>
+      <obj_property name="ObjectShortName">divisor_is_zero_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/\g_dut_32.dut /clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_top/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+</wave_config>
