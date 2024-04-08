@@ -1,0 +1,28 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../loongson.srcs/sources_1/new" --include "../../../../loongson.ip_user_files/ipstatic" \
+"../../../../../../rtl/xilinx_ip/clk_pll/clk_pll_clk_wiz.v" \
+"../../../../../../rtl/xilinx_ip/clk_pll/clk_pll.v" \
+"../../../../../../rtl/xilinx_ip/data_ram/sim/data_ram.v" \
+"../../../../../../rtl/xilinx_ip/inst_ram/sim/inst_ram.v" \
+"../../../../loongson.srcs/sources_1/new/alu.v" \
+"../../../../../../rtl/BRIDGE/bridge_1x2.v" \
+"../../../../../../rtl/CONFREG/confreg.v" \
+"../../../../loongson.srcs/sources_1/new/csr.v" \
+"../../../../loongson.srcs/sources_1/new/div.v" \
+"../../../../loongson.srcs/sources_1/new/exe_stage.v" \
+"../../../../loongson.srcs/sources_1/new/id_stage.v" \
+"../../../../loongson.srcs/sources_1/new/if_stage.v" \
+"../../../../loongson.srcs/sources_1/new/mem_stage.v" \
+"../../../../loongson.srcs/sources_1/new/mul.v" \
+"../../../../loongson.srcs/sources_1/new/mycpu_top.v" \
+"../../../../loongson.srcs/sources_1/new/regfile.v" \
+"../../../../../../rtl/soc_lite_top.v" \
+"../../../../loongson.srcs/sources_1/new/tools.v" \
+"../../../../loongson.srcs/sources_1/new/wb_stage.v" \
+"../../../../../../testbench/mycpu_tb.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

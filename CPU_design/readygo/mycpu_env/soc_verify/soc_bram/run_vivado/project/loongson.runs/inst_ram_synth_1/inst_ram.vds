@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Thu Mar 21 17:56:49 2024
+# Process ID: 10680
+# Current directory: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1
+# Command line: vivado.exe -log inst_ram.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source inst_ram.tcl
+# Log file: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram.vds
+# Journal file: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1\vivado.jou
+# Running On: ysxAshore, OS: Windows, CPU Frequency: 2592 MHz, CPU Physical cores: 6, Host memory: 34263 MB
+#-----------------------------------------------------------
+source inst_ram.tcl -notrace
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 431.023 ; gain = 163.898
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: inst_ram
+INFO: [IP_Flow 19-6922] IPCACHE: Exporting cached entry ae8af4513e690464 to dir: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.cache/ip/2023.1/a/e/ae8af4513e690464/inst_ram.dcp to E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram.dcp.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.cache/ip/2023.1/a/e/ae8af4513e690464/inst_ram_sim_netlist.v to E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_sim_netlist.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.cache/ip/2023.1/a/e/ae8af4513e690464/inst_ram_sim_netlist.vhdl to E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_sim_netlist.vhdl.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.cache/ip/2023.1/a/e/ae8af4513e690464/inst_ram_stub.v to E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_stub.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.cache/ip/2023.1/a/e/ae8af4513e690464/inst_ram_stub.vhdl to E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.runs/inst_ram_synth_1/inst_ram_stub.vhdl.
+INFO: [IP_Flow 19-4838] Using cached IP synthesis design for IP inst_ram, cache-ID = ae8af4513e690464.
+INFO: [Common 17-206] Exiting Vivado at Thu Mar 21 17:57:00 2024...

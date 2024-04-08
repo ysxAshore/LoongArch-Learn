@@ -1,0 +1,50 @@
+Vivado Simulator v2023.1
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /home/ysxashore/App/Xilinx/Vivado/2023.1/bin/unwrapped/lnx64.o/xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L blk_mem_gen_v8_4_6 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_top_behav xil_defaultlib.tb_top xil_defaultlib.glbl -log elaborate.log 
+Using 8 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'inst_sram_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:60]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 4 for port 'debug_wb_rf_wen' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:130]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 32 for port 'tlbrentry_out' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:181]
+WARNING: [VRFC 10-3091] actual bit length 1 differs from formal bit length 2 for port 'plv' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:183]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.if_stage
+Compiling module xil_defaultlib.decoder_6_64
+Compiling module xil_defaultlib.decoder_4_16
+Compiling module xil_defaultlib.decoder_2_4
+Compiling module xil_defaultlib.decoder_5_32
+Compiling module xil_defaultlib.regfile
+Compiling module xil_defaultlib.id_stage
+Compiling module xil_defaultlib.alu
+Compiling module xil_defaultlib.YDecoder
+Compiling module xil_defaultlib.BoothBase
+Compiling module xil_defaultlib.BoothInterBase_default
+Compiling module xil_defaultlib.add64
+Compiling module xil_defaultlib.mul_default
+Compiling module xil_defaultlib.div
+Compiling module xil_defaultlib.exe_stage
+Compiling module xil_defaultlib.mem_stage
+Compiling module xil_defaultlib.wb_stage
+Compiling module xil_defaultlib.csr
+Compiling module xil_defaultlib.mycpu_top
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_output_stage(...
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_softecc_outpu...
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6(C_FAMILY="art...
+Compiling module xil_defaultlib.inst_ram
+Compiling module xil_defaultlib.bridge_1x2
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_output_stage(...
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_softecc_outpu...
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6(C_FAMILY="art...
+Compiling module xil_defaultlib.data_ram
+Compiling module xil_defaultlib.confreg(SIMULATION=1'b1)
+Compiling module xil_defaultlib.soc_lite_top(SIMULATION=1'b1)
+Compiling module xil_defaultlib.tb_top
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_top_behav
