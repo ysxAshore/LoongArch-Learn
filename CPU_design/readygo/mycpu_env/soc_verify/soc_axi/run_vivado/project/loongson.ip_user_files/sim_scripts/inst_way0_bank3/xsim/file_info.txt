@@ -1,0 +1,2 @@
+inst_way0_bank3.v,verilog,xil_defaultlib,../../../../loongson.gen/sources_1/ip/inst_way0_bank3/sim/inst_way0_bank3.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v

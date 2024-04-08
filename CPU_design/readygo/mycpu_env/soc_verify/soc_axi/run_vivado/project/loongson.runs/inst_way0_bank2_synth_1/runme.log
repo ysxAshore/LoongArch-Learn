@@ -1,0 +1,23 @@
+
+*** Running vivado
+    with args -log inst_way0_bank2.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source inst_way0_bank2.tcl
+
+
+****** Vivado v2023.1 (64-bit)
+  **** SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+  **** IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+  **** SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source inst_way0_bank2.tcl -notrace
+create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 1338.406 ; gain = 0.023 ; free physical = 1637 ; free virtual = 9111
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: inst_way0_bank2
+INFO: [IP_Flow 19-6922] IPCACHE: Exporting cached entry 1bced46919122086 to dir: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/inst_way0_bank2_synth_1
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.cache/ip/2023.1/1/b/1bced46919122086/inst_way0_bank0.dcp to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/inst_way0_bank2_synth_1/inst_way0_bank2.dcp.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.cache/ip/2023.1/1/b/1bced46919122086/inst_way0_bank0_sim_netlist.v to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/inst_way0_bank2_synth_1/inst_way0_bank2_sim_netlist.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.cache/ip/2023.1/1/b/1bced46919122086/inst_way0_bank0_sim_netlist.vhdl to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/inst_way0_bank2_synth_1/inst_way0_bank2_sim_netlist.vhdl.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.cache/ip/2023.1/1/b/1bced46919122086/inst_way0_bank0_stub.v to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/inst_way0_bank2_synth_1/inst_way0_bank2_stub.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.cache/ip/2023.1/1/b/1bced46919122086/inst_way0_bank0_stub.vhdl to /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local_LA_readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/inst_way0_bank2_synth_1/inst_way0_bank2_stub.vhdl.
+INFO: [IP_Flow 19-4838] Using cached IP synthesis design for IP inst_way0_bank2, cache-ID = 1bced46919122086.
+INFO: [Common 17-206] Exiting Vivado at Mon Mar 11 12:25:51 2024...

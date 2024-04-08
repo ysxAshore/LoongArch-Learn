@@ -1,0 +1,11 @@
++====================+===================+===================================================+
+| Launch Setup Clock | Launch Hold Clock | Pin                                               |
++====================+===================+===================================================+
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_cpu/i_cache/FSM_sequential_cache_state_reg[1]/D |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_cpu/i_cache/FSM_sequential_cache_state_reg[2]/D |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_cpu/i_cache/FSM_sequential_cache_state_reg[0]/D |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_cpu/u_if_stage/if_valid_reg/D                   |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_cpu/u_if_stage/id_to_if_bus_r_valid_reg/D       |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_cpu/u_if_stage/bd_done_reg/D                    |
+| cpu_clk_clk_pll    | cpu_clk_clk_pll   | u_cpu/u_if_stage/mem_to_if_bus_r_valid_reg/D      |
++--------------------+-------------------+---------------------------------------------------+
