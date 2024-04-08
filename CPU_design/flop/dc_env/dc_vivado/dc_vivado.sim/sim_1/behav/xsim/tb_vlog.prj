@@ -1,0 +1,15 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../dc_vivado.gen/sources_1/ip/distributed_ram/sim/distributed_ram.v" \
+"../../../../dc_vivado.gen/sources_1/ip/block_ram/sim/block_ram.v" \
+"../../../../../exp4/show_sw.v" \
+"../../../../../exp4/tb.v" \
+"../../../../../exp3/ram_tb.v" \
+"../../../../../exp2/rf_tb.v" \
+"../../../../../exp1/testbench.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

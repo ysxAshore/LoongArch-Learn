@@ -1,0 +1,2 @@
+block_ram.v,verilog,xil_defaultlib,../../../../dc_vivado.gen/sources_1/ip/block_ram/sim/block_ram.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v

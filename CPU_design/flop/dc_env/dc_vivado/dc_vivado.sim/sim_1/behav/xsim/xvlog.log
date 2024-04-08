@@ -1,0 +1,16 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.gen/sources_1/ip/distributed_ram/sim/distributed_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module distributed_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.gen/sources_1/ip/block_ram/sim/block_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module block_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp4/show_sw.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module show_sw
+INFO: [VRFC 10-311] analyzing module show_num
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp4/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp3/ram_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp2/rf_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_top
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'tb_top' [/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp2/rf_tb.v:3]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp1/testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench

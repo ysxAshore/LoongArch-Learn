@@ -1,0 +1,13 @@
+0.7
+2020.2
+May  7 2023
+15:10:42
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.gen/sources_1/ip/block_ram/sim/block_ram.v,1702722062,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp4/show_sw.v,,block_ram,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.gen/sources_1/ip/distributed_ram/sim/distributed_ram.v,1702722101,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.gen/sources_1/ip/block_ram/sim/block_ram.v,,distributed_ram,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.sim/sim_1/behav/xsim/glbl.v,1683266558,verilog,,,,glbl,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp1/testbench.v,1702712505,verilog,,,,testbench,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp2/rf_tb.v,1702719139,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp1/testbench.v,,tb_top,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp3/distributed_ram_top.v,1702283588,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp3/ram_tb.v,,ram_top,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp3/ram_tb.v,1702283588,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp2/rf_tb.v,,,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp4/show_sw.v,1702740273,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp4/tb.v,,show_num;show_sw,,,,,,,,
+/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp4/tb.v,1702733768,verilog,,/home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/exp3/ram_tb.v,,tb,,,,,,,,

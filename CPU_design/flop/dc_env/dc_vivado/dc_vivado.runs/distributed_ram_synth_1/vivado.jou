@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Sat Dec 16 18:21:44 2023
+# Process ID: 25392
+# Current directory: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.runs/distributed_ram_synth_1
+# Command line: vivado -log distributed_ram.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source distributed_ram.tcl
+# Log file: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.runs/distributed_ram_synth_1/distributed_ram.vds
+# Journal file: /home/ysxashore/Data_DISK/Projects/Studying/LoongArch-Learn/CPU_design/cdp_ede_local/dc_env/dc_vivado/dc_vivado.runs/distributed_ram_synth_1/vivado.jou
+# Running On: ysxAshore-Ubuntu, OS: Linux, CPU Frequency: 4468.598 MHz, CPU Physical cores: 6, Host memory: 16662 MB
+#-----------------------------------------------------------
+source distributed_ram.tcl -notrace
