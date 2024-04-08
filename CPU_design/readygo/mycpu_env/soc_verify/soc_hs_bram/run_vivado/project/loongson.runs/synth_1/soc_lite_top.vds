@@ -1,0 +1,597 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Thu Mar 21 20:44:56 2024
+# Process ID: 7000
+# Current directory: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1
+# Command line: vivado.exe -log soc_lite_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source soc_lite_top.tcl
+# Log file: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/soc_lite_top.vds
+# Journal file: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1\vivado.jou
+# Running On: ysxAshore, OS: Windows, CPU Frequency: 2592 MHz, CPU Physical cores: 6, Host memory: 34263 MB
+#-----------------------------------------------------------
+source soc_lite_top.tcl -notrace
+create_project: Time (s): cpu = 00:00:02 ; elapsed = 00:00:07 . Memory (MB): peak = 432.398 ; gain = 164.078
+Command: read_checkpoint -auto_incremental -incremental E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/utils_1/imports/synth_1/soc_lite_top.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/utils_1/imports/synth_1/soc_lite_top.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top soc_lite_top -part xc7a200tfbg676-1
+Starting synth_design
+WARNING: [Vivado_Tcl 4-393] The 'Synthesis' target of the following IPs are stale, please generate the output products using the generate_target or synth_ip command before running synth_design.
+E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/inst_ram/inst_ram.xci
+
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Device 21-403] Loading part xc7a200tfbg676-1
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 19664
+INFO: [Synth 8-11241] undeclared symbol 'andn_result', assumed default net type 'wire' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/alu.v:76]
+INFO: [Synth 8-11241] undeclared symbol 'orn_result', assumed default net type 'wire' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/alu.v:78]
+WARNING: [Synth 8-6901] identifier 'is_doing' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/BRIDGE/bridge_1x2.v:88]
+WARNING: [Synth 8-6901] identifier 'is_doing' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/BRIDGE/bridge_1x2.v:89]
+INFO: [Synth 8-11241] undeclared symbol 'conf_we', assumed default net type 'wire' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/CONFREG/confreg.v:172]
+WARNING: [Synth 8-6901] identifier 'exe_excp' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:113]
+WARNING: [Synth 8-6901] identifier 'inst_ine' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v:273]
+WARNING: [Synth 8-6901] identifier 'id_to_if_bus_r_valid' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:50]
+WARNING: [Synth 8-6901] identifier 'id_to_if_bus_r' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:50]
+WARNING: [Synth 8-6901] identifier 'mem_to_if_bus_r_valid' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:55]
+WARNING: [Synth 8-6901] identifier 'mem_to_if_bus_r' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:55]
+WARNING: [Synth 8-6901] identifier 'ADEF_EXCP' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:76]
+WARNING: [Synth 8-6901] identifier 'bd_done' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:79]
+WARNING: [Synth 8-6901] identifier 'inst_sram_rdata_r_valid' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:87]
+WARNING: [Synth 8-6901] identifier 'excp_reg' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:87]
+WARNING: [Synth 8-6901] identifier 'mem_memW' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mem_stage.v:48]
+WARNING: [Synth 8-6901] identifier 'res_from_mem' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mem_stage.v:48]
+INFO: [Synth 8-11241] undeclared symbol 'excp_tlbrefill', assumed default net type 'wire' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:187]
+INFO: [Synth 8-11241] undeclared symbol 'llbitWData', assumed default net type 'wire' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:194]
+INFO: [Synth 8-11241] undeclared symbol 'llbitWen', assumed default net type 'wire' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:195]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 1314.898 ; gain = 410.324
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'soc_lite_top' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/soc_lite_top.v:67]
+INFO: [Synth 8-6157] synthesizing module 'clk_pll' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-7000-ysxAshore/realtime/clk_pll_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'clk_pll' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-7000-ysxAshore/realtime/clk_pll_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'mycpu_top' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:4]
+INFO: [Synth 8-6157] synthesizing module 'if_stage' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'if_stage' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:6]
+INFO: [Synth 8-6157] synthesizing module 'id_stage' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'decoder_6_64' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:47]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_6_64' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:47]
+INFO: [Synth 8-6157] synthesizing module 'decoder_4_16' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:17]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_4_16' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:17]
+INFO: [Synth 8-6157] synthesizing module 'decoder_2_4' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_2_4' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:2]
+INFO: [Synth 8-6157] synthesizing module 'decoder_5_32' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:32]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_5_32' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/tools.v:32]
+INFO: [Synth 8-6157] synthesizing module 'regfile' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/regfile.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'regfile' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/regfile.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'id_stage' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'exe_stage' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'alu' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/alu.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'alu' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/alu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mul' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:116]
+INFO: [Synth 8-6157] synthesizing module 'BoothInterBase' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:42]
+INFO: [Synth 8-6157] synthesizing module 'BoothBase' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:20]
+INFO: [Synth 8-6155] done synthesizing module 'BoothBase' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:20]
+INFO: [Synth 8-6157] synthesizing module 'YDecoder' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'YDecoder' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'BoothInterBase' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:42]
+INFO: [Synth 8-6157] synthesizing module 'add64' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:100]
+INFO: [Synth 8-6155] done synthesizing module 'add64' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:100]
+INFO: [Synth 8-6155] done synthesizing module 'mul' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:116]
+INFO: [Synth 8-6157] synthesizing module 'div' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/div.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'div' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/div.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'exe_stage' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'mem_stage' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mem_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'mem_stage' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mem_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'wb_stage' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/wb_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'wb_stage' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/wb_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'csr' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/csr.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'csr' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/csr.v:4]
+WARNING: [Synth 8-7071] port 'tlbrentry_out' of module 'csr' is unconnected for instance 'u_csr' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:174]
+WARNING: [Synth 8-7071] port 'plv' of module 'csr' is unconnected for instance 'u_csr' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:174]
+WARNING: [Synth 8-7023] instance 'u_csr' of module 'csr' has 25 connections declared, but only 23 given [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:174]
+INFO: [Synth 8-6155] done synthesizing module 'mycpu_top' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:4]
+INFO: [Synth 8-6157] synthesizing module 'sram_wrap' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/ram_wrap/sram_wrap.v:36]
+INFO: [Synth 8-6155] done synthesizing module 'sram_wrap' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/ram_wrap/sram_wrap.v:36]
+INFO: [Synth 8-6157] synthesizing module 'inst_ram' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-7000-ysxAshore/realtime/inst_ram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'inst_ram' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-7000-ysxAshore/realtime/inst_ram_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'bridge_1x2' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/BRIDGE/bridge_1x2.v:50]
+INFO: [Synth 8-6155] done synthesizing module 'bridge_1x2' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/BRIDGE/bridge_1x2.v:50]
+INFO: [Synth 8-6157] synthesizing module 'data_ram' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-7000-ysxAshore/realtime/data_ram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'data_ram' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/.Xil/Vivado-7000-ysxAshore/realtime/data_ram_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'confreg' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/CONFREG/confreg.v:74]
+	Parameter SIMULATION bound to: 1'b0 
+INFO: [Synth 8-6155] done synthesizing module 'confreg' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/CONFREG/confreg.v:74]
+INFO: [Synth 8-6155] done synthesizing module 'soc_lite_top' (0#1) [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/soc_lite_top.v:67]
+WARNING: [Synth 8-6014] Unused sequential element csr_euen_reg was removed.  [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/csr.v:213]
+WARNING: [Synth 8-3848] Net excp_tlbrefill in module/entity mycpu_top does not have driver. [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:187]
+WARNING: [Synth 8-3848] Net llbitWData in module/entity mycpu_top does not have driver. [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:194]
+WARNING: [Synth 8-3848] Net llbitWen in module/entity mycpu_top does not have driver. [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v:195]
+WARNING: [Synth 8-7129] Port conf_size[1] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_size[0] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[3] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[2] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[1] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[0] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[31] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[30] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[29] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[28] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[27] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[26] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[25] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[24] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[23] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[22] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[21] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[20] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[19] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[18] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[17] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[16] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mul_clk in module mul is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:01 ; elapsed = 00:00:09 . Memory (MB): peak = 1442.180 ; gain = 537.605
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:01 ; elapsed = 00:00:09 . Memory (MB): peak = 1442.180 ; gain = 537.605
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:01 ; elapsed = 00:00:09 . Memory (MB): peak = 1442.180 ; gain = 537.605
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.226 . Memory (MB): peak = 1442.180 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc] for cell 'pll.clk_pll'
+Finished Parsing XDC File [e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc] for cell 'pll.clk_pll'
+Parsing XDC File [e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/data_ram/data_ram/data_ram_in_context.xdc] for cell 'data_ram'
+Finished Parsing XDC File [e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/data_ram/data_ram/data_ram_in_context.xdc] for cell 'data_ram'
+Parsing XDC File [e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/inst_ram/inst_ram/inst_ram_in_context.xdc] for cell 'inst_ram'
+Finished Parsing XDC File [e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/inst_ram/inst_ram/inst_ram_in_context.xdc] for cell 'inst_ram'
+Parsing XDC File [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/constraints/soc_lite_top.xdc]
+WARNING: [Constraints 18-619] A clock with name 'clk' already exists, overwriting the previous clock with the same name. [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/constraints/soc_lite_top.xdc:5]
+WARNING: [Vivado 12-508] No pins matched 'pll.clk_pll/inst/plle2_adv_inst/CLKOUT1'. [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/constraints/soc_lite_top.xdc:126]
+WARNING: [Vivado 12-508] No pins matched 'pll.clk_pll/inst/plle2_adv_inst/CLKOUT0'. [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/constraints/soc_lite_top.xdc:127]
+Finished Parsing XDC File [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/constraints/soc_lite_top.xdc]
+WARNING: [Project 1-498] One or more constraints failed evaluation while reading constraint file [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/constraints/soc_lite_top.xdc] and the design contains unresolved black boxes. These constraints will be read post-synthesis (as long as their source constraint file is marked as used_in_implementation) and should be applied correctly then. You should review the constraints listed in the file [.Xil/soc_lite_top_propImpl.xdc] and check the run log file to verify that these constraints were correctly applied.
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/constraints/soc_lite_top.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/soc_lite_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/soc_lite_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 1554.898 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.063 . Memory (MB): peak = 1554.898 ; gain = 0.000
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:01 ; elapsed = 00:00:22 . Memory (MB): peak = 1554.898 ; gain = 650.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a200tfbg676-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:01 ; elapsed = 00:00:22 . Memory (MB): peak = 1554.898 ; gain = 650.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property IO_BUFFER_TYPE = NONE for clk. (constraint file  e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc, line 4).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for clk. (constraint file  e:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/rtl/xilinx_ip/clk_pll/clk_pll/clk_pll_in_context.xdc, line 5).
+Applied set_property KEEP_HIERARCHY = SOFT for \pll.clk_pll . (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for data_ram. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for inst_ram. (constraint file  auto generated constraint).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:01 ; elapsed = 00:00:22 . Memory (MB): peak = 1554.898 ; gain = 650.324
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3936] Found unconnected internal register 'UnsignR_reg' and it is trimmed from '33' to '32' bits. [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/div.v:68]
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'confreg'
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[15]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[16]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[0]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[1]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[2]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[3]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[4]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[5]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[6]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[7]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[8]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[9]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[10]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[11]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[12]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[13]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[14]' [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.srcs/sources_1/new/mul.v:165]
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE4 |                           000001 |                              000
+                  iSTATE |                           100000 |                              001
+                 iSTATE0 |                           010000 |                              010
+                 iSTATE1 |                           001000 |                              011
+                 iSTATE2 |                           000100 |                              100
+                 iSTATE3 |                           000010 |                              111
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'confreg'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:01 ; elapsed = 00:00:24 . Memory (MB): peak = 1554.898 ; gain = 650.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   64 Bit       Adders := 18    
+	   3 Input   33 Bit       Adders := 3     
+	   2 Input   32 Bit       Adders := 8     
+	   2 Input    8 Bit       Adders := 1     
+	   4 Input    4 Bit       Adders := 1     
+	   2 Input    4 Bit       Adders := 1     
+	   2 Input    3 Bit       Adders := 4     
+	   3 Input    2 Bit       Adders := 960   
++---XORs : 
+	   2 Input     32 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 11    
++---Registers : 
+	              183 Bit    Registers := 1     
+	              165 Bit    Registers := 1     
+	               70 Bit    Registers := 1     
+	               65 Bit    Registers := 1     
+	               34 Bit    Registers := 1     
+	               33 Bit    Registers := 2     
+	               32 Bit    Registers := 50    
+	               23 Bit    Registers := 1     
+	               16 Bit    Registers := 1     
+	                8 Bit    Registers := 3     
+	                7 Bit    Registers := 1     
+	                4 Bit    Registers := 3     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 37    
++---RAMs : 
+	              128 Bit	(4 X 32 bit)          RAMs := 2     
++---Muxes : 
+	   2 Input   64 Bit        Muxes := 1     
+	   2 Input   34 Bit        Muxes := 1     
+	   2 Input   33 Bit        Muxes := 2     
+	   3 Input   33 Bit        Muxes := 1     
+	   2 Input   32 Bit        Muxes := 66    
+	   4 Input   32 Bit        Muxes := 1     
+	   3 Input   32 Bit        Muxes := 4     
+	   3 Input   23 Bit        Muxes := 1     
+	   2 Input   23 Bit        Muxes := 1     
+	   2 Input   16 Bit        Muxes := 14    
+	   5 Input   16 Bit        Muxes := 1     
+	  17 Input   16 Bit        Muxes := 1     
+	   2 Input    8 Bit        Muxes := 1     
+	   8 Input    8 Bit        Muxes := 1     
+	   6 Input    6 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 6     
+	   2 Input    5 Bit        Muxes := 6     
+	   4 Input    4 Bit        Muxes := 1     
+	   6 Input    4 Bit        Muxes := 2     
+	   2 Input    4 Bit        Muxes := 4     
+	   5 Input    3 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 12    
+	   6 Input    3 Bit        Muxes := 2     
+	   2 Input    2 Bit        Muxes := 4     
+	   2 Input    1 Bit        Muxes := 32    
+	   4 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 740 (col length:100)
+BRAMs: 730 (col length: RAMB18 100 RAMB36 50)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-7129] Port conf_size[1] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_size[0] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[3] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[2] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[1] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_wstrb[0] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[31] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[30] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[29] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[28] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[27] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[26] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[25] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[24] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[23] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[22] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[21] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[20] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[19] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[18] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[17] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port conf_addr[16] in module confreg is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mul_clk in module mul is either unconnected or has no load
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][29]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][28]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][27]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][26]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][25]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][24]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][23]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][22]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][21]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][20]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][19]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][18]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][17]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][16]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][15]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][14]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][13]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][12]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][11]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][10]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][31]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][30]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][29]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][28]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][27]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][26]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][25]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][24]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][23]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][22]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][21]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][20]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][19]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][18]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][17]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][16]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][15]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][14]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][13]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][12]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][11]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][10]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[1][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[1][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][11]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][10]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][4]) is unused and will be removed from module mul.
+INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:06 ; elapsed = 00:01:04 . Memory (MB): peak = 1554.898 ; gain = 650.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Preliminary Mapping Report (see note below)
++---------------+--------------------------------+-----------+----------------------+--------------+
+|Module Name    | RTL Object                     | Inference | Size (Depth x Width) | Primitives   | 
++---------------+--------------------------------+-----------+----------------------+--------------+
+|cpu/u_id_stage | u_regfile/rf_reg               | Implied   | 32 x 32              | RAM32M x 12  | 
+|soc_lite_top   | u_inst_sram_wrap/buf_rdata_reg | Implied   | 4 x 32               | RAM32M x 6   | 
+|soc_lite_top   | u_data_sram_wrap/buf_rdata_reg | Implied   | 4 x 32               | RAM32M x 6   | 
++---------------+--------------------------------+-----------+----------------------+--------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-565] redefining clock 'clk'
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:07 ; elapsed = 00:01:10 . Memory (MB): peak = 1554.898 ; gain = 650.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:07 ; elapsed = 00:01:18 . Memory (MB): peak = 1554.898 ; gain = 650.324
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Final Mapping Report
++---------------+--------------------------------+-----------+----------------------+--------------+
+|Module Name    | RTL Object                     | Inference | Size (Depth x Width) | Primitives   | 
++---------------+--------------------------------+-----------+----------------------+--------------+
+|cpu/u_id_stage | u_regfile/rf_reg               | Implied   | 32 x 32              | RAM32M x 12  | 
+|soc_lite_top   | u_inst_sram_wrap/buf_rdata_reg | Implied   | 4 x 32               | RAM32M x 6   | 
+|soc_lite_top   | u_data_sram_wrap/buf_rdata_reg | Implied   | 4 x 32               | RAM32M x 6   | 
++---------------+--------------------------------+-----------+----------------------+--------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:09 ; elapsed = 00:01:23 . Memory (MB): peak = 1740.363 ; gain = 835.789
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:10 ; elapsed = 00:01:29 . Memory (MB): peak = 1753.203 ; gain = 848.629
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:10 ; elapsed = 00:01:29 . Memory (MB): peak = 1753.203 ; gain = 848.629
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:10 ; elapsed = 00:01:30 . Memory (MB): peak = 1753.203 ; gain = 848.629
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:10 ; elapsed = 00:01:30 . Memory (MB): peak = 1753.203 ; gain = 848.629
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:10 ; elapsed = 00:01:30 . Memory (MB): peak = 1753.203 ; gain = 848.629
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:10 ; elapsed = 00:01:30 . Memory (MB): peak = 1753.203 ; gain = 848.629
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+--------------+----------+
+|      |BlackBox name |Instances |
++------+--------------+----------+
+|1     |clk_pll       |         1|
+|2     |inst_ram      |         1|
+|3     |data_ram      |         1|
++------+--------------+----------+
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |clk_pll  |     1|
+|2     |data_ram |     1|
+|3     |inst_ram |     1|
+|4     |BUFG     |     1|
+|5     |CARRY4   |   362|
+|6     |LUT1     |   170|
+|7     |LUT2     |   146|
+|8     |LUT3     |   796|
+|9     |LUT4     |   534|
+|10    |LUT5     |  1851|
+|11    |LUT6     |  1307|
+|12    |RAM32M   |    20|
+|13    |RAM32X1D |     8|
+|14    |FDRE     |  2035|
+|15    |FDSE     |    76|
+|16    |LD       |   816|
+|17    |IBUF     |    15|
+|18    |OBUF     |    71|
++------+---------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:10 ; elapsed = 00:01:30 . Memory (MB): peak = 1753.203 ; gain = 848.629
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 315 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:09 ; elapsed = 00:01:25 . Memory (MB): peak = 1753.203 ; gain = 735.910
+Synthesis Optimization Complete : Time (s): cpu = 00:00:10 ; elapsed = 00:01:30 . Memory (MB): peak = 1753.203 ; gain = 848.629
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.137 . Memory (MB): peak = 1753.203 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1206 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1753.203 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 844 instances were transformed.
+  LD => LDCE: 816 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 20 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 8 instances
+
+Synth Design complete | Checksum: 90c879b8
+INFO: [Common 17-83] Releasing license: Synthesis
+82 Infos, 192 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:11 ; elapsed = 00:01:38 . Memory (MB): peak = 1753.203 ; gain = 1287.441
+INFO: [Common 17-1381] The checkpoint 'E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_hs_bram/run_vivado/project/loongson.runs/synth_1/soc_lite_top.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file soc_lite_top_utilization_synth.rpt -pb soc_lite_top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Thu Mar 21 20:46:45 2024...

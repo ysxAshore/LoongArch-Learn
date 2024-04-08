@@ -1,0 +1,146 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (win64) Build 3865809 Sun May  7 15:05:29 MDT 2023
+| Date         : Thu Mar 21 20:54:31 2024
+| Host         : ysxAshore running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file soc_lite_top_control_sets_placed.rpt
+| Design       : soc_lite_top
+| Device       : xc7a200t
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |    68 |
+|    Minimum number of control sets                        |    68 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |   148 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |    68 |
+| >= 0 to < 4        |     2 |
+| >= 4 to < 6        |     4 |
+| >= 6 to < 8        |     1 |
+| >= 8 to < 10       |     4 |
+| >= 10 to < 12      |     1 |
+| >= 12 to < 14      |     3 |
+| >= 14 to < 16      |     0 |
+| >= 16              |    53 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |            1023 |          286 |
+| No           | No                    | Yes                    |               0 |            0 |
+| No           | Yes                   | No                     |             241 |           78 |
+| Yes          | No                    | No                     |            1105 |          469 |
+| Yes          | No                    | Yes                    |               0 |            0 |
+| Yes          | Yes                   | No                     |             627 |          318 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++-----------------------------+-------------------------------------------------+------------------------------------+------------------+----------------+--------------+
+|         Clock Signal        |                  Enable Signal                  |          Set/Reset Signal          | Slice Load Count | Bel Load Count | Bels / Slice |
++-----------------------------+-------------------------------------------------+------------------------------------+------------------+----------------+--------------+
+|  pll.clk_pll/inst/cpu_clk   | u_confreg/step0_sample                          | u_confreg/inst_sram_rdata_r_valid1 |                1 |              1 |         1.00 |
+|  pll.clk_pll/inst/cpu_clk   | u_confreg/step1_sample                          | u_confreg/inst_sram_rdata_r_valid1 |                1 |              1 |         1.00 |
+|  pll.clk_pll/inst/cpu_clk   |                                                 | u_confreg/state_count0             |                1 |              4 |         4.00 |
+|  pll.clk_pll/inst/cpu_clk   | bridge_1x2/ena                                  |                                    |                1 |              4 |         4.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[41]_2              |                                    |                2 |              4 |         2.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[41]_0              | cpu/u_mem_stage/cpu_resetn_reg_1   |                2 |              4 |         2.00 |
+|  pll.clk_pll/inst/cpu_clk   | u_confreg/state_count_reg[3]                    | u_confreg/inst_sram_rdata_r_valid1 |                2 |              6 |         3.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cr1[31]_i_2_0[0]                | u_confreg/inst_sram_rdata_r_valid1 |                4 |              8 |         2.00 |
+|  pll.clk_pll/inst/cpu_clk   |                                                 | cpu/u_exe_stage/u_div/count0       |                4 |              8 |         2.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_valid_reg_2                 |                                    |                3 |              8 |         2.67 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_valid_reg_3                 |                                    |                3 |              8 |         2.67 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[44]_5[0]           |                                    |                8 |             10 |         1.25 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[46]_1[0]           | u_confreg/inst_sram_rdata_r_valid1 |                5 |             12 |         2.40 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[44]_6[0]           |                                    |                6 |             12 |         2.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_if_stage/ena                              |                                    |               10 |             13 |         1.30 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cpu_resetn_reg_0[0]             | u_confreg/inst_sram_rdata_r_valid1 |               11 |             16 |         1.45 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[44]_2[0]           |                                    |               10 |             19 |         1.90 |
+|  pll.clk_pll/inst/cpu_clk   |                                                 | u_confreg/step0_count0             |                5 |             20 |         4.00 |
+|  pll.clk_pll/inst/cpu_clk   |                                                 | u_confreg/key_count0               |                5 |             20 |         4.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[45]_0[0]           |                                    |                9 |             20 |         2.22 |
+|  pll.clk_pll/inst/cpu_clk   |                                                 | u_confreg/step1_count0             |                5 |             20 |         4.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[44]_1[0]           |                                    |                7 |             20 |         2.86 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[47]_0[0]           |                                    |               11 |             26 |         2.36 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[50]_0[0]           |                                    |               11 |             26 |         2.36 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_if_stage/if_pc[31]_i_1_n_0                | u_confreg/inst_sram_rdata_r_valid1 |               10 |             30 |         3.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_csr/csr_tval[31]_i_1_n_0                  |                                    |               12 |             31 |         2.58 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[45]_1[0]           |                                    |               12 |             31 |         2.58 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[44]_4[0]           |                                    |               10 |             31 |         3.10 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/u_div/UnsignS1_in[15]           |                                    |               15 |             31 |         2.07 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[43]_0[0]           |                                    |               16 |             32 |         2.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[43]_3[0]           |                                    |               13 |             32 |         2.46 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[44]_0[0]           | u_confreg/inst_sram_rdata_r_valid1 |               10 |             32 |         3.20 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[43]_2[0]           |                                    |               14 |             32 |         2.29 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[46]_0[0]           | u_confreg/inst_sram_rdata_r_valid1 |               13 |             32 |         2.46 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[43]_1[0]           |                                    |               12 |             32 |         2.67 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cr3[31]_i_2_0[0]                | u_confreg/inst_sram_rdata_r_valid1 |               18 |             32 |         1.78 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cr6[31]_i_2_0[0]                | u_confreg/inst_sram_rdata_r_valid1 |               17 |             32 |         1.88 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cr6[31]_i_2_1[0]                | u_confreg/inst_sram_rdata_r_valid1 |               22 |             32 |         1.45 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cr1[31]_i_2_1[0]                | u_confreg/inst_sram_rdata_r_valid1 |               18 |             32 |         1.78 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cpu_resetn_reg_0[0]             |                                    |               17 |             32 |         1.88 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/do_cnt_reg[3][0]                | u_confreg/inst_sram_rdata_r_valid1 |               20 |             32 |         1.60 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/cpu_resetn_reg[0]               |                                    |               18 |             32 |         1.78 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/exe_data_reg[177]_9[0]          | u_confreg/inst_sram_rdata_r_valid1 |               19 |             32 |         1.68 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/exe_data_reg[177]_10[0]         | u_confreg/inst_sram_rdata_r_valid1 |               14 |             32 |         2.29 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/exe_data_reg[177]_11[0]         | u_confreg/inst_sram_rdata_r_valid1 |               21 |             32 |         1.52 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/exe_data_reg[177]_8[0]          | u_confreg/inst_sram_rdata_r_valid1 |               16 |             32 |         2.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/io_simu[31]_i_2_0[0]            | u_confreg/inst_sram_rdata_r_valid1 |               14 |             32 |         2.29 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/u_div/UnsignR[31]_i_1_n_0       |                                    |                8 |             32 |         4.00 |
+|  pll.clk_pll/inst/timer_clk |                                                 | u_confreg/inst_sram_rdata_r_valid1 |                8 |             32 |         4.00 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/E[0]                            |                                    |               13 |             32 |         2.46 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/cpu_resetn_reg_0[0]             |                                    |               13 |             32 |         2.46 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_data_reg[41]_1[0]           |                                    |               15 |             32 |         2.13 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/u_div/p_1_in                    | cpu/u_exe_stage/u_div/count0       |                9 |             33 |         3.67 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/led_rg0_data[31]_i_2_0[0]       | u_confreg/inst_sram_rdata_r_valid1 |               20 |             34 |         1.70 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/led_rg1_data[31]_i_2_0[0]       | u_confreg/inst_sram_rdata_r_valid1 |               16 |             34 |         2.12 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_id_stage/E[0]                             |                                    |               11 |             34 |         3.09 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_mem_stage/mem_to_wb_valid                 |                                    |               22 |             38 |         1.73 |
+|  pll.clk_pll/inst/cpu_clk   | u_data_sram_wrap/buf_wptr0                      |                                    |                6 |             44 |         7.33 |
+|  pll.clk_pll/inst/cpu_clk   | u_inst_sram_wrap/buf_wptr0                      |                                    |                6 |             44 |         7.33 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/num_data[31]_i_2_0[0]           | u_confreg/inst_sram_rdata_r_valid1 |               35 |             64 |         1.83 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_if_stage/inst_sram_rdata_r_valid_reg_0[0] |                                    |               25 |             65 |         2.60 |
+|  pll.clk_pll/inst/timer_clk |                                                 |                                    |               24 |             67 |         2.79 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_wb_stage/wb_data_reg[69]_0                |                                    |               11 |             88 |         8.00 |
+|  pll.clk_pll/inst/cpu_clk   |                                                 | u_confreg/inst_sram_rdata_r_valid1 |               50 |            137 |         2.74 |
+|  pll.clk_pll/inst/cpu_clk   |                                                 |                                    |               54 |            140 |         2.59 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_exe_stage/u_div/E[0]                      |                                    |               64 |            164 |         2.56 |
+|  pll.clk_pll/inst/cpu_clk   | cpu/u_id_stage/exe_data0                        |                                    |               78 |            190 |         2.44 |
+|  cpu_resetn_BUFG            |                                                 |                                    |              208 |            816 |         3.92 |
++-----------------------------+-------------------------------------------------+------------------------------------+------------------+----------------+--------------+
+
+
