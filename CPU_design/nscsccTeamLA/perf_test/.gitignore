@@ -1,0 +1,17 @@
+soc_axi_perf/rtl/xilinx_ip/clk_pll/*
+!soc_axi_perf/rtl/xilinx_ip/clk_pll/clk_pll.xci
+
+soc_axi_perf/rtl/xilinx_ip/axi_clock_converter/*
+!soc_axi_perf/rtl/xilinx_ip/axi_clock_converter/axi_clock_converter.xci
+
+soc_axi_perf/rtl/xilinx_ip/axi_crossbar_1x2/*
+!soc_axi_perf/rtl/xilinx_ip/axi_crossbar_1x2/axi_crossbar_1x2.xci
+
+soc_axi_perf/rtl/xilinx_ip/axi_ram/*
+!soc_axi_perf/rtl/xilinx_ip/axi_ram/axi_ram.xci
+
+soc_axi_perf/run_vivado/mycpu_prj1/*
+!soc_axi_perf/run_vivado/mycpu_prj1/mycpu_prj1.xpr
+!soc_axi_perf/run_vivado/mycpu_prj1/run_allbench.tcl
+
+soc_axi_perf/rtl/myCPU/*

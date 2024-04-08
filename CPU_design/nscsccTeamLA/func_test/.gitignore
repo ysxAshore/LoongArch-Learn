@@ -1,0 +1,13 @@
+soc_verify/soc_axi/rtl/xilinx_ip/clk_pll/*
+!soc_verify/soc_axi/rtl/xilinx_ip/clk_pll/clk_pll.xci
+
+soc_verify/soc_axi/rtl/xilinx_ip/axi_ram/*
+!soc_verify/soc_axi/rtl/xilinx_ip/axi_ram/axi_ram.xci
+
+soc_verify/soc_axi/rtl/xilinx_ip/axi_crossbar_1x2/*
+!soc_verify/soc_axi/rtl/xilinx_ip/axi_crossbar_1x2/axi_crossbar_1x2.xci
+
+soc_verify/soc_axi/run_vivado/*
+!soc_verify/soc_axi/run_vivado/create_project.tcl
+
+gettrace/gettrace.sim/*
