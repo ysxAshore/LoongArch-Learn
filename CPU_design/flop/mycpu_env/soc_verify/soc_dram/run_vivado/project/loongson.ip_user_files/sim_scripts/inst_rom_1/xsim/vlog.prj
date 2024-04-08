@@ -1,0 +1,7 @@
+verilog xil_defaultlib  \
+"../../../../loongson.gen/sources_1/ip/inst_rom_1/sim/inst_rom.v" \
+
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
