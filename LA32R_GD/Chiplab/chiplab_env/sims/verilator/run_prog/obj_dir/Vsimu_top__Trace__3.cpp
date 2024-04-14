@@ -6759,23 +6759,28 @@ void Vsimu_top___024root__traceChgSub3(Vsimu_top___024root* vlSelf, VerilatedFst
                                               << 0x1cU) 
                                              | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[8U] 
                                                 >> 4U)))),32);
-            tracep->chgBit(oldp+1181,((1U & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                              >> 0x14U) 
-                                             | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                >> 0x13U)))));
+            tracep->chgBit(oldp+1181,(((((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                          >> 0x14U) 
+                                         | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                            >> 0x13U)) 
+                                        & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                                       & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                             >> 0x10U)))));
             tracep->chgIData(oldp+1182,(((IData)(4U) 
                                          + ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
                                              << 0xdU) 
                                             | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[3U] 
                                                >> 0x13U)))),32);
             tracep->chgBit(oldp+1183,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__refetch));
-            tracep->chgBit(oldp+1184,((((3U == (7U 
-                                                & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                   >> 0x1cU))) 
-                                        | (4U == (7U 
-                                                  & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                     >> 0x1cU)))) 
-                                       & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid))));
+            tracep->chgBit(oldp+1184,(((((3U == (7U 
+                                                 & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                    >> 0x1cU))) 
+                                         | (4U == (7U 
+                                                   & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                      >> 0x1cU)))) 
+                                        & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                                       & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                             >> 0x10U)))));
             tracep->chgWData(oldp+1185,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_wb_stage__DOT__wb_data),102);
             tracep->chgBit(oldp+1189,((1U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_wb_stage__DOT__wb_data[3U] 
                                              >> 5U))));
@@ -9988,26 +9993,27 @@ void Vsimu_top___024root__traceChgSub3(Vsimu_top___024root* vlSelf, VerilatedFst
                                                        | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[5U] 
                                                           >> 0x1eU))))
                                               : 0U))),32);
-            tracep->chgCData(oldp+2672,((0xfU & (((- (IData)(
-                                                             (3U 
-                                                              == 
-                                                              (7U 
-                                                               & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                                  >> 0x1cU))))) 
-                                                  & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
-                                                      << 4U) 
-                                                     | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[1U] 
-                                                        >> 0x1cU))) 
-                                                 | ((- (IData)(
-                                                               (4U 
-                                                                == 
-                                                                (7U 
-                                                                 & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                                    >> 0x1cU))))) 
-                                                    & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[3U] 
-                                                        << 2U) 
-                                                       | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
-                                                          >> 0x1eU)))))),5);
+            tracep->chgCData(oldp+2672,((0x1fU & ((
+                                                   (- (IData)(
+                                                              (3U 
+                                                               == 
+                                                               (7U 
+                                                                & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                                   >> 0x1cU))))) 
+                                                   & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
+                                                       << 4U) 
+                                                      | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[1U] 
+                                                         >> 0x1cU))) 
+                                                  | ((- (IData)(
+                                                                (4U 
+                                                                 == 
+                                                                 (7U 
+                                                                  & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                                     >> 0x1cU))))) 
+                                                     & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[3U] 
+                                                         << 2U) 
+                                                        | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
+                                                           >> 0x1eU)))))),5);
             tracep->chgBit(oldp+2673,((1U & ((1U == 
                                               (7U & 
                                                (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
@@ -10206,11 +10212,6 @@ void Vsimu_top___024root__traceChgSub3(Vsimu_top___024root* vlSelf, VerilatedFst
                                        & (~ (IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_wlast)))));
             tracep->chgBit(oldp+2700,(((IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_a_pop) 
                                        & (IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_a_queue_valid))));
-            tracep->chgBit(oldp+2701,(((IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_a_pop) 
-                                       & ((IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_b_pop) 
-                                          | (~ (IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_b_valid))))));
-            tracep->chgBit(oldp+2702,(((IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_b_pop) 
-                                       & (IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_b_queue_valid))));
         }
     }
 }

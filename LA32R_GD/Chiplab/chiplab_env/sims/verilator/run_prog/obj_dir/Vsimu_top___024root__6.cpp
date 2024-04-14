@@ -41,8 +41,19 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__19(Vsimu_top___024root* vlS
     CData/*31:0*/ __Vtemp418;
     CData/*31:0*/ __Vtemp419;
     CData/*31:0*/ __Vtemp420;
-    CData/*31:0*/ __Vtemp421;
     // Body
+    vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__fir5__S 
+        = ((0xffffffffffffffbfULL & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__fir5__S) 
+           | ((QData)((IData)((1U & (((IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__SecStageBoothRes
+                                               [0xcU] 
+                                               >> 6U)) 
+                                      + (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__SecStageBoothRes
+                                                 [0xdU] 
+                                                 >> 6U))) 
+                                     + (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__SecStageBoothRes
+                                                [0xeU] 
+                                                >> 6U)))))) 
+              << 6U));
     vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__fir5__S 
         = ((0xffffffffffffff7fULL & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__fir5__S) 
            | ((QData)((IData)((1U & (((IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__SecStageBoothRes
@@ -1378,11 +1389,12 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__19(Vsimu_top___024root* vlS
                                          | ((0x40U 
                                              & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_aluResult 
                                                 >> 6U)) 
-                                            | ((((5U 
-                                                  == 
-                                                  (7U 
-                                                   & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
-                                                      >> 0x1aU))) 
+                                            | (((((5U 
+                                                   == 
+                                                   (7U 
+                                                    & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
+                                                       >> 0x1aU))) 
+                                                  & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_valid)) 
                                                  & (~ (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__flush_excp_ertn))) 
                                                 << 5U) 
                                                | (0x1fU 
@@ -1711,13 +1723,18 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__19(Vsimu_top___024root* vlS
                                                              << 1U)))) 
                                                    | (((IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__tlbr_wen) 
                                                        << 2U) 
-                                                      | ((2U 
-                                                          & ((0x1ffeU 
-                                                              & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                                 >> 0x13U)) 
-                                                             | (0x3ffeU 
-                                                                & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                                   >> 0x12U)))) 
+                                                      | (((((0x1ffeU 
+                                                             & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                                >> 0x13U)) 
+                                                            | (0x3ffeU 
+                                                               & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                                  >> 0x12U))) 
+                                                           & ((IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid) 
+                                                              << 1U)) 
+                                                          & ((~ 
+                                                              (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                                               >> 0x10U)) 
+                                                             << 1U)) 
                                                          | (1U 
                                                             & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
                                                                >> 0x14U)))))));
@@ -1828,15 +1845,14 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__19(Vsimu_top___024root* vlS
                             << 0x1dU) | (0x1fff0000U 
                                          & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
                                             >> 3U)))) 
-           | ((0x8000U & ((((((2U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
-                                            >> 0x11U))) 
-                              | (3U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
-                                              >> 0x11U)))) 
-                             & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
-                            & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
-                                  >> 0x10U))) & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
-                          << 0xfU)) | (__Vtemp383[2U] 
-                                       >> 0x10U)));
+           | ((0x8000U & (((((2U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                           >> 0x11U))) 
+                             | (3U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                             >> 0x11U)))) 
+                            & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                           & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                 >> 0x10U))) << 0xfU)) 
+              | (__Vtemp383[2U] >> 0x10U)));
     vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__sec1__Carry 
         = ((0xfffffffffffffffeULL & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__sec1__Carry) 
            | (IData)((IData)((1U & ((((1U & (IData)(
@@ -9876,26 +9892,4 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__19(Vsimu_top___024root* vlS
     vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1 
         = ((0xffdfffffU & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1) 
            | (__Vtemp420 << 0x15U));
-    __Vtemp421 = ((((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_e
-                     [0x16U] & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_g
-                                [0x16U] | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_asid
-                                           [0x16U] 
-                                           == (0x3ffU 
-                                               & (IData)(
-                                                         (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__exe_to_tlb_bus 
-                                                          >> 7U)))))) 
-                    & ((0x3ffU & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_vppn
-                                  [0x16U] >> 9U)) == 
-                       (0x3ffU & (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__exe_to_tlb_bus 
-                                          >> 0x1aU))))) 
-                   & ((0x15U == vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_ps
-                       [0x16U]) | ((0x1ffU & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_vppn
-                                    [0x16U]) == (0x1ffU 
-                                                 & (IData)(
-                                                           (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__exe_to_tlb_bus 
-                                                            >> 0x11U)))))) 
-                  & (~ (0U != (0x3fffffU & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1))));
-    vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1 
-        = ((0xffbfffffU & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1) 
-           | (__Vtemp421 << 0x16U));
 }

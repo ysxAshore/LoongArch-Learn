@@ -6350,23 +6350,27 @@ void Vsimu_top___024root__traceFullSub3(Vsimu_top___024root* vlSelf, VerilatedFs
                                            << 0x1cU) 
                                           | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[8U] 
                                              >> 4U)))),32);
-        tracep->fullBit(oldp+6388,((1U & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                           >> 0x14U) 
-                                          | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                             >> 0x13U)))));
+        tracep->fullBit(oldp+6388,(((((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                       >> 0x14U) | 
+                                      (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                       >> 0x13U)) & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                                    & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                          >> 0x10U)))));
         tracep->fullIData(oldp+6389,(((IData)(4U) + 
                                       ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
                                         << 0xdU) | 
                                        (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[3U] 
                                         >> 0x13U)))),32);
         tracep->fullBit(oldp+6390,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__refetch));
-        tracep->fullBit(oldp+6391,((((3U == (7U & (
-                                                   vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                   >> 0x1cU))) 
-                                     | (4U == (7U & 
-                                               (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                >> 0x1cU)))) 
-                                    & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid))));
+        tracep->fullBit(oldp+6391,(((((3U == (7U & 
+                                              (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                               >> 0x1cU))) 
+                                      | (4U == (7U 
+                                                & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                   >> 0x1cU)))) 
+                                     & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                                    & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                          >> 0x10U)))));
         tracep->fullWData(oldp+6392,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_wb_stage__DOT__wb_data),102);
         tracep->fullBit(oldp+6396,((1U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_wb_stage__DOT__wb_data[3U] 
                                           >> 5U))));
@@ -9481,26 +9485,26 @@ void Vsimu_top___024root__traceFullSub3(Vsimu_top___024root* vlSelf, VerilatedFs
                                                     | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[5U] 
                                                        >> 0x1eU))))
                                            : 0U))),32);
-        tracep->fullCData(oldp+7879,((0xfU & (((- (IData)(
-                                                          (3U 
-                                                           == 
-                                                           (7U 
-                                                            & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                               >> 0x1cU))))) 
-                                               & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
-                                                   << 4U) 
-                                                  | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[1U] 
-                                                     >> 0x1cU))) 
-                                              | ((- (IData)(
-                                                            (4U 
-                                                             == 
-                                                             (7U 
-                                                              & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                                 >> 0x1cU))))) 
-                                                 & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[3U] 
-                                                     << 2U) 
-                                                    | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
-                                                       >> 0x1eU)))))),5);
+        tracep->fullCData(oldp+7879,((0x1fU & (((- (IData)(
+                                                           (3U 
+                                                            == 
+                                                            (7U 
+                                                             & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                                >> 0x1cU))))) 
+                                                & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
+                                                    << 4U) 
+                                                   | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[1U] 
+                                                      >> 0x1cU))) 
+                                               | ((- (IData)(
+                                                             (4U 
+                                                              == 
+                                                              (7U 
+                                                               & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                                  >> 0x1cU))))) 
+                                                  & ((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[3U] 
+                                                      << 2U) 
+                                                     | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__csr_to_mem_bus[2U] 
+                                                        >> 0x1eU)))))),5);
         tracep->fullBit(oldp+7880,((1U & ((1U == (7U 
                                                   & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
                                                      >> 0x1cU)))
@@ -9690,9 +9694,6 @@ void Vsimu_top___024root__traceFullSub3(Vsimu_top___024root* vlSelf, VerilatedFs
                                     & (IData)(vlSelf->simu_top__DOT__soc__DOT__sram_axi_ram__DOT__ram_w_b_queue_valid))));
         tracep->fullBit(oldp+7910,(((0U != (IData)(vlSelf->simu_top__DOT__soc__DOT__conf_s_ram_wen)) 
                                     & (0x8000U == (0xffffU 
-                                                   & vlSelf->simu_top__DOT__soc__DOT__conf_axi_ram__DOT__ram_w_a_data_awaddr)))));
-        tracep->fullBit(oldp+7911,(((0U != (IData)(vlSelf->simu_top__DOT__soc__DOT__conf_s_ram_wen)) 
-                                    & (0x8010U == (0xffffU 
                                                    & vlSelf->simu_top__DOT__soc__DOT__conf_axi_ram__DOT__ram_w_a_data_awaddr)))));
     }
 }

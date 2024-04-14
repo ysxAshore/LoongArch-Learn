@@ -200,7 +200,7 @@ module mem_stage (
   assign csrWData = csr_instRec == 2'b10 ? DataB : 
                     csr_instRec == 2'b11 ? DataB & DataA | ~DataA & csrRData : 32'b0;
   assign excpAboutAddr = excp_num[13] | excp_num[12] | excp_num[11] | excp_num[10] | excp_num[6] | excp_num[5] | excp_num[4] | excp_num[3] | excp_num[2] | excp_num[1];
-  assign tlbr_wen = excp_num[12] | excp_num[5];
+  assign tlbr_wen = (excp_num[12] | excp_num[5]) & mem_valid;
   assign tlb_addr_excp = excp_num[12] | excp_num[11] | excp_num[10] | excp_num[5] | excp_num[4] | excp_num[3] | excp_num[2] | excp_num[1];
   assign badv_addr = excp_num[13] | excp_num[12] | excp_num[11] | excp_num[10] ? mem_pc : mem_aluResult;
   assign subcode = 9'b0;
@@ -219,7 +219,7 @@ module mem_stage (
       excp_num[1] ? 6'h04 :  //exe pme
       6'h0;
   assign era = mem_pc;
-  assign llbitWen = inst_ll | inst_sc;
+  assign llbitWen = (inst_ll | inst_sc) & mem_valid & ~mem_excp;
   assign llbitWData = inst_ll & 1'b1 | inst_sc & 1'b0;
 
   //写reg数据
@@ -236,9 +236,9 @@ module mem_stage (
   wire refetch = mem_valid & (tlb_ins_rec != 3'b0 | (csr_instRec == 2'b10 | csr_instRec == 2'b11) & (csr_num == 14'h0 | csr_num == 14'h4 | csr_num == 14'h5 | csr_num == 14'h10 | csr_num == 14'h11 | csr_num== 14'h12 | csr_num == 14'h13 | csr_num == 14'h18 | csr_num == 14'h19 | csr_num == 14'h1a) | cacop_inst);
 
   //TLB WR FILL
-  wire we = (tlb_ins_rec == 3'b011 | tlb_ins_rec == 3'b100) & mem_valid;
-  wire [$clog2(`TLB_NUM)-1:0] w_index = {($clog2(`TLB_NUM)-1){tlb_ins_rec == 3'b011}} & tlb_index |
-                                        {($clog2(`TLB_NUM)-1){tlb_ins_rec == 3'b100}} & rand_index;
+  wire we = (tlb_ins_rec == 3'b011 | tlb_ins_rec == 3'b100) & mem_valid & ~mem_excp;
+  wire [$clog2(`TLB_NUM)-1:0] w_index = {$clog2(`TLB_NUM){tlb_ins_rec == 3'b011}} & tlb_index |
+                                        {$clog2(`TLB_NUM){tlb_ins_rec == 3'b100}} & rand_index;
   wire w_e = e;
   wire [18:0] w_vppn = vppn;
   wire [5:0] w_ps = ps;
@@ -275,7 +275,7 @@ module mem_stage (
   assign mem_to_if_bus = {
     refetch_pc,
     mem_valid & inst_idle,
-    mem_valid & tlbr_wen,
+    tlbr_wen,
     mem_valid & refetch,
     mem_valid & mem_excp,
     mem_valid & mem_ertn
@@ -311,7 +311,7 @@ module mem_stage (
   //封包传递给CSR的数据
   assign mem_to_csr_bus = {
     csrRAdd,
-    csrWen & mem_valid,
+    csrWen ,
     csrWAdd,
     csrWData,
     mem_excp & mem_valid,

@@ -15089,8 +15089,9 @@ void Vsimu_top___024root__traceFullSub0(Vsimu_top___024root* vlSelf, VerilatedFs
         tracep->fullBit(oldp+539,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__div_finish_ready_i));
         tracep->fullBit(oldp+540,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__cacop_load));
         tracep->fullBit(oldp+541,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__ALE_EXCP));
-        tracep->fullBit(oldp+542,(((5U == (7U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
-                                                 >> 0x1aU))) 
+        tracep->fullBit(oldp+542,((((5U == (7U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
+                                                  >> 0x1aU))) 
+                                    & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_valid)) 
                                    & (~ (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__flush_excp_ertn)))));
         tracep->fullBit(oldp+543,((1U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_aluResult 
                                          >> 0xcU))));

@@ -4105,13 +4105,18 @@ void Vsimu_top___024root___settle__TOP__6(Vsimu_top___024root* vlSelf) {
                                                            << 1U)))) 
                                                  | (((IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__tlbr_wen) 
                                                      << 2U) 
-                                                    | ((2U 
-                                                        & ((0x1ffeU 
-                                                            & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                               >> 0x13U)) 
-                                                           | (0x3ffeU 
-                                                              & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                                 >> 0x12U)))) 
+                                                    | (((((0x1ffeU 
+                                                           & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                              >> 0x13U)) 
+                                                          | (0x3ffeU 
+                                                             & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                                >> 0x12U))) 
+                                                         & ((IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid) 
+                                                            << 1U)) 
+                                                        & ((~ 
+                                                            (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                                             >> 0x10U)) 
+                                                           << 1U)) 
                                                        | (1U 
                                                           & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
                                                              >> 0x14U)))))));
@@ -4222,15 +4227,14 @@ void Vsimu_top___024root___settle__TOP__6(Vsimu_top___024root* vlSelf) {
                             << 0x1dU) | (0x1fff0000U 
                                          & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
                                             >> 3U)))) 
-           | ((0x8000U & ((((((2U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
-                                            >> 0x11U))) 
-                              | (3U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
-                                              >> 0x11U)))) 
-                             & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
-                            & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
-                                  >> 0x10U))) & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
-                          << 0xfU)) | (__Vtemp91[2U] 
-                                       >> 0x10U)));
+           | ((0x8000U & (((((2U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                           >> 0x11U))) 
+                             | (3U == (3U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                             >> 0x11U)))) 
+                            & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                           & (~ (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                 >> 0x10U))) << 0xfU)) 
+              | (__Vtemp91[2U] >> 0x10U)));
     vlSelf->simu_top__DOT__soc__DOT__conf_axi_ram__DOT__ram_w_a_data_push 
         = ((IData)(vlSelf->simu_top__DOT__soc__DOT__conf_axi_ram__DOT__ram_w_a_push) 
            & ((IData)(vlSelf->simu_top__DOT__soc__DOT__conf_axi_ram__DOT__ram_w_a_pop) 
@@ -4517,11 +4521,12 @@ void Vsimu_top___024root___settle__TOP__6(Vsimu_top___024root* vlSelf) {
                                          | ((0x40U 
                                              & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_aluResult 
                                                 >> 6U)) 
-                                            | ((((5U 
-                                                  == 
-                                                  (7U 
-                                                   & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
-                                                      >> 0x1aU))) 
+                                            | (((((5U 
+                                                   == 
+                                                   (7U 
+                                                    & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
+                                                       >> 0x1aU))) 
+                                                  & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_valid)) 
                                                  & (~ (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__flush_excp_ertn))) 
                                                 << 5U) 
                                                | (0x1fU 

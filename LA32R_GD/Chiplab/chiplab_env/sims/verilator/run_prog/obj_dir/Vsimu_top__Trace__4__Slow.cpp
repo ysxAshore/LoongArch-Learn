@@ -12,6 +12,9 @@ void Vsimu_top___024root__traceFullSub4(Vsimu_top___024root* vlSelf, VerilatedFs
     if (false && oldp) {}  // Prevent unused
     // Body
     {
+        tracep->fullBit(oldp+7911,(((0U != (IData)(vlSelf->simu_top__DOT__soc__DOT__conf_s_ram_wen)) 
+                                    & (0x8010U == (0xffffU 
+                                                   & vlSelf->simu_top__DOT__soc__DOT__conf_axi_ram__DOT__ram_w_a_data_awaddr)))));
         tracep->fullBit(oldp+7912,(((0U != (IData)(vlSelf->simu_top__DOT__soc__DOT__conf_s_ram_wen)) 
                                     & (0x8020U == (0xffffU 
                                                    & vlSelf->simu_top__DOT__soc__DOT__conf_axi_ram__DOT__ram_w_a_data_awaddr)))));

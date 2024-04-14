@@ -7873,19 +7873,22 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__18(Vsimu_top___024root* vlS
                                                        == (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__d_cache__DOT__missBuffer_retNum)) 
                                                       | (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__d_cache__DOT__requestBuffer_uncache))))))));
     __Vtemp376[2U] = (0x7ffffffU & ((0x4000000U & (
-                                                   (((3U 
-                                                      == 
-                                                      (7U 
-                                                       & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                          >> 0x1cU))) 
-                                                     | (4U 
-                                                        == 
-                                                        (7U 
-                                                         & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
-                                                            >> 0x1cU)))) 
-                                                    & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                                                   ((((3U 
+                                                       == 
+                                                       (7U 
+                                                        & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                           >> 0x1cU))) 
+                                                      | (4U 
+                                                         == 
+                                                         (7U 
+                                                          & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[4U] 
+                                                             >> 0x1cU)))) 
+                                                     & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_valid)) 
+                                                    & (~ 
+                                                       (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__mem_data[5U] 
+                                                        >> 0x10U))) 
                                                    << 0x1aU)) 
-                                    | ((0x1e00000U 
+                                    | ((0x3e00000U 
                                         & ((((- (IData)(
                                                         (3U 
                                                          == 
@@ -15907,16 +15910,4 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__18(Vsimu_top___024root* vlS
                                                 [0xeU] 
                                                 >> 5U)))))) 
               << 5U));
-    vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__fir5__S 
-        = ((0xffffffffffffffbfULL & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__fir5__S) 
-           | ((QData)((IData)((1U & (((IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__SecStageBoothRes
-                                               [0xcU] 
-                                               >> 6U)) 
-                                      + (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__SecStageBoothRes
-                                                 [0xdU] 
-                                                 >> 6U))) 
-                                     + (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__SecStageBoothRes
-                                                [0xeU] 
-                                                >> 6U)))))) 
-              << 6U));
 }

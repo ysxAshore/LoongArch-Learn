@@ -220,7 +220,7 @@ module exe_stage (
   assign exe_ready_go = ~(div & ~(complete_delay & div_finish_ready_i)) & ~((exe_memW | res_from_mem) & ~(data_sram_req & data_sram_addr_ok)) & ~(inst_cacop & ~cacop_ok) | mem_to_exe_flush_excp_ertn | exe_excp;//如果当前exe阶段组合逻辑正在计算div且complete_delay未高有效，那么阻塞exe
 
   //TLB SRCH INVTLB cacop模式2当作普通的load，所以也需要地址转换，只不过不用真的访存
-  wire invtlb_valid = tlb_ins_rec == 3'b101 & ~mem_to_exe_flush_excp_ertn;
+  wire invtlb_valid = tlb_ins_rec == 3'b101 & exe_valid & ~mem_to_exe_flush_excp_ertn;
   wire [18:0] s1_vppn = {19{tlb_ins_rec == 3'b001}} & vppn |
                         {19{tlb_ins_rec == 3'b101}} & DataB[31:13]|
                         {19{exe_valid & (exe_memW | res_from_mem | cacop_load)}} & exe_aluResult[31:13];  //这里先不考虑访存，只考虑tlbsrch、invtlb的vppn、asid、也需要考虑12bit值，不然读不出来

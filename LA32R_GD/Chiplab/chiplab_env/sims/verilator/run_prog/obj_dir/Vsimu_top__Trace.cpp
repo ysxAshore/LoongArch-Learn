@@ -988,9 +988,10 @@ void Vsimu_top___024root__traceChgSub0(Vsimu_top___024root* vlSelf, VerilatedFst
             tracep->chgBit(oldp+538,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__div_finish_ready_i));
             tracep->chgBit(oldp+539,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__cacop_load));
             tracep->chgBit(oldp+540,(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__ALE_EXCP));
-            tracep->chgBit(oldp+541,(((5U == (7U & 
-                                              (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
-                                               >> 0x1aU))) 
+            tracep->chgBit(oldp+541,((((5U == (7U & 
+                                               (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_data[2U] 
+                                                >> 0x1aU))) 
+                                       & (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_valid)) 
                                       & (~ (IData)(vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_mem_stage__DOT__flush_excp_ertn)))));
             tracep->chgBit(oldp+542,((1U & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__exe_aluResult 
                                             >> 0xcU))));

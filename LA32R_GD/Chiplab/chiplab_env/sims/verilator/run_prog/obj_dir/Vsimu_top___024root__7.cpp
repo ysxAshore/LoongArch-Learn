@@ -12,6 +12,7 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__20(Vsimu_top___024root* vlS
     Vsimu_top__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vsimu_top___024root___combo__TOP__20\n"); );
     // Variables
+    CData/*31:0*/ __Vtemp421;
     CData/*31:0*/ __Vtemp422;
     CData/*31:0*/ __Vtemp423;
     CData/*31:0*/ __Vtemp424;
@@ -53,6 +54,28 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__20(Vsimu_top___024root* vlS
     QData/*63:0*/ __Vtemp460;
     QData/*63:0*/ __Vtemp461;
     // Body
+    __Vtemp421 = ((((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_e
+                     [0x16U] & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_g
+                                [0x16U] | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_asid
+                                           [0x16U] 
+                                           == (0x3ffU 
+                                               & (IData)(
+                                                         (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__exe_to_tlb_bus 
+                                                          >> 7U)))))) 
+                    & ((0x3ffU & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_vppn
+                                  [0x16U] >> 9U)) == 
+                       (0x3ffU & (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__exe_to_tlb_bus 
+                                          >> 0x1aU))))) 
+                   & ((0x15U == vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_ps
+                       [0x16U]) | ((0x1ffU & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_vppn
+                                    [0x16U]) == (0x1ffU 
+                                                 & (IData)(
+                                                           (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__exe_to_tlb_bus 
+                                                            >> 0x11U)))))) 
+                  & (~ (0U != (0x3fffffU & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1))));
+    vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1 
+        = ((0xffbfffffU & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__match_item1) 
+           | (__Vtemp421 << 0x16U));
     __Vtemp422 = ((((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_e
                      [0x17U] & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_g
                                 [0x17U] | (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_tlb__DOT__tlb_asid
@@ -10671,30 +10694,4 @@ VL_INLINE_OPT void Vsimu_top___024root___combo__TOP__20(Vsimu_top___024root* vlS
                                                 [1U] 
                                                 >> 0x39U)))))) 
               << 0x39U));
-    vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__for2__S 
-        = ((0xfbffffffffffffffULL & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__for2__S) 
-           | ((QData)((IData)((1U & (((IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__thiSig
-                                               [0U] 
-                                               >> 0x3aU)) 
-                                      + (IData)((0x3fULL 
-                                                 & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__thiC
-                                                    [1U] 
-                                                    >> 0x39U)))) 
-                                     + (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__thiSig
-                                                [1U] 
-                                                >> 0x3aU)))))) 
-              << 0x3aU));
-    vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__for2__S 
-        = ((0xf7ffffffffffffffULL & vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT____Vcellout__for2__S) 
-           | ((QData)((IData)((1U & (((IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__thiSig
-                                               [0U] 
-                                               >> 0x3bU)) 
-                                      + (IData)((0x1fULL 
-                                                 & (vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__thiC
-                                                    [1U] 
-                                                    >> 0x3aU)))) 
-                                     + (IData)((vlSelf->simu_top__DOT__soc__DOT__cpu__DOT__u_exe_stage__DOT__u_mul__DOT__thiSig
-                                                [1U] 
-                                                >> 0x3bU)))))) 
-              << 0x3bU));
 }

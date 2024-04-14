@@ -1189,14 +1189,6 @@
                                                                                                  : ... In instance simu_top.soc.APB_DEV.AA_axi2apb_bridge_cpu
   589 |                     axi_s_req_addr  <= 32'h0;
       |                                     ^~
-%Warning-WIDTH: /mnt/e/Projects/Studying/LA/LA32R_GD/Chiplab/chiplab_env/IP/myCPU/mem_stage.v:240:75: Operator AND expects 5 bits on the LHS, but LHS's REPLICATE generates 4 bits.
-                                                                                                    : ... In instance simu_top.soc.cpu.u_mem_stage
-  240 |   wire [$clog2(32)-1:0] w_index = {($clog2(32)-1){tlb_ins_rec == 3'b011}} & tlb_index |
-      |                                                                           ^
-%Warning-WIDTH: /mnt/e/Projects/Studying/LA/LA32R_GD/Chiplab/chiplab_env/IP/myCPU/mem_stage.v:241:81: Operator AND expects 5 bits on the LHS, but LHS's REPLICATE generates 4 bits.
-                                                                                                    : ... In instance simu_top.soc.cpu.u_mem_stage
-  241 |                                         {($clog2(32)-1){tlb_ins_rec == 3'b100}} & rand_index;
-      |                                                                                 ^
 %Warning-WIDTH: /mnt/e/Projects/Studying/LA/LA32R_GD/Chiplab/chiplab_env/IP/myCPU/exe_stage.v:102:67: Operator ASSIGNW expects 252 bits on the Assign RHS, but Assign RHS's VARREF 'exe_data' generates 254 bits.
                                                                                                     : ... In instance simu_top.soc.cpu.u_exe_stage
   102 |           inst_ld_en,inst_st_en_temp,inst_csr_rstat_en,inst_idle} = exe_data;
