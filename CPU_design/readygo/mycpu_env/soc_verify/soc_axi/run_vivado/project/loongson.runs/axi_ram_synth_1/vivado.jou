@@ -3,8 +3,8 @@
 # SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
 # IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
 # SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
-# Start of session at: Sat Mar 23 14:17:00 2024
-# Process ID: 2820
+# Start of session at: Sat Apr 13 12:48:05 2024
+# Process ID: 12328
 # Current directory: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/axi_ram_synth_1
 # Command line: vivado.exe -log axi_ram.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source axi_ram.tcl
 # Log file: E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.runs/axi_ram_synth_1/axi_ram.vds

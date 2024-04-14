@@ -776,6 +776,7 @@ core_top cpu_mid(
 );
 
 //AXI_2x1_MUX
+wire [3:0] M00_AXI_ARQOS = 4'b0;
 axi_2x1_mux u_axi_2x1_mux
 (
     .INTERCONNECT_ACLK   (cpu_clk     ),
@@ -869,7 +870,7 @@ axi_2x1_mux u_axi_2x1_mux
     .M00_AXI_ARLEN       (m1_arlen    ),
     .M00_AXI_ARLOCK      (m1_arlock   ),
     .M00_AXI_ARPROT      (m1_arprot   ),
-    .M00_AXI_ARQOS       (4'b0        ),
+    .M00_AXI_ARQOS       ( ),
     .M00_AXI_ARREADY     (m1_arready  ),
     .M00_AXI_ARSIZE      (m1_arsize   ),
     .M00_AXI_ARVALID     (m1_arvalid  ),
@@ -1651,7 +1652,7 @@ axi_interconnect_0 mig_axi_interconnect (
     .M00_AXI_ARLOCK       (mig_arlock[0:0]     ),
     .M00_AXI_ARCACHE      (mig_arcache         ),
     .M00_AXI_ARPROT       (mig_arprot          ),
-    .M00_AXI_ARQOS        (                    ),
+    .M00_AXI_ARQOS        (                 ),
     .M00_AXI_ARVALID      (mig_arvalid         ),
     .M00_AXI_ARREADY      (mig_arready         ),
     .M00_AXI_RID          (mig_rid             ),

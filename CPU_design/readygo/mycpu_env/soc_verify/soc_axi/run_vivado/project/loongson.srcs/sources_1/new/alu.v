@@ -1,5 +1,7 @@
-module alu (
-    input  [11:0] alu_op,//alu_op是进行14种运算，然后每一位表示一个运算指令表示的运算
+`timescale 1ns/1ps
+module alu 
+(
+    input  [13:0] alu_op,//alu_op是进行14种运算，然后每一位表示一个运算指令表示的运算
     input [31:0] alu_src1,  //alu端口操作数A
     input [31:0] alu_src2,  //alu端口操作数B
     output [31:0] alu_result  //alu运行结果
@@ -18,6 +20,8 @@ module alu (
   wire op_srl;  //作逻辑右移
   wire op_sra;  //作算术右移
   wire op_lui;  //lui相关的运算
+  wire op_andn;//作&~运算
+  wire op_orn;//作|~运算 
 
   // control code decomposition 对alu_op解码
   assign op_add  = alu_op[0];
@@ -32,12 +36,16 @@ module alu (
   assign op_srl  = alu_op[9];
   assign op_sra  = alu_op[10];
   assign op_lui  = alu_op[11];
+  assign op_andn = alu_op[12];
+  assign op_orn = alu_op[13];
 
   //定义各种操作对应的结果，其中二进制sub也是按加法实现的，因此加减结果存放在一起
   wire [31:0] add_sub_result;
   wire [31:0] slt_result;
   wire [31:0] sltu_result;
   wire [31:0] and_result;
+  wire [31:0] andn_result;
+  wire [31:0] orn_result;
   wire [31:0] nor_result;
   wire [31:0] or_result;
   wire [31:0] xor_result;
@@ -45,6 +53,8 @@ module alu (
   wire [31:0] sll_result;
   wire [63:0] sr64_result;
   wire [31:0] sr_result;
+  wire [31:0] andn_result;
+  wire [31:0] orn_result;
 
 
   // 32-bit adder 作加减法操作
@@ -57,7 +67,7 @@ module alu (
   assign adder_a = alu_src1;  //加数a不用变化
   assign adder_b   = (op_sub | op_slt | op_sltu) ? ~alu_src2 : alu_src2;  //src1 - src2 rj-rk 加数b需要根据执行减法取反
   assign adder_cin = (op_sub | op_slt | op_sltu) ? 1'b1      : 1'b0;//因为b只是取反了，减法的话需要加1
-  assign {adder_cout, adder_result} = adder_a + adder_b + adder_cin;  //赋值计算
+  assign {adder_cout, adder_result} = adder_a + adder_b + {31'b0,adder_cin};  //赋值计算
 
   // ADD, SUB result
   assign add_sub_result = adder_result;  //赋值最终的结果
@@ -94,8 +104,10 @@ module alu (
       | ({32{op_slt       }} & slt_result)
       | ({32{op_sltu      }} & sltu_result)
       | ({32{op_and       }} & and_result)
+      | ({32{op_andn      }} & andn_result)
       | ({32{op_nor       }} & nor_result)
       | ({32{op_or        }} & or_result)
+      | ({32{op_orn       }} & orn_result)
       | ({32{op_xor       }} & xor_result)
       | ({32{op_lui       }} & lui_result)
       | ({32{op_sll       }} & sll_result)

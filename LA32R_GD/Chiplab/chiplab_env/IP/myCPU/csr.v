@@ -1,75 +1,91 @@
+`timescale 1ns / 1ps
+`include "csr.vh"
 `include "mycpu.h"
-`include "csr.h"
+module csr (
+    input clk,
+    input resetn,
 
-module csr 
-#(
-	parameter TLBNUM = 32
-)
-(
-    input                           clk          ,
-    input                           reset        ,
-    //from to ds 
-    input  [13:0]                   rd_addr      ,
-    output [31:0]                   rd_data      ,
-    //timer 64
-    output [63:0]                   timer_64_out ,
-    output [31:0]                   tid_out      ,
-    //from ws
-    input                           csr_wr_en    ,
-    input  [13:0]                   wr_addr      ,
-    input  [31:0]                   wr_data      ,
-    //interrupt
-    input  [ 7:0]                   interrupt    ,
-    output                          has_int      ,
-    //from ws
-    input                           excp_flush   ,
-    input                           ertn_flush   ,
-    input  [31:0]                   era_in       ,
-    input  [ 8:0]                   esubcode_in  ,
-    input  [ 5:0]                   ecode_in     ,
-    input                           va_error_in  ,
-    input  [31:0]                   bad_va_in    ,
-    input                           tlbsrch_en    ,
-    input                           tlbsrch_found ,
-    input  [ 4:0]                   tlbsrch_index ,
-    input                           excp_tlbrefill,
-    input                           excp_tlb     ,
-    input  [18:0]                   excp_tlb_vppn,
-    //from ws llbit
-    input                           llbit_in     ,
-    input                           llbit_set_in ,
-    //to es
-    output                          llbit_out    ,
-    output [18:0]                   vppn_out     ,
-    //to fs
-    output [31:0]                   eentry_out   ,
-    output [31:0]                   era_out      ,
-    output [31:0]                   tlbrentry_out,
-    output                          disable_cache_out,
-    //to addr trans
-    output [ 9:0]                   asid_out     ,
-    output [ 4:0]                   rand_index   ,
-    output [31:0]                   tlbehi_out   ,
-    output [31:0]                   tlbelo0_out  ,
-    output [31:0]                   tlbelo1_out  ,
-    output [31:0]                   tlbidx_out   ,
-    output                          pg_out       ,
-    output                          da_out       ,
-    output [31:0]                   dmw0_out     ,
-    output [31:0]                   dmw1_out     ,
-    output [ 1:0]                   datf_out     ,
-    output [ 1:0]                   datm_out     ,
-    output [ 5:0]                   ecode_out    ,
-    //from addr trans 
-    input                           tlbrd_en     ,
-    input  [31:0]                   tlbehi_in    ,
-    input  [31:0]                   tlbelo0_in   ,
-    input  [31:0]                   tlbelo1_in   ,
-    input  [31:0]                   tlbidx_in    ,
-    input  [ 9:0]                   asid_in      ,
-    //general use
-    output [ 1:0]                   plv_out      ,
-    // csr regs for diff
+    //读CSR寄存器——类似于直接读通用寄存器
+    input  [13:0] csrRAdd,
+    output [31:0] csrRData,
+
+    //写CSR
+    input csrWen,
+    input [13:0] csrWAdd,
+    input [31:0] csrWData,
+
+    //输出的定时器编号 为了实现RDCNT系列指令
+    output [31:0] tid_out,
+    output [63:0] timer_64_out,
+
+    //外部输入的8个硬中断中断源 对应csr.estat.is[9:2] 来自外设 
+    input [7:0] interrupt,
+    output has_int,  //表示有中断请求——当做一个特殊的异常处理
+
+    //进行异常的响应 
+    input excp,
+    input excp_tlbrefill,
+    //进行ertn的响应 
+    input ertn,
+    //输入给csr.era的服务程序返回地址 
+    input [31:0] era,
+    //输入给csr.estat的异常编号 
+    input [8:0] subcode,
+    input [5:0] code,
+    //输入给csr.badv 的adef、ale异常
+    input [31:0] badv_addr,
+    input excpAboutAddr,
+    input tlb_addr_excp,
+    //ll sc设置llbit
+    input llbitWen,
+    input llbitWData,
+    output llbit_out, 
+
+    //输出给preIF阶段，作为next_pc的选择
+    output [31:0] eentry_out,
+    output [31:0] tlbrentry_out,
+    output [31:0] era_out,
+
+    //输出给各个需要当前特权等级的阶段
+    output [1:0] plv,
+
+    //ASID读写
+    output [9:0] asid_out,
+    input [9:0] asid_in,
+    //VPPN
+    output [18:0] vppn_out,
+    input [18:0] vppn_in,
+    //TLBELO
+    output [31:0] tlbelo0_out,
+    output [31:0] tlbelo1_out,
+    input [31:0] tlbelo0_in,
+    input [31:0] tlbelo1_in,
+    //TLBIDX 5位
+    output [$clog2(`TLB_NUM)-1:0] index_out,
+    output [5:0] ps_out,
+    output e_out,
+    input [$clog2(`TLB_NUM)-1:0] index_in,
+    input [5:0] ps_in,
+    input e_in,
+
+    input tlb_srch_wen,
+    input tlb_rd_wen,
+
+    //output da pg
+    output crmd_da,
+    output crmd_pg,
+    output wire [2:0] dmw0_vseg,
+    dmw1_vseg,
+    dmw0_pseg,
+    dmw1_pseg,
+    output wire dmw0_plv0,
+    dmw0_plv3,
+    dmw1_plv0,
+    dmw1_plv3,
+    output wire crmd_datf,crmd_datm,
+    output wire dmw0_mat,dmw1_mat,
+
+     // csr regs for diff
     output [31:0]                   csr_crmd_diff,
     output [31:0]                   csr_prmd_diff,
     output [31:0]                   csr_ectl_diff,
@@ -97,678 +113,581 @@ module csr
     output [31:0]                   csr_pgdl_diff,
     output [31:0]                   csr_pgdh_diff
 );
+  //模块内部使用的常量使用localparam定义，不能通过模块例化修改
+  //使用localparam定义csr寄存器的地址
+  localparam CRMD = 14'h0;
+  localparam PRMD = 14'h1;
+  localparam EUEN = 14'h2;
+  localparam ECFG = 14'h4;
+  localparam ESTAT = 14'h5;
+  localparam ERA = 14'h6;
+  localparam BADV = 14'h7;
+  localparam EENTRY = 14'hc;
+  localparam TLBIDX = 14'h10;
+  localparam TLBEHI = 14'h11;
+  localparam TLBELO0 = 14'h12;
+  localparam TLBELO1 = 14'h13;
+  localparam ASID = 14'h18;
+  localparam PGDL = 14'h19;
+  localparam PGDH = 14'h1a;
+  localparam PGD = 14'h1b;
+  localparam CPUID = 14'h20;
+  localparam SAVE0 = 14'h30;
+  localparam SAVE1 = 14'h31;
+  localparam SAVE2 = 14'h32;
+  localparam SAVE3 = 14'h33;
+  localparam TID = 14'h40;
+  localparam TCFG = 14'h41;
+  localparam TVAL = 14'h42;
+  localparam CNTC = 14'h43;  //还不知道有什么用
+  localparam TICLR = 14'h44;
+  localparam LLBCTL = 14'h60;
+  localparam TLBRENTRY = 14'h88;
+  localparam CTAG = 14'h98;
+  localparam BRK = 14'h100;
+  localparam DISABLE_CACHE = 14'h101;
+  localparam DMW0 = 14'h180;
+  localparam DMW1 = 14'h181;
 
-localparam CRMD  = 14'h0;
-localparam PRMD  = 14'h1;
-localparam ECTL  = 14'h4;
-localparam ESTAT = 14'h5;
-localparam ERA   = 14'h6;
-localparam BADV  = 14'h7;
-localparam EENTRY = 14'hc;
-localparam TLBIDX= 14'h10;
-localparam TLBEHI= 14'h11;
-localparam TLBELO0=14'h12;
-localparam TLBELO1=14'h13;
-localparam ASID  = 14'h18;
-localparam PGDL  = 14'h19;
-localparam PGDH  = 14'h1a;
-localparam PGD   = 14'h1b;
-localparam CPUID = 14'h20;
-localparam SAVE0 = 14'h30;
-localparam SAVE1 = 14'h31;
-localparam SAVE2 = 14'h32;
-localparam SAVE3 = 14'h33;
-localparam TID   = 14'h40;
-localparam TCFG  = 14'h41;
-localparam TVAL  = 14'h42;
-localparam CNTC  = 14'h43;
-localparam TICLR = 14'h44;
-localparam LLBCTL= 14'h60;
-localparam TLBRENTRY = 14'h88;
-localparam DMW0  = 14'h180;
-localparam DMW1  = 14'h181;
-localparam BRK = 14'h100;
-localparam DISABLE_CACHE = 14'h101;
 
-wire crmd_wen   = csr_wr_en & (wr_addr == CRMD);
-wire prmd_wen   = csr_wr_en & (wr_addr == PRMD);
-wire ectl_wen   = csr_wr_en & (wr_addr == ECTL);
-wire estat_wen  = csr_wr_en & (wr_addr == ESTAT);
-wire era_wen    = csr_wr_en & (wr_addr == ERA);
-wire badv_wen   = csr_wr_en & (wr_addr == BADV);
-wire eentry_wen = csr_wr_en & (wr_addr == EENTRY);
-wire tlbidx_wen = csr_wr_en & (wr_addr == TLBIDX);
-wire tlbehi_wen = csr_wr_en & (wr_addr == TLBEHI);
-wire tlbelo0_wen= csr_wr_en & (wr_addr == TLBELO0);
-wire tlbelo1_wen= csr_wr_en & (wr_addr == TLBELO1);
-wire asid_wen   = csr_wr_en & (wr_addr == ASID);
-wire pgdl_wen   = csr_wr_en & (wr_addr == PGDL);
-wire pgdh_wen   = csr_wr_en & (wr_addr == PGDH);
-wire pgd_wen    = csr_wr_en & (wr_addr == PGD);
-wire cpuid_wen  = csr_wr_en & (wr_addr == CPUID);
-wire save0_wen  = csr_wr_en & (wr_addr == SAVE0);
-wire save1_wen  = csr_wr_en & (wr_addr == SAVE1);
-wire save2_wen  = csr_wr_en & (wr_addr == SAVE2);
-wire save3_wen  = csr_wr_en & (wr_addr == SAVE3);
-wire tid_wen    = csr_wr_en & (wr_addr == TID);
-wire tcfg_wen   = csr_wr_en & (wr_addr == TCFG);
-wire tval_wen   = csr_wr_en & (wr_addr == TVAL);
-wire cntc_wen   = csr_wr_en & (wr_addr == CNTC);
-wire ticlr_wen  = csr_wr_en & (wr_addr == TICLR);
-wire llbctl_wen = csr_wr_en & (wr_addr == LLBCTL);
-wire tlbrentry_wen = csr_wr_en & (wr_addr == TLBRENTRY);
-wire DMW0_wen   = csr_wr_en & (wr_addr == DMW0);
-wire DMW1_wen   = csr_wr_en & (wr_addr == DMW1);
-wire BRK_wen    = csr_wr_en & (wr_addr == BRK);
-wire disable_cache_wen = csr_wr_en & (wr_addr == DISABLE_CACHE);
+  //定义各个csr寄存器的写信号
+  //cpuid、pgd、tval只有读属性
+  wire crmd_wen = csrWen & (csrWAdd == CRMD);
+  wire prmd_wen = csrWen & (csrWAdd == PRMD);
+  wire euen_wen = csrWen & (csrWAdd == EUEN);
+  wire ecfg_wen = csrWen & (csrWAdd == ECFG);
+  wire estat_wen = csrWen & (csrWAdd == ESTAT);
+  wire era_wen = csrWen & (csrWAdd == ERA);
+  wire badv_wen = csrWen & (csrWAdd == BADV);
+  wire eentry_wen = csrWen & (csrWAdd == EENTRY);
+  wire tlbidx_wen = csrWen & (csrWAdd == TLBIDX);
+  wire tlbehi_wen = csrWen & (csrWAdd == TLBEHI);
+  wire tlbelo0_wen = csrWen & (csrWAdd == TLBELO0);
+  wire tlbelo1_wen = csrWen & (csrWAdd == TLBELO1);
+  wire asid_wen = csrWen & (csrWAdd == ASID);
+  wire pgdl_wen = csrWen & (csrWAdd == PGDL);
+  wire pgdh_wen = csrWen & (csrWAdd == PGDH);
+  wire save0_wen = csrWen & (csrWAdd == SAVE0);
+  wire save1_wen = csrWen & (csrWAdd == SAVE1);
+  wire save2_wen = csrWen & (csrWAdd == SAVE2);
+  wire save3_wen = csrWen & (csrWAdd == SAVE3);
+  wire tid_wen = csrWen & (csrWAdd == TID);
+  wire tcfg_wen = csrWen & (csrWAdd == TCFG);
+  wire cntc_wen = csrWen & (csrWAdd == CNTC);
+  wire ticlr_wen = csrWen & (csrWAdd == TICLR);
+  wire llbctl_wen = csrWen & (csrWAdd == LLBCTL);
+  wire tlbrentry_wen = csrWen & (csrWAdd == TLBRENTRY);
+  wire ctag_wen = csrWen & (csrWAdd == CTAG);
+  wire dmw0_wen = csrWen & (csrWAdd == DMW0);
+  wire dmw1_wen = csrWen & (csrWAdd == DMW1);
+  wire brk_wen = csrWen & (csrWAdd == BRK);
+  wire disable_cache_wen = csrWen & (csrWAdd == DISABLE_CACHE);
 
-reg [31:0] csr_crmd;
-reg [31:0] csr_prmd;
-reg [31:0] csr_ectl;
-reg [31:0] csr_estat;
-reg [31:0] csr_era;
-reg [31:0] csr_badv;
-reg [31:0] csr_eentry;
-reg [31:0] csr_tlbidx;
-reg [31:0] csr_tlbehi;
-reg [31:0] csr_tlbelo0;
-reg [31:0] csr_tlbelo1;
-reg [31:0] csr_asid;
-reg [31:0] csr_cpuid;
-reg [31:0] csr_save0;
-reg [31:0] csr_save1;
-reg [31:0] csr_save2;
-reg [31:0] csr_save3;
-reg [31:0] csr_tid;
-reg [31:0] csr_tcfg;
-reg [31:0] csr_tval;
-reg [31:0] csr_cntc;
-reg [31:0] csr_ticlr;
-reg [31:0] csr_llbctl;
-reg [31:0] csr_tlbrentry;
-reg [31:0] csr_dmw0;
-reg [31:0] csr_dmw1;
-reg [31:0] csr_pgdl;
-reg [31:0] csr_pgdh;
-reg [31:0] csr_brk;
-reg [31:0] csr_disable_cache;
+  reg [31:0] csr_crmd;
+  reg [31:0] csr_prmd;
+  reg [31:0] csr_euen;
+  reg [31:0] csr_ecfg;
+  reg [31:0] csr_estat;
+  reg [31:0] csr_era;
+  reg [31:0] csr_badv;
+  reg [31:0] csr_eentry;
+  reg [31:0] csr_tlbidx;
+  reg [31:0] csr_tlbehi;
+  reg [31:0] csr_tlbelo0;
+  reg [31:0] csr_tlbelo1;
+  reg [31:0] csr_asid;
+  reg [31:0] csr_pgdl;
+  reg [31:0] csr_pgdh;
+  reg [31:0] csr_cpuid;
+  reg [31:0] csr_save0;
+  reg [31:0] csr_save1;
+  reg [31:0] csr_save2;
+  reg [31:0] csr_save3;
+  reg [31:0] csr_tid;
+  reg [31:0] csr_tcfg;
+  reg [31:0] csr_tval;
+  reg [31:0] csr_cntc;
+  reg [31:0] csr_ticlr;
+  reg [31:0] csr_llbctl;
+  reg [31:0] csr_tlbrentry;
+  reg [31:0] csr_dmw0;
+  reg [31:0] csr_dmw1;
+  reg [31:0] csr_brk;
+  reg [31:0] csr_disable_cache;
+  wire [31:0] csr_pgd;
 
-wire [31:0] csr_pgd;
-
-reg        timer_en;
-reg [63:0] timer_64;
-
-reg        llbit;
-
-wire tlbrd_valid_wr_en;
-wire tlbrd_invalid_wr_en;
-
-wire eret_tlbrefill_excp;
-
-wire no_forward;
-
-assign csr_pgd = csr_badv[31] ? csr_pgdh : csr_pgdl;
-
-assign eret_tlbrefill_excp = csr_estat[`ECODE] == 6'h3f;
-
-assign tlbrd_valid_wr_en   = tlbrd_en && !tlbidx_in[`NE];
-assign tlbrd_invalid_wr_en = tlbrd_en &&  tlbidx_in[`NE];
-
-assign has_int = ((csr_ectl[`LIE] & csr_estat[`IS]) != 13'b0) & csr_crmd[`IE];
-
-assign eentry_out   = csr_eentry;
-assign era_out      = csr_era;
-assign timer_64_out = timer_64 + {{32{csr_cntc[31]}}, csr_cntc};
-assign tid_out      = csr_tid;
-assign llbit_out    = llbit;
-assign asid_out     = csr_asid[`TLB_ASID];
-assign vppn_out     = (csr_wr_en && wr_addr == TLBEHI) ? wr_data[`VPPN] : csr_tlbehi[`VPPN];
-assign tlbehi_out   = csr_tlbehi;
-assign tlbelo0_out  = csr_tlbelo0;
-assign tlbelo1_out  = csr_tlbelo1;
-assign tlbidx_out   = csr_tlbidx;
-assign rand_index   = timer_64[4:0];
-assign disable_cache_out = csr_disable_cache[0];
-
-//forward to if stage
-assign no_forward   = !excp_tlbrefill && !(eret_tlbrefill_excp && ertn_flush) && !crmd_wen;
-
-assign pg_out       = excp_tlbrefill & 1'b0                      |
-                      (eret_tlbrefill_excp && ertn_flush) & 1'b1 |
-                      crmd_wen       & wr_data[`PG]              |
-                      no_forward     & csr_crmd[`PG];
-
-assign da_out       = excp_tlbrefill & 1'b1                      |
-                      (eret_tlbrefill_excp && ertn_flush) & 1'b0 |
-                      crmd_wen       & wr_data[`DA]              |
-                      no_forward     & csr_crmd[`DA];
-
-assign dmw0_out     = DMW0_wen ? wr_data : csr_dmw0;
-assign dmw1_out     = DMW1_wen ? wr_data : csr_dmw1;
-
-assign plv_out      = {2{excp_flush}} & 2'b0            |
-                      {2{ertn_flush}} & csr_prmd[`PPLV] |
-                      {2{crmd_wen  }} & wr_data[`PLV]   |
-                      {2{!excp_flush && !ertn_flush && !crmd_wen}} & csr_crmd[`PLV];
-
-assign tlbrentry_out= csr_tlbrentry;
-assign datf_out     = csr_crmd[`DATF];
-assign datm_out     = csr_crmd[`DATM];
-
-assign ecode_out    = csr_estat[`ECODE];
-
-assign rd_data = {32{rd_addr == CRMD  }}  & csr_crmd    |
-                 {32{rd_addr == PRMD  }}  & csr_prmd    |
-                 {32{rd_addr == ECTL  }}  & csr_ectl    |
-                 {32{rd_addr == ESTAT }}  & csr_estat   |
-                 {32{rd_addr == ERA   }}  & csr_era	    |
-                 {32{rd_addr == BADV  }}  & csr_badv    |
-                 {32{rd_addr == EENTRY}}  & csr_eentry  |
-                 {32{rd_addr == TLBIDX}}  & csr_tlbidx  |
-                 {32{rd_addr == TLBEHI}}  & csr_tlbehi  |
-                 {32{rd_addr == TLBELO0}} & csr_tlbelo0 |
-                 {32{rd_addr == TLBELO1}} & csr_tlbelo1 |
-                 {32{rd_addr == ASID  }}  & csr_asid    |
-                 {32{rd_addr == PGDL  }}  & csr_pgdl    |
-                 {32{rd_addr == PGDH  }}  & csr_pgdh    |
-                 {32{rd_addr == PGD   }}  & csr_pgd     |
-                 {32{rd_addr == CPUID }}  & csr_cpuid   |
-                 {32{rd_addr == SAVE0 }}  & csr_save0   |
-                 {32{rd_addr == SAVE1 }}  & csr_save1   |
-                 {32{rd_addr == SAVE2 }}  & csr_save2   |
-                 {32{rd_addr == SAVE3 }}  & csr_save3   |
-                 {32{rd_addr == TID   }}  & csr_tid     |
-                 {32{rd_addr == TCFG  }}  & csr_tcfg    |
-                 {32{rd_addr == CNTC  }}  & csr_cntc    |
-                 {32{rd_addr == TICLR }}  & csr_ticlr   |
-                 {32{rd_addr == LLBCTL}}  & {csr_llbctl[31:1], llbit} |
-                 {32{rd_addr == TVAL  }}  & csr_tval    |
-                 {32{rd_addr == TLBRENTRY}} & csr_tlbrentry   |
-                 {32{rd_addr == DMW0}}    & csr_dmw0    |
-                 {32{rd_addr == DMW1}}    & csr_dmw1    ;
-
-//crmd
-always @(posedge clk) begin
-    if (reset) begin
-        csr_crmd[ `PLV] <=  2'b0;
-        csr_crmd[  `IE] <=  1'b0;
-        csr_crmd[  `DA] <=  1'b1;
-        csr_crmd[  `PG] <=  1'b0;
-        csr_crmd[`DATF] <=  2'b0;
-        csr_crmd[`DATM] <=  2'b0;
-        csr_crmd[31: 9] <= 23'b0;
+  //RDCNT系列指令
+  reg [63:0] timer_64;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      timer_64 <= 64'b0;
+    end else begin
+      timer_64 <= timer_64 + 1'b1;
     end
-    else if (excp_flush) begin
-        csr_crmd[ `PLV] <=  2'b0;
-        csr_crmd[  `IE] <=  1'b0;
-    if (excp_tlbrefill) begin
-        csr_crmd [`DA] <= 1'b1;
-        csr_crmd [`PG] <= 1'b0;
-    end
-    end
-    else if (ertn_flush) begin
-        csr_crmd[ `PLV] <= csr_prmd[`PPLV];
-        csr_crmd[  `IE] <= csr_prmd[`PIE ];
-        if (eret_tlbrefill_excp) begin
-            csr_crmd[`DA] <= 1'b0;
-            csr_crmd[`PG] <= 1'b1;
-        end
-    end 
-    else if (crmd_wen) begin
-        csr_crmd[ `PLV] <= wr_data[ `PLV];
-        csr_crmd[  `IE] <= wr_data[	 `IE];
-        csr_crmd[  `DA] <= wr_data[	 `DA];
-        csr_crmd[  `PG] <= wr_data[  `PG];
-        csr_crmd[`DATF] <= wr_data[`DATF];
-        csr_crmd[`DATM] <= wr_data[`DATM];
-    end
-end
+  end
 
-//prmd
-always @(posedge clk) begin
-    if (reset) begin
-        csr_prmd[31:3] <= 29'b0;
+  //crmd
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_crmd[`PLV]  <= 2'b0;
+      csr_crmd[`IE]   <= 1'b0;
+      csr_crmd[`DA]   <= 1'b1;
+      csr_crmd[`PG]   <= 1'b0;
+      csr_crmd[`DATF] <= 2'b0;
+      csr_crmd[`DATM] <= 2'b0;
+      csr_crmd[31:9]  <= 23'b0;
+    end else if (excp) begin
+      csr_crmd[`PLV] <= 2'b0;
+      csr_crmd[`IE]  <= 1'b0;
+      if (excp_tlbrefill) begin
+        csr_crmd[`DA] <= 1'b1;
+        csr_crmd[`PG] <= 1'b0;
+      end
+    end else if (ertn) begin
+      csr_crmd[`PLV] <= csr_prmd[`PPLV];
+      csr_crmd[`IE]  <= csr_prmd[`PIE];
+      if (csr_estat[`ECODE] == 6'h3f) begin  //重填异常
+        csr_crmd[`DA] <= 1'b0;
+        csr_crmd[`PG] <= 1'b1;
+      end
+    end else if (crmd_wen) begin
+      csr_crmd[`PLV]  <= csrWData[`PLV];
+      csr_crmd[`IE]   <= csrWData[`IE];
+      csr_crmd[`DA]   <= csrWData[`DA];
+      csr_crmd[`PG]   <= csrWData[`PG];
+      csr_crmd[`DATF] <= csrWData[`DATF];
+      csr_crmd[`DATM] <= csrWData[`DATM];
     end
-    else if (excp_flush) begin
-        csr_prmd[`PPLV] <= csr_crmd[`PLV];
-        csr_prmd[ `PIE] <= csr_crmd[`IE ];
-    end
-    else if (prmd_wen) begin
-        csr_prmd[`PPLV] <= wr_data[`PPLV];
-        csr_prmd[ `PIE] <= wr_data[ `PIE];
-    end
-end
+  end
 
-//ectl
-always @(posedge clk) begin
-    if (reset) begin
-        csr_ectl <= 32'b0;
+  //prmd
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_prmd[31:3] <= 29'b0;
+    end else if (excp) begin
+      csr_prmd[`PPLV] <= csr_crmd[`PLV];
+      csr_prmd[`PIE]  <= csr_crmd[`IE];
+    end else if (prmd_wen) begin
+      csr_prmd[`PPLV] <= csrWData[`PPLV];
+      csr_prmd[`PIE]  <= csrWData[`PIE];
     end
-    else if (ectl_wen) begin
-        csr_ectl[ `LIE_1] <= wr_data[ `LIE_1];
-        csr_ectl[ `LIE_2] <= wr_data[ `LIE_2];
-    end
-end
+  end
 
-//estat
-always @(posedge clk) begin
-    if (reset) begin
-        csr_estat[ 1: 0] <= 2'b0; 
-		csr_estat[10]    <= 1'b0;
-		csr_estat[12]    <= 1'b0;
-        csr_estat[15:13] <= 3'b0;
-        csr_estat[31]    <= 1'b0;
-        
-        timer_en <= 1'b0;
+  //euen 目前不实现浮点，故不会有写euen的指令
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_euen <= 32'b0;
+    end else if (euen_wen) begin
+      csr_euen[`FPE] <= csrWData[`FPE];
     end
-    else begin
-        if (ticlr_wen && wr_data[`CLR]) begin
-            csr_estat[11] <= 1'b0;
-        end
-        else if (tcfg_wen) begin
-            timer_en <= wr_data[`EN];
-        end
-        else if (timer_en && (csr_tval == 32'b0)) begin
-            csr_estat[11] <= 1'b1;
-            timer_en      <= csr_tcfg[`PERIODIC];
-        end
-        csr_estat[9:2] <= interrupt;
-        if (excp_flush) begin
-            csr_estat[   `ECODE] <= ecode_in;
-            csr_estat[`ESUBCODE] <= esubcode_in;
-        end
-        else if (estat_wen) begin
-            csr_estat[      1:0] <= wr_data[      1:0];
-        end
-    end
-end
+  end
 
-//era
-always @(posedge clk) begin
-    if (excp_flush) begin
-        csr_era <= era_in;
+  //ecfg
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_ecfg <= 32'b0;
+    end else if (ecfg_wen) begin
+      csr_ecfg[`LIE_9_0]   <= csrWData[`LIE_9_0];
+      csr_ecfg[`LIE_12_11] <= csrWData[`LIE_12_11];
     end
-    else if (era_wen) begin
-        csr_era <= wr_data;
-    end
-end
+  end
 
-//badv
-always @(posedge clk) begin
+  //estat
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_estat[`IS_1_0] <= 2'b0;
+      csr_estat[`IS_9_2] <= 8'b0;
+      csr_estat[10] <= 1'b0;  //手册没写，但是应该是也需要复位的
+      csr_estat[12] <= 1'b0;  //手册没写，复位也需要复位核间中断，因为单核所以手册没写
+      csr_estat[15:13] <= 3'b0;
+      csr_estat[31] <= 1'b0;
+    end else begin
+      //根据外设硬中断源interrupt，赋值csr_estat[`IS_9_2]
+      csr_estat[`IS_9_2] <= interrupt;
+      //定时器中断——当倒计时为0且TCFG.En使能，置位定时器中断csr_estat[11];同时写ticlr.clr域为1清除定时器中断
+      if (csr_tcfg[`EN] & csr_tval == 32'b0) begin
+        csr_estat[11] <= 1'b1;
+      end else if (ticlr_wen & csrWData[`CLR]) begin
+        csr_estat[11] <= 1'b0;
+      end
+
+      if (excp) begin
+        csr_estat[`ECODE] <= code;
+        csr_estat[`ESUBCODE] <= subcode;
+      end else if (estat_wen) begin
+        csr_estat[`IS_1_0] <= csrWData[`IS_1_0];
+      end
+    end
+  end
+
+  //era
+  always @(posedge clk) begin
+    if (excp) begin
+      csr_era <= era;
+    end else if (era_wen) begin
+      csr_era <= csrWData;
+    end
+  end
+
+  //badv
+  always @(posedge clk) begin
     if (badv_wen) begin
-        csr_badv <= wr_data;
+      csr_badv <= csrWData;
+    end else if (excpAboutAddr) begin
+      csr_badv <= badv_addr;
     end
-    else if (va_error_in) begin
-        csr_badv <= bad_va_in;
-    end
-end
+  end
 
-//eentry
-always @(posedge clk) begin
-    if (reset) begin
-        csr_eentry[5:0] <= 6'b0;
+  //eentry
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_eentry[5:0] <= 6'b0;
+    end else if (eentry_wen) begin
+      csr_eentry[`EENTRY_VA] <= csrWData[`EENTRY_VA];
     end
-    else if (eentry_wen) begin
-        csr_eentry[31:6] <= wr_data[31:6];
-    end
-end
+  end
 
-//tlbidx
-always @(posedge clk) begin
-    if (reset) begin
-        csr_tlbidx[23: 5] <= 19'b0;
-        csr_tlbidx[30]    <= 1'b0;
-		csr_tlbidx[`INDEX]<= 5'b0;
+  //cpuid LA32R只实现单核，因此CoreID默认为0
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_cpuid[`COREID] <= 9'b0;
+      csr_cpuid[31:9] <= 23'b0;
     end
-    else if (tlbidx_wen) begin
-		csr_tlbidx[$clog2(TLBNUM)-1:0] <= wr_data[$clog2(TLBNUM)-1:0];
-        csr_tlbidx[`PS]    <= wr_data[`PS];
-        csr_tlbidx[`NE]    <= wr_data[`NE];
-    end
-    else if (tlbsrch_en) begin
-        if (tlbsrch_found) begin
-            csr_tlbidx[`INDEX] <= tlbsrch_index;
-            csr_tlbidx[`NE]    <= 1'b0;
-        end
-        else begin
-            csr_tlbidx[`NE] <= 1'b1;
-        end
-    end
-    else if (tlbrd_valid_wr_en) begin
-        csr_tlbidx[`PS] <= tlbidx_in[`PS];
-        csr_tlbidx[`NE] <= tlbidx_in[`NE];
-    end
-    else if (tlbrd_invalid_wr_en) begin
-        csr_tlbidx[`PS] <= 6'b0;
-        csr_tlbidx[`NE] <= tlbidx_in[`NE];
-    end
-end
+  end
 
-//tlbehi
-always @(posedge clk) begin
-    if (reset) begin
-        csr_tlbehi[12:0] <= 13'b0;
-    end
-    else if (tlbehi_wen) begin
-        csr_tlbehi[`VPPN] <= wr_data[`VPPN];
-    end
-    else if (tlbrd_valid_wr_en) begin
-        csr_tlbehi[`VPPN] <= tlbehi_in[`VPPN];
-    end
-    else if (tlbrd_invalid_wr_en) begin
-        csr_tlbehi[`VPPN] <= 19'b0;
-    end
-    else if (excp_tlb) begin
-        csr_tlbehi[`VPPN] <= excp_tlb_vppn;
-    end
-end
-
-//tlbelo0
-always @(posedge clk) begin
-    if (reset) begin
-        csr_tlbelo0[7] <= 1'b0;
-    end
-    else if (tlbelo0_wen) begin
-        csr_tlbelo0[`TLB_V]   <= wr_data[`TLB_V];
-        csr_tlbelo0[`TLB_D]   <= wr_data[`TLB_D];
-        csr_tlbelo0[`TLB_PLV] <= wr_data[`TLB_PLV];
-        csr_tlbelo0[`TLB_MAT] <= wr_data[`TLB_MAT];
-        csr_tlbelo0[`TLB_G]   <= wr_data[`TLB_G];
-        csr_tlbelo0[`TLB_PPN] <= wr_data[`TLB_PPN];
-    end
-    else if (tlbrd_valid_wr_en) begin
-        csr_tlbelo0[`TLB_V]   <= tlbelo0_in[`TLB_V];
-        csr_tlbelo0[`TLB_D]   <= tlbelo0_in[`TLB_D];
-        csr_tlbelo0[`TLB_PLV] <= tlbelo0_in[`TLB_PLV];
-        csr_tlbelo0[`TLB_MAT] <= tlbelo0_in[`TLB_MAT];
-        csr_tlbelo0[`TLB_G]   <= tlbelo0_in[`TLB_G];
-        csr_tlbelo0[`TLB_PPN] <= tlbelo0_in[`TLB_PPN];
-    end
-    else if (tlbrd_invalid_wr_en) begin
-        csr_tlbelo0[`TLB_V]   <= 1'b0;
-        csr_tlbelo0[`TLB_D]   <= 1'b0;
-        csr_tlbelo0[`TLB_PLV] <= 2'b0;
-        csr_tlbelo0[`TLB_MAT] <= 2'b0;
-        csr_tlbelo0[`TLB_G]   <= 1'b0;
-        csr_tlbelo0[`TLB_PPN] <= 24'b0;
-    end
-end
-
-//tlbelo1
-always @(posedge clk) begin
-    if (reset) begin
-        csr_tlbelo1[7] <= 1'b0;
-    end
-    else if (tlbelo1_wen) begin
-        csr_tlbelo1[`TLB_V]   <= wr_data[`TLB_V];
-        csr_tlbelo1[`TLB_D]   <= wr_data[`TLB_D];
-        csr_tlbelo1[`TLB_PLV] <= wr_data[`TLB_PLV];
-        csr_tlbelo1[`TLB_MAT] <= wr_data[`TLB_MAT];
-        csr_tlbelo1[`TLB_G]   <= wr_data[`TLB_G];
-        csr_tlbelo1[`TLB_PPN] <= wr_data[`TLB_PPN];
-    end
-    else if (tlbrd_valid_wr_en) begin
-        csr_tlbelo1[`TLB_V]   <= tlbelo1_in[`TLB_V];
-        csr_tlbelo1[`TLB_D]   <= tlbelo1_in[`TLB_D];
-        csr_tlbelo1[`TLB_PLV] <= tlbelo1_in[`TLB_PLV];
-        csr_tlbelo1[`TLB_MAT] <= tlbelo1_in[`TLB_MAT];
-        csr_tlbelo1[`TLB_G]   <= tlbelo1_in[`TLB_G];
-        csr_tlbelo1[`TLB_PPN] <= tlbelo1_in[`TLB_PPN];
-    end
-    else if (tlbrd_invalid_wr_en) begin
-        csr_tlbelo1[`TLB_V]   <= 1'b0;
-        csr_tlbelo1[`TLB_D]   <= 1'b0;
-        csr_tlbelo1[`TLB_PLV] <= 2'b0;
-        csr_tlbelo1[`TLB_MAT] <= 2'b0;
-        csr_tlbelo1[`TLB_G]   <= 1'b0;
-        csr_tlbelo1[`TLB_PPN] <= 24'b0;
-    end
-end
-
-//asid
-always @(posedge clk) begin
-    if (reset) begin
-        csr_asid[31:10] <= 22'h280; //ASIDBITS = 10
-    end
-    else if (asid_wen) begin
-        csr_asid[`TLB_ASID] <= wr_data[`TLB_ASID];
-    end
-    else if (tlbrd_valid_wr_en) begin
-        csr_asid[`TLB_ASID] <= asid_in;
-    end
-    else if (tlbrd_invalid_wr_en) begin
-        csr_asid[`TLB_ASID] <= 10'b0;
-    end
-end
-
-//TLBRENTRY
-always @(posedge clk) begin
-    if (reset) begin
-        csr_tlbrentry[5:0] <= 6'b0;
-    end
-    else if (tlbrentry_wen) begin
-        csr_tlbrentry[`TLBRENTRY_PA] <= wr_data[`TLBRENTRY_PA];
-    end
-end
-
-//dmw0
-always @(posedge clk) begin
-    if (reset) begin
-        csr_dmw0[ 2:1] <= 2'b0;
-        csr_dmw0[24:6] <= 19'b0;
-        csr_dmw0[28]   <= 1'b0;
-    end
-    else if (DMW0_wen) begin
-        csr_dmw0[`PLV0]    <= wr_data[`PLV0];
-        csr_dmw0[`PLV3]    <= wr_data[`PLV3];
-        csr_dmw0[`DMW_MAT] <= wr_data[`DMW_MAT];
-        csr_dmw0[`PSEG]    <= wr_data[`PSEG];
-        csr_dmw0[`VSEG]    <= wr_data[`VSEG];
-    end
-end
-
-//dmw1
-always @(posedge clk) begin
-    if (reset) begin
-        csr_dmw1[ 2:1] <= 2'b0;
-        csr_dmw1[24:6] <= 19'b0;
-        csr_dmw1[28]   <= 1'b0;
-    end
-    else if (DMW1_wen) begin
-        csr_dmw1[`PLV0]    <= wr_data[`PLV0];
-        csr_dmw1[`PLV3]    <= wr_data[`PLV3];
-        csr_dmw1[`DMW_MAT] <= wr_data[`DMW_MAT];
-        csr_dmw1[`PSEG]    <= wr_data[`PSEG];
-        csr_dmw1[`VSEG]    <= wr_data[`VSEG];
-    end
-end
-
-//cpuid
-always @(posedge clk) begin
-    if (reset) begin
-        csr_cpuid <= 32'b0;
-    end 
-end
-
-//save0
-always @(posedge clk) begin
+  //save
+  always @(posedge clk) begin
     if (save0_wen) begin
-        csr_save0 <= wr_data;
-    end 
-end
-
-//save1
-always @(posedge clk) begin
+      csr_save0 <= csrWData;
+    end
     if (save1_wen) begin
-        csr_save1 <= wr_data;
-    end 
-end
-
-//save2
-always @(posedge clk) begin
+      csr_save1 <= csrWData;
+    end
     if (save2_wen) begin
-        csr_save2 <= wr_data;
-    end 
-end
-
-//save3
-always @(posedge clk) begin
+      csr_save2 <= csrWData;
+    end
     if (save3_wen) begin
-        csr_save3 <= wr_data;
-    end 
-end
+      csr_save3 <= csrWData;
+    end
+  end
 
-//tid
-always @(posedge clk) begin
-    if (reset) begin
-        csr_tid <= 32'b0;
-    end
-    else if (tid_wen) begin
-        csr_tid <= wr_data;
-    end
-end
-
-//tcfg
-always @(posedge clk) begin
-    if (reset) begin
-        csr_tcfg[`EN] <= 1'b0;
-    end
-    else if (tcfg_wen) begin
-        csr_tcfg[      `EN] <= wr_data[      `EN];
-        csr_tcfg[`PERIODIC] <= wr_data[`PERIODIC];
-        csr_tcfg[ `INITVAL] <= wr_data[ `INITVAL];
-    end
-end
-
-//cntc
-always @(posedge clk) begin
-    if (reset) begin
-        csr_cntc <= 32'b0;
-    end
-    else if (cntc_wen) begin
-        csr_cntc <= wr_data;
-    end
-end
-
-//tval
-always @(posedge clk) begin
-    if (tcfg_wen) begin
-        csr_tval <= {wr_data[ `INITVAL], 2'b0};
-    end
-    else if (timer_en) begin
-        if (csr_tval != 32'b0) begin
-            csr_tval <= csr_tval - 32'b1;
-        end
-        else if (csr_tval == 32'b0) begin
-            csr_tval <= csr_tcfg[`PERIODIC] ? {csr_tcfg[`INITVAL], 2'b0} : 32'hffffffff;
-        end
-    end
-end
-
-//ticlr
-always @(posedge clk) begin
-    if (reset) begin
-        csr_ticlr <= 32'b0;
-    end
-end
-
-//llbctl
-always @(posedge clk) begin
-    if (reset) begin
-        csr_llbctl[`KLO]   <= 1'b0;
-        csr_llbctl[31:3]   <= 29'b0;
-		csr_llbctl[`WCLLB] <= 1'b0;
+  //llbit
+  reg llbit;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      llbit <= 1'b0;
+      csr_llbctl[`WCLLB] <= 1'b0;
+      csr_llbctl[`KLO] <= 1'b0;
+      csr_llbctl[31:3] <= 29'b0;
+    end else if (ertn) begin
+      if (csr_llbctl[`KLO]) begin
+        csr_llbctl[`KLO] <= 1'b0;
+      end else begin
         llbit <= 1'b0;
-    end 
-    else if (ertn_flush) begin
-        if (csr_llbctl[`KLO]) begin
-            csr_llbctl[`KLO] <= 1'b0;
-        end
-        else begin
-            llbit <= 1'b0;
-        end
+      end
+    end else if (llbctl_wen) begin
+      csr_llbctl[`KLO] <= csrWData[`KLO];
+      if (csrWData[`WCLLB] == 1'b1) begin //不写csrWData[`WCLLB]
+        llbit <= 1'b0;
+      end
+    end else if (llbitWen) begin
+      llbit <= llbitWData;
     end
-    else if (llbctl_wen) begin 
-        csr_llbctl[  `KLO] <= wr_data[  `KLO];
-        if (wr_data[`WCLLB] == 1'b1) begin
-            llbit <= 1'b0;
-        end
-    end
-    else if (llbit_set_in) begin
-        llbit <= llbit_in;
-    end
-end
+  end
 
-//timer_64
-always @(posedge clk) begin
-    if (reset) begin
-        timer_64 <= 64'b0;
+  //tlbidx
+  parameter NUM = 24-$clog2(`TLB_NUM);
+  parameter ZERO = 0;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tlbidx[23:$clog2(`TLB_NUM)] <= ZERO[NUM-1:0];
+      csr_tlbidx[30] <= 1'b0;
+    end else if (tlb_rd_wen) begin
+      csr_tlbidx[`PS] <= ps_in;
+      csr_tlbidx[`NE] <= ~e_in;
+    end else if (tlb_srch_wen) begin
+      csr_tlbidx[`NE] <= ~e_in;
+      if (e_in) begin
+        csr_tlbidx[`INDEX] <= index_in;
+      end
+    end else if (tlbidx_wen) begin
+      csr_tlbidx[`INDEX] <= csrWData[`INDEX];
+      csr_tlbidx[`PS] <= csrWData[`PS];
+      csr_tlbidx[`NE] <= csrWData[`NE];
     end
-    else begin
-        timer_64 <= timer_64 + 1'b1;
-    end
-end
+  end
 
-//pgdl
-always @(posedge clk) begin
-    if (pgdl_wen) begin
-        csr_pgdl[`BASE] <= wr_data[`BASE];
+  //tlbehi
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tlbehi[12:0] <= 13'b0;
+    end else if (tlb_rd_wen) begin  //这几个条件是互斥的
+      csr_tlbehi[`VPPN] <= vppn_in;
+    end else if (tlb_addr_excp) begin
+      csr_tlbehi[`VPPN] <= badv_addr[31:13];
+    end else if (tlbehi_wen) begin
+      csr_tlbehi[`VPPN] <= csrWData[`VPPN];
     end
-end
+  end
 
-//pgdh
-always @(posedge clk) begin
-    if (pgdh_wen) begin
-        csr_pgdh[`BASE] <= wr_data[`BASE];
+  //tlbelo0
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tlbelo0[7] <= 1'b0;
+      csr_tlbelo0[31:28] <= 4'b0;
+    end else if (tlb_rd_wen) begin
+      csr_tlbelo0[31:8] <= tlbelo0_in[31:8];
+      csr_tlbelo0[6:0]  <= tlbelo0_in[6:0];
+    end else if (tlbelo0_wen) begin
+      csr_tlbelo0[`TLB_V]   <= csrWData[`TLB_V];
+      csr_tlbelo0[`TLB_D]   <= csrWData[`TLB_D];
+      csr_tlbelo0[`TLB_PLV] <= csrWData[`TLB_PLV];
+      csr_tlbelo0[`TLB_MAT] <= csrWData[`TLB_MAT];
+      csr_tlbelo0[`TLB_G]   <= csrWData[`TLB_G];
+      csr_tlbelo0[`TLB_PPN] <= csrWData[`TLB_PPN];
     end
-end
+  end
 
-//use for break in chipscope in software
-always @(posedge clk) begin
-    if (reset) begin
-        csr_brk <= 32'b0;
+  //tlbelo1
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tlbelo1[7] <= 1'b0;
+      csr_tlbelo1[31:28] <= 4'b0;
+    end else if (tlb_rd_wen) begin
+      csr_tlbelo1[31:8] <= tlbelo1_in[31:8];
+      csr_tlbelo1[6:0]  <= tlbelo1_in[6:0];
+    end else if (tlbelo1_wen) begin
+      csr_tlbelo1[`TLB_V]   <= csrWData[`TLB_V];
+      csr_tlbelo1[`TLB_D]   <= csrWData[`TLB_D];
+      csr_tlbelo1[`TLB_PLV] <= csrWData[`TLB_PLV];
+      csr_tlbelo1[`TLB_MAT] <= csrWData[`TLB_MAT];
+      csr_tlbelo1[`TLB_G]   <= csrWData[`TLB_G];
+      csr_tlbelo1[`TLB_PPN] <= csrWData[`TLB_PPN];
     end
-    if (BRK_wen) begin
-        csr_brk <= wr_data;
-    end
-end
+  end
 
-//use for disable cache or enable cache
-always @(posedge clk) begin
-    if (reset) begin
-        csr_disable_cache <= 32'b0;
+  //asid 
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_asid[15:10] <= 6'b0;
+      csr_asid[31:24] <= 8'b0;
+      //ASID域位宽为10——9:0
+      csr_asid[`TLB_ASIDBITS] <= 8'd10;
+    end else if (tlb_rd_wen) begin
+      csr_asid[`TLB_ASID] <= asid_in;
+    end else if (asid_wen) begin
+      csr_asid[`TLB_ASID] <= csrWData[`TLB_ASID];
     end
-    if (disable_cache_wen) begin
-        csr_disable_cache <= wr_data;
+  end
+
+  //pgdl
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_pgdl[11:0] <= 12'b0;
+    end else if (pgdl_wen) begin
+      csr_pgdl[`PGDL_BASE] <= csrWData[`PGDL_BASE];
     end
-end
+  end
 
-// difftest
-assign csr_crmd_diff        = csr_crmd;
-assign csr_prmd_diff        = csr_prmd;
-assign csr_ectl_diff        = csr_ectl;
-assign csr_estat_diff       = csr_estat;
-assign csr_era_diff         = csr_era;
-assign csr_badv_diff        = csr_badv;
-assign csr_eentry_diff      = csr_eentry;
-assign csr_tlbidx_diff      = csr_tlbidx;
-assign csr_tlbehi_diff      = csr_tlbehi;
-assign csr_tlbelo0_diff     = csr_tlbelo0;
-assign csr_tlbelo1_diff     = csr_tlbelo1;
-assign csr_asid_diff        = csr_asid;
-assign csr_save0_diff       = csr_save0;
-assign csr_save1_diff       = csr_save1;
-assign csr_save2_diff       = csr_save2;
-assign csr_save3_diff       = csr_save3;
-assign csr_tid_diff         = csr_tid;
-assign csr_tcfg_diff        = csr_tcfg;
-assign csr_tval_diff        = csr_tval;
-assign csr_ticlr_diff       = csr_ticlr;
-assign csr_llbctl_diff      = {csr_llbctl[31:1], llbit};
-assign csr_tlbrentry_diff   = csr_tlbrentry;
-assign csr_dmw0_diff        = csr_dmw0;
-assign csr_dmw1_diff        = csr_dmw1;
-assign csr_pgdl_diff        = csr_pgdl;
-assign csr_pgdh_diff        = csr_pgdh;
+  //pgdh
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_pgdh[11:0] <= 12'b0;
+    end else if (pgdh_wen) begin
+      csr_pgdh[`PGDH_BASE] <= csrWData[`PGDH_BASE];
+    end
+  end
 
+  //pgd
+  assign csr_pgd = csr_badv[31] ? csr_pgdh : csr_pgdl;
+
+  //tlbrentry
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tlbrentry[5:0] <= 6'b0;
+    end else if (tlbrentry_wen) begin
+      csr_tlbrentry[`TLBEENTRY_VA] <= csrWData[`TLBEENTRY_VA];
+    end
+  end
+
+  //dmw0
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_dmw0[`DMW_PLV0] <= 1'b0;
+      csr_dmw0[2:1] <= 2'b0;
+      csr_dmw0[`DMW_PLV3] <= 1'b0;
+      csr_dmw0[24:6] <= 19'b0;
+      csr_dmw0[28] <= 1'b0;
+    end else if (dmw0_wen) begin
+      csr_dmw0[`DMW_PLV0] <= csrWData[`DMW_PLV0];
+      csr_dmw0[`DMW_PLV3] <= csrWData[`DMW_PLV3];
+      csr_dmw0[`DMW_MAT]  <= csrWData[`DMW_MAT];
+      csr_dmw0[`DMW_PSEG] <= csrWData[`DMW_PSEG];
+      csr_dmw0[`DMW_VSEG] <= csrWData[`DMW_VSEG];
+    end
+  end
+
+  //dmw1
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_dmw1[`DMW_PLV0] <= 1'b0;
+      csr_dmw1[2:1] <= 2'b0;
+      csr_dmw1[`DMW_PLV3] <= 1'b0;
+      csr_dmw1[24:6] <= 19'b0;
+      csr_dmw1[28] <= 1'b0;
+    end else if (dmw1_wen) begin
+      csr_dmw1[`DMW_PLV0] <= csrWData[`DMW_PLV0];
+      csr_dmw1[`DMW_PLV3] <= csrWData[`DMW_PLV3];
+      csr_dmw1[`DMW_MAT]  <= csrWData[`DMW_MAT];
+      csr_dmw1[`DMW_PSEG] <= csrWData[`DMW_PSEG];
+      csr_dmw1[`DMW_VSEG] <= csrWData[`DMW_VSEG];
+    end
+  end
+
+  //tid 处理器核复位时将其复位成与CSR.CPUID.COREID相同的值 单核即0
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tid <= 32'b0;
+    end else if (tid_wen) begin
+      csr_tid <= csrWData;
+    end
+  end
+
+  //tcfg
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tcfg[`EN] <= 1'b0;
+    end else if (tcfg_wen) begin
+      csr_tcfg[`EN] <= csrWData[`EN];
+      csr_tcfg[`PERIODIC] <= csrWData[`PERIODIC];
+      csr_tcfg[`INITVAL] <= csrWData[`INITVAL];
+    end
+  end
+
+  //tval n是32
+  //在写tcfg的同时设置tval,所以需要获取下一个clk时钟时要写入tcfg的值
+  //当tval为0时，如果不设置PERIODIC那么还会再减1,因此初始值设置成全f，进行减的比较也需要&不为全f
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_tval <= 32'hffff_ffff;  //计时到0后再减1
+    end else if (tcfg_wen & csrWData[`EN]) begin
+      csr_tval <= {csrWData[`INITVAL], 2'b0};
+    end else if (csr_tcfg[`EN] & csr_tval != 32'hffff_ffff) begin
+      if (csr_tval == 32'b0 & csr_tcfg[`PERIODIC]) begin
+        csr_tval <= {csr_tcfg[`INITVAL], 2'b0};
+      end else begin
+        csr_tval <= csr_tval - 32'b1;
+      end
+    end
+  end
+
+  //ticlr
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_ticlr <= 32'b0;
+    end
+  end
+
+  //cntc
+  always @(posedge clk) begin
+    if (~resetn) begin
+      csr_cntc <= 32'b0;
+    end else if (cntc_wen) begin
+      csr_cntc <= csrWData;
+    end
+  end
+
+  //output port
+  assign csrRData = {32{csrRAdd == CRMD}} & csr_crmd |
+                 {32{csrRAdd == PRMD }}  & csr_prmd    |
+                 {32{csrRAdd == ECFG  }}  & csr_ecfg   |
+                 {32{csrRAdd == ESTAT }}  & csr_estat   |
+                 {32{csrRAdd == ERA   }}  & csr_era	    |
+                 {32{csrRAdd == BADV  }}  & csr_badv    |
+                 {32{csrRAdd == EENTRY}}  & csr_eentry  |
+                 {32{csrRAdd == TLBIDX}}  & csr_tlbidx  |
+                 {32{csrRAdd == TLBEHI}}  & csr_tlbehi  |
+                 {32{csrRAdd == TLBELO0}} & csr_tlbelo0 |
+                 {32{csrRAdd == TLBELO1}} & csr_tlbelo1 |
+                 {32{csrRAdd == ASID  }}  & csr_asid    |
+                 {32{csrRAdd == PGDL  }}  & csr_pgdl    |
+                 {32{csrRAdd == PGDH  }}  & csr_pgdh    |
+                 {32{csrRAdd == PGD   }}  & csr_pgd     |
+                 {32{csrRAdd == CPUID }}  & csr_cpuid   |
+                 {32{csrRAdd == SAVE0 }}  & csr_save0   |
+                 {32{csrRAdd == SAVE1 }}  & csr_save1   |
+                 {32{csrRAdd == SAVE2 }}  & csr_save2   |
+                 {32{csrRAdd == SAVE3 }}  & csr_save3   |
+                 {32{csrRAdd == TID   }}  & csr_tid     |
+                 {32{csrRAdd == TCFG  }}  & csr_tcfg    |
+                 {32{csrRAdd == CNTC  }}  & csr_cntc    |
+                 {32{csrRAdd == TICLR }}  & csr_ticlr   |
+                 {32{csrRAdd == LLBCTL}}  & {csr_llbctl[31:1], llbit} |
+                 {32{csrRAdd == TVAL  }}  & csr_tval    |
+                 {32{csrRAdd == TLBRENTRY}} & csr_tlbrentry   |
+                 {32{csrRAdd == DMW0}}    & csr_dmw0    |
+                 {32{csrRAdd == DMW1}}    & csr_dmw1    ;
+  assign tid_out = csr_tid;
+  assign timer_64_out = timer_64;
+  assign has_int = csr_crmd[`IE] & ((csr_ecfg[`LIE] & csr_estat[`IS]) != 13'b0);
+  assign eentry_out = csr_eentry;
+  assign tlbrentry_out = csr_tlbrentry;
+  assign era_out = csr_era;
+  assign plv = {2{excp}} & 2'b0 |   
+               {2{ertn}} & csr_prmd[`PPLV] |
+               {2{crmd_wen}} & csrWData[`PLV]   |
+               {2{!excp && !ertn && !crmd_wen}} & csr_crmd[`PLV];
+
+  assign asid_out = csr_asid[`TLB_ASID];
+  assign vppn_out = csr_tlbehi[`VPPN];
+  assign tlbelo0_out = csr_tlbelo0;
+  assign tlbelo1_out = csr_tlbelo1;
+  assign index_out = csr_tlbidx[`INDEX];
+  assign ps_out = csr_tlbidx[`PS];
+  assign e_out = csr_estat[`ECODE] != 6'h3f ? ~csr_tlbidx[`NE] : 1'b1;
+  assign crmd_da = csr_crmd[`DA];
+  assign crmd_pg = csr_crmd[`PG];
+  assign dmw0_vseg = csr_dmw0[`DMW_VSEG];
+  assign dmw0_pseg = csr_dmw0[`DMW_PSEG];
+  assign dmw0_plv0 = csr_dmw0[`DMW_PLV0];
+  assign dmw0_plv3 = csr_dmw0[`DMW_PLV3];
+  assign dmw1_vseg = csr_dmw1[`DMW_VSEG];
+  assign dmw1_pseg = csr_dmw1[`DMW_PSEG];
+  assign dmw1_plv0 = csr_dmw1[`DMW_PLV0];
+  assign dmw1_plv3 = csr_dmw1[`DMW_PLV3];
+  assign dmw0_mat = csr_dmw0[`DMW_MAT] == 2'b01; //1 --cc 0 suc
+  assign dmw1_mat = csr_dmw1[`DMW_MAT] == 2'b01;
+
+  assign crmd_datf = csr_crmd[`DATF] == 2'b01;
+  assign crmd_datm = csr_crmd[`DATM] == 2'b01;
+
+  assign llbit_out = llbit;
+
+  // difftest
+  assign csr_crmd_diff        = csr_crmd;
+  assign csr_prmd_diff        = csr_prmd;
+  assign csr_ectl_diff        = csr_ecfg;
+  assign csr_estat_diff       = csr_estat;
+  assign csr_era_diff         = csr_era;
+  assign csr_badv_diff        = csr_badv;
+  assign csr_eentry_diff      = csr_eentry;
+  assign csr_tlbidx_diff      = csr_tlbidx;
+  assign csr_tlbehi_diff      = csr_tlbehi;
+  assign csr_tlbelo0_diff     = csr_tlbelo0;
+  assign csr_tlbelo1_diff     = csr_tlbelo1;
+  assign csr_asid_diff        = csr_asid;
+  assign csr_save0_diff       = csr_save0;
+  assign csr_save1_diff       = csr_save1;
+  assign csr_save2_diff       = csr_save2;
+  assign csr_save3_diff       = csr_save3;
+  assign csr_tid_diff         = csr_tid;
+  assign csr_tcfg_diff        = csr_tcfg;
+  assign csr_tval_diff        = csr_tval;
+  assign csr_ticlr_diff       = csr_ticlr;
+  assign csr_llbctl_diff      = {csr_llbctl[31:1], llbit};
+  assign csr_tlbrentry_diff   = csr_tlbrentry;
+  assign csr_dmw0_diff        = csr_dmw0;
+  assign csr_dmw1_diff        = csr_dmw1;
+  assign csr_pgdl_diff        = csr_pgdl;
+  assign csr_pgdh_diff        = csr_pgdh;
 endmodule

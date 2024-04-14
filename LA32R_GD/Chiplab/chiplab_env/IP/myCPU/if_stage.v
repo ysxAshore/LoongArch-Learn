@@ -1,355 +1,265 @@
+`timescale 1ns / 1ps
 `include "mycpu.h"
-`include "csr.h"
 
-module if_stage(
-    input                          clk            ,
-    input                          reset          ,
-    //allwoin
-    input                          ds_allowin     ,
-    //brbus
-    input  [`BR_BUS_WD       -1:0] br_bus         ,
-    //to ds
-    output                         fs_to_ds_valid ,
-    output [`FS_TO_DS_BUS_WD -1:0] fs_to_ds_bus   ,
-    //exception
-    input                          excp_flush       ,
-    input                          ertn_flush       ,
-    input                          refetch_flush    ,
-    input                          icacop_flush     ,
-    input  [31:0]                  ws_pc            ,
-    input  [31:0]                  csr_eentry       ,
-    input  [31:0]                  csr_era          ,
-    input                          excp_tlbrefill   ,
-    input  [31:0]                  csr_tlbrentry    ,
-    input                          has_int          ,
-    //idle
-    input                          idle_flush       ,
-    // inst cache interface
-    output                         inst_valid        ,
-    output                         inst_op           ,
-    output [ 3:0]                  inst_wstrb        ,
-    output [31:0]                  inst_wdata        ,
-    input                          inst_addr_ok      ,
-    input                          inst_data_ok      ,
-    input                          icache_miss       ,
-    input  [31:0]                  inst_rdata        ,
-    output                         inst_uncache_en   ,
-    output                         tlb_excp_cancel_req,
-    //from csr
-    input                          csr_pg            ,
-    input                          csr_da            ,
-    input  [31:0]                  csr_dmw0          ,
-    input  [31:0]                  csr_dmw1          ,
-    input  [ 1:0]                  csr_plv           ,
-    input  [ 1:0]                  csr_datf          ,
-    input                          disable_cache     ,
-    //to btb
-    output [31:0]                  fetch_pc          ,
-    output                         fetch_en          ,
-    input  [31:0]                  btb_ret_pc        ,
-    input                          btb_taken         ,
-    input                          btb_en            ,
-    input  [ 4:0]                  btb_index         ,
-    //to addr trans
-    output [31:0]                  inst_addr         ,
-    output                         inst_addr_trans_en,
-    output                         dmw0_en           ,
-    output                         dmw1_en           ,
-    //tlb
-    input                          inst_tlb_found    ,
-    input                          inst_tlb_v        ,
-    input                          inst_tlb_d        ,
-    input  [ 1:0]                  inst_tlb_mat      ,
-    input  [ 1:0]                  inst_tlb_plv      
+//X->(X+1)的X_to_Y_valid、data、readygo
+//(X+1)->X的allowin
+module if_stage (
+    input wire clk,
+    input wire resetn,
+
+    //与下一级传递通讯的流水线控制信号 
+    input wire id_allowin,
+    output wire if_to_id_valid,
+    output wire [`IF_TO_ID_WD-1:0] if_to_id_bus,
+
+    //id组合逻辑传递给if组合逻辑的一些用于生成nextpc的信号
+    input wire [`ID_TO_IF_WD-1:0] id_to_if_bus,
+
+    //CSR传递给preIF的信号
+    input wire [`CSR_TO_IF_WD-1:0] csr_to_if_bus,
+
+    //MEM传递给IF的信号
+    input wire [`MEM_TO_IF_WD-1:0] mem_to_if_bus,
+
+    //TLB传递给IF的信号
+    input wire [`TLB_TO_IF_WD-1:0] tlb_to_if_bus,
+
+    //IF传递给TLB的信号
+    output wire [`IF_TO_TLB_WD-1:0] if_to_tlb_bus,
+
+    //has_int
+    input wire has_int,
+
+    //对接ICACHE接口
+    output        inst_sram_req,
+    output        inst_sram_wr,
+    output [ 3:0] inst_sram_wstrb,
+    output [ 1:0] inst_sram_size,
+    output [31:0] inst_sram_addr,
+    output [31:0] inst_sram_wdata,
+    input  [31:0] inst_sram_rdata,
+    input         inst_sram_addr_ok,
+    input         inst_sram_data_ok,
+
+    output inst_mat
 );
+  reg if_valid;  //表示if_reg内容是否有效
+  wire if_ready_go;  //表示if组合逻辑内容是否处理完成，可以向id_reg传递
 
-reg          fs_valid;
-wire         fs_ready_go;
-wire         fs_allowin;
-wire         to_fs_valid;
-wire         pfs_ready_go;
+  wire if_allowin;  //控制preIF组合逻辑数据是否可以传递进if_reg
+  wire preIf_to_if_valid;
+  wire preIF_ready_go;
 
-wire [31:0]  seq_pc;
-wire [31:0]  nextpc;
+  wire [31:0] seq_pc;  //序列下一个PC
+  wire [31:0] nextpc;  //最终更新到PC寄存器的指令地址
 
-wire         pfs_excp_adef;
-wire         fs_excp_tlbr;
-wire         fs_excp_pif;
-wire         fs_excp_ppi;
-reg          fs_excp;
-reg          fs_excp_num;
-wire         excp;
-wire [3:0]   excp_num;
-wire         pfs_excp;
-wire         pfs_excp_num;
+  //拆解id组合逻辑传递给if组合逻辑的数据
+  wire br_stall;
+  wire br_taken;
+  wire [31:0] br_target;
+  assign {br_stall, br_taken, br_target} = id_to_if_bus_r_valid ? id_to_if_bus_r : id_to_if_bus;
 
-wire         flush_sign;
+  //拆解MEM传递过来的数据
+  wire excp;
+  wire ertn;
+  wire tlb_excp;
+  wire refetch;
+  wire idle;
+  wire [31:0] refetch_pc;
+  assign {refetch_pc,idle,tlb_excp,refetch,excp, ertn} = mem_to_if_bus_r_valid ? mem_to_if_bus_r : mem_to_if_bus;
 
-reg  [31:0]  inst_rd_buff;
-reg          inst_buff_enable;
+  //拆解CSR传递过来的数据
+  wire [31:0] era;
+  wire [31:0] eentry_out;
+  wire [31:0] tlbenrty_out;
+  wire [9:0] asid_out;
+  wire crmd_da;
+  wire crmd_pg;
+  wire [2:0] dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg;
+  wire dmw0_plv0, dmw0_plv3, dmw1_plv0, dmw1_plv3;
+  wire dmw0_mat,dmw1_mat;
+  wire [1:0] cur_plv;
+  wire crmd_dataF;
+  assign {eentry_out, era, tlbenrty_out, asid_out, crmd_da, crmd_pg, dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg, dmw0_plv0, dmw1_plv0, dmw0_plv3, dmw1_plv3, cur_plv, dmw0_mat, dmw1_mat, crmd_dataF} = csr_to_if_bus;
 
-wire         da_mode;
-wire         pg_mode;
+  //拆解TLB传递过来的数据
+  wire s0_found;
+  wire [19:0] s0_ppn;
+  wire [5:0] s0_ps;
+  wire [1:0] s0_plv;
+  wire [1:0] s0_mat;
+  wire s0_d;
+  wire s0_v;
+  wire [$clog2(`TLB_NUM)-1:0] s0_findex;
+  assign {s0_found, s0_ppn, s0_ps, s0_plv, s0_mat, s0_d, s0_v, s0_findex} = tlb_to_if_bus;
 
-wire         btb_pre_error_flush;
-wire [31:0]  btb_pre_error_flush_target;
+  //组合传递给id_reg的数据
+  wire [31:0] if_inst;
+  reg [31:0] if_pc;
+  reg if_ADEF_EXCP;
+  reg if_tlbr;
+  reg if_ppi;
+  reg if_pif;
+  assign if_to_id_bus = {if_pc, if_inst, if_ADEF_EXCP, if_tlbr, if_pif, if_ppi};
 
-wire         flush_inst_delay;
-wire         flush_inst_go_dirt;
+  //刷新信号 这里用if_reflush_r让if_allowin有效 因为会存在需要将异常的nextPC更新到PC时，if_allowin无效的问题——dataok还未到达，这个data_ok用excpreg清除
+  //但是为什么要用r  preIF_readygo addrok还没到——直接取消不可以吗？——归成一种处理方式？不需要处理preIF_readygo是什么值了
+  wire if_reflush;
+  assign if_reflush = mem_to_if_bus[4] | mem_to_if_bus[3] | mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0];
+  wire if_reflush_r;
+  assign if_reflush_r = excp | ertn | refetch | tlb_excp | idle;
 
-wire         fetch_btb_target;
+  //异常检测声明
+  wire ADEF_EXCP;
+  wire TLBR;
+  wire PPI;
+  wire PIF;
 
-reg          idle_lock;
+  // preIF
+  assign preIF_ready_go = inst_sram_req & inst_sram_addr_ok | ADEF_EXCP | TLBR | PIF | PPI;
+  assign preIf_to_if_valid = resetn & preIF_ready_go;
+  assign seq_pc = if_pc + 32'h4;
+  assign nextpc = tlb_excp ? tlbenrty_out : excp ? eentry_out : ertn ? era : (refetch | idle) ? refetch_pc : br_taken & (if_valid | bd_done) ? br_target : seq_pc;
 
-wire         tlb_excp_lock_pc;
-
-wire  [31:0] btb_ret_pc_t;
-wire  [ 4:0] btb_index_t;
-wire         btb_taken_t;
-wire         btb_en_t;
-
-wire  [31:0] excp_entry;
-wire  [31:0] inst_flush_pc;
-
-assign {btb_pre_error_flush,
-        btb_pre_error_flush_target  } = br_bus;
-
-wire [31:0] fs_inst;
-reg  [31:0] fs_pc;
-assign fs_to_ds_bus = {btb_ret_pc_t,    //108:77
-                       btb_index_t,     //76:72
-                       btb_taken_t,     //71:71
-                       btb_en_t,        //70:70
-                       icache_miss,     //69:69
-                       excp,            //68:68
-                       excp_num,        //67:64
-                       fs_inst,         //63:32
-                       fs_pc            //31:0
-                      };
-
-assign flush_sign = ertn_flush || excp_flush || refetch_flush || icacop_flush || idle_flush;
-
-assign flush_inst_delay = flush_sign && !inst_addr_ok || idle_flush;
-assign flush_inst_go_dirt = flush_sign && inst_addr_ok && !idle_flush;
-
-//flush state machine
-reg [31:0] flush_inst_req_buffer;
-reg        flush_inst_req_state;
-localparam flush_inst_req_empty = 1'b0;
-localparam flush_inst_req_full  = 1'b1;
-
-always @(posedge clk) begin
-    if (reset) begin
-        flush_inst_req_state <= flush_inst_req_empty;
-    end 
-    else case (flush_inst_req_state)
-        flush_inst_req_empty: begin
-            if(flush_inst_delay) begin
-                flush_inst_req_buffer <= nextpc;
-                flush_inst_req_state  <= flush_inst_req_full;
-            end
-        end
-        flush_inst_req_full: begin
-            if(pfs_ready_go) begin
-                flush_inst_req_state  <= flush_inst_req_empty;
-            end
-            else if (flush_sign) begin
-                flush_inst_req_buffer <= nextpc;
-            end
-        end
-    endcase
-end
-
-assign fetch_btb_target = (btb_taken && btb_en) || (btb_lock_en && btb_lock_buffer[37]);
-
-/*
-* idle lock
-* when idle inst commit, stop inst fetch until interrupted
-*/
-always @(posedge clk) begin
-    if (reset) begin
-        idle_lock <= 1'b0;
+  // if_reg
+  assign if_ready_go    = (inst_sram_data_ok | inst_sram_rdata_r_valid) & ~excp_reg | if_ADEF_EXCP | if_tlbr | if_pif | if_ppi;
+  assign if_allowin = ~if_valid | if_ready_go & id_allowin | if_reflush_r;
+  assign if_to_id_valid = if_valid & if_ready_go;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      if_valid <= 1'b0;
+      if_pc <= 32'h1bff_fffc;
+    end else if (if_allowin) begin
+      if_valid <= preIf_to_if_valid;
+    end else if (if_ready_go & if_reflush) begin
+      if_valid <= 1'b0;
     end
-    else if (idle_flush && !has_int) begin
-        idle_lock <= 1'b1;
+    if (if_allowin & preIf_to_if_valid) begin //原来在if_valid & (~id_allowin | ~if_ready_go)时利用brcancel取消指令的方法，都用到id阶段处理了，因为现在都能流经到id阶段
+      if_pc <= nextpc;
+      if_ADEF_EXCP <= ADEF_EXCP;
+      if_tlbr <= TLBR;
+      if_pif <= PIF;
+      if_ppi <= PPI;
     end
-    else if (has_int) begin
-        idle_lock <= 1'b0;
+  end
+
+  //if->id的指令缓存
+  reg [31:0] inst_sram_rdata_r;
+  reg inst_sram_rdata_r_valid;
+
+  always @(posedge clk) begin
+    if (~resetn | if_reflush) begin
+      inst_sram_rdata_r_valid <= 1'b0;
+    end else if (if_valid & inst_sram_data_ok & ~id_allowin) begin
+      inst_sram_rdata_r <= inst_sram_rdata;
+      inst_sram_rdata_r_valid <= 1'b1;
+    end else if (id_allowin) begin
+      inst_sram_rdata_r_valid <= 1'b0;
     end
-end
+  end
 
-/*
-* br state machine
-* when btb pre error, id stage will cancel one inst. so need confirm useless
-* inst (will be canceled) is generated. 
-*/ 
-reg [31:0] br_target_inst_req_buffer;
-reg [ 2:0] br_target_inst_req_state;
-localparam br_target_inst_req_empty = 3'b001;
-localparam br_target_inst_req_wait_slot = 3'b010;
-localparam br_target_inst_req_wait_br_target = 3'b100;
-
-always @(posedge clk) begin
-    if (reset) begin
-        br_target_inst_req_state <= br_target_inst_req_empty;
+  //br信息也需要保持到缓存，以在preIF_ready_go无效时保持进入到IF，同样MEM到ID的更新nextpc的信息也需要保持 
+  //增加了refetch，那么为了保留reftech时readygo无效不能更新PC的情况，需要保持缓存
+  reg [`MEM_TO_IF_WD-1:0] mem_to_if_bus_r;
+  reg mem_to_if_bus_r_valid;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      mem_to_if_bus_r_valid <= 1'b0;
+    end else if (~mem_to_if_bus_r_valid & (mem_to_if_bus[4]| mem_to_if_bus[3] | mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0]) & ~preIF_ready_go) begin
+      mem_to_if_bus_r <= mem_to_if_bus;  //这也应该加一个if_allowin吧？不用，异常针对if_readygo不为1有处理
+      mem_to_if_bus_r_valid <= 1'b1;
+    end else if (mem_to_if_bus_r_valid & preIF_ready_go) begin
+      mem_to_if_bus_r_valid <= 1'b0;
     end
-    else case (br_target_inst_req_state) 
-        br_target_inst_req_empty: begin
-            if (flush_sign) begin
-                br_target_inst_req_state <= br_target_inst_req_empty; 
-            end
-            else if(btb_pre_error_flush && !fs_valid && !inst_addr_ok) begin
-                br_target_inst_req_state  <= br_target_inst_req_wait_slot;
-                br_target_inst_req_buffer <= btb_pre_error_flush_target;
-            end
-            else if(btb_pre_error_flush && !inst_addr_ok && fs_valid || btb_pre_error_flush && inst_addr_ok && !fs_valid) begin
-                br_target_inst_req_state  <= br_target_inst_req_wait_br_target;
-                br_target_inst_req_buffer <= btb_pre_error_flush_target;
-            end
-        end
-        br_target_inst_req_wait_slot: begin
-            if(flush_sign) begin
-                br_target_inst_req_state <= br_target_inst_req_empty;
-            end
-            else if(pfs_ready_go) begin
-                br_target_inst_req_state <= br_target_inst_req_wait_br_target;
-            end
-        end
-        br_target_inst_req_wait_br_target: begin
-            if(pfs_ready_go || flush_sign) begin
-                br_target_inst_req_state <= br_target_inst_req_empty;
-            end
-        end
-        default: begin
-            br_target_inst_req_state <= br_target_inst_req_empty;
-        end
-    endcase
-end
+  end
 
-/*
-* btb lock
-* btb ret only maintain one clock
-* when pfs not ready go, should buffer btb ret
-*/
-reg [37:0] btb_lock_buffer;
-reg        btb_lock_en;
-always @(posedge clk) begin
-	if (reset || flush_sign || fetch_en)
-		btb_lock_en <= 1'b0;
-	else if (btb_en && !pfs_ready_go) begin
-		btb_lock_en     <= 1'b1;
-		btb_lock_buffer <= {btb_taken, btb_index, btb_ret_pc};
-	end
-end
-
-assign btb_ret_pc_t = {32{btb_lock_en}} & btb_lock_buffer[31:0] | btb_ret_pc;
-assign btb_index_t  = {5{btb_lock_en}} & btb_lock_buffer[36:32] | btb_index;
-assign btb_taken_t  = btb_lock_en && btb_lock_buffer[37] || btb_taken;
-assign btb_en_t     = btb_lock_en || btb_en;
-
-// pre-IF stage
-assign pfs_ready_go = (inst_valid || pfs_excp) && inst_addr_ok;
-assign to_fs_valid  = ~reset && pfs_ready_go;
-assign seq_pc       = fs_pc + 32'h4;
-assign excp_entry   = {32{excp_tlbrefill}}  & csr_tlbrentry |
-                      {32{!excp_tlbrefill}} & csr_eentry    ;
-
-assign inst_flush_pc = {32{ertn_flush}}                                  & csr_era         |
-                       {32{refetch_flush || icacop_flush || idle_flush}} & (ws_pc + 32'h4) ;
-
-assign nextpc = (flush_inst_req_state == flush_inst_req_full)                   ? flush_inst_req_buffer     :
-                excp_flush                                                      ? excp_entry                :
-                (ertn_flush || refetch_flush || icacop_flush || idle_flush)     ? inst_flush_pc             :
-                (br_target_inst_req_state == br_target_inst_req_wait_br_target) ? br_target_inst_req_buffer :
-                btb_pre_error_flush && fs_valid                                 ? btb_pre_error_flush_target:
-                fetch_btb_target                                                ? btb_ret_pc_t              :
-                                                                                  seq_pc                    ;
-/*
-*when encounter tlb excp, stop inst fetch until excp_flush. avoid fetch useless inst.
-*but should not lock when btb state machine or flush state machine is work.
-*/
-assign tlb_excp_lock_pc = tlb_excp_cancel_req && br_target_inst_req_state != br_target_inst_req_wait_br_target && flush_inst_req_state != flush_inst_req_full;
-
-//when flush_sign meet icache_busy 1, flush_sign's inst valid should not set immediately
-assign inst_valid = (fs_allowin && !pfs_excp && !tlb_excp_lock_pc || flush_sign || btb_pre_error_flush) && !(idle_flush || idle_lock);
-assign inst_op     = 1'b0;
-assign inst_wstrb  = 4'h0;
-assign inst_addr   = nextpc; //nextpc
-assign inst_wdata  = 32'b0;
-
-assign fs_inst     = (inst_buff_enable) ? inst_rd_buff : inst_rdata;
-
-//inst read buffer  use for stall situation
-always @(posedge clk) begin
-    if (reset || (fs_ready_go && ds_allowin) || flush_sign) begin
-        inst_buff_enable  <= 1'b0;
+  reg [`ID_TO_IF_WD-1:0] id_to_if_bus_r;
+  reg                    id_to_if_bus_r_valid;
+  reg                    bd_done;
+  always @(posedge clk) begin
+    if (~resetn | if_reflush) begin
+      id_to_if_bus_r_valid <= 1'b0;
+    end else if (id_to_if_bus[32] & id_allowin & ~(preIF_ready_go & if_valid & if_allowin)) begin //而转移的取消必须都进入到id阶段，因此这里是也需要if_valid和if_allowin
+      id_to_if_bus_r <= id_to_if_bus;
+      id_to_if_bus_r_valid <= 1'b1;
+    end else if (bd_done & preIF_ready_go & if_allowin) begin
+      id_to_if_bus_r_valid <= 1'b0;
     end
-    else if ((inst_data_ok) && !ds_allowin) begin
-        inst_rd_buff <= inst_rdata;
-        inst_buff_enable  <= 1'b1;
+  end
+
+  always @(posedge clk) begin
+    if (~resetn | if_reflush) begin
+      bd_done <= 1'b0;
+    end else if (br_taken & ~bd_done & (if_valid ^ (preIF_ready_go & if_allowin))) begin
+      bd_done <= 1'b1;
+    end else if (bd_done & preIF_ready_go & if_allowin) begin
+      bd_done <= 1'b0;
     end
-end
+  end
 
-//exception
-assign pfs_excp_adef = (nextpc[0] || nextpc[1]); //word align
-//tlb 
-assign fs_excp_tlbr = !inst_tlb_found && inst_addr_trans_en;
-assign fs_excp_pif  = !inst_tlb_v && inst_addr_trans_en;
-assign fs_excp_ppi  = (csr_plv > inst_tlb_plv) && inst_addr_trans_en;
-
-assign tlb_excp_cancel_req = fs_excp_tlbr || fs_excp_pif || fs_excp_ppi;
-
-assign pfs_excp = pfs_excp_adef;
-assign pfs_excp_num = {pfs_excp_adef};
-
-assign excp = fs_excp || fs_excp_tlbr || fs_excp_pif || fs_excp_ppi ;
-assign excp_num = {fs_excp_ppi, fs_excp_pif, fs_excp_tlbr, fs_excp_num};
-
-//addr trans
-assign inst_addr_trans_en = pg_mode && !dmw0_en && !dmw1_en;
-
-//addr dmw trans  //TOT
-assign dmw0_en = ((csr_dmw0[`PLV0] && csr_plv == 2'd0) || (csr_dmw0[`PLV3] && csr_plv == 2'd3)) && (fs_pc[31:29] == csr_dmw0[`VSEG]) && pg_mode;
-assign dmw1_en = ((csr_dmw1[`PLV0] && csr_plv == 2'd0) || (csr_dmw1[`PLV3] && csr_plv == 2'd3)) && (fs_pc[31:29] == csr_dmw1[`VSEG]) && pg_mode;
-
-//uncache judgement
-assign da_mode = csr_da && !csr_pg;
-assign pg_mode = csr_pg && !csr_da;
-
-assign inst_uncache_en = (da_mode && (csr_datf == 2'b0))                 ||
-                         (dmw0_en && (csr_dmw0[`DMW_MAT] == 2'b0))       ||
-                         (dmw1_en && (csr_dmw1[`DMW_MAT] == 2'b0))       ||
-                         (inst_addr_trans_en && (inst_tlb_mat == 2'b0))  ||
-                         disable_cache;
-
-//assign inst_uncache_en = 1'b1; //used for debug
-
-// IF stage
-assign fs_ready_go    = inst_data_ok || inst_buff_enable || excp;
-assign fs_allowin     = !fs_valid || fs_ready_go && ds_allowin;
-assign fs_to_ds_valid =  fs_valid && fs_ready_go;
-always @(posedge clk) begin
-    if (reset || flush_inst_delay) begin
-        fs_valid <= 1'b0;
+  //异常清空时的特殊处理
+  reg excp_reg;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      excp_reg <= 1'b0;
+    end else if (if_valid & if_reflush & ~if_ready_go) begin
+      excp_reg <= 1'b1;
+    end else if (inst_sram_data_ok) begin
+      excp_reg <= 1'b0;
     end
-    else if (fs_allowin) begin
-        fs_valid <= to_fs_valid;
-    end
+  end
 
-    if (reset) begin
-        fs_pc        <= 32'h1bfffffc;  //trick: to make nextpc be 0x1c000000 during reset 
-        fs_excp      <= 1'b0;
-        fs_excp_num  <= 4'b0;
-    end
-    else if (to_fs_valid && (fs_allowin || flush_inst_go_dirt)) begin
-        fs_pc        <= nextpc;
-        fs_excp      <= pfs_excp;
-        fs_excp_num  <= pfs_excp_num;
-    end
-end
+  //idle lock
+  reg          idle_lock;
+  always @(posedge clk) begin
+      if (~resetn) begin
+          idle_lock <= 1'b0;
+      end
+      else if (idle & ~has_int) begin
+          idle_lock <= 1'b1;
+      end
+      else if (has_int) begin
+          idle_lock <= 1'b0;
+      end
+  end
 
-//go btb and tlb
-assign fetch_pc  = nextpc;
-assign fetch_en  = inst_valid && inst_addr_ok;
+  //TLB转换
+  wire [18:0] s0_vppn = nextpc[31:13];
+  wire s0_va_12bit = nextpc[12];
+  assign if_to_tlb_bus = {s0_vppn, asid_out, s0_va_12bit};
 
+  //直接映射地址模式
+  wire [31:0] dmw_pc;
+  wire [ 1:0] dmw_select;  //2'b01表示命中DMW0 2'b10表示命中DMW1 
+
+  assign dmw_select[0] = dmw0_vseg == nextpc[31:29] & (dmw0_plv3 == 1'b1 & cur_plv == 2'b11 | dmw0_plv0 == 1'b1 & cur_plv == 2'b0);//只有对应等级的plv才能使用对应的窗口
+  assign dmw_select[1] = dmw1_vseg == nextpc[31:29] & (dmw1_plv3 == 1'b1 & cur_plv == 2'b11 | dmw1_plv0 == 1'b1 & cur_plv == 2'b0);
+
+  assign dmw_pc = {32{dmw_select[0]}} & {dmw0_pseg, nextpc[28:0]} | {32{dmw_select[1]}} & {dmw1_pseg,nextpc[28:0]};
+
+  //TLB映射地址模式
+  wire [31:0] tlb_pc;
+  assign tlb_pc = s0_ps == 6'h21 ? {s0_ppn[19:9], nextpc[20:0]} : {s0_ppn[19:0], nextpc[11:0]};
+
+  //异常赋值
+  assign ADEF_EXCP = nextpc[1:0] != 2'b0;
+  assign TLBR = crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & ~s0_found;//只能采用TLB，但TLB没找到
+  assign PIF = crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & s0_found & ~s0_v;
+  assign PPI = crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & s0_found & s0_v & cur_plv > s0_plv;
+
+  //赋值instRAM接口
+  assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~TLBR & ~PIF & ~PPI & ~br_stall & ~idle_lock;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
+  assign inst_sram_wr = 1'b0;
+  assign inst_sram_wstrb = 4'h0;
+  assign inst_sram_size = 2'b10;
+  assign inst_sram_addr = crmd_da == 1'b1 & crmd_pg == 1'b0 ? nextpc :
+                          dmw_select != 2'b0 ? dmw_pc :
+                          tlb_pc;
+  assign inst_sram_wdata = 32'b0;
+
+  assign if_inst = inst_sram_data_ok ? inst_sram_rdata : inst_sram_rdata_r;
+
+  assign inst_mat = crmd_da == 1'b1 & crmd_pg == 1'b0 ? crmd_dataF :
+                               dmw_select != 2'b0 ? (dmw_select[0] ? dmw0_mat : dmw1_mat) :
+                               s0_mat[0];
 endmodule

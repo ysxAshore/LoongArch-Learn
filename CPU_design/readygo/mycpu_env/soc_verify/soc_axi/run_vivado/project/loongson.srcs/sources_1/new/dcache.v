@@ -468,14 +468,14 @@ module dcache (
                           {requestBuffer_tag, 1'b1};
 
   //写BANK 写命中需要写
-  assign match_way0_bank0 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h0 & ~wirteBuffer_way;
-  assign match_way0_bank1 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h1 & ~wirteBuffer_way;
-  assign match_way0_bank2 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h2 & ~wirteBuffer_way;
-  assign match_way0_bank3 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h3 & ~wirteBuffer_way;
-  assign match_way1_bank0 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h0 & wirteBuffer_way;
-  assign match_way1_bank1 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h1 & wirteBuffer_way;
-  assign match_way1_bank2 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h2 & wirteBuffer_way;
-  assign match_way1_bank3 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h3 & wirteBuffer_way;
+  assign match_way0_bank0 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h0 & ~wirteBuffer_way;
+  assign match_way0_bank1 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h1 & ~wirteBuffer_way;
+  assign match_way0_bank2 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h2 & ~wirteBuffer_way;
+  assign match_way0_bank3 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h3 & ~wirteBuffer_way;
+  assign match_way1_bank0 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h0 & wirteBuffer_way;
+  assign match_way1_bank1 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h1 & wirteBuffer_way;
+  assign match_way1_bank2 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h2 & wirteBuffer_way;
+  assign match_way1_bank3 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h3 & wirteBuffer_way;
 
   assign way0_bank0_addr = match_way0_bank0 ? writeBuffer_index : (addr_ok ? index : requestBuffer_index);
   assign way0_bank1_addr = match_way0_bank1 ? writeBuffer_index : (addr_ok ? index : requestBuffer_index);
@@ -532,7 +532,7 @@ module dcache (
   assign rdata = cache_hit ? load_res : ret_data; //这里这么写也没问题，因为cache_hit时data_ok也有效了，cahce没有hit，那就是refill
 
   /*----------------------------------------------------例化模块--------------------------------------------*/
-  data_way0_bank0 way0_bank0 (
+  data_bank_sram way0_bank0 (
       .addra(way0_bank0_addr),
       .clka (clk),
       .dina (way0_bank0_dina),
@@ -541,7 +541,7 @@ module dcache (
       .wea  (way0_bank0_wea)
   );
 
-  data_way0_bank1 way0_bank1 (
+  data_bank_sram way0_bank1 (
       .addra(way0_bank1_addr),
       .clka (clk),
       .dina (way0_bank1_dina),
@@ -550,7 +550,7 @@ module dcache (
       .wea  (way0_bank1_wea)
   );
 
-  data_way0_bank2 way0_bank2 (
+  data_bank_sram way0_bank2 (
       .addra(way0_bank2_addr),
       .clka (clk),
       .dina (way0_bank2_dina),
@@ -559,7 +559,7 @@ module dcache (
       .wea  (way0_bank2_wea)
   );
 
-  data_way0_bank3 way0_bank3 (
+  data_bank_sram way0_bank3 (
       .addra(way0_bank3_addr),
       .clka (clk),
       .dina (way0_bank3_dina),
@@ -568,7 +568,7 @@ module dcache (
       .wea  (way0_bank3_wea)
   );
 
-  data_way1_bank0 way1_bank0 (
+  data_bank_sram way1_bank0 (
       .addra(way1_bank0_addr),
       .clka (clk),
       .dina (way1_bank0_dina),
@@ -577,7 +577,7 @@ module dcache (
       .wea  (way1_bank0_wea)
   );
 
-  data_way1_bank1 way1_bank1 (
+  data_bank_sram way1_bank1 (
       .addra(way1_bank1_addr),
       .clka (clk),
       .dina (way1_bank1_dina),
@@ -586,7 +586,7 @@ module dcache (
       .wea  (way1_bank1_wea)
   );
 
-  data_way1_bank2 way1_bank2 (
+  data_bank_sram way1_bank2 (
       .addra(way1_bank2_addr),
       .clka (clk),
       .dina (way1_bank2_dina),
@@ -595,7 +595,7 @@ module dcache (
       .wea  (way1_bank2_wea)
   );
 
-  data_way1_bank3 way1_bank3 (
+  data_bank_sram way1_bank3 (
       .addra(way1_bank3_addr),
       .clka (clk),
       .dina (way1_bank3_dina),
@@ -605,7 +605,7 @@ module dcache (
   );
 
   //[20:1] tag     [0:0] v
-  tagv_way0 way0_tagv (
+  tagv_sram way0_tagv (
       .addra(way0_tagv_addra),
       .clka (clk),
       .dina (way0_tagv_dina),
@@ -614,7 +614,7 @@ module dcache (
       .wea  (way0_tagv_wea)
   );
 
-  tagv_way1 way1_tagv (
+  tagv_sram way1_tagv (
       .addra(way1_tagv_addra),
       .clka (clk),
       .dina (way1_tagv_dina),
@@ -629,6 +629,86 @@ module dcache (
       .random_val(chosen_way)
   );
 endmodule
+
+`ifdef SIMU
+module data_bank_sram
+#(
+    parameter WIDTH = 32    ,
+    parameter DEPTH = 256
+)
+(
+    input  [ 7:0]          addra   ,
+    input                  clka    ,
+    input  [31:0]          dina    ,
+    output [31:0]          douta   ,
+    input                  ena     ,
+    input  [ 3:0]          wea      
+);
+
+reg [31:0] mem_reg [255:0];
+reg [31:0] output_buffer;
+
+always @(posedge clka) begin
+    if (ena) begin
+        if (wea) begin
+            if (wea[0]) begin
+                mem_reg[addra][ 7: 0] <= dina[ 7: 0]; 
+            end 
+
+            if (wea[1]) begin
+                mem_reg[addra][15: 8] <= dina[15: 8];
+            end
+
+            if (wea[2]) begin
+                mem_reg[addra][23:16] <= dina[23:16];
+            end
+
+            if (wea[3]) begin
+                mem_reg[addra][31:24] <= dina[31:24];
+            end
+        end
+        else begin
+            output_buffer <= mem_reg[addra];
+        end
+    end
+end
+
+assign douta = output_buffer;
+
+endmodule 
+
+module tagv_sram
+#( 
+    parameter WIDTH = 21    ,
+    parameter DEPTH = 256
+)
+( 
+    input  [ 7:0]          addra   ,
+    input                  clka    ,
+    input  [20:0]          dina    ,
+    output [20:0]          douta   ,
+    input                  ena     ,
+    input                  wea 
+);
+
+reg [20:0] mem_reg [255:0];
+reg [20:0] output_buffer;
+
+always @(posedge clka) begin
+    if (ena) begin
+        if (wea) begin
+            mem_reg[addra] <= dina;
+        end
+        else begin
+            output_buffer <= mem_reg[addra];
+        end
+    end
+end
+
+assign douta = output_buffer;
+
+endmodule
+`endif
 
 module d_lfsr (
     input clk,

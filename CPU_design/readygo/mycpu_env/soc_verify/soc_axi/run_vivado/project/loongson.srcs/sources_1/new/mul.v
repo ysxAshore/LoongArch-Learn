@@ -162,7 +162,7 @@ module mul (
   always @(*) begin
     if (resetn) begin  //同步时钟，低电平有效
       for (p = 0; p < 17; p = p + 1) begin
-        SecStageBoothRes[p] <= Carry[p]+BoothRes[p];//BoothRes结果和减法变加法的进位相加
+        SecStageBoothRes[p] <= {63'b0,Carry[p]}+BoothRes[p];//BoothRes结果和减法变加法的进位相加
       end
     end
   end

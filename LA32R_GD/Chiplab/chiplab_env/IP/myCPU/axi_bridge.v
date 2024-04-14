@@ -1,6 +1,7 @@
-module axi_bridge(
+module axi_bridge
+(
     input   clk,
-    input   reset,
+    input   aresetn,
 
     output   reg[ 3:0] arid,
     output   reg[31:0] araddr,
@@ -50,12 +51,6 @@ module axi_bridge(
     output           inst_ret_valid  ,
     output           inst_ret_last   ,
     output [31:0]    inst_ret_data   ,
-    input            inst_wr_req     ,
-    input  [ 2:0]    inst_wr_type    ,
-    input  [31:0]    inst_wr_addr    ,
-    input  [ 3:0]    inst_wr_wstrb   ,
-    input  [127:0]   inst_wr_data    ,
-    output           inst_wr_rdy     ,
 
     input            data_rd_req     ,
     input  [ 2:0]    data_rd_type    ,
@@ -69,8 +64,7 @@ module axi_bridge(
     input  [31:0]    data_wr_addr    ,
     input  [ 3:0]    data_wr_wstrb   ,
     input  [127:0]   data_wr_data    ,
-    output           data_wr_rdy     ,
-    output           write_buffer_empty
+    output           data_wr_rdy     
 );
 
 //fixed signal
@@ -84,8 +78,6 @@ assign  awlock  = 2'b0;
 assign  awcache = 4'b0;
 assign  awprot  = 3'b0;
 assign  wid     = 4'b1;
-
-assign  inst_wr_rdy = 1'b1;
 
 localparam read_requst_empty = 1'b0;
 localparam read_requst_ready = 1'b1;
@@ -125,8 +117,6 @@ reg [ 2:0]  write_buffer_num;
 
 wire        write_buffer_last;
 
-assign write_buffer_empty = (write_buffer_num == 3'b0) && !write_wait_enable;
-
 assign rd_requst_can_receive = rd_requst_state_is_empty && !(write_wait_enable && !(bvalid && bready));
 
 assign data_rd_rdy = rd_requst_can_receive;
@@ -158,7 +148,7 @@ assign data_wr_rdy = (write_requst_state == write_request_empty);
 assign write_buffer_last = write_buffer_num == 3'b1;
 
 always @(posedge clk) begin
-    if (reset) begin
+    if (~aresetn) begin
         read_requst_state <= read_requst_empty;
         arvalid <= 1'b0;
     end
@@ -219,7 +209,7 @@ always @(posedge clk) begin
 end
 
 always @(posedge clk) begin
-    if (reset) begin
+    if (~aresetn) begin
         read_respond_state <= read_respond_empty;
         rready <= 1'b1;
     end
@@ -238,7 +228,7 @@ always @(posedge clk) begin
 end
 
 always @(posedge clk) begin
-    if (reset) begin
+    if (~aresetn) begin
         write_requst_state <= write_request_empty;
         awvalid <= 1'b0;
         wvalid  <= 1'b0;

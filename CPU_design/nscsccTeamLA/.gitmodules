@@ -1,8 +1,0 @@
-[submodule "func_test"]
-	path = func_test
-	url = https://gitee.com/loongson-edu/cdp_ede_local.git
-	branch = nscscc
-[submodule "perf_test"]
-	path = perf_test
-	url = https://gitee.com/loongson-edu/perf_test.git
-	branch = la32r

@@ -227,7 +227,7 @@ int Difftest::step(vluint64_t &main_time) {
     if (ecode_error || memcmp(dut_regs_ptr, ref_regs_ptr, DIFFTEST_NR_REG * sizeof(uint32_t))) {   // trace error print
         // display();
         for (int i = 0; i < DIFFTEST_NR_REG; i ++) {
-            if (dut_regs_ptr[i] != ref_regs_ptr[i]) {
+            if (dut_regs_ptr[i] != ref_regs_ptr[i] ) {
                 // printf("i = %d\n", i);
                 // fprintf(trace_out,"i = %d\n", i);
                 if(i < 32){

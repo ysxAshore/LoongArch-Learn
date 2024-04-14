@@ -1,17 +1,17 @@
-`define TLB_NUM 16
+`define TLB_NUM 32
 `define IF_TO_ID_WD 68
 `define ID_TO_IF_WD 34
-`define ID_TO_EXE_WD 200
-`define EXE_TO_MEM_WD 178 + $clog2(`TLB_NUM)
-`define MEM_TO_WB_WD 70
+`define ID_TO_EXE_WD 254
+`define EXE_TO_MEM_WD 295 + $clog2(`TLB_NUM)
+`define MEM_TO_WB_WD 102
 `define WB_TO_ID_WD 71
 `define EXE_TO_ID_WD 41
 `define MEM_TO_ID_WD 72
-`define MEM_TO_CSR_WD 247 + $clog2(`TLB_NUM)
+`define MEM_TO_CSR_WD 249 + $clog2(`TLB_NUM)
 `define CSR_TO_MEM_WD 217 + $clog2(`TLB_NUM)
-`define MEM_TO_IF_WD 36
-`define CSR_TO_IF_WD 127
-`define CSR_TO_EXE_WD 50
+`define MEM_TO_IF_WD 37
+`define CSR_TO_IF_WD 129
+`define CSR_TO_EXE_WD 52
 `define EXE_TO_TLB_WD 36
 `define TLB_TO_MEM_WD 89
 `define MEM_TO_TLB_WD 90 + $clog2(`TLB_NUM) + $clog2(`TLB_NUM)

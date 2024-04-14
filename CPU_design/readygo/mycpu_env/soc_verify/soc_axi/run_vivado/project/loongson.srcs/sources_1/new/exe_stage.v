@@ -68,7 +68,7 @@ module exe_stage (
   wire [11:0] alu_op;
   wire res_from_mem;
   wire exe_regW_temp;
-  wire exe_memW;
+  wire exe_memW_temp;
   wire [4:0] exe_regWAddr;
   wire [31:0] DataA;
   wire [31:0] forwardDataB;
@@ -88,10 +88,19 @@ module exe_stage (
   wire [4:0] code;
   wire [2:0] tlb_ins_rec;
   wire inst_cacop;
+  wire inst_ll;
+  wire inst_sc;
   wire [31:0] exe_pc;
+  wire [31:0] exe_inst;
+  wire [7:0] inst_ld_en;
+  wire [7:0] inst_st_en_temp;
+  wire inst_csr_rstat_en;
+  wire inst_idle;
 
-  assign {alu_op, res_from_mem, exe_regW_temp, exe_memW, exe_regWAddr, forwardDataB, DataA, DataB, div_signed, mul_signed, div, aluMD_resSelect, 
-          memINS_rec, load_sign, csr_num, csr_instRec, exe_ertn, exe_excp_temp, excp_num_temp, rdcnt_REC, tlb_ins_rec, code, inst_cacop, exe_pc} = exe_data;
+  assign {alu_op, res_from_mem, exe_regW_temp, exe_memW_temp, exe_regWAddr, forwardDataB, DataA, DataB, div_signed, mul_signed, div, aluMD_resSelect, 
+          memINS_rec, load_sign, csr_num, csr_instRec, exe_ertn, exe_excp_temp, excp_num_temp, rdcnt_REC, tlb_ins_rec, code, inst_cacop, inst_ll,inst_sc,exe_pc,exe_inst,
+          inst_ld_en,inst_st_en_temp,inst_csr_rstat_en,inst_idle} = exe_data;
+  wire exe_memW = exe_memW_temp | inst_sc & llbit_out;
 
   //解压缩CSR传递过来的信号
   wire [18:0] vppn;
@@ -103,8 +112,9 @@ module exe_stage (
   wire [1:0] cur_plv;
   wire crmd_datm;
   wire dmw0_mat,dmw1_mat;
+  wire llbit_out;
 
-  assign {vppn, asid,crmd_da, crmd_pg, dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg, dmw0_plv0, dmw1_plv0, dmw0_plv3, dmw1_plv3, cur_plv,crmd_datm,dmw0_mat,dmw1_mat} = csr_to_exe_bus;
+  assign {vppn, asid,crmd_da, crmd_pg, dmw0_vseg, dmw1_vseg, dmw0_pseg, dmw1_pseg, dmw0_plv0, dmw1_plv0, dmw0_plv3, dmw1_plv3, cur_plv,crmd_datm,dmw0_mat,dmw1_mat,llbit_out} = csr_to_exe_bus;
 
   //拆解TLB传递过来的数据
   wire s1_found;
@@ -155,7 +165,7 @@ module exe_stage (
   end
 
 
-  // div u_div (
+  // divider u_div (
   //     .div_clk       (clk),
   //     .resetn        (resetn & ~mem_to_exe_flush_excp_ertn),
   //     .div           (div),
@@ -248,9 +258,13 @@ module exe_stage (
   assign data_sram_addr = crmd_da == 1'b1 & crmd_pg == 1'b0 ? exe_aluResult :
                           dmw_select != 2'b0 ? dmw_addr :
                           tlb_addr;
-  assign data_sram_wdata = {32{memINS_rec == 2'b01}} & {4{forwardDataB[7:0]}} |
-                           {32{memINS_rec == 2'b10}} & {2{forwardDataB[15:0]}}|
-                           {32{memINS_rec == 2'b11}} & forwardDataB;
+  assign data_sram_wdata = {32{memINS_rec == 2'b01}} & {{32{exe_aluResult[1:0] == 2'b00}} & {24'b0,forwardDataB[7:0]} |
+                                                        {32{exe_aluResult[1:0] == 2'b01}} & {16'b0,forwardDataB[7:0],8'b0} |
+                                                        {32{exe_aluResult[1:0] == 2'b10}} & {8'b0,forwardDataB[7:0],16'b0} |
+                                                        {32{exe_aluResult[1:0] == 2'b11}} & {forwardDataB[7:0],24'b0}} 
+                           | {32{memINS_rec == 2'b10}} & {{32{exe_aluResult[1:0] == 2'b00}} & {16'b0,forwardDataB[15:0]} |
+                                                          {32{exe_aluResult[1:0] == 2'b10}} & {forwardDataB[15:0],16'b0}}  
+                           | {32{memINS_rec == 2'b11}} & forwardDataB;
   assign data_mat = crmd_da == 1'b1 & crmd_pg == 1'b0 ? crmd_datm :
                     dmw_select != 2'b0 ? (dmw_select[0] ? dmw0_mat : dmw1_mat) :
                     s1_mat[0];
@@ -268,6 +282,8 @@ module exe_stage (
   assign cacop_mode = code[4:3];
   assign cacop_load = (code[4:3] == 2'b10) & (icacop_en | dcacop_en); //被视为1个load操作
 
+  //difftest
+  wire  [7:0] inst_st_en = {4'b0,inst_sc & llbit_out,inst_st_en_temp[2:0]};
 
   //封包exe组合逻辑传递给mem_reg的数据
   assign exe_to_mem_bus = {
@@ -290,7 +306,17 @@ module exe_stage (
     icacop_en, 
     s1_found,
     s1_findex,
-    exe_pc
+    inst_ll,
+    inst_sc,
+    exe_pc,
+    exe_inst,
+    data_sram_wdata,
+    inst_ld_en,
+    inst_st_en,
+    inst_csr_rstat_en,
+    llbit_out,
+    data_sram_addr,
+    inst_idle
   };
 
   //封包exe传递给id的RAW相关判断

@@ -31,7 +31,18 @@ module id_stage (
     input wire mem_to_id_flush_excp_ertn,
 
     //CSR传递过来的中断信号
-    input wire has_int
+    input wire has_int,
+
+    //debug 
+    input wire infor_flag,
+    input [4:0] reg_num,
+    output [31:0] debug_rf_rdata1
+
+    //difftest
+    `ifdef DIFFTEST_EN
+    ,
+    output [31:0]                       rf_to_diff [31:0]
+    `endif
 );
   //id_reg
   reg id_valid;
@@ -68,7 +79,7 @@ module id_stage (
       id_valid <= 1'b0;
     end else if (id_allowin) begin
       id_valid <= if_to_id_valid;
-    end
+    end 
     if (id_allowin & if_to_id_valid) begin
       id_data <= if_to_id_bus;
     end
@@ -118,6 +129,7 @@ module id_stage (
   wire [ 4:0] rj;
   wire [ 4:0] rk;
   wire [11:0] i12;
+  wire [13:0] i14;
   wire [19:0] i20;
   wire [15:0] i16;
   wire [25:0] i26;
@@ -130,6 +142,7 @@ module id_stage (
   assign rj = id_inst[9:5];
   assign rk = id_inst[14:10];
   assign i12 = id_inst[21:10];
+  assign i14 = id_inst[23:10];
   assign i20 = id_inst[24:5];
   assign i16 = id_inst[25:10];
   assign i26 = {id_inst[9:0], id_inst[25:10]};
@@ -169,6 +182,8 @@ module id_stage (
   wire inst_and = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h09];
   wire inst_or = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0a];
   wire inst_xor = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0b];
+  wire inst_orn = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0c];
+  wire inst_andn = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0d];
   wire inst_sll = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0e];
   wire inst_srl = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h0f];
   wire inst_sra = op_31_26_d[6'h00] & op_25_22_d[4'h0] & op_21_20_d[2'h1] & op_19_15_d[5'h10];
@@ -187,7 +202,7 @@ module id_stage (
   wire inst_slti = op_31_26_d[6'h00] & op_25_22_d[4'h8];
   wire inst_sltui = op_31_26_d[6'h00] & op_25_22_d[4'h9];
   wire inst_addi = op_31_26_d[6'h00] & op_25_22_d[4'ha];
-  wire inst_andi = op_31_26_d[6'h00] & op_25_22_d[4'hd];
+  wire inst_andi = op_31_26_d[6'h00] & op_25_22_d[4'hd] | op_31_26_d[6'h0e] & op_25_22_d[4'h01] & op_21_20_d[2'h3] & (op_19_15_d[5'h04] | op_19_15_d[5'h05]);
   wire inst_ori = op_31_26_d[6'h00] & op_25_22_d[4'he];
   wire inst_xori = op_31_26_d[6'h00] & op_25_22_d[4'hf];
   wire inst_csrrd = op_31_26_d[6'h01] & (id_inst[25:24] == 2'b00) & (id_inst[9:5] == 5'h00);
@@ -199,8 +214,11 @@ module id_stage (
   wire inst_tlbwr = op_31_26_d[6'h01] &op_25_22_d[4'h9] &op_21_20_d[2'h0] & op_19_15_d[5'h10] & id_inst[14:10] == 5'h0c & id_inst[9:0] == 10'b0;
   wire inst_tlbfill = op_31_26_d[6'h01] &op_25_22_d[4'h9] &op_21_20_d[2'h0] & op_19_15_d[5'h10] & id_inst[14:10] == 5'h0d & id_inst[9:0] == 10'b0;
   wire inst_ertn = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h10] & id_inst[14:10] == 5'h0e;
+  wire inst_idle = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h11];
   wire inst_invtlb = op_31_26_d[6'h01] & op_25_22_d[4'h9] & op_21_20_d[2'h0] & op_19_15_d[5'h13];
   wire inst_pcaddu12i = op_31_26_d[6'h07] & ~id_inst[25];
+  wire inst_ll = op_31_26_d[6'h08] & ~id_inst[25] & ~id_inst[24];
+  wire inst_sc = op_31_26_d[6'h08] & ~id_inst[25] & id_inst[24];
   wire inst_ld_b = op_31_26_d[6'h0a] & op_25_22_d[4'h0];
   wire inst_ld_h = op_31_26_d[6'h0a] & op_25_22_d[4'h1];
   wire inst_ld_w = op_31_26_d[6'h0a] & op_25_22_d[4'h2];
@@ -221,7 +239,7 @@ module id_stage (
   wire inst_bgeu = op_31_26_d[6'h1b];
 
   //控制信号译码
-  wire [11:0] alu_op;
+  wire [13:0] alu_op;
   wire res_from_mem;
   wire src_reg_is_rd;
   wire src1_is_pc;
@@ -234,6 +252,7 @@ module id_stage (
   wire need_ui5;
   wire need_ui12;
   wire need_si12;
+  wire need_si14;
   wire need_si16;
   wire need_si20;
   wire need_si26;
@@ -241,7 +260,7 @@ module id_stage (
   wire need_rkd;
 
   assign alu_op[0] = inst_add | inst_addi | inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_st_w 
-                   | inst_st_b | inst_st_h | inst_jirl | inst_bl | inst_pcaddu12i | inst_cacop;
+                   | inst_st_b | inst_st_h | inst_jirl | inst_bl | inst_pcaddu12i | inst_cacop | inst_sc | inst_ll;
   assign alu_op[1] = inst_sub;
   assign alu_op[2] = inst_slt | inst_slti;
   assign alu_op[3] = inst_sltu | inst_sltui;
@@ -253,8 +272,10 @@ module id_stage (
   assign alu_op[9] = inst_srl | inst_srli;
   assign alu_op[10] = inst_sra | inst_srai;
   assign alu_op[11] = inst_lu12i;
-  assign res_from_mem = inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu;
-  assign src_reg_is_rd = inst_beq | inst_bne | inst_blt | inst_bge | inst_bltu | inst_bgeu | inst_st_w | inst_st_b | inst_st_h | inst_csrwr | inst_csrxchg;
+  assign alu_op[12] = inst_andn;
+  assign alu_op[13] = inst_orn;
+  assign res_from_mem = inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_ll;
+  assign src_reg_is_rd = inst_beq | inst_bne | inst_blt | inst_bge | inst_bltu | inst_bgeu | inst_st_w | inst_st_b | inst_st_h | inst_csrwr | inst_csrxchg | inst_sc;
   assign src1_is_pc = inst_jirl | inst_bl | inst_pcaddu12i;
   assign src2_is_imm = inst_slli     | 
                        inst_srli     |
@@ -277,22 +298,25 @@ module id_stage (
                        inst_ori      |
                        inst_xori     |
                        inst_pcaddu12i|
-                       inst_cacop;
+                       inst_cacop    |
+                       inst_ll       |
+                       inst_sc;
   assign src2_is_4 = inst_jirl | inst_bl;
   assign dst_is_r1 = inst_bl;
   assign dst_is_rj = inst_rdcntid;
-  assign id_memW = (inst_st_w | inst_st_b | inst_st_h) & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & ~inst_ine;
-  assign id_regW = ~inst_st_w & ~inst_st_b & ~inst_st_h & ~inst_beq & ~inst_bne & ~inst_blt & ~inst_bge & ~inst_bltu & ~inst_bgeu & ~inst_b & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & ~inst_ine & ~inst_cacop;
+  assign id_memW = (inst_st_w | inst_st_b | inst_st_h) & ~id_excp;
+  assign id_regW = ~inst_st_w & ~inst_st_b & ~inst_st_h & ~inst_beq & ~inst_bne & ~inst_blt & ~inst_bge & ~inst_bltu & ~inst_bgeu & ~inst_b & ~inst_break & ~inst_ertn & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~inst_cacop & ~id_excp;
   assign need_ui5 = inst_slli | inst_srli | inst_srai;
   assign need_si12 = inst_addi | inst_ld_w | inst_ld_b | inst_ld_h | inst_ld_bu | inst_ld_hu | inst_st_w | inst_st_b | inst_st_h |inst_slti | inst_sltui | inst_cacop;
   assign need_ui12 = inst_andi | inst_ori | inst_xori;
+  assign need_si14 = inst_ll | inst_sc;
   assign need_si16 = inst_jirl | inst_beq | inst_bne | inst_blt | inst_bge | inst_bltu | inst_bgeu;
   assign need_si20 = inst_lu12i | inst_pcaddu12i;
   assign need_si26 = inst_b | inst_bl;
   assign need_rj = ~inst_b & ~inst_bl & ~inst_lu12i & ~inst_pcaddu12i & ~inst_csrrd & ~inst_csrwr & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_rdcntid & ~inst_rdcntvl & ~inst_rdcntvh & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill;
   assign need_rkd = ~inst_slli & ~inst_srli & ~inst_srai & ~inst_addi & ~inst_slti & ~inst_sltui & ~inst_andi & ~inst_ori & ~inst_xori
                   & ~inst_lu12i & ~inst_pcaddu12i & ~inst_ld_w & ~inst_ld_b & ~inst_ld_bu & ~inst_ld_h & ~inst_ld_hu & ~inst_jirl & ~inst_b & ~inst_bl
-                  & ~inst_csrrd & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_rdcntid & ~inst_rdcntvl & ~inst_rdcntvh & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill & ~inst_cacop;
+                  & ~inst_csrrd & ~inst_syscall & ~inst_break & ~inst_ertn & ~inst_rdcntid & ~inst_rdcntvl & ~inst_rdcntvh & ~inst_tlbsrch & ~inst_tlbrd & ~inst_tlbwr & ~inst_tlbfill & ~inst_cacop & ~inst_ll;
 
   //id阶段组合逻辑数据生成
   wire [31:0] imm;
@@ -302,8 +326,9 @@ module id_stage (
   assign imm = src2_is_4 ? 32'h4 :
               (need_si20 ? {i20[19:0],12'b0} :
               (need_si12 ? {{20{i12[11]}},i12[11:0]} :
-              (need_ui12 ? {20'b0,i12[11:0]} :
-              {27'b0,rk})));
+              (need_ui12 ? (op_31_26_d[6'h0e] & op_25_22_d[4'h01] & op_21_20_d[2'h3] & (op_19_15_d[5'h04] | op_19_15_d[5'h04]) ? 32'b0 :{20'b0,i12[11:0]}) :
+              (need_si14 ? {{16{i14[13]}},i14,2'b0}:
+              {27'b0,rk}))));
   assign br_offs = need_si26 ? {{4{i26[25]}}, i26[25:0], 2'b0} : {{14{i16[15]}}, i16[15:0], 2'b0};
   assign jirl_offs = {{14{i16[5]}}, i16[15:0], 2'b0};
 
@@ -315,9 +340,9 @@ module id_stage (
   wire [31:0] regDataB;
   wire [ 4:0] id_regWAddr;
 
-  assign regAddrA = rj;
+  assign regAddrA = infor_flag ? reg_num : (op_31_26_d[6'h0e] & op_25_22_d[4'h01] & op_21_20_d[2'h3] & (op_19_15_d[5'h04] | op_19_15_d[5'h05])) ? 5'b0 : rj;
   assign regAddrB = src_reg_is_rd ? rd : rk;
-  assign id_regWAddr = dst_is_rj ? rj : dst_is_r1 ? 5'b1 : rd;
+  assign id_regWAddr = dst_is_rj ? rj : dst_is_r1 ? 5'b1 : op_31_26_d[6'h0e] & op_25_22_d[4'h01] & op_21_20_d[2'h3] & (op_19_15_d[5'h04] | op_19_15_d[5'h05]) ? 5'b0 : rd;
 
   regfile u_regfile (
       .clk   (clk),
@@ -328,6 +353,10 @@ module id_stage (
       .we    (wb_regW),
       .waddr (wb_regWAddr),
       .wdata (wb_regWData)
+      `ifdef DIFFTEST_EN
+      ,
+      .rf_o   (rf_to_diff)
+      `endif
   );
 
   //前递设计 当前指令是否需要读寄存器数 地址非0 存不存在指令
@@ -367,8 +396,8 @@ module id_stage (
 
   assign ltA = forwardDataA;
   assign ltB = ~forwardDataB;
-  assign cin = 1;
-  assign {cout, ltResult} = ltA + ltB + cin;
+  assign cin = 1'b1;
+  assign {cout, ltResult} = ltA + ltB + {31'b0,cin};
 
   assign rj_lt_rd = (forwardDataA[31] & ~forwardDataB[31]) | (~(forwardDataA[31] ^ forwardDataB[31]) & ltResult[31]);
   assign rj_ltu_rd = ~cout;
@@ -406,8 +435,8 @@ module id_stage (
 
   assign memINS_rec =  {2{inst_ld_b | inst_ld_bu | inst_st_b}} & 2'b01 |
                        {2{inst_ld_h | inst_ld_hu | inst_st_h}} & 2'b10 |
-                       {2{inst_ld_w | inst_st_w}}              & 2'b11 ;
-  assign load_sign = inst_ld_b | inst_ld_h | inst_ld_w;
+                       {2{inst_ld_w | inst_st_w | inst_ll | inst_sc}}    & 2'b11 ;
+  assign load_sign = inst_ld_b | inst_ld_h | inst_ld_w | inst_ll;
 
   //CSR
   wire [13:0] csr_num;
@@ -435,10 +464,10 @@ module id_stage (
                   & ~inst_srl & ~inst_sra & ~inst_mul & ~inst_mulh & ~inst_mulhu & ~inst_div & ~inst_mod & ~inst_divu & ~inst_modu
                   & ~inst_break & ~inst_syscall & ~inst_slli & ~inst_srli & ~inst_srai & ~inst_slti & ~inst_sltui & ~inst_addi 
                   & ~inst_andi & ~inst_ori & ~inst_xori & ~inst_csrrd & ~inst_csrwr & ~inst_csrxchg & ~inst_tlbsrch & ~inst_tlbrd
-                  & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~inst_ertn & ~inst_lu12i & ~inst_cacop 
+                  & ~inst_tlbwr & ~inst_tlbfill & ~inst_invtlb & ~inst_ertn & ~inst_lu12i & ~inst_cacop & ~inst_ll & ~inst_sc
                   & ~inst_pcaddu12i & ~inst_ld_b & ~inst_ld_h & ~inst_ld_w & ~inst_st_b & ~inst_st_h & ~inst_st_w & ~inst_ld_bu
                   & ~inst_ld_hu & ~inst_jirl & ~inst_b & ~inst_bl & ~inst_beq & ~inst_bne & ~inst_blt & ~inst_bge & ~inst_bltu 
-                  & ~inst_bgeu;
+                  & ~inst_bgeu & ~inst_andn & ~inst_orn & ~inst_idle;
   assign SYS_EXCP = inst_syscall;
   assign BRK_EXCP = inst_break;
   assign INE_EXCP = id_valid & inst_ine | (inst_invtlb ? rd > 5'h06 : 1'b0);
@@ -469,6 +498,18 @@ module id_stage (
   //封包id组合逻辑传递给if组合逻辑preIF的数据
   assign id_to_if_bus = {br_stall, br_taken, br_target};
 
+  //difftest
+  // difftest
+  wire [7:0]  inst_ld_en;
+  wire [7:0]  inst_st_en;
+  wire        inst_csr_rstat_en;
+
+  // ll ldw ldhu ldh ldbu ldb
+  assign inst_ld_en = {2'b0, inst_ll, inst_ld_w, inst_ld_hu, inst_ld_h, inst_ld_bu, inst_ld_b};
+  // sc(llbit = 1) stw sth stb
+  assign inst_st_en = {5'b0,inst_st_w, inst_st_h, inst_st_b};
+  assign inst_csr_rstat_en = (inst_csrrd || inst_csrwr || inst_csrxchg) && (csr_num == 14'd5);
+
   //封包id组合逻辑传递给exe_reg的数据
   assign id_to_exe_bus = {
     alu_op,
@@ -494,7 +535,16 @@ module id_stage (
     tlb_ins_rec,
     rd,
     inst_cacop,
-    id_pc
+    inst_ll,
+    inst_sc,
+    id_pc,
+    id_inst,
+    inst_ld_en,
+    inst_st_en,
+    inst_csr_rstat_en,
+    inst_idle & ~id_excp
   };
 
+  //debug
+  assign debug_rf_rdata1 = forwardDataA;
 endmodule

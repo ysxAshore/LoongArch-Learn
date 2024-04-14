@@ -6,46 +6,10 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/
 INFO: [VRFC 10-311] analyzing module axi_ram
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/rtl/xilinx_ip/axi_crossbar_1x2/sim/axi_crossbar_1x2.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module axi_crossbar_1x2
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/tagv_way1/sim/tagv_way1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module tagv_way1
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/tagv_way0/sim/tagv_way0.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module tagv_way0
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way1_bank3/sim/data_way1_bank3.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way1_bank3
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way1_bank2/sim/data_way1_bank2.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way1_bank2
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way1_bank1/sim/data_way1_bank1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way1_bank1
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way1_bank0/sim/data_way1_bank0.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way1_bank0
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way0_bank3/sim/data_way0_bank3.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way0_bank3
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way0_bank2/sim/data_way0_bank2.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way0_bank2
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way0_bank1/sim/data_way0_bank1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way0_bank1
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/data_way0_bank0/sim/data_way0_bank0.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module data_way0_bank0
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_tagv_way1/sim/inst_tagv_way1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_tagv_way1
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_tagv_way0/sim/inst_tagv_way0.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_tagv_way0
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way1_bank3/sim/inst_way1_bank3.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way1_bank3
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way1_bank2/sim/inst_way1_bank2.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way1_bank2
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way1_bank1/sim/inst_way1_bank1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way1_bank1
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way1_bank0/sim/inst_way1_bank0.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way1_bank0
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way0_bank3/sim/inst_way0_bank3.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way0_bank3
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way0_bank2/sim/inst_way0_bank2.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way0_bank2
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way0_bank1/sim/inst_way0_bank1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way0_bank1
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.gen/sources_1/ip/inst_way0_bank0/sim/inst_way0_bank0.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module inst_way0_bank0
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.ip_user_files/ip/tagv_sram/sim/tagv_sram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tagv_sram
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.ip_user_files/ip/data_bank_sram/sim/data_bank_sram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_bank_sram
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/alu.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module alu
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/axi_bridge.v" into library xil_defaultlib
@@ -63,18 +27,19 @@ INFO: [VRFC 10-311] analyzing module dcache
 INFO: [VRFC 10-311] analyzing module d_lfsr
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module exe_stage
-WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:200]
-WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:201]
-WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:202]
-WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:203]
-WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:204]
+WARNING: [VRFC 10-3380] identifier 'llbit_out' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:102]
+WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:209]
+WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:210]
+WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:211]
+WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:212]
+WARNING: [VRFC 10-3380] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/exe_stage.v:213]
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/icache.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module icache
 INFO: [VRFC 10-311] analyzing module i_lfsr
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module id_stage
-WARNING: [VRFC 10-3380] identifier 'inst_ine' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v:284]
-WARNING: [VRFC 10-3380] identifier 'inst_ine' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v:285]
+WARNING: [VRFC 10-3380] identifier 'inst_ine' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v:302]
+WARNING: [VRFC 10-3380] identifier 'inst_ine' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/id_stage.v:303]
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module if_stage
 WARNING: [VRFC 10-3380] identifier 'id_to_if_bus_r_valid' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:57]
@@ -83,7 +48,7 @@ WARNING: [VRFC 10-3380] identifier 'bd_done' is used before its declaration [E:/
 WARNING: [VRFC 10-3380] identifier 'inst_sram_rdata_r_valid' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/if_stage.v:121]
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/mem_stage.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mem_stage
-WARNING: [VRFC 10-3380] identifier 'mem_memW' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/mem_stage.v:55]
+WARNING: [VRFC 10-3380] identifier 'mem_memW' is used before its declaration [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/mem_stage.v:77]
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/mul.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module YDecoder
 INFO: [VRFC 10-311] analyzing module BoothBase
@@ -91,7 +56,7 @@ INFO: [VRFC 10-311] analyzing module BoothInterBase
 INFO: [VRFC 10-311] analyzing module add64
 INFO: [VRFC 10-311] analyzing module mul
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/mycpu_top.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module mycpu_top
+INFO: [VRFC 10-311] analyzing module core_top
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/regfile.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module regfile
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/rtl/soc_lite_top.v" into library xil_defaultlib
@@ -105,6 +70,3 @@ INFO: [VRFC 10-311] analyzing module decoder_5_32
 INFO: [VRFC 10-311] analyzing module decoder_6_64
 INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/run_vivado/project/loongson.srcs/sources_1/new/wb_stage.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module wb_stage
-INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/testbench/mycpu_tb.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module tb_top
-WARNING: [VRFC 10-2096] empty statement in sequential block [E:/Projects/Studying/LA/CPU_design/readygo/mycpu_env/soc_verify/soc_axi/testbench/mycpu_tb.v:234]

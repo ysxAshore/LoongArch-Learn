@@ -382,12 +382,12 @@
     <Step Id="write_bitstream"/>
     <Step Id="write_device_image"/>
   </Strategy>
-  <BlockFileSet Type="BlockSrcs" Name="axi_crossbar_1x2"/>
-  <BlockFileSet Type="BlockSrcs" Name="inst_tagv_way1"/>
-  <BlockFileSet Type="BlockSrcs" Name="clk_pll"/>
-  <BlockFileSet Type="BlockSrcs" Name="inst_tagv_way0"/>
-  <BlockFileSet Type="BlockSrcs" Name="inst_way0_bank0"/>
-  <BlockFileSet Type="BlockSrcs" Name="inst_way0_bank1"/>
   <BlockFileSet Type="BlockSrcs" Name="inst_way0_bank2"/>
   <BlockFileSet Type="BlockSrcs" Name="axi_ram"/>
+  <BlockFileSet Type="BlockSrcs" Name="inst_tagv_way0"/>
+  <BlockFileSet Type="BlockSrcs" Name="clk_pll"/>
+  <BlockFileSet Type="BlockSrcs" Name="axi_crossbar_1x2"/>
+  <BlockFileSet Type="BlockSrcs" Name="inst_tagv_way1"/>
+  <BlockFileSet Type="BlockSrcs" Name="inst_way0_bank0"/>
+  <BlockFileSet Type="BlockSrcs" Name="inst_way0_bank1"/>
 </GenRun>

@@ -8,7 +8,7 @@ else ifeq ($(VERILATOR_HOME2), $(wildcard $(VERILATOR_HOME2)))
 VERILATOR_HOME=$(VERILATOR_HOME2)
 else
 #add your verilator include path to this var, then delete this line.
-VERILATOR_HOME=/home/yangzhaoxin/opt/verilator/share/verilator
+VERILATOR_HOME=/usr/local/bin/verilator
 #$(error Please install verilator or config the installed path here.)
 endif
 

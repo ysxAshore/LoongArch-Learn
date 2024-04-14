@@ -481,14 +481,14 @@ module icache (
                           {requestBuffer_tag, 1'b1};
 
   //写BANK 写命中需要写
-  assign match_way0_bank0 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h0 & ~wirteBuffer_way;
-  assign match_way0_bank1 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h1 & ~wirteBuffer_way;
-  assign match_way0_bank2 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h2 & ~wirteBuffer_way;
-  assign match_way0_bank3 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h3 & ~wirteBuffer_way;
-  assign match_way1_bank0 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h0 & wirteBuffer_way;
-  assign match_way1_bank1 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h1 & wirteBuffer_way;
-  assign match_way1_bank2 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h2 & wirteBuffer_way;
-  assign match_way1_bank3 = write_state == WRITE_WRITE & writeBuffer_offset == 2'h3 & wirteBuffer_way;
+  assign match_way0_bank0 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h0 & ~wirteBuffer_way;
+  assign match_way0_bank1 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h1 & ~wirteBuffer_way;
+  assign match_way0_bank2 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h2 & ~wirteBuffer_way;
+  assign match_way0_bank3 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h3 & ~wirteBuffer_way;
+  assign match_way1_bank0 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h0 & wirteBuffer_way;
+  assign match_way1_bank1 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h1 & wirteBuffer_way;
+  assign match_way1_bank2 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h2 & wirteBuffer_way;
+  assign match_way1_bank3 = write_state == WRITE_WRITE & writeBuffer_offset[3:2] == 2'h3 & wirteBuffer_way;
 
   assign way0_bank0_addr = match_way0_bank0 ? writeBuffer_index : (addr_ok ? index : requestBuffer_index);
   assign way0_bank1_addr = match_way0_bank1 ? writeBuffer_index : (addr_ok ? index : requestBuffer_index);
@@ -545,7 +545,7 @@ module icache (
   assign rdata = cache_hit ? load_res : ret_data; //这里这么写也没问题，因为cache_hit时data_ok也有效了，cahce没有hit，那就是refill
 
   /*----------------------------------------------------例化模块--------------------------------------------*/
-  inst_way0_bank0 way0_bank0 (
+  data_bank_sram way0_bank0 (
       .addra(way0_bank0_addr),
       .clka (clk),
       .dina (way0_bank0_dina),
@@ -554,7 +554,7 @@ module icache (
       .wea  (way0_bank0_wea)
   );
 
-  inst_way0_bank1 way0_bank1 (
+  data_bank_sram way0_bank1 (
       .addra(way0_bank1_addr),
       .clka (clk),
       .dina (way0_bank1_dina),
@@ -563,7 +563,7 @@ module icache (
       .wea  (way0_bank1_wea)
   );
 
-  inst_way0_bank2 way0_bank2 (
+  data_bank_sram way0_bank2 (
       .addra(way0_bank2_addr),
       .clka (clk),
       .dina (way0_bank2_dina),
@@ -572,7 +572,7 @@ module icache (
       .wea  (way0_bank2_wea)
   );
 
-  inst_way0_bank3 way0_bank3 (
+  data_bank_sram way0_bank3 (
       .addra(way0_bank3_addr),
       .clka (clk),
       .dina (way0_bank3_dina),
@@ -581,7 +581,7 @@ module icache (
       .wea  (way0_bank3_wea)
   );
 
-  inst_way1_bank0 way1_bank0 (
+  data_bank_sram way1_bank0 (
       .addra(way1_bank0_addr),
       .clka (clk),
       .dina (way1_bank0_dina),
@@ -590,7 +590,7 @@ module icache (
       .wea  (way1_bank0_wea)
   );
 
-  inst_way1_bank1 way1_bank1 (
+  data_bank_sram way1_bank1 (
       .addra(way1_bank1_addr),
       .clka (clk),
       .dina (way1_bank1_dina),
@@ -599,7 +599,7 @@ module icache (
       .wea  (way1_bank1_wea)
   );
 
-  inst_way1_bank2 way1_bank2 (
+  data_bank_sram way1_bank2 (
       .addra(way1_bank2_addr),
       .clka (clk),
       .dina (way1_bank2_dina),
@@ -608,7 +608,7 @@ module icache (
       .wea  (way1_bank2_wea)
   );
 
-  inst_way1_bank3 way1_bank3 (
+  data_bank_sram way1_bank3 (
       .addra(way1_bank3_addr),
       .clka (clk),
       .dina (way1_bank3_dina),
@@ -618,7 +618,7 @@ module icache (
   );
 
   //[20:1] tag     [0:0] v
-  inst_tagv_way0 way0_tagv (
+  tagv_sram way0_tagv (
       .addra(way0_tagv_addra),
       .clka (clk),
       .dina (way0_tagv_dina),
@@ -627,7 +627,7 @@ module icache (
       .wea  (way0_tagv_wea)
   );
 
-  inst_tagv_way1 way1_tagv (
+  tagv_sram way1_tagv (
       .addra(way1_tagv_addra),
       .clka (clk),
       .dina (way1_tagv_dina),

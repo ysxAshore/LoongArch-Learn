@@ -1,4 +1,5 @@
-module axi_bridge(
+module axi_bridge
+(
     input   clk,
     input   aresetn,
 

@@ -27,6 +27,9 @@ module if_stage (
     //IF传递给TLB的信号
     output wire [`IF_TO_TLB_WD-1:0] if_to_tlb_bus,
 
+    //has_int
+    input wire has_int,
+
     //对接ICACHE接口
     output        inst_sram_req,
     output        inst_sram_wr,
@@ -61,8 +64,9 @@ module if_stage (
   wire ertn;
   wire tlb_excp;
   wire refetch;
+  wire idle;
   wire [31:0] refetch_pc;
-  assign {refetch_pc,tlb_excp,refetch,excp, ertn} = mem_to_if_bus_r_valid ? mem_to_if_bus_r : mem_to_if_bus;
+  assign {refetch_pc,idle,tlb_excp,refetch,excp, ertn} = mem_to_if_bus_r_valid ? mem_to_if_bus_r : mem_to_if_bus;
 
   //拆解CSR传递过来的数据
   wire [31:0] era;
@@ -101,9 +105,9 @@ module if_stage (
   //刷新信号 这里用if_reflush_r让if_allowin有效 因为会存在需要将异常的nextPC更新到PC时，if_allowin无效的问题——dataok还未到达，这个data_ok用excpreg清除
   //但是为什么要用r  preIF_readygo addrok还没到——直接取消不可以吗？——归成一种处理方式？不需要处理preIF_readygo是什么值了
   wire if_reflush;
-  assign if_reflush = mem_to_if_bus[3] | mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0];
+  assign if_reflush = mem_to_if_bus[4] | mem_to_if_bus[3] | mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0];
   wire if_reflush_r;
-  assign if_reflush_r = excp | ertn | refetch | tlb_excp;
+  assign if_reflush_r = excp | ertn | refetch | tlb_excp | idle;
 
   //异常检测声明
   wire ADEF_EXCP;
@@ -115,7 +119,7 @@ module if_stage (
   assign preIF_ready_go = inst_sram_req & inst_sram_addr_ok | ADEF_EXCP | TLBR | PIF | PPI;
   assign preIf_to_if_valid = resetn & preIF_ready_go;
   assign seq_pc = if_pc + 32'h4;
-  assign nextpc = tlb_excp ? tlbenrty_out : excp ? eentry_out : ertn ? era : refetch ? refetch_pc : br_taken & (if_valid | bd_done) ? br_target : seq_pc;
+  assign nextpc = tlb_excp ? tlbenrty_out : excp ? eentry_out : ertn ? era : (refetch | idle) ? refetch_pc : br_taken & (if_valid | bd_done) ? br_target : seq_pc;
 
   // if_reg
   assign if_ready_go    = (inst_sram_data_ok | inst_sram_rdata_r_valid) & ~excp_reg | if_ADEF_EXCP | if_tlbr | if_pif | if_ppi;
@@ -156,12 +160,12 @@ module if_stage (
 
   //br信息也需要保持到缓存，以在preIF_ready_go无效时保持进入到IF，同样MEM到ID的更新nextpc的信息也需要保持 
   //增加了refetch，那么为了保留reftech时readygo无效不能更新PC的情况，需要保持缓存
-  reg [`MEM_TO_ID_WD-1:0] mem_to_if_bus_r;
+  reg [`MEM_TO_IF_WD-1:0] mem_to_if_bus_r;
   reg mem_to_if_bus_r_valid;
   always @(posedge clk) begin
     if (~resetn) begin
       mem_to_if_bus_r_valid <= 1'b0;
-    end else if (~mem_to_if_bus_r_valid & (mem_to_if_bus[3] | mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0]) & ~preIF_ready_go) begin
+    end else if (~mem_to_if_bus_r_valid & (mem_to_if_bus[4]| mem_to_if_bus[3] | mem_to_if_bus[2] | mem_to_if_bus[1] | mem_to_if_bus[0]) & ~preIF_ready_go) begin
       mem_to_if_bus_r <= mem_to_if_bus;  //这也应该加一个if_allowin吧？不用，异常针对if_readygo不为1有处理
       mem_to_if_bus_r_valid <= 1'b1;
     end else if (mem_to_if_bus_r_valid & preIF_ready_go) begin
@@ -178,7 +182,7 @@ module if_stage (
     end else if (id_to_if_bus[32] & id_allowin & ~(preIF_ready_go & if_valid & if_allowin)) begin //而转移的取消必须都进入到id阶段，因此这里是也需要if_valid和if_allowin
       id_to_if_bus_r <= id_to_if_bus;
       id_to_if_bus_r_valid <= 1'b1;
-    end else if ((bd_done | if_valid) & preIF_ready_go & if_allowin) begin
+    end else if (bd_done & preIF_ready_go & if_allowin) begin
       id_to_if_bus_r_valid <= 1'b0;
     end
   end
@@ -203,6 +207,20 @@ module if_stage (
     end else if (inst_sram_data_ok) begin
       excp_reg <= 1'b0;
     end
+  end
+
+  //idle lock
+  reg          idle_lock;
+  always @(posedge clk) begin
+      if (~resetn) begin
+          idle_lock <= 1'b0;
+      end
+      else if (idle & ~has_int) begin
+          idle_lock <= 1'b1;
+      end
+      else if (has_int) begin
+          idle_lock <= 1'b0;
+      end
   end
 
   //TLB转换
@@ -230,7 +248,7 @@ module if_stage (
   assign PPI = crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & s0_found & s0_v & cur_plv > s0_plv;
 
   //赋值instRAM接口
-  assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~TLBR & ~PIF & ~PPI & ~br_stall;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
+  assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~TLBR & ~PIF & ~PPI & ~br_stall & ~idle_lock;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
   assign inst_sram_wr = 1'b0;
   assign inst_sram_wstrb = 4'h0;
   assign inst_sram_size = 2'b10;

@@ -265,9 +265,17 @@ module soc_lite_top #(
 
   //cpu axi
   //debug_*
-  mycpu_top u_cpu (
+  wire [7:0] intrpt = 8'b0;
+  wire [31:0] debug_wb_inst;
+  wire break_point = 1'b0;
+  wire infor_flag = 1'b0;
+  wire [4:0] reg_num = 5'b0;
+  wire ws_valid;
+  wire [31:0] rf_rdata;
+  core_top u_cpu (
       .aclk   (cpu_clk),
       .aresetn(cpu_resetn), //low active
+      .intrpt (intrpt),
 
       .arid   (cpu_arid),
       .araddr (cpu_araddr),
@@ -310,11 +318,18 @@ module soc_lite_top #(
       .bvalid(cpu_bvalid),
       .bready(cpu_bready),
 
+      .break_point(break_point),
+      .infor_flag(infor_flag),
+      .reg_num(reg_num),
+      .ws_valid(ws_valid),
+      .rf_rdata(rf_rdata),
+
       //debug interface
-      .debug_wb_pc      (debug_wb_pc),
-      .debug_wb_rf_we   (debug_wb_rf_we),
-      .debug_wb_rf_wnum (debug_wb_rf_wnum),
-      .debug_wb_rf_wdata(debug_wb_rf_wdata)
+      .debug0_wb_pc      (debug_wb_pc),
+      .debug0_wb_rf_wen   (debug_wb_rf_we),
+      .debug0_wb_rf_wnum (debug_wb_rf_wnum),
+      .debug0_wb_rf_wdata(debug_wb_rf_wdata),
+      .debug0_wb_inst    (debug_wb_inst)
   );
   //cpu axi wrap
   axi_wrap u_cpu_axi_wrap (
