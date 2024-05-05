@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="synth_1" LaunchPart="xc7a200tfbg676-2" LaunchTime="1714914429">
+  <File Type="PA-TCL" Name="soc_top.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="soc_top_drc_synth.rpt"/>
+  <File Type="REPORTS-TCL" Name="soc_top_reports.tcl"/>
+  <File Type="RDS-RDS" Name="soc_top.vds"/>
+  <File Type="RDS-UTIL" Name="soc_top_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="soc_top_utilization_synth.pb"/>
+  <File Type="RDS-DCP" Name="soc_top.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="soc_top_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="soc_top_timing_summary_synth.pb"/>
+  <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
+    <Filter Type="Srcs"/>
+    <File Path="$PPRDIR/../../../IP/myCPU/IP/tagv_sram/tagv_sram.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/IP/data_bank_sram/data_bank_sram.xci">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/alu.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../chip/soc_demo/loongson/config.h">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../chip/soc_demo/loongson/config.h"/>
+        <Attr Name="ImportTime" Val="1622528226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+        <Attr Name="IsVisible" Val="1"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/apb_dev_top_with_nand.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/apb_dev_top_with_nand.v"/>
+        <Attr Name="ImportTime" Val="1621943111"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/apb_mux2.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/apb_mux2.v"/>
+        <Attr Name="ImportTime" Val="1626953671"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/AMBA/axi2apb.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/AMBA/axi2apb.v"/>
+        <Attr Name="ImportTime" Val="1625735948"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/axi_bridge.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/AMBA/axi_mux_syn.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/AMBA/axi_mux_syn.v"/>
+        <Attr Name="ImportTime" Val="1626757709"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/utility.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/utility.v"/>
+        <Attr Name="ImportTime" Val="1489109486"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/bd.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/bd.v"/>
+        <Attr Name="ImportTime" Val="1489109226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/CONFREG/confreg_syn.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/CONFREG/confreg_syn.v"/>
+        <Attr Name="ImportTime" Val="1496192512"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/csr.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/csr.v"/>
+        <Attr Name="ImportTime" Val="1489109226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/csr.vh">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+        <Attr Name="IsVisible" Val="1"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/mycpu.h">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+        <Attr Name="IsVisible" Val="1"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/csr.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/dcache.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/DEBUG/debug_sram.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/DEBUG/debug_sram.v"/>
+        <Attr Name="ImportTime" Val="1626766565"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/DEBUG/debug_top.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/DEBUG/debug_top.v"/>
+        <Attr Name="ImportTime" Val="1626766565"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/DMA/dma.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/DMA/dma.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/dma.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/dma.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/ethernet_top.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/ethernet_top.v"/>
+        <Attr Name="ImportTime" Val="1626341613"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/exe_stage.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/SPI/godson_sbridge_spi.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/SPI/godson_sbridge_spi.v"/>
+        <Attr Name="ImportTime" Val="1489109516"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/icache.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/id_stage.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/if_stage.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/mac.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/mac.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/mac2axi.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/mac2axi.v"/>
+        <Attr Name="ImportTime" Val="1500222912"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/mac_axi.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/mac_axi.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/mac_top.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/mac_top.v"/>
+        <Attr Name="ImportTime" Val="1489999888"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/maccsr2axi.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/maccsr2axi.v"/>
+        <Attr Name="ImportTime" Val="1501219244"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/macdata2axi.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/macdata2axi.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/mem_stage.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/mul.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/mycpu_top.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/NAND/nand.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/NAND/nand.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/nand_module.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/nand_module.v"/>
+        <Attr Name="ImportTime" Val="1489109226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/raminfr.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/raminfr.v"/>
+        <Attr Name="ImportTime" Val="1489109226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/rc.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/rc.v"/>
+        <Attr Name="ImportTime" Val="1489109486"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/regfile.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/rfifo.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/rfifo.v"/>
+        <Attr Name="ImportTime" Val="1489109516"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/rlsm.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/rlsm.v"/>
+        <Attr Name="ImportTime" Val="1489109486"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/rstc.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/rstc.v"/>
+        <Attr Name="ImportTime" Val="1489109516"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/tc.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/tc.v"/>
+        <Attr Name="ImportTime" Val="1489109516"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/tfifo.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/tfifo.v"/>
+        <Attr Name="ImportTime" Val="1489109486"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/tlb.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/MAC/tlsm.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/MAC/tlsm.v"/>
+        <Attr Name="ImportTime" Val="1489109516"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/tools.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_defines.h">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_defines.h"/>
+        <Attr Name="ImportTime" Val="1622083198"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+        <Attr Name="IsVisible" Val="1"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_receiver.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_receiver.v"/>
+        <Attr Name="ImportTime" Val="1489109226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_regs.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_regs.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_rfifo.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_rfifo.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_sync_flops.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_sync_flops.v"/>
+        <Attr Name="ImportTime" Val="1489109226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_tfifo.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_tfifo.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_top.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_top.v"/>
+        <Attr Name="ImportTime" Val="1489109226"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/APB_DEV/URT/uart_transmitter.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../IP/APB_DEV/URT/uart_transmitter.v"/>
+        <Attr Name="ImportTime" Val="1489109246"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/wb_stage.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/compressor_3_2.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/int_div_radix_4_v1.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/lzc.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/radix_4_qds_v1.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/radix_4_sign_coder.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/radix_4_sign_detector.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../chip/soc_demo/loongson/soc_top.v">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../chip/soc_demo/loongson/soc_top.v"/>
+        <Attr Name="ImportTime" Val="1626757269"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_a.prj">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="ScopedToCell" Val="mig_axi_32"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/IP/data_bank_sram.xcix">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/myCPU/IP/tagv_sram.xcix">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/sram_128x22/sram_128x22.xci">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/sram_128x32/sram_128x32.xci">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/sram_128x64/sram_128x64.xci">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/sram_32x52bit/sram_32x52bit.xci">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="DesignMode" Val="RTL"/>
+      <Option Name="TopModule" Val="soc_top"/>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">
+    <Filter Type="Constrs"/>
+    <File Path="$PPRDIR/../soc_up.xdc">
+      <FileInfo>
+        <Attr Name="ImportPath" Val="$PPRDIR/../soc_up.xdc"/>
+        <Attr Name="ImportTime" Val="1626834012"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="ConstrsType" Val="XDC"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1" RelGenDir="$PGENDIR/utils_1">
+    <Filter Type="Utils"/>
+    <Config>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2019"/>
+    <Step Id="synth_design"/>
+  </Strategy>
+  <BlockFileSet Type="BlockSrcs" Name="axi_2x1_mux"/>
+  <BlockFileSet Type="BlockSrcs" Name="axi_clock_converter_0"/>
+  <BlockFileSet Type="BlockSrcs" Name="clk_wiz_0"/>
+  <BlockFileSet Type="BlockSrcs" Name="clk_pll_33"/>
+  <BlockFileSet Type="BlockSrcs" Name="axi_interconnect_0"/>
+  <BlockFileSet Type="BlockSrcs" Name="dpram_512x32"/>
+  <BlockFileSet Type="BlockSrcs" Name="mig_axi_32"/>
+</GenRun>

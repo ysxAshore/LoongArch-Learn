@@ -1,0 +1,1 @@
+vopt +acc=npr -l elaborate.log +acc=npr -suppress 10016  -L xil_defaultlib -L xpm -L fifo_generator_v13_2_8 -L axi_interconnect_v1_7_21 -L unisims_ver -L unimacro_ver -L secureip -work xil_defaultlib xil_defaultlib.axi_2x1_mux xil_defaultlib.glbl -o axi_2x1_mux_opt

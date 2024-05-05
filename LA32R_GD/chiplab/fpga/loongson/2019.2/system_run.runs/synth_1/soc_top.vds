@@ -1,0 +1,1630 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Sun May  5 21:10:12 2024
+# Process ID: 20972
+# Current directory: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1
+# Command line: vivado.exe -log soc_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source soc_top.tcl
+# Log file: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/soc_top.vds
+# Journal file: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1\vivado.jou
+# Running On: ysxAshore, OS: Windows, CPU Frequency: 2592 MHz, CPU Physical cores: 6, Host memory: 34263 MB
+#-----------------------------------------------------------
+source soc_top.tcl -notrace
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 431.711 ; gain = 163.789
+Command: synth_design -top soc_top -part xc7a200tfbg676-2
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Device 21-403] Loading part xc7a200tfbg676-2
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 23816
+INFO: [Synth 8-11241] undeclared symbol 'nand_dma_ack_i', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/apb_dev_top_with_nand.v:208]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:38]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:41]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:43]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:45]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:47]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:49]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:51]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:53]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:77]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:79]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:82]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:84]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:87]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:89]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:92]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:94]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:97]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:99]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:102]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:104]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:107]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:109]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:112]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:114]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:117]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:119]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:122]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:124]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:127]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:129]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:132]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:134]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:137]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:140]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:143]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:149]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:151]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:153]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:155]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:157]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:159]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:161]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:163]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:164]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:171]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:173]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:175]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:177]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:182]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:188]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:190]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:192]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:194]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:196]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:203]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:204]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:205]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:208]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:209]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:210]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:213]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:214]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:215]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:216]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:217]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:218]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:221]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:222]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:223]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:224]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:225]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:226]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:227]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:228]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:229]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:230]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:231]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:234]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:235]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:236]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:237]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:238]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:239]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:240]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:243]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:244]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:245]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:248]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:249]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:250]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:251]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:252]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:253]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:254]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:255]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:256]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:257]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:260]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:261]
+WARNING: [Synth 8-11145] root scope declaration is not allowed in Verilog 95/2K mode [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/utility.v:262]
+INFO: [Common 17-14] Message 'Synth 8-11145' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+WARNING: [Synth 8-6901] identifier 'llbit_out' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:104]
+WARNING: [Synth 8-6901] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:211]
+WARNING: [Synth 8-6901] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:212]
+WARNING: [Synth 8-6901] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:213]
+WARNING: [Synth 8-6901] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:214]
+WARNING: [Synth 8-6901] identifier 'dmw_select' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:215]
+INFO: [Synth 8-11241] undeclared symbol 'param_scs', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:506]
+WARNING: [Synth 8-6901] identifier 'br_target' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/id_stage.v:82]
+WARNING: [Synth 8-6901] identifier 'id_excp' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/id_stage.v:321]
+WARNING: [Synth 8-6901] identifier 'id_excp' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/id_stage.v:322]
+WARNING: [Synth 8-6901] identifier 'id_to_if_bus_r_valid' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:61]
+WARNING: [Synth 8-6901] identifier 'id_to_if_bus_r' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:61]
+WARNING: [Synth 8-6901] identifier 'mem_to_if_bus_r_valid' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:71]
+WARNING: [Synth 8-6901] identifier 'mem_to_if_bus_r' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:71]
+WARNING: [Synth 8-6901] identifier 'bd_done' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:132]
+WARNING: [Synth 8-6901] identifier 'inst_sram_rdata_r_valid' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:140]
+WARNING: [Synth 8-6901] identifier 'excp_reg' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:140]
+WARNING: [Synth 8-6901] identifier 'mem_memW' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mem_stage.v:78]
+WARNING: [Synth 8-6901] identifier 'res_from_mem' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mem_stage.v:78]
+WARNING: [Synth 8-6901] identifier 'mem_excp' is used before its declaration [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mem_stage.v:78]
+INFO: [Synth 8-11241] undeclared symbol 'ws_valid_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:240]
+INFO: [Synth 8-11241] undeclared symbol 'cnt_inst_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:241]
+INFO: [Synth 8-11241] undeclared symbol 'timer_64_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:242]
+INFO: [Synth 8-11241] undeclared symbol 'inst_ld_en_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:243]
+INFO: [Synth 8-11241] undeclared symbol 'ld_paddr_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:244]
+INFO: [Synth 8-11241] undeclared symbol 'ld_vaddr_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:245]
+INFO: [Synth 8-11241] undeclared symbol 'inst_st_en_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:246]
+INFO: [Synth 8-11241] undeclared symbol 'st_paddr_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:247]
+INFO: [Synth 8-11241] undeclared symbol 'st_vaddr_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:248]
+INFO: [Synth 8-11241] undeclared symbol 'st_data_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:249]
+INFO: [Synth 8-11241] undeclared symbol 'csr_rstat_en_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:250]
+INFO: [Synth 8-11241] undeclared symbol 'csr_data_diff', assumed default net type 'wire' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:251]
+WARNING: [Synth 8-11065] parameter 'WIDTH' becomes localparam in 'tlb' with formal parameter declaration list [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tlb.v:162]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1340.109 ; gain = 409.414
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'soc_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:36]
+INFO: [Synth 8-6157] synthesizing module 'IOBUF' [E:/Softwares/Vitis/Vivado/2023.1/scripts/rt/data/unisim_comp.v:76334]
+INFO: [Synth 8-6155] done synthesizing module 'IOBUF' (0#1) [E:/Softwares/Vitis/Vivado/2023.1/scripts/rt/data/unisim_comp.v:76334]
+INFO: [Synth 8-6157] synthesizing module 'debug_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:1]
+INFO: [Synth 8-6157] synthesizing module 'uart_recv' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:80]
+INFO: [Synth 8-6155] done synthesizing module 'uart_recv' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:80]
+INFO: [Synth 8-6157] synthesizing module 'uart_send' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:203]
+INFO: [Synth 8-6155] done synthesizing module 'uart_send' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:203]
+INFO: [Synth 8-6157] synthesizing module 'trace_debug' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:317]
+INFO: [Synth 8-6155] done synthesizing module 'trace_debug' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:317]
+INFO: [Synth 8-6155] done synthesizing module 'debug_top' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:1]
+INFO: [Synth 8-6157] synthesizing module 'debug_sram' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_sram.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'debug_sram' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_sram.v:1]
+INFO: [Synth 8-6157] synthesizing module 'core_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:5]
+INFO: [Synth 8-6157] synthesizing module 'if_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'if_stage' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:6]
+INFO: [Synth 8-6157] synthesizing module 'id_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/id_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'decoder_6_64' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:47]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_6_64' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:47]
+INFO: [Synth 8-6157] synthesizing module 'decoder_4_16' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:17]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_4_16' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:17]
+INFO: [Synth 8-6157] synthesizing module 'decoder_2_4' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_2_4' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:2]
+INFO: [Synth 8-6157] synthesizing module 'decoder_5_32' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:32]
+INFO: [Synth 8-6155] done synthesizing module 'decoder_5_32' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tools.v:32]
+INFO: [Synth 8-6157] synthesizing module 'regfile' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/regfile.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'regfile' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/regfile.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'id_stage' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/id_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'exe_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'alu' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/alu.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'alu' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/alu.v:2]
+INFO: [Synth 8-6157] synthesizing module 'mul' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:116]
+INFO: [Synth 8-6157] synthesizing module 'BoothInterBase' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:42]
+INFO: [Synth 8-6157] synthesizing module 'BoothBase' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:20]
+INFO: [Synth 8-6155] done synthesizing module 'BoothBase' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:20]
+INFO: [Synth 8-6157] synthesizing module 'YDecoder' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'YDecoder' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'BoothInterBase' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:42]
+INFO: [Synth 8-6157] synthesizing module 'add64' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:100]
+INFO: [Synth 8-6155] done synthesizing module 'add64' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:100]
+INFO: [Synth 8-6155] done synthesizing module 'mul' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:116]
+INFO: [Synth 8-6157] synthesizing module 'int_div_radix_4_v1' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/int_div_radix_4_v1.sv:2]
+INFO: [Synth 8-294] found qualifier unique on case statement: implementing as parallel_case [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/int_div_radix_4_v1.sv:217]
+INFO: [Synth 8-6157] synthesizing module 'lzc' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/lzc.sv:2]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter MODE bound to: 1'b1 
+INFO: [Synth 8-6155] done synthesizing module 'lzc' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/lzc.sv:2]
+INFO: [Synth 8-6157] synthesizing module 'radix_4_qds_v1' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/radix_4_qds_v1.sv:5]
+	Parameter WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'radix_4_sign_detector' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/radix_4_sign_detector.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'radix_4_sign_detector' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/radix_4_sign_detector.sv:4]
+INFO: [Synth 8-6157] synthesizing module 'radix_4_sign_coder' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/radix_4_sign_coder.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'radix_4_sign_coder' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/radix_4_sign_coder.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'radix_4_qds_v1' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/radix_4_qds_v1.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'compressor_3_2' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/compressor_3_2.sv:2]
+	Parameter WIDTH bound to: 36 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'compressor_3_2' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/compressor_3_2.sv:2]
+INFO: [Synth 8-6155] done synthesizing module 'int_div_radix_4_v1' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/int_div_radix_4_v1.sv:2]
+INFO: [Synth 8-6155] done synthesizing module 'exe_stage' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mem_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'mem_stage' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mem_stage.v:4]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_timer_64_diff' does not match port width (64) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:242]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_inst_ld_en_diff' does not match port width (8) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:243]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_ld_paddr_diff' does not match port width (32) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:244]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_ld_vaddr_diff' does not match port width (32) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:245]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_inst_st_en_diff' does not match port width (8) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:246]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_st_paddr_diff' does not match port width (32) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:247]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_st_vaddr_diff' does not match port width (32) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:248]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_st_data_diff' does not match port width (32) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:249]
+WARNING: [Synth 8-689] width (1) of port connection 'ws_csr_data_diff' does not match port width (32) of module 'mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:251]
+WARNING: [Synth 8-7071] port 'data_index_diff' of module 'mem_stage' is unconnected for instance 'u_mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:221]
+WARNING: [Synth 8-7071] port 'data_tag_diff' of module 'mem_stage' is unconnected for instance 'u_mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:221]
+WARNING: [Synth 8-7071] port 'data_offset_diff' of module 'mem_stage' is unconnected for instance 'u_mem_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:221]
+WARNING: [Synth 8-7023] instance 'u_mem_stage' of module 'mem_stage' has 39 connections declared, but only 36 given [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:221]
+INFO: [Synth 8-6157] synthesizing module 'wb_stage' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/wb_stage.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'wb_stage' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/wb_stage.v:4]
+INFO: [Synth 8-6157] synthesizing module 'csr' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/csr.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'csr' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/csr.v:4]
+INFO: [Synth 8-6157] synthesizing module 'tlb' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tlb.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'tlb' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/tlb.v:2]
+INFO: [Synth 8-6157] synthesizing module 'icache' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/icache.v:1]
+INFO: [Synth 8-226] default block is never used [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/icache.v:314]
+INFO: [Synth 8-6157] synthesizing module 'data_bank_sram' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/data_bank_sram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'data_bank_sram' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/data_bank_sram_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'tagv_sram' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/tagv_sram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'tagv_sram' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/tagv_sram_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'i_lfsr' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/icache.v:649]
+INFO: [Synth 8-6155] done synthesizing module 'i_lfsr' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/icache.v:649]
+INFO: [Synth 8-6155] done synthesizing module 'icache' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/icache.v:1]
+INFO: [Synth 8-6157] synthesizing module 'dcache' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/dcache.v:1]
+INFO: [Synth 8-226] default block is never used [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/dcache.v:316]
+INFO: [Synth 8-6157] synthesizing module 'd_lfsr' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/dcache.v:719]
+INFO: [Synth 8-6155] done synthesizing module 'd_lfsr' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/dcache.v:719]
+INFO: [Synth 8-6155] done synthesizing module 'dcache' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/dcache.v:1]
+INFO: [Synth 8-6157] synthesizing module 'axi_bridge' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/axi_bridge.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'axi_bridge' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/axi_bridge.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'core_top' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mycpu_top.v:5]
+WARNING: [Synth 8-689] width (4) of port connection 'arlen' does not match port width (8) of module 'core_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:731]
+WARNING: [Synth 8-689] width (4) of port connection 'awlen' does not match port width (8) of module 'core_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:747]
+WARNING: [Synth 8-7071] port 'debug0_wb_inst' of module 'core_top' is unconnected for instance 'cpu_mid' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:723]
+WARNING: [Synth 8-7023] instance 'cpu_mid' of module 'core_top' has 49 connections declared, but only 48 given [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:723]
+INFO: [Synth 8-6157] synthesizing module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/axi_2x1_mux_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'axi_2x1_mux' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/axi_2x1_mux_stub.v:6]
+WARNING: [Synth 8-689] width (4) of port connection 'S00_AXI_ARID' does not match port width (1) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:788]
+WARNING: [Synth 8-689] width (2) of port connection 'S00_AXI_ARLOCK' does not match port width (1) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:790]
+WARNING: [Synth 8-689] width (4) of port connection 'S00_AXI_RID' does not match port width (1) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:797]
+WARNING: [Synth 8-689] width (4) of port connection 'S01_AXI_ARID' does not match port width (1) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:828]
+WARNING: [Synth 8-689] width (2) of port connection 'S01_AXI_ARLOCK' does not match port width (1) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:830]
+WARNING: [Synth 8-689] width (4) of port connection 'S01_AXI_RID' does not match port width (1) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:837]
+WARNING: [Synth 8-689] width (4) of port connection 'M00_AXI_ARID' does not match port width (5) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:868]
+WARNING: [Synth 8-689] width (4) of port connection 'M00_AXI_ARLEN' does not match port width (8) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:869]
+WARNING: [Synth 8-689] width (2) of port connection 'M00_AXI_ARLOCK' does not match port width (1) of module 'axi_2x1_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:870]
+WARNING: [Synth 8-2900] ignoring illegal expression in output port connection [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:872]
+INFO: [Synth 8-6157] synthesizing module 'axi_clock_converter_0' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/axi_clock_converter_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'axi_clock_converter_0' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/axi_clock_converter_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'axi_slave_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi_mux_syn.v:37]
+INFO: [Synth 8-6157] synthesizing module 'nb_sync_fifo_mux' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi_mux_syn.v:1034]
+INFO: [Synth 8-6155] done synthesizing module 'nb_sync_fifo_mux' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi_mux_syn.v:1034]
+INFO: [Synth 8-6155] done synthesizing module 'axi_slave_mux' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi_mux_syn.v:37]
+INFO: [Synth 8-6157] synthesizing module 'spi_flash_ctrl' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:34]
+INFO: [Synth 8-155] case statement is not full and has no default [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:434]
+INFO: [Synth 8-6157] synthesizing module 'simple_spi_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:526]
+INFO: [Synth 8-6157] synthesizing module 'spi_fifo4' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:839]
+	Parameter dw bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'spi_fifo4' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:839]
+INFO: [Synth 8-226] default block is never used [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:779]
+INFO: [Synth 8-6155] done synthesizing module 'simple_spi_top' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:526]
+INFO: [Synth 8-6155] done synthesizing module 'spi_flash_ctrl' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/SPI/godson_sbridge_spi.v:34]
+INFO: [Synth 8-6157] synthesizing module 'confreg' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:43]
+INFO: [Synth 8-155] case statement is not full and has no default [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:254]
+INFO: [Synth 8-6155] done synthesizing module 'confreg' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:43]
+WARNING: [Synth 8-689] width (2) of port connection 's_awlock' does not match port width (1) of module 'confreg' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:1289]
+WARNING: [Synth 8-689] width (2) of port connection 's_arlock' does not match port width (1) of module 'confreg' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:1309]
+INFO: [Synth 8-6157] synthesizing module 'ethernet_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/ethernet_top.v:34]
+INFO: [Synth 8-6157] synthesizing module 'mac_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac_top.v:34]
+INFO: [Synth 8-6157] synthesizing module 'RegFile2_64x16' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac_top.v:411]
+INFO: [Synth 8-6155] done synthesizing module 'RegFile2_64x16' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac_top.v:411]
+INFO: [Synth 8-6157] synthesizing module 'MAC_AXI' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac_axi.v:34]
+INFO: [Synth 8-6157] synthesizing module 'MAC' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac.v:34]
+	Parameter CSRWIDTH bound to: 32 - type: integer 
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+	Parameter DATADEPTH bound to: 32 - type: integer 
+	Parameter TFIFODEPTH bound to: 9 - type: integer 
+	Parameter RFIFODEPTH bound to: 9 - type: integer 
+	Parameter TCDEPTH bound to: 1 - type: integer 
+	Parameter RCDEPTH bound to: 2 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'DMA' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/dma.v:34]
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+	Parameter DATADEPTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DMA' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/dma.v:34]
+INFO: [Synth 8-6157] synthesizing module 'TLSM' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/tlsm.v:34]
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+	Parameter DATADEPTH bound to: 32 - type: integer 
+	Parameter FIFODEPTH bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'TLSM' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/tlsm.v:34]
+INFO: [Synth 8-6157] synthesizing module 'TFIFO' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/tfifo.v:34]
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+	Parameter DATADEPTH bound to: 32 - type: integer 
+	Parameter FIFODEPTH bound to: 9 - type: integer 
+	Parameter CACHEDEPTH bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'TFIFO' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/tfifo.v:34]
+INFO: [Synth 8-6157] synthesizing module 'TC' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/tc.v:34]
+	Parameter FIFODEPTH bound to: 9 - type: integer 
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'TC' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/tc.v:34]
+INFO: [Synth 8-6157] synthesizing module 'BD' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/bd.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'BD' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/bd.v:34]
+INFO: [Synth 8-6157] synthesizing module 'RC' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rc.v:34]
+	Parameter FIFODEPTH bound to: 9 - type: integer 
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'RC' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rc.v:34]
+INFO: [Synth 8-6157] synthesizing module 'RFIFO' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rfifo.v:34]
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+	Parameter DATADEPTH bound to: 32 - type: integer 
+	Parameter FIFODEPTH bound to: 9 - type: integer 
+	Parameter CACHEDEPTH bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'RFIFO' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rfifo.v:34]
+INFO: [Synth 8-6157] synthesizing module 'RLSM' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rlsm.v:34]
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+	Parameter DATADEPTH bound to: 32 - type: integer 
+	Parameter FIFODEPTH bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'RLSM' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rlsm.v:34]
+INFO: [Synth 8-6157] synthesizing module 'CSR' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/csr.v:34]
+	Parameter CSRWIDTH bound to: 32 - type: integer 
+	Parameter DATAWIDTH bound to: 32 - type: integer 
+	Parameter DATADEPTH bound to: 32 - type: integer 
+	Parameter RFIFODEPTH bound to: 9 - type: integer 
+	Parameter RCDEPTH bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'CSR' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/csr.v:34]
+INFO: [Synth 8-6157] synthesizing module 'RSTC' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rstc.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'RSTC' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rstc.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'MAC' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac.v:34]
+INFO: [Synth 8-6157] synthesizing module 'MAC2AXI' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac2axi.v:34]
+	Parameter MAXIDATAWIDTH bound to: 32 - type: integer 
+	Parameter MAXIADDRESSWIDTH bound to: 32 - type: integer 
+	Parameter SAXIDATAWIDTH bound to: 32 - type: integer 
+	Parameter SAXIADDRESSWIDTH bound to: 32 - type: integer 
+	Parameter MACDATAWIDTH bound to: 32 - type: integer 
+	Parameter MACADDRESSWIDTH bound to: 32 - type: integer 
+	Parameter CSRDATAWIDTH bound to: 32 - type: integer 
+	Parameter CSRADDRESSWIDTH bound to: 8 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'MACDATA2AXI' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/macdata2axi.v:34]
+	Parameter MAXIDATAWIDTH bound to: 32 - type: integer 
+	Parameter MAXIADDRESSWIDTH bound to: 32 - type: integer 
+	Parameter MACDATAWIDTH bound to: 32 - type: integer 
+	Parameter MACADDRESSWIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'MACDATA2AXI' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/macdata2axi.v:34]
+INFO: [Synth 8-6157] synthesizing module 'MACCSR2AXI' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/maccsr2axi.v:34]
+	Parameter SAXIDATAWIDTH bound to: 32 - type: integer 
+	Parameter SAXIADDRESSWIDTH bound to: 32 - type: integer 
+	Parameter CSRDATAWIDTH bound to: 32 - type: integer 
+	Parameter CSRADDRESSWIDTH bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'MACCSR2AXI' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/maccsr2axi.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'MAC2AXI' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac2axi.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'MAC_AXI' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac_axi.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'mac_top' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/mac_top.v:34]
+INFO: [Synth 8-6157] synthesizing module 'dpram_512x32' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/dpram_512x32_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'dpram_512x32' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/dpram_512x32_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'ethernet_top' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/ethernet_top.v:34]
+INFO: [Synth 8-6157] synthesizing module 'clk_pll_33' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/clk_pll_33_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'clk_pll_33' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/clk_pll_33_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/clk_wiz_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/clk_wiz_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'axi_interconnect_0' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/axi_interconnect_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'axi_interconnect_0' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/axi_interconnect_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'mig_axi_32' [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/mig_axi_32_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'mig_axi_32' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/realtime/mig_axi_32_stub.v:6]
+WARNING: [Synth 8-7071] port 'device_temp' of module 'mig_axi_32' is unconnected for instance 'mig_axi' [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:1665]
+WARNING: [Synth 8-7023] instance 'mig_axi' of module 'mig_axi_32' has 66 connections declared, but only 65 given [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:1665]
+INFO: [Synth 8-6157] synthesizing module 'dma_master' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DMA/dma.v:39]
+INFO: [Synth 8-6155] done synthesizing module 'dma_master' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DMA/dma.v:39]
+INFO: [Synth 8-6157] synthesizing module 'axi2apb_misc' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/apb_dev_top_with_nand.v:36]
+INFO: [Synth 8-6157] synthesizing module 'axi2apb_bridge' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi2apb.v:36]
+INFO: [Synth 8-226] default block is never used [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi2apb.v:337]
+INFO: [Synth 8-6155] done synthesizing module 'axi2apb_bridge' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi2apb.v:36]
+INFO: [Synth 8-6157] synthesizing module 'apb_mux2' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/apb_mux2.v:38]
+INFO: [Synth 8-6157] synthesizing module 'arb_2_1' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/apb_mux2.v:185]
+INFO: [Synth 8-6155] done synthesizing module 'arb_2_1' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/apb_mux2.v:185]
+INFO: [Synth 8-6155] done synthesizing module 'apb_mux2' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/apb_mux2.v:38]
+INFO: [Synth 8-6157] synthesizing module 'UART_TOP' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_top.v:36]
+INFO: [Synth 8-6157] synthesizing module 'uart_regs' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_regs.v:39]
+INFO: [Synth 8-6157] synthesizing module 'uart_transmitter' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_transmitter.v:36]
+INFO: [Synth 8-6157] synthesizing module 'uart_tfifo' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_tfifo.v:36]
+INFO: [Synth 8-6157] synthesizing module 'raminfr' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/raminfr.v:34]
+	Parameter addr_width bound to: 4 - type: integer 
+	Parameter data_width bound to: 8 - type: integer 
+	Parameter depth bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'raminfr' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/raminfr.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'uart_tfifo' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_tfifo.v:36]
+INFO: [Synth 8-6155] done synthesizing module 'uart_transmitter' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_transmitter.v:36]
+INFO: [Synth 8-6157] synthesizing module 'uart_sync_flops' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_sync_flops.v:34]
+	Parameter width bound to: 1 - type: integer 
+	Parameter init_value bound to: 1'b1 
+INFO: [Synth 8-6155] done synthesizing module 'uart_sync_flops' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_sync_flops.v:34]
+INFO: [Synth 8-6157] synthesizing module 'uart_receiver' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_receiver.v:36]
+INFO: [Synth 8-6157] synthesizing module 'uart_rfifo' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_rfifo.v:36]
+	Parameter fifo_width bound to: 11 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'uart_rfifo' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_rfifo.v:36]
+INFO: [Synth 8-6155] done synthesizing module 'uart_receiver' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_receiver.v:36]
+INFO: [Synth 8-6155] done synthesizing module 'uart_regs' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_regs.v:39]
+INFO: [Synth 8-6155] done synthesizing module 'UART_TOP' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_top.v:36]
+INFO: [Synth 8-6157] synthesizing module 'nand_module' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/nand_module.v:34]
+INFO: [Synth 8-6157] synthesizing module 'NAND_top' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/NAND/nand.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'NAND_top' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/NAND/nand.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'nand_module' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/nand_module.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'axi2apb_misc' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/apb_dev_top_with_nand.v:36]
+INFO: [Synth 8-6155] done synthesizing module 'soc_top' (0#1) [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:36]
+WARNING: [Synth 8-7137] Register rf_rdata_r_reg in module trace_debug has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:592]
+WARNING: [Synth 8-7137] Register mem_rdata_r_reg in module trace_debug has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:597]
+WARNING: [Synth 8-7137] Register wnum_r_reg in module trace_debug has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:603]
+WARNING: [Synth 8-7137] Register wdata_r_reg in module trace_debug has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:604]
+WARNING: [Synth 8-7137] Register list_pc_r_reg in module trace_debug has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DEBUG/debug_top.v:609]
+WARNING: [Synth 8-6014] Unused sequential element csr_euen_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/csr.v:279]
+WARNING: [Synth 8-6014] Unused sequential element requestBuffer_icacop_offset_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/icache.v:218]
+WARNING: [Synth 8-6014] Unused sequential element way1_D_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/icache.v:446]
+WARNING: [Synth 8-6014] Unused sequential element read_respond_state_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/axi_bridge.v:213]
+WARNING: [Synth 8-6014] Unused sequential element rd_data_pre_sel_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi_mux_syn.v:987]
+WARNING: [Synth 8-6014] Unused sequential element buf_len_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:212]
+WARNING: [Synth 8-6014] Unused sequential element buf_size_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:213]
+WARNING: [Synth 8-6014] Unused sequential element buf_burst_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:214]
+WARNING: [Synth 8-6014] Unused sequential element buf_lock_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:215]
+WARNING: [Synth 8-6014] Unused sequential element buf_cache_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:216]
+WARNING: [Synth 8-6014] Unused sequential element buf_prot_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/CONFREG/confreg_syn.v:217]
+WARNING: [Synth 8-6014] Unused sequential element des1_reg_proc.ft22_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/tlsm.v:673]
+WARNING: [Synth 8-6014] Unused sequential element wadg_0_r_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rfifo.v:384]
+WARNING: [Synth 8-6014] Unused sequential element wadg_r_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rfifo.v:385]
+WARNING: [Synth 8-6014] Unused sequential element wad_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rfifo.v:412]
+WARNING: [Synth 8-6014] Unused sequential element stat_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/MAC/rfifo.v:424]
+WARNING: [Synth 8-6014] Unused sequential element write_dma_to_ddr_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/DMA/dma.v:436]
+WARNING: [Synth 8-6014] Unused sequential element apb_wr_size_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/AMBA/axi2apb.v:201]
+WARNING: [Synth 8-6014] Unused sequential element rbit_in_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/URT/uart_receiver.v:115]
+WARNING: [Synth 8-6014] Unused sequential element NAND_ACK_reg was removed.  [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/APB_DEV/NAND/nand.v:424]
+WARNING: [Synth 8-3848] Net EJTAG_TDO in module/entity soc_top does not have driver. [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:91]
+WARNING: [Synth 8-3848] Net UART_RI in module/entity soc_top does not have driver. [E:/Projects/Studying/LA/LA32R_GD/chiplab/chip/soc_demo/loongson/soc_top.v:565]
+WARNING: [Synth 8-7129] Port apb_addr[19] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[18] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[17] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[16] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[15] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[14] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[13] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[12] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port apb_addr[11] in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port nand_dma_ack_i in module nand_module is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lcr[7] in module uart_receiver is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lcr[6] in module uart_receiver is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lcr[7] in module uart_transmitter is either unconnected or has no load
+WARNING: [Synth 8-7129] Port PADDR[7] in module UART_TOP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port PADDR[6] in module UART_TOP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port PADDR[5] in module UART_TOP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port PADDR[4] in module UART_TOP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port PADDR[3] in module UART_TOP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awid[3] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awid[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awid[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awid[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[31] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[30] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[29] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[28] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[27] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[26] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[25] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[24] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[23] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[22] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[21] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awaddr[20] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awlen[3] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awlen[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awlen[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awlen[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awsize[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awsize[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awsize[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awburst[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awburst[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awlock[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awlock[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awcache[3] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awcache[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awcache[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awcache[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awprot[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awprot[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_awprot[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_wlast in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[31] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[30] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[29] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[28] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[27] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[26] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[25] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[24] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[23] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[22] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[21] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_araddr[20] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arlen[3] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arlen[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arlen[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arlen[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arburst[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arburst[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arlock[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arlock[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arcache[3] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arcache[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arcache[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arcache[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arprot[2] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arprot[1] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port axi_s_arprot[0] in module axi2apb_bridge is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rid[3] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rid[2] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rid[1] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rid[0] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port bid[3] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port bid[2] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port bid[1] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port bid[0] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port order_addr_in[1] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port order_addr_in[0] in module dma_master is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awid_i[3] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awid_i[2] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awid_i[1] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awid_i[0] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awlen_i[3] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awlen_i[2] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awlen_i[1] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awlen_i[0] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awsize_i[2] in module MACCSR2AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port awsize_i[1] in module MACCSR2AXI is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 1726.066 ; gain = 795.371
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:12 ; elapsed = 00:00:14 . Memory (MB): peak = 1726.066 ; gain = 795.371
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:12 ; elapsed = 00:00:14 . Memory (MB): peak = 1726.066 ; gain = 795.371
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.524 . Memory (MB): peak = 1734.504 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 9 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_tagv'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_tagv'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_tagv'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_tagv'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_tagv'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_tagv'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_tagv'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/tagv_sram/tagv_sram/tagv_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_tagv'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank0'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank0'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank1'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank1'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank2'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank2'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank3'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way0_bank3'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank0'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank0'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank1'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank1'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank2'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank2'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank3'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/i_cache/way1_bank3'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank0'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank0'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank1'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank1'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank2'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank2'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank3'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way0_bank3'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank0'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank0'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank1'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank1'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank2'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank2'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank3'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/data_bank_sram/data_bank_sram/data_bank_sram_in_context.xdc] for cell 'cpu_mid/d_cache/way1_bank3'
+Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/axi_2x1_mux/axi_2x1_mux/axi_2x1_mux_in_context.xdc] for cell 'u_axi_2x1_mux'
+Finished Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/axi_2x1_mux/axi_2x1_mux/axi_2x1_mux_in_context.xdc] for cell 'u_axi_2x1_mux'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/axi_clock_converter_0/axi_clock_converter_0/axi_clock_converter_0_in_context.xdc] for cell 'AXI_CLK_CONVERTER'
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/.Xil/Vivado-20972-ysxAshore/axi_clock_converter_0/axi_clock_converter_0/axi_clock_converter_0_in_context.xdc] for cell 'AXI_CLK_CONVERTER'
+Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/axi_interconnect_0/axi_interconnect_0/axi_interconnect_0_in_context.xdc] for cell 'mig_axi_interconnect'
+Finished Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/axi_interconnect_0/axi_interconnect_0/axi_interconnect_0_in_context.xdc] for cell 'mig_axi_interconnect'
+Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/clk_pll_33/clk_pll_33/clk_pll_33_in_context.xdc] for cell 'clk_pll_33'
+Finished Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/clk_pll_33/clk_pll_33/clk_pll_33_in_context.xdc] for cell 'clk_pll_33'
+Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/clk_wiz_0_loongson/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'clk_pll_1'
+Finished Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/clk_wiz_0_loongson/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'clk_pll_1'
+Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/dpram_512x32/dpram_512x32/dpram_512x32_in_context.xdc] for cell 'ETHERNET_TOP/dpram_512x32_tx'
+Finished Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/dpram_512x32/dpram_512x32/dpram_512x32_in_context.xdc] for cell 'ETHERNET_TOP/dpram_512x32_tx'
+Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/dpram_512x32/dpram_512x32/dpram_512x32_in_context.xdc] for cell 'ETHERNET_TOP/dpram_512x32_rx'
+Finished Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/dpram_512x32/dpram_512x32/dpram_512x32_in_context.xdc] for cell 'ETHERNET_TOP/dpram_512x32_rx'
+Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc] for cell 'mig_axi'
+Finished Parsing XDC File [e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc] for cell 'mig_axi'
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc]
+WARNING: [Vivado 12-507] No nets matched 'EJTAG_TCK_IBUF'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:192]
+WARNING: [Vivado 12-627] No clocks matched 'clk_pll_i'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:197]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:197]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:197]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:197]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:198]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:198]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:199]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:199]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:200]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:200]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out1_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:200]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:200]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out1_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:201]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:201]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:201]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:201]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:202]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:202]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:203]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:203]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:204]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:204]
+WARNING: [Vivado 12-627] No clocks matched 'clk_out2_clk_pll_33'. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:205]
+INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc:205]
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc]
+WARNING: [Project 1-498] One or more constraints failed evaluation while reading constraint file [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc] and the design contains unresolved black boxes. These constraints will be read post-synthesis (as long as their source constraint file is marked as used_in_implementation) and should be applied correctly then. You should review the constraints listed in the file [.Xil/soc_top_propImpl.xdc] and check the run log file to verify that these constraints were correctly applied.
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/soc_up.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/soc_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/soc_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/dont_touch.xdc]
+Finished Parsing XDC File [E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/dont_touch.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.011 . Memory (MB): peak = 1857.465 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 9 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 9 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.145 . Memory (MB): peak = 1857.465 ; gain = 0.000
+WARNING: [Timing 38-316] Clock period '100.000' specified during out-of-context synthesis of instance 'AXI_CLK_CONVERTER' at clock pin 'm_axi_aclk' is different from the actual clock period '30.303', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '100.000' specified during out-of-context synthesis of instance 'mig_axi_interconnect' at clock pin 'INTERCONNECT_ACLK' is different from the actual clock period '10.000', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '100.000' specified during out-of-context synthesis of instance 'u_axi_2x1_mux' at clock pin 'INTERCONNECT_ACLK' is different from the actual clock period '20.000', this can lead to different synthesis results.
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:25 ; elapsed = 00:00:29 . Memory (MB): peak = 1862.207 ; gain = 931.512
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a200tfbg676-2
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:25 ; elapsed = 00:00:29 . Memory (MB): peak = 1862.207 ; gain = 931.512
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 2).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 3).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[10]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 4).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[10]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 5).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[11]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 6).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[11]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 7).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[12]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 8).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[12]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 9).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 10).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 11).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[2]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 12).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[2]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 13).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[3]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 14).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[3]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 15).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[4]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 16).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[4]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 17).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[5]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 18).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[5]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 19).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[6]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 20).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[6]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 21).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[7]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 22).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[7]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 23).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[8]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 24).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[8]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 25).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_addr[9]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 26).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_addr[9]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 27).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_ba[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 28).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_ba[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 29).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_ba[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 30).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_ba[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 31).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_ba[2]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 32).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_ba[2]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 33).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_cas_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 34).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_cas_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 35).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_ck_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 36).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_ck_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 37).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_ck_p. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 38).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_ck_p. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 39).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_cke. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 40).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_cke. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 41).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dm[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 42).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dm[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 43).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dm[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 44).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dm[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 45).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 46).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 47).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[10]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 48).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[10]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 49).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[11]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 50).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[11]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 51).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[12]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 52).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[12]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 53).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[13]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 54).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[13]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 55).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[14]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 56).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[14]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 57).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[15]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 58).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[15]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 59).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 60).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 61).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[2]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 62).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[2]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 63).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[3]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 64).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[3]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 65).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[4]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 66).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[4]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 67).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[5]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 68).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[5]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 69).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[6]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 70).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[6]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 71).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[7]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 72).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[7]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 73).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[8]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 74).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[8]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 75).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dq[9]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 76).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dq[9]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 77).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dqs_n[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 78).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dqs_n[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 79).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dqs_n[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 80).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dqs_n[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 81).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dqs_p[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 82).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dqs_p[0]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 83).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_dqs_p[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 84).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_dqs_p[1]. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 85).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_odt. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 86).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_odt. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 87).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_ras_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 88).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_ras_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 89).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_reset_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 90).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_reset_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 91).
+Applied set_property IO_BUFFER_TYPE = NONE for ddr3_we_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 92).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for ddr3_we_n. (constraint file  e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_axi_32/mig_axi_32_in_context.xdc, line 93).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way0_tagv. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way0_tagv. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way1_tagv. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way1_tagv. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way0_bank0. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way0_bank0. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way0_bank1. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way0_bank1. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way0_bank2. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way0_bank2. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way0_bank3. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way0_bank3. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way1_bank0. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way1_bank0. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way1_bank1. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way1_bank1. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way1_bank2. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way1_bank2. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/i_cache/way1_bank3. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu_mid/d_cache/way1_bank3. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for u_axi_2x1_mux. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for AXI_CLK_CONVERTER. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for mig_axi_interconnect. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for clk_pll_33. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for clk_pll_1. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for ETHERNET_TOP/dpram_512x32_rx. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for ETHERNET_TOP/dpram_512x32_tx. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for mig_axi. (constraint file  auto generated constraint).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:26 ; elapsed = 00:00:30 . Memory (MB): peak = 1862.207 ; gain = 931.512
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'recv_state_reg' in module 'trace_debug'
+WARNING: [Synth 8-3936] Found unconnected internal register 'dividend_lzc_q_reg' and it is trimmed from '6' to '5' bits. [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/int_div_radix_4_v1.sv:252]
+INFO: [Synth 8-802] inferred FSM for state register 'fsm_q_reg' in module 'int_div_radix_4_v1'
+WARNING: [Synth 8-3936] Found unconnected internal register 'exe_data_reg' and it is trimmed from '255' to '253' bits. [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/exe_stage.v:64]
+INFO: [Synth 8-802] inferred FSM for state register 'cache_state_reg' in module 'icache'
+INFO: [Synth 8-802] inferred FSM for state register 'cache_state_reg' in module 'dcache'
+INFO: [Synth 8-802] inferred FSM for state register 'write_requst_state_reg' in module 'axi_bridge'
+INFO: [Synth 8-802] inferred FSM for state register 'rd_state_reg' in module 'spi_flash_ctrl'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'confreg'
+INFO: [Synth 8-802] inferred FSM for state register 'dsm_reg' in module 'DMA'
+INFO: [Synth 8-802] inferred FSM for state register 'lsm_reg' in module 'TLSM'
+INFO: [Synth 8-802] inferred FSM for state register 'tsm_reg' in module 'TC'
+INFO: [Synth 8-802] inferred FSM for state register 'rsm_reg' in module 'RC'
+INFO: [Synth 8-802] inferred FSM for state register 'lsm_reg' in module 'RLSM'
+INFO: [Synth 8-802] inferred FSM for state register 'tpsm_reg' in module 'CSR'
+INFO: [Synth 8-802] inferred FSM for state register 'rpsm_reg' in module 'CSR'
+INFO: [Synth 8-802] inferred FSM for state register 'csr_rw_sm_reg' in module 'axi2apb_bridge'
+INFO: [Synth 8-802] inferred FSM for state register 'tstate_reg' in module 'uart_transmitter'
+INFO: [Synth 8-802] inferred FSM for state register 'rstate_reg' in module 'uart_receiver'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                iSTATE16 |                            00000 |                            00000
+                iSTATE12 |                            00001 |                            00001
+                 iSTATE8 |                            00010 |                            00010
+                 iSTATE6 |                            00011 |                            00011
+                iSTATE30 |                            00100 |                            00100
+                iSTATE28 |                            00101 |                            00101
+                iSTATE22 |                            00110 |                            00110
+                iSTATE19 |                            00111 |                            00111
+                iSTATE26 |                            01000 |                            01000
+                iSTATE17 |                            01001 |                            01010
+                iSTATE14 |                            01010 |                            01011
+                 iSTATE3 |                            01011 |                            01100
+                 iSTATE2 |                            01100 |                            01101
+                  iSTATE |                            01101 |                            01110
+                iSTATE29 |                            01110 |                            01111
+                 iSTATE9 |                            01111 |                            10000
+                 iSTATE7 |                            10000 |                            10001
+                 iSTATE5 |                            10001 |                            10010
+                 iSTATE4 |                            10010 |                            10011
+                iSTATE23 |                            10011 |                            10100
+                iSTATE21 |                            10100 |                            10101
+                iSTATE27 |                            10101 |                            11110
+                iSTATE15 |                            10110 |                            10110
+                iSTATE13 |                            10111 |                            10111
+                iSTATE20 |                            11000 |                            11000
+                iSTATE18 |                            11001 |                            11001
+                iSTATE11 |                            11010 |                            11010
+                iSTATE10 |                            11011 |                            11011
+                 iSTATE1 |                            11100 |                            11100
+                 iSTATE0 |                            11101 |                            11101
+                iSTATE24 |                            11110 |                            01001
+                iSTATE25 |                            11111 |                            11111
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'recv_state_reg' using encoding 'sequential' in module 'trace_debug'
+WARNING: [Synth 8-327] inferring latch for variable 'idle_lock_reg' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/if_stage.v:229]
+WARNING: [Synth 8-327] inferring latch for variable 'br_target_buf_reg' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/id_stage.v:66]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[15]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[16]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[0]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[1]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[2]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[3]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[4]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[5]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[6]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[7]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[8]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[9]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[10]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[11]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[12]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[13]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+WARNING: [Synth 8-327] inferring latch for variable 'SecStageBoothRes_reg[14]' [E:/Projects/Studying/LA/LA32R_GD/chiplab/IP/myCPU/mul.v:165]
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+*
+            FSM_IDLE_ABS |                           000001 |                           000001
+       FSM_PRE_PROCESS_0 |                           000010 |                           000010
+       FSM_PRE_PROCESS_1 |                           000100 |                           000100
+       FSM_SRT_ITERATION |                           001000 |                           001000
+      FSM_POST_PROCESS_0 |                           010000 |                           010000
+      FSM_POST_PROCESS_1 |                           100000 |                           100000
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3898] No Re-encoding of one hot register 'fsm_q_reg' in module 'int_div_radix_4_v1'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+               MAIN_IDLE |                              000 |                              000
+             MAIN_LOOKUP |                              100 |                              001
+               MAIN_MISS |                              011 |                              010
+            MAIN_REPLACE |                              010 |                              011
+             MAIN_REFILL |                              001 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'cache_state_reg' using encoding 'sequential' in module 'icache'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+               MAIN_IDLE |                              000 |                              000
+             MAIN_LOOKUP |                              100 |                              001
+               MAIN_MISS |                              011 |                              010
+            MAIN_REPLACE |                              010 |                              011
+             MAIN_REFILL |                              001 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'cache_state_reg' using encoding 'sequential' in module 'dcache'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+     write_request_empty |                               00 |                              000
+         write_data_wait |                               01 |                              101
+    write_data_transform |                               10 |                              100
+            write_wait_b |                               11 |                              110
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'write_requst_state_reg' using encoding 'sequential' in module 'axi_bridge'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+*
+               S_PWRDOWN |                       1000000000 |                       1000000000
+                S_PDEXIT |                       0010000000 |                       0010000000
+               S_STARTUP |                       0100000000 |                       0100000000
+                  S_IDLE |                       0000000001 |                       0000000001
+                S_IOREAD |                       0000000010 |                       0000000010
+               S_WAITBUS |                       0000100000 |                       0000100000
+                S_CSTURN |                       0000000100 |                       0000000100
+                  S_ADDR |                       0000001000 |                       0000001000
+                  S_DATA |                       0000010000 |                       0000010000
+               S_PDENTER |                       0001000000 |                       0001000000
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3898] No Re-encoding of one hot register 'rd_state_reg' in module 'spi_flash_ctrl'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE4 |                           000001 |                              000
+                  iSTATE |                           100000 |                              001
+                 iSTATE0 |                           010000 |                              010
+                 iSTATE1 |                           001000 |                              011
+                 iSTATE2 |                           000100 |                              100
+                 iSTATE3 |                           000010 |                              111
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'confreg'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                DSM_IDLE |                              001 |                               00
+                  iSTATE |                              010 |                               10
+*
+                 DSM_CH1 |                              100 |                               01
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'dsm_reg' using encoding 'one-hot' in module 'DMA'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                LSM_IDLE |                        000000001 |                             0000
+                LSM_DES0 |                        000000010 |                             0010
+                LSM_DES1 |                        100000000 |                             0011
+                LSM_DES2 |                        010000000 |                             0100
+                LSM_BUF1 |                        000100000 |                             0110
+                LSM_DES3 |                        001000000 |                             0101
+                LSM_BUF2 |                        000010000 |                             0111
+                 LSM_NXT |                        000001000 |                             1010
+                  iSTATE |                        000000100 |                             1000
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'lsm_reg' using encoding 'one-hot' in module 'TLSM'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+          TSM_IDLE_TCSMT |                        000000001 |                             0000
+                TSM_PREA |                        100000000 |                             0001
+                 TSM_SFD |                        010000000 |                             0010
+                TSM_INFO |                        001000000 |                             0011
+                 TSM_PAD |                        000100000 |                             0100
+                 TSM_CRC |                        000010000 |                             0101
+                 TSM_JAM |                        000001000 |                             0111
+               TSM_FLUSH |                        000000100 |                             1000
+                  iSTATE |                        000000010 |                             1001
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'tsm_reg' using encoding 'one-hot' in module 'TC'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+          RSM_IDLE_RCSMT |                       0001000000 |                             0000
+                 RSM_SFD |                       0010000000 |                             0001
+                RSM_DEST |                       0000100000 |                             0010
+              RSM_SOURCE |                       0000000001 |                             0011
+              RSM_LENGTH |                       0000001000 |                             0100
+                RSM_INFO |                       0000010000 |                             0101
+                RSM_SUCC |                       0000000010 |                             0110
+                 RSM_INT |                       0100000000 |                             0111
+                RSM_INT1 |                       1000000000 |                             1000
+                  iSTATE |                       0000000100 |                             1001
+*
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'rsm_reg' using encoding 'one-hot' in module 'RC'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                LSM_IDLE |                      00000100000 |                             0000
+                LSM_DES0 |                      00000010000 |                             0010
+                LSM_DES1 |                      00000000001 |                             0011
+                LSM_DES2 |                      00000000010 |                             0100
+                LSM_BUF1 |                      00000001000 |                             0110
+                LSM_DES3 |                      00000000100 |                             0101
+                LSM_BUF2 |                      10000000000 |                             0111
+                 LSM_NXT |                      00010000000 |                             1010
+               LSM_DES0P |                      00100000000 |                             0001
+                  iSTATE |                      00001000000 |                             1001
+*
+                LSM_STAT |                      01000000000 |                             1000
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'lsm_reg' using encoding 'one-hot' in module 'RLSM'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                PSM_STOP |                              001 |                               10
+                  iSTATE |                              100 |                               00
+*
+             PSM_SUSPEND |                              010 |                               01
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'tpsm_reg' using encoding 'one-hot' in module 'CSR'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                PSM_STOP |                              001 |                               10
+                  iSTATE |                              010 |                               00
+*
+             PSM_SUSPEND |                              100 |                               01
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'rpsm_reg' using encoding 'one-hot' in module 'CSR'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+*
+          CSR_RW_SM_IDLE |                             0001 |                             0001
+  CSR_RW_SM_GET_AXI_ADDR |                             0010 |                             0010
+  CSR_RW_SM_SEND_AXI_RSP |                             1000 |                             1000
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3898] No Re-encoding of one hot register 'csr_rw_sm_reg' in module 'axi2apb_bridge'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  s_idle |                              000 |                              000
+              s_pop_byte |                              001 |                              101
+            s_send_start |                              010 |                              001
+             s_send_byte |                              011 |                              010
+           s_send_parity |                              100 |                              011
+           s_send_guard1 |                              101 |                              110
+             s_send_stop |                              110 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'tstate_reg' using encoding 'sequential' in module 'uart_transmitter'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 sr_idle |                             0000 |                             0000
+            sr_rec_start |                             0001 |                             0001
+          sr_rec_prepare |                             0010 |                             0110
+              sr_rec_bit |                             0011 |                             0010
+              sr_end_bit |                             0100 |                             0111
+           sr_rec_parity |                             0101 |                             0011
+         sr_ca_lc_parity |                             0110 |                             1000
+         sr_check_parity |                             0111 |                             0101
+                sr_wait1 |                             1000 |                             1001
+             sr_rec_stop |                             1001 |                             0100
+                 sr_push |                             1010 |                             1010
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'rstate_reg' using encoding 'sequential' in module 'uart_receiver'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:36 ; elapsed = 00:00:45 . Memory (MB): peak = 1862.207 ; gain = 931.512
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   64 Bit       Adders := 18    
+	   3 Input   36 Bit       Adders := 1     
+	   2 Input   36 Bit       Adders := 2     
+	   3 Input   33 Bit       Adders := 2     
+	   2 Input   32 Bit       Adders := 15    
+	   3 Input   32 Bit       Adders := 8     
+	   2 Input   30 Bit       Adders := 1     
+	   2 Input   23 Bit       Adders := 1     
+	   2 Input   20 Bit       Adders := 4     
+	   3 Input   16 Bit       Adders := 1     
+	   2 Input   16 Bit       Adders := 1     
+	   2 Input   15 Bit       Adders := 1     
+	   3 Input   14 Bit       Adders := 8     
+	   2 Input   14 Bit       Adders := 10    
+	   2 Input   13 Bit       Adders := 2     
+	   2 Input   12 Bit       Adders := 1     
+	   2 Input   11 Bit       Adders := 2     
+	   2 Input   10 Bit       Adders := 5     
+	   2 Input    9 Bit       Adders := 11    
+	   3 Input    9 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 13    
+	   3 Input    8 Bit       Adders := 3     
+	   4 Input    7 Bit       Adders := 4     
+	   2 Input    7 Bit       Adders := 3     
+	   3 Input    6 Bit       Adders := 1     
+	   2 Input    6 Bit       Adders := 6     
+	   4 Input    6 Bit       Adders := 1     
+	   3 Input    5 Bit       Adders := 1     
+	   2 Input    5 Bit       Adders := 8     
+	   2 Input    4 Bit       Adders := 21    
+	   2 Input    3 Bit       Adders := 18    
+	   3 Input    2 Bit       Adders := 960   
+	   2 Input    2 Bit       Adders := 16    
+	   2 Input    1 Bit       Adders := 4     
++---XORs : 
+	   3 Input     36 Bit         XORs := 1     
+	   2 Input     36 Bit         XORs := 3     
+	   2 Input     32 Bit         XORs := 2     
+	   2 Input      9 Bit         XORs := 1     
+	   2 Input      4 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 167   
+	   3 Input      1 Bit         XORs := 13    
+	   4 Input      1 Bit         XORs := 20    
+	   5 Input      1 Bit         XORs := 3     
+	   6 Input      1 Bit         XORs := 6     
++---XORs : 
+	                9 Bit    Wide XORs := 1     
+	                8 Bit    Wide XORs := 2     
+	                7 Bit    Wide XORs := 2     
+	                6 Bit    Wide XORs := 2     
+	                5 Bit    Wide XORs := 2     
++---Registers : 
+	              301 Bit    Registers := 1     
+	              256 Bit    Registers := 3     
+	              253 Bit    Registers := 1     
+	              128 Bit    Registers := 1     
+	              102 Bit    Registers := 1     
+	               68 Bit    Registers := 1     
+	               64 Bit    Registers := 2     
+	               56 Bit    Registers := 1     
+	               48 Bit    Registers := 4     
+	               43 Bit    Registers := 3     
+	               38 Bit    Registers := 2     
+	               36 Bit    Registers := 2     
+	               34 Bit    Registers := 1     
+	               33 Bit    Registers := 3     
+	               32 Bit    Registers := 136   
+	               25 Bit    Registers := 1     
+	               24 Bit    Registers := 1     
+	               23 Bit    Registers := 4     
+	               20 Bit    Registers := 68    
+	               19 Bit    Registers := 32    
+	               16 Bit    Registers := 13    
+	               15 Bit    Registers := 2     
+	               14 Bit    Registers := 10    
+	               12 Bit    Registers := 1     
+	               11 Bit    Registers := 10    
+	               10 Bit    Registers := 34    
+	                9 Bit    Registers := 28    
+	                8 Bit    Registers := 49    
+	                7 Bit    Registers := 5     
+	                6 Bit    Registers := 39    
+	                5 Bit    Registers := 16    
+	                4 Bit    Registers := 57    
+	                3 Bit    Registers := 53    
+	                2 Bit    Registers := 156   
+	                1 Bit    Registers := 739   
++---RAMs : 
+	             1024 Bit	(64 X 16 bit)          RAMs := 1     
+	              128 Bit	(16 X 8 bit)          RAMs := 2     
++---Muxes : 
+	   2 Input  256 Bit        Muxes := 16    
+	   4 Input  128 Bit        Muxes := 1     
+	   2 Input  128 Bit        Muxes := 4     
+	   2 Input   64 Bit        Muxes := 6     
+	   4 Input   64 Bit        Muxes := 1     
+	   2 Input   56 Bit        Muxes := 4     
+	   8 Input   56 Bit        Muxes := 2     
+	   6 Input   48 Bit        Muxes := 1     
+	   2 Input   48 Bit        Muxes := 9     
+	  20 Input   48 Bit        Muxes := 1     
+	   7 Input   48 Bit        Muxes := 1     
+	   6 Input   44 Bit        Muxes := 1     
+	   2 Input   43 Bit        Muxes := 2     
+	   5 Input   38 Bit        Muxes := 3     
+	   2 Input   38 Bit        Muxes := 14    
+	   3 Input   38 Bit        Muxes := 1     
+	  20 Input   38 Bit        Muxes := 1     
+	   2 Input   36 Bit        Muxes := 2     
+	   6 Input   36 Bit        Muxes := 1     
+	   2 Input   34 Bit        Muxes := 1     
+	   2 Input   33 Bit        Muxes := 6     
+	   2 Input   32 Bit        Muxes := 274   
+	   4 Input   32 Bit        Muxes := 15    
+	   3 Input   32 Bit        Muxes := 6     
+	   5 Input   32 Bit        Muxes := 5     
+	  20 Input   32 Bit        Muxes := 1     
+	   8 Input   32 Bit        Muxes := 1     
+	  10 Input   32 Bit        Muxes := 1     
+	  32 Input   32 Bit        Muxes := 3     
+	   2 Input   28 Bit        Muxes := 4     
+	   2 Input   26 Bit        Muxes := 1     
+	   2 Input   25 Bit        Muxes := 1     
+	   2 Input   24 Bit        Muxes := 4     
+	   3 Input   23 Bit        Muxes := 1     
+	   4 Input   23 Bit        Muxes := 1     
+	   2 Input   21 Bit        Muxes := 2     
+	   2 Input   20 Bit        Muxes := 72    
+	   2 Input   19 Bit        Muxes := 5     
+	   2 Input   16 Bit        Muxes := 20    
+	   3 Input   16 Bit        Muxes := 1     
+	   5 Input   16 Bit        Muxes := 1     
+	  17 Input   16 Bit        Muxes := 1     
+	   2 Input   15 Bit        Muxes := 6     
+	   2 Input   14 Bit        Muxes := 26    
+	   2 Input   13 Bit        Muxes := 4     
+	   2 Input   12 Bit        Muxes := 6     
+	   2 Input   11 Bit        Muxes := 22    
+	  11 Input   11 Bit        Muxes := 2     
+	   3 Input   11 Bit        Muxes := 1     
+	   2 Input   10 Bit        Muxes := 73    
+	   8 Input   10 Bit        Muxes := 1     
+	  10 Input   10 Bit        Muxes := 1     
+	   3 Input   10 Bit        Muxes := 1     
+	  11 Input   10 Bit        Muxes := 10    
+	   9 Input    9 Bit        Muxes := 1     
+	   2 Input    9 Bit        Muxes := 43    
+	   5 Input    9 Bit        Muxes := 1     
+	  26 Input    9 Bit        Muxes := 1     
+	   4 Input    9 Bit        Muxes := 1     
+	   2 Input    8 Bit        Muxes := 124   
+	   5 Input    8 Bit        Muxes := 2     
+	   4 Input    8 Bit        Muxes := 6     
+	  11 Input    8 Bit        Muxes := 2     
+	   8 Input    8 Bit        Muxes := 2     
+	  13 Input    8 Bit        Muxes := 1     
+	  20 Input    8 Bit        Muxes := 2     
+	   2 Input    7 Bit        Muxes := 23    
+	   7 Input    7 Bit        Muxes := 2     
+	   3 Input    7 Bit        Muxes := 10    
+	   4 Input    7 Bit        Muxes := 1     
+	   7 Input    6 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 27    
+	  15 Input    6 Bit        Muxes := 1     
+	   3 Input    6 Bit        Muxes := 3     
+	   4 Input    6 Bit        Muxes := 11    
+	   6 Input    6 Bit        Muxes := 1     
+	  29 Input    6 Bit        Muxes := 1     
+	   5 Input    6 Bit        Muxes := 1     
+	   2 Input    5 Bit        Muxes := 45    
+	   8 Input    5 Bit        Muxes := 2     
+	   9 Input    5 Bit        Muxes := 3     
+	   6 Input    5 Bit        Muxes := 1     
+	   7 Input    5 Bit        Muxes := 1     
+	   5 Input    5 Bit        Muxes := 2     
+	   3 Input    5 Bit        Muxes := 2     
+	   4 Input    5 Bit        Muxes := 11    
+	  20 Input    5 Bit        Muxes := 1     
+	  39 Input    5 Bit        Muxes := 1     
+	   9 Input    4 Bit        Muxes := 4     
+	   2 Input    4 Bit        Muxes := 61    
+	   4 Input    4 Bit        Muxes := 13    
+	   5 Input    4 Bit        Muxes := 2     
+	  11 Input    4 Bit        Muxes := 5     
+	   6 Input    4 Bit        Muxes := 3     
+	   7 Input    4 Bit        Muxes := 1     
+	   3 Input    4 Bit        Muxes := 9     
+	  10 Input    4 Bit        Muxes := 2     
+	   5 Input    3 Bit        Muxes := 15    
+	   2 Input    3 Bit        Muxes := 115   
+	   4 Input    3 Bit        Muxes := 12    
+	   3 Input    3 Bit        Muxes := 14    
+	   7 Input    3 Bit        Muxes := 4     
+	  11 Input    3 Bit        Muxes := 1     
+	  20 Input    3 Bit        Muxes := 4     
+	   8 Input    3 Bit        Muxes := 1     
+	   6 Input    3 Bit        Muxes := 2     
+	   3 Input    2 Bit        Muxes := 18    
+	   2 Input    2 Bit        Muxes := 194   
+	   4 Input    2 Bit        Muxes := 6     
+	   5 Input    2 Bit        Muxes := 2     
+	  20 Input    2 Bit        Muxes := 1     
+	   9 Input    2 Bit        Muxes := 1     
+	  29 Input    2 Bit        Muxes := 2     
+	   2 Input    1 Bit        Muxes := 978   
+	   4 Input    1 Bit        Muxes := 69    
+	   5 Input    1 Bit        Muxes := 37    
+	   6 Input    1 Bit        Muxes := 33    
+	   3 Input    1 Bit        Muxes := 16    
+	   7 Input    1 Bit        Muxes := 17    
+	  11 Input    1 Bit        Muxes := 11    
+	  12 Input    1 Bit        Muxes := 3     
+	  20 Input    1 Bit        Muxes := 27    
+	   8 Input    1 Bit        Muxes := 9     
+	  14 Input    1 Bit        Muxes := 1     
+	  32 Input    1 Bit        Muxes := 11    
+	  29 Input    1 Bit        Muxes := 4     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 740 (col length:100)
+BRAMs: 730 (col length: RAMB18 100 RAMB36 50)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[16][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][29]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][28]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][27]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][26]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][25]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][24]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][23]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][22]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][21]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][20]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][19]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][18]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][17]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][16]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][15]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][14]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][13]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][12]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][11]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][10]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[15][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[1][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[1][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[2][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[3][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[4][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[5][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][11]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][10]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[6][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][13]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][12]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][11]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][10]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][3]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][2]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][1]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[7][0]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][15]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][14]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][13]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][12]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][11]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][10]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][9]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][8]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][7]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][6]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][5]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][4]) is unused and will be removed from module mul.
+WARNING: [Synth 8-3332] Sequential element (SecStageBoothRes_reg[8][3]) is unused and will be removed from module mul.
+INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:55 ; elapsed = 00:02:58 . Memory (MB): peak = 2148.398 ; gain = 1217.703
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Preliminary Mapping Report (see note below)
++-----------------+--------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name      | RTL Object                     | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++-----------------+--------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|i_1/ETHERNET_TOP | u_mac_top_0/u_addr_ram/mem_reg | 64 x 16(NO_CHANGE)     | W |   | 64 x 16(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      | 
++-----------------+--------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping Report (see note below)
++----------------------+------------------------------------------------------+-----------+----------------------+--------------+
+|Module Name           | RTL Object                                           | Inference | Size (Depth x Width) | Primitives   | 
++----------------------+------------------------------------------------------+-----------+----------------------+--------------+
+|cpu_midi_2/u_id_stage | u_regfile/rf_reg                                     | Implied   | 32 x 32              | RAM32M x 12  | 
+|soc_top               | APB_DEV/uart0/regs/receiver/fifo_rx/rfifo/ram_reg    | Implied   | 16 x 8               | RAM32M x 2   | 
+|soc_top               | APB_DEV/uart0/regs/transmitter/fifo_tx/tfifo/ram_reg | Implied   | 16 x 8               | RAM32M x 2   | 
+|i_1/SPI               | simple_spi/wfifo/mem_reg                             | Implied   | 4 x 8                | RAM32M x 2   | 
+|i_1/SPI               | simple_spi/rfifo/mem_reg                             | Implied   | 4 x 8                | RAM32M x 2   | 
++----------------------+------------------------------------------------------+-----------+----------------------+--------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:59 ; elapsed = 00:03:06 . Memory (MB): peak = 2148.398 ; gain = 1217.703
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:02:20 ; elapsed = 00:03:37 . Memory (MB): peak = 2148.398 ; gain = 1217.703
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping Report
++-----------------+--------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name      | RTL Object                     | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++-----------------+--------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|i_1/ETHERNET_TOP | u_mac_top_0/u_addr_ram/mem_reg | 64 x 16(NO_CHANGE)     | W |   | 64 x 16(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      | 
++-----------------+--------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+
+Distributed RAM: Final Mapping Report
++----------------------+------------------------------------------------------+-----------+----------------------+--------------+
+|Module Name           | RTL Object                                           | Inference | Size (Depth x Width) | Primitives   | 
++----------------------+------------------------------------------------------+-----------+----------------------+--------------+
+|soc_top               | APB_DEV/uart0/regs/receiver/fifo_rx/rfifo/ram_reg    | Implied   | 16 x 8               | RAM32M x 2   | 
+|soc_top               | APB_DEV/uart0/regs/transmitter/fifo_tx/tfifo/ram_reg | Implied   | 16 x 8               | RAM32M x 2   | 
+|i_1/SPI               | simple_spi/wfifo/mem_reg                             | Implied   | 4 x 8                | RAM32M x 2   | 
+|i_1/SPI               | simple_spi/rfifo/mem_reg                             | Implied   | 4 x 8                | RAM32M x 2   | 
+|cpu_midi_2/u_id_stage | u_regfile/rf_reg                                     | Implied   | 32 x 32              | RAM32M x 12  | 
++----------------------+------------------------------------------------------+-----------+----------------------+--------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:02:30 ; elapsed = 00:03:55 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:02:34 ; elapsed = 00:04:01 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:02:34 ; elapsed = 00:04:02 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:02:36 ; elapsed = 00:04:05 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:02:36 ; elapsed = 00:04:05 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:02:37 ; elapsed = 00:04:06 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:02:37 ; elapsed = 00:04:06 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+----------------------+----------+
+|      |BlackBox name         |Instances |
++------+----------------------+----------+
+|1     |clk_wiz_0             |         1|
+|2     |clk_pll_33            |         1|
+|3     |axi_clock_converter_0 |         1|
+|4     |axi_2x1_mux           |         1|
+|5     |axi_interconnect_0    |         1|
+|6     |mig_axi_32            |         1|
+|7     |dpram_512x32          |         2|
+|8     |data_bank_sram        |        16|
+|9     |tagv_sram             |         4|
++------+----------------------+----------+
+
+Report Cell Usage: 
++------+--------------------+------+
+|      |Cell                |Count |
++------+--------------------+------+
+|1     |axi_2x1_mux         |     1|
+|2     |axi_clock_converter |     1|
+|3     |axi_interconnect    |     1|
+|4     |clk_pll             |     1|
+|5     |clk_wiz             |     1|
+|6     |data_bank_sram      |    16|
+|22    |dpram_512x32        |     2|
+|24    |mig_axi             |     1|
+|25    |tagv_sram           |     4|
+|29    |BUFG                |     4|
+|30    |CARRY4              |   977|
+|31    |LUT1                |   354|
+|32    |LUT2                |  1390|
+|33    |LUT3                |  3103|
+|34    |LUT4                |  2486|
+|35    |LUT5                |  5079|
+|36    |LUT6                |  9215|
+|37    |MUXF7               |   600|
+|38    |MUXF8               |   161|
+|39    |RAM32M              |    14|
+|40    |RAM32X1D            |    12|
+|41    |RAMB18E1            |     1|
+|42    |FDCE                |   230|
+|43    |FDPE                |     2|
+|44    |FDRE                | 10347|
+|45    |FDSE                |   702|
+|46    |LD                  |   848|
+|47    |LDCP                |     1|
+|48    |IBUF                |    28|
+|49    |IOBUF               |    13|
+|50    |OBUF                |    55|
+|51    |OBUFT               |     1|
++------+--------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:02:37 ; elapsed = 00:04:06 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 268 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:02:17 ; elapsed = 00:03:59 . Memory (MB): peak = 2210.059 ; gain = 1143.223
+Synthesis Optimization Complete : Time (s): cpu = 00:02:37 ; elapsed = 00:04:07 . Memory (MB): peak = 2210.059 ; gain = 1279.363
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.404 . Memory (MB): peak = 2210.059 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 2627 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.008 . Memory (MB): peak = 2210.059 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 888 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 13 instances
+  LD => LDCE: 848 instances
+  LDCP => LDCP (GND, LDCE, LUT3(x2), VCC): 1 instance 
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 14 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 12 instances
+
+Synth Design complete | Checksum: c96af12f
+INFO: [Common 17-83] Releasing license: Synthesis
+257 Infos, 417 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:02:44 ; elapsed = 00:04:17 . Memory (MB): peak = 2210.059 ; gain = 1715.605
+INFO: [Common 17-1381] The checkpoint 'E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/soc_top.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file soc_top_utilization_synth.rpt -pb soc_top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Sun May  5 21:14:42 2024...

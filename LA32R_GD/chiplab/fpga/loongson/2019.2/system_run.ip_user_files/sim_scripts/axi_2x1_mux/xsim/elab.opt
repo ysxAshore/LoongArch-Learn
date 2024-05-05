@@ -1,0 +1,1 @@
+--incr --debug typical --relax --mt 2  -L fifo_generator_v13_2_8 -L axi_interconnect_v1_7_21 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot axi_2x1_mux xil_defaultlib.axi_2x1_mux xil_defaultlib.glbl -log elaborate.log

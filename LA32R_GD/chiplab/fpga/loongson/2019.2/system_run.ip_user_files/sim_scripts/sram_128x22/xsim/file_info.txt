@@ -1,0 +1,2 @@
+sram_128x22.v,verilog,xil_defaultlib,../../../../../../../IP/xilinx_ip/2019.2/sram_128x22/sim/sram_128x22.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v

@@ -1,2 +1,2 @@
 #chiplab sims configure log
-#Configured with: ./configure.sh --run linux --output-uart-info --disable-read-miss
+#Configured with: ./configure.sh --run coremark
