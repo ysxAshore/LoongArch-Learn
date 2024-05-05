@@ -21,7 +21,7 @@ loongarch32r-linux-gnusf-objcopy -O binary -j .text -j __ex_table -j .notes -j .
 
 mkdir -p obj 
 mv test.s      ./obj/
-mv start.s     ./obj/
+cp start.s     ./obj/
 mv start.bin   ./obj/
 cp init_8f.txt ./obj/
 cp init_5f.txt ./obj/

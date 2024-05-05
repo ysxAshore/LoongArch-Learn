@@ -53,8 +53,6 @@ module alu
   wire [31:0] sll_result;
   wire [63:0] sr64_result;
   wire [31:0] sr_result;
-  wire [31:0] andn_result;
-  wire [31:0] orn_result;
 
 
   // 32-bit adder 作加减法操作

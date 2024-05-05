@@ -51,6 +51,8 @@ module id_stage (
   reg [`IF_TO_ID_WD-1:0] id_data;  //id_reg的数据
   wire br_taken;
 
+  reg [31:0] br_target_buf;
+
   assign id_allowin = ~id_valid | id_ready_go & exe_allowin;
   assign id_to_exe_valid = id_valid & id_ready_go;
 
@@ -60,8 +62,10 @@ module id_stage (
   reg  br_cancel_r;
   reg  br_cancel_r_valid;
   assign br_cancel = br_taken & id_ready_go & exe_allowin; //还需要考虑当前指令是否能进入exe级
-  assign br_taken_cancel = br_cancel_r_valid ? br_cancel_r : br_cancel;
-  
+  //加一个pc比对，确保不取消正确路径上的pc
+  assign br_taken_cancel = br_cancel_r_valid ? br_cancel_r & if_to_id_bus[67:36] != br_target_buf : br_cancel & if_to_id_bus[67:36] != br_target_buf;
+  // assign br_taken_cancel = br_cancel_r_valid ? br_cancel_r : br_cancel;
+
   always @(posedge clk) begin
     if (~resetn | mem_to_id_flush_excp_ertn) begin
       br_cancel_r_valid <= 1'b0;
@@ -71,6 +75,12 @@ module id_stage (
     end else if (br_cancel_r_valid & if_to_id_valid) begin
       br_cancel_r_valid <= 1'b0;
     end 
+  end
+
+  always @(*) begin
+    if (br_taken) begin
+      br_target_buf <= br_target;
+    end
   end
 
   always @(posedge clk) begin
@@ -102,7 +112,10 @@ module id_stage (
   wire [4:0] exe_regWAddr;
   wire [31:0] exe_regWData;
   wire exe_exist_csrR;
-  assign {exe_valid, exe_res_from_mem, exe_regW, exe_regWAddr, exe_regWData, exe_exist_csrR} = exe_to_id_bus;
+  wire exe_div;
+  wire exe_complete_delay;
+  wire exe_div_finish_ready_i;
+  assign {exe_valid, exe_res_from_mem, exe_regW, exe_regWAddr, exe_regWData, exe_exist_csrR,exe_div,exe_complete_delay,exe_div_finish_ready_i} = exe_to_id_bus;
 
   //拆解mem组合逻辑送来的数据
   wire mem_ready_go;
@@ -412,8 +425,8 @@ module id_stage (
                      inst_jirl             | 
                      inst_bl               |
                      inst_b
-  ) & id_valid;
-  assign br_stall = id_valid & load_delay & br_taken;
+  ) & id_valid & br_target != id_pc + 32'h4;
+  // assign br_stall = id_valid & load_delay & div_delay & br_taken; //不需要了，使用br_taken & id_ready_go替代
   assign br_target = (inst_beq | inst_bne | inst_bge | inst_blt | inst_bltu | inst_bgeu | inst_bl | inst_b) ? (id_pc + br_offs) : (forwardDataA + jirl_offs);
 
   //乘除相关控制信号
@@ -488,7 +501,16 @@ module id_stage (
   assign id_excp = SYS_EXCP | BRK_EXCP | id_ADEF_EXCP | id_tlbr | id_pif | id_ppi | INE_EXCP | IPE_EXCP | has_int;
   assign id_ertn = inst_ertn;
   assign excp_num = {
-    id_ADEF_EXCP, id_tlbr, id_pif, id_ppi, SYS_EXCP, BRK_EXCP, INE_EXCP, IPE_EXCP, 6'b0, has_int
+    ~has_int & id_ADEF_EXCP, 
+    ~has_int & ~id_ADEF_EXCP & id_tlbr, 
+    ~has_int & ~id_ADEF_EXCP & id_pif, 
+    ~has_int & ~id_ADEF_EXCP & id_ppi, 
+    ~has_int & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & SYS_EXCP, 
+    ~has_int & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & BRK_EXCP, 
+    ~has_int & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & INE_EXCP, 
+    ~has_int & ~id_ADEF_EXCP & ~id_tlbr & ~id_pif & ~id_ppi & IPE_EXCP, 
+    6'b0, 
+    has_int
   };
 
   //rdcnt指令标识
@@ -500,7 +522,10 @@ module id_stage (
   //mem等待data_ok时涉及到的阻塞 mem阶段当memreadygo不满足时写只能是load写
   wire mem_data_ok_stall = ~mem_ready_go & id_valid & ((need_rj & regAddrA != 5'b0 & (exe_regWAddr == regAddrA | mem_regWAddr == regAddrA | wb_regWAddr == exe_regWAddr)) |
                                   (need_rkd & regAddrB != 5'b0 & (exe_regWAddr == regAddrB | mem_regWAddr == regAddrB | wb_regWAddr == regAddrB))) & (mem_pc != wb_pc);
-  assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall;
+  //id级等待exe级除法计算完成
+  wire div_delay = id_valid & ((need_rj & regAddrA != 5'b0 & exe_valid & exe_regWAddr == regAddrA) | 
+                               (need_rkd & regAddrB != 5'b0 & exe_valid & exe_regWAddr == regAddrB)) & exe_div & ~(exe_complete_delay & exe_div_finish_ready_i);
+  assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall & ~div_delay;
 
   //TLB INS
   wire [2:0]tlb_ins_rec = {3{inst_tlbsrch}} & 3'b001 |
@@ -510,7 +535,7 @@ module id_stage (
                           {3{inst_invtlb}}  & 3'b101 ;
 
   //封包id组合逻辑传递给if组合逻辑preIF的数据 当出现br_stall时即可认为是不跳转
-  assign id_to_if_bus = {br_stall, br_taken & id_ready_go, br_target};
+  assign id_to_if_bus = {1'b0, br_taken & id_ready_go, br_target};
 
   //difftest
   // difftest

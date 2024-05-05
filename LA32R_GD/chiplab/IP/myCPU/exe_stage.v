@@ -44,7 +44,8 @@ module exe_stage (
     output        icacop_en,
     output        dcacop_en,
     output [ 1:0] cacop_mode,
-    input         cacop_ok
+    input         icacop_ok,//要icache和dcache一一对应
+    input         dcacop_ok
 );
   //exe_reg
   reg exe_valid;
@@ -207,30 +208,39 @@ module exe_stage (
   assign ALE_EXCP = memINS_rec == 2'b11 ? exe_aluResult[1:0] != 2'b0 :
                     memINS_rec == 2'b10 ? exe_aluResult[0] != 1'b0 : 1'b0;
   //需要在exe_valid有效的前递下检查
-  assign TLBR =  (exe_memW | res_from_mem | cacop_load) & crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & ~s1_found;
-  assign PIL =   (res_from_mem | cacop_load) & crmd_da == 1'b0 &  crmd_pg == 1'b1 & dmw_select == 2'b0 & s1_found & ~s1_v;
-  assign PIS =   (exe_memW) & crmd_da == 1'b0 &  crmd_pg == 1'b1 & dmw_select == 2'b0 & s1_found & ~s1_v;
-  assign PPI =  (exe_memW | res_from_mem | cacop_load) & crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0  & s1_found & s1_v & cur_plv > s1_plv;
-  assign PME = (exe_memW) & crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & s1_found & s1_v & cur_plv <= s1_plv & ~s1_d;
+  assign TLBR = exe_valid & (exe_memW | res_from_mem | cacop_load) & crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & ~s1_found;
+  assign PIL = exe_valid & (res_from_mem | cacop_load) & crmd_da == 1'b0 &  crmd_pg == 1'b1 & dmw_select == 2'b0 & s1_found & ~s1_v;
+  assign PIS = exe_valid & (exe_memW) & crmd_da == 1'b0 &  crmd_pg == 1'b1 & dmw_select == 2'b0 & s1_found & ~s1_v;
+  assign PPI = exe_valid & (exe_memW | res_from_mem | cacop_load) & crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0  & s1_found & s1_v & cur_plv > s1_plv;
+  assign PME = exe_valid & exe_memW & crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & s1_found & s1_v & cur_plv <= s1_plv & ~s1_d;
 
   assign exe_regW = exe_regW_temp & ~ALE_EXCP & ~TLBR & ~PIL & ~PIS & ~PPI & ~PME & ~mem_to_exe_flush_excp_ertn;
   assign exe_excp = exe_excp_temp | ALE_EXCP | TLBR | PIL | PIS | PPI | PME;
-  assign excp_num = {excp_num_temp[14:7], ALE_EXCP, TLBR, PIL, PIS, PPI, PME, excp_num_temp[0]};
+  assign excp_num = {excp_num_temp[14:7], 
+                     ~excp_num_temp[0] & ~|excp_num_temp[14:7] & ALE_EXCP, 
+                     ~excp_num_temp[0] & ~|excp_num_temp[14:7] & ~ALE_EXCP & TLBR, 
+                     ~excp_num_temp[0] & ~|excp_num_temp[14:7] & ~ALE_EXCP & PIL, 
+                     ~excp_num_temp[0] & ~|excp_num_temp[14:7] & ~ALE_EXCP & PIS, 
+                     ~excp_num_temp[0] & ~|excp_num_temp[14:7] & ~ALE_EXCP & PPI, 
+                     ~excp_num_temp[0] & ~|excp_num_temp[14:7] & ~ALE_EXCP & PME, 
+                     excp_num_temp[0]};
 
   //这里只做了code=0和code=1，但是指令可能会有code是2的时候，直接忽略
-  assign exe_ready_go = ~(div & ~(complete_delay & div_finish_ready_i)) & ~((exe_memW | res_from_mem) & ~(data_sram_req & data_sram_addr_ok)) & ~((icacop_en | dcacop_en)  & ~cacop_ok) | mem_to_exe_flush_excp_ertn | exe_excp;//如果当前exe阶段组合逻辑正在计算div且complete_delay未高有效，那么阻塞exe
+  assign exe_ready_go = ~(div & ~(complete_delay & div_finish_ready_i)) & ~((exe_memW | res_from_mem) & ~(data_sram_req & data_sram_addr_ok)) & ~(icacop_en & ~icacop_ok) & ~(dcacop_en & ~dcacop_ok) | mem_to_exe_flush_excp_ertn | exe_excp;//如果当前exe阶段组合逻辑正在计算div且complete_delay未高有效，那么阻塞exe
 
   //TLB SRCH INVTLB cacop模式2当作普通的load，所以也需要地址转换，只不过不用真的访存
   wire invtlb_valid = tlb_ins_rec == 3'b101 & exe_valid & ~mem_to_exe_flush_excp_ertn;
   wire [18:0] s1_vppn = {19{tlb_ins_rec == 3'b001}} & vppn |
-                        {19{tlb_ins_rec == 3'b101}} & DataB[31:13]|
+                        {19{tlb_ins_rec == 3'b101}} & DataB[31:13] |
                         {19{exe_valid & (exe_memW | res_from_mem | cacop_load)}} & exe_aluResult[31:13];  //这里先不考虑访存，只考虑tlbsrch、invtlb的vppn、asid、也需要考虑12bit值，不然读不出来
-  wire [9:0] s1_asid = {10{tlb_ins_rec == 3'b001}} & asid | {10{tlb_ins_rec == 3'b101}} & DataA[9:0] | {10{exe_valid & (exe_memW | res_from_mem | cacop_load)}} & asid;
+  wire [9:0] s1_asid = {10{tlb_ins_rec == 3'b001}} & asid | 
+                       {10{tlb_ins_rec == 3'b101}} & DataA[9:0] | 
+                       {10{exe_valid & (exe_memW | res_from_mem | cacop_load)}} & asid;
   wire s1_va_bit12 = exe_aluResult[12];
 
   //tlb_addr
   wire [31:0] tlb_addr;
-  assign tlb_addr = s1_ps == 6'h21 ? {s1_ppn[19:9],exe_aluResult[20:0]} : {s1_ppn[19:0],exe_aluResult[11:0]};
+  assign tlb_addr = s1_ps == 6'd21 ? {s1_ppn[19:9],exe_aluResult[20:0]} : {s1_ppn[19:0],exe_aluResult[11:0]};
 
   //dmw_addr
   wire [31:0] dmw_addr;
@@ -278,8 +288,8 @@ module exe_stage (
                            {32{aluMD_resSelect == 3'b011}} & s                   |
                            {32{aluMD_resSelect == 3'b100}} & r;
   //cacop
-  assign icacop_en = inst_cacop & code[2:0] == 3'h0 & exe_valid;
-  assign dcacop_en = inst_cacop & code[2:0] == 3'h1 & exe_valid;
+  assign icacop_en = inst_cacop & code[2:0] == 3'h0 & exe_valid & ~mem_to_exe_flush_excp_ertn;
+  assign dcacop_en = inst_cacop & code[2:0] == 3'h1 & exe_valid & ~mem_to_exe_flush_excp_ertn;
   assign cacop_mode = code[4:3];
   assign cacop_load = (code[4:3] == 2'b10) & (icacop_en | dcacop_en); //被视为1个load操作
 
@@ -322,8 +332,9 @@ module exe_stage (
 
   //封包exe传递给id的RAW相关判断
   wire exist_csrR = csr_instRec != 2'b0 | rdcnt_REC != 2'b0;
+  //inst_sc指令的写数据是llbit_out
   assign exe_to_id_bus = {
-    exe_valid, res_from_mem, exe_regW, exe_valid ? exe_regWAddr : 5'b0, exe_finalResult, exist_csrR
+    exe_valid, res_from_mem, exe_regW, exe_valid ? exe_regWAddr : 5'b0, inst_sc ? llbit_out : exe_finalResult, exist_csrR,div,complete_delay,div_finish_ready_i
   };
 
   //封包exe传递给tlb的数据

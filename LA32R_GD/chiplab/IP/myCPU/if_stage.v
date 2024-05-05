@@ -41,7 +41,8 @@ module if_stage (
     input         inst_sram_addr_ok,
     input         inst_sram_data_ok,
 
-    output inst_mat
+    output inst_mat,
+    output icache_tlb_excp_cancel_req
 );
   reg if_valid;  //表示if_reg内容是否有效
   wire if_ready_go;  //表示if组合逻辑内容是否处理完成，可以向id_reg传递
@@ -66,7 +67,8 @@ module if_stage (
   wire refetch;
   wire idle;
   wire [31:0] refetch_pc;
-  assign {refetch_pc,idle,tlb_excp,refetch,excp, ertn} = mem_to_if_bus_r_valid ? mem_to_if_bus_r : mem_to_if_bus;
+  wire [5:0] ecode;
+  assign {ecode,refetch_pc,idle,tlb_excp,refetch,excp, ertn} = mem_to_if_bus_r_valid ? mem_to_if_bus_r : mem_to_if_bus;
 
   //拆解CSR传递过来的数据
   wire [31:0] era;
@@ -129,6 +131,11 @@ module if_stage (
   assign seq_pc = if_pc + 32'h4;
   assign nextpc = tlb_excp ? tlbenrty_out : excp ? eentry_out : ertn ? era : (refetch | idle) ? refetch_pc : br_taken & (if_valid | bd_done) ? br_target : seq_pc;
   
+  assign icache_tlb_excp_cancel_req = if_tlbr | if_ppi | if_pif;
+
+  //has_acqDataPC
+  reg has_acqDataPC;
+
   // if_reg
   assign if_ready_go    = (inst_sram_data_ok | inst_sram_rdata_r_valid) & ~excp_reg | if_ADEF_EXCP | if_tlbr | if_pif | if_ppi;
   assign if_allowin = ~if_valid | if_ready_go & id_allowin | if_reflush_r;
@@ -215,9 +222,9 @@ module if_stage (
     end
   end
 
-  //idle lock
+  //idle lock idle时的那个pc也不能发出请求
   reg          idle_lock;
-  always @(posedge clk) begin
+  always @(*) begin
       if (~resetn) begin
           idle_lock <= 1'b0;
       end
@@ -245,7 +252,7 @@ module if_stage (
 
   //TLB映射地址模式
   wire [31:0] tlb_pc;
-  assign tlb_pc = s0_ps == 6'h21 ? {s0_ppn[19:9], nextpc[20:0]} : {s0_ppn[19:0], nextpc[11:0]};
+  assign tlb_pc = s0_ps == 6'd21 ? {s0_ppn[19:9], nextpc[20:0]} : {s0_ppn[19:0], nextpc[11:0]};
 
   //异常赋值 
   assign ADEF_EXCP = nextpc[1:0] != 2'b0;
@@ -253,8 +260,19 @@ module if_stage (
   assign PIF = crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & s0_found & ~s0_v;
   assign PPI = crmd_da == 1'b0 & crmd_pg == 1'b1 & dmw_select == 2'b0 & s0_found & s0_v & cur_plv > s0_plv;
 
+  reg tlbr_ertn_stall;
+  always @(posedge clk) begin
+    if (~resetn) begin
+      tlbr_ertn_stall <= 1'b0;
+    end else if (excp & ecode == 6'h3f) begin
+      tlbr_ertn_stall <= 1'b1;
+    end else if (ertn) begin
+      tlbr_ertn_stall <= 1'b0;
+    end
+  end
+
   //赋值instRAM接口
-  assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~TLBR & ~PIF & ~PPI & ~br_stall & ~idle_lock;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
+  assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~TLBR & ~PIF & ~PPI & ~br_stall & ~idle_lock & (ertn ? ~tlbr_ertn_stall : 1'b1);  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
   assign inst_sram_wr = 1'b0;
   assign inst_sram_wstrb = 4'h0;
   assign inst_sram_size = 2'b10;

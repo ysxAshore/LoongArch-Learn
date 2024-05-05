@@ -1,2 +1,2 @@
 #chiplab sims configure log
-#Configured with: ./configure.sh --run linux --disable-trace-comp --output-uart-info --disable-read-miss --disable-simu-trace
+#Configured with: ./configure.sh --run linux --output-uart-info --disable-read-miss

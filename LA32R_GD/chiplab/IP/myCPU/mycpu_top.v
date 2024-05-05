@@ -120,6 +120,7 @@ module core_top #(
 
   wire inst_mat;
   wire has_int;
+  wire icache_tlb_excp_cancel_req;
 
   if_stage u_if_stage (
       .clk              (aclk),
@@ -142,7 +143,8 @@ module core_top #(
       .inst_sram_addr_ok(inst_sram_addr_ok),
       .inst_sram_data_ok(inst_sram_data_ok),
       .inst_mat         (inst_mat),
-      .has_int          (has_int)
+      .has_int          (has_int),
+      .icache_tlb_excp_cancel_req(icache_tlb_excp_cancel_req)
   );
 
   wire mem_to_id_flush_excp_ertn;
@@ -180,6 +182,7 @@ module core_top #(
   wire [1:0]cacop_mode;
   wire icacop_ok;
   wire dcacop_ok;
+  wire dcache_tlb_excp_cancel_req;
 
   exe_stage u_exe_stage(
     .clk                        (aclk                        ),
@@ -206,7 +209,8 @@ module core_top #(
     .icacop_en                  (icacop_en                  ),
     .dcacop_en                  (dcacop_en                  ),
     .cacop_mode                 (cacop_mode                 ),
-    .cacop_ok                   (icacop_ok | dcacop_ok      )
+    .icacop_ok                  (icacop_ok      ),
+    .dcacop_ok                  (dcacop_ok)
   );
   
   wire excp_flush;
@@ -249,7 +253,8 @@ module core_top #(
       .ecode              (ecode),
       .excp_flush                (excp_flush),
       .ertn_flush                (ertn_flush),
-      .rand_index         (rand_index)
+      .rand_index         (rand_index),
+      .dcache_tlb_excp_cancel_req(dcache_tlb_excp_cancel_req)
   );
 
   wb_stage u_wb_stage (
@@ -703,7 +708,8 @@ module core_top #(
     .wr_addr   (   ),
     .wr_wstrb  (   ),
     .wr_data   (   ),
-    .wr_rdy    (1'b1)
+    .wr_rdy    (1'b1),
+    .icache_tlb_excp_cancel_req(icache_tlb_excp_cancel_req)
   );
 
   wire data_rd_req;
@@ -750,7 +756,8 @@ module core_top #(
     .wr_addr   (data_wr_addr   ),
     .wr_wstrb  (data_wr_wstrb  ),
     .wr_data   (data_wr_data   ),
-    .wr_rdy    (data_wr_rdy    )
+    .wr_rdy    (data_wr_rdy    ),
+    .dcache_tlb_excp_cancel_req(dcache_tlb_excp_cancel_req)
   );
   
 

@@ -64,7 +64,8 @@ module mem_stage (
     output wire [$clog2(`TLB_NUM)-1:0]rand_index,
     output wire [5:0] ecode ,
     output wire excp_flush,
-    output wire ertn_flush  
+    output wire ertn_flush,
+    output dcache_tlb_excp_cancel_req
 
 );
 
@@ -74,7 +75,7 @@ module mem_stage (
   reg [`EXE_TO_MEM_WD-1:0] mem_data;
   wire flush_excp_ertn;
 
-  assign mem_ready_go = ~(mem_valid & (mem_memW | res_from_mem) & ~data_sram_data_ok);
+  assign mem_ready_go = ~(mem_valid & (mem_memW | res_from_mem) & ~data_sram_data_ok) | mem_excp;
   assign mem_allowin = ~mem_valid | mem_ready_go & wb_allowin;
   assign mem_to_wb_valid = mem_ready_go & mem_valid;
   always @(posedge clk) begin
@@ -199,9 +200,9 @@ module mem_stage (
   assign csrWAdd = csr_num;
   assign csrWData = csr_instRec == 2'b10 ? DataB : 
                     csr_instRec == 2'b11 ? DataB & DataA | ~DataA & csrRData : 32'b0;
-  assign excpAboutAddr = excp_num[14] | excp_num[13] | excp_num[12] | excp_num[11] | excp_num[6] | excp_num[5] | excp_num[4] | excp_num[3] | excp_num[2] | excp_num[1];
+  assign excpAboutAddr = (excp_num[14] | excp_num[13] | excp_num[12] | excp_num[11] | excp_num[6] | excp_num[5] | excp_num[4] | excp_num[3] | excp_num[2] | excp_num[1]) & mem_valid;
   assign tlbr_wen = (excp_num[13] | excp_num[5]) & mem_valid;
-  assign tlb_addr_excp = excp_num[13] | excp_num[12] | excp_num[11] | excp_num[5] | excp_num[4] | excp_num[3] | excp_num[2] | excp_num[1];
+  assign tlb_addr_excp = (excp_num[13] | excp_num[12] | excp_num[11] | excp_num[5] | excp_num[4] | excp_num[3] | excp_num[2] | excp_num[1] )  & mem_valid;
   assign badv_addr = excp_num[14] | excp_num[13] | excp_num[12] | excp_num[11] ? mem_pc : mem_aluResult;
   assign subcode = 9'b0;
   assign code = excp_num[14] ? 6'h08 :  //ADEF
@@ -222,6 +223,8 @@ module mem_stage (
   assign era = mem_pc;
   assign llbitWen = (inst_ll | inst_sc) & mem_valid & ~mem_excp;
   assign llbitWData = inst_ll & 1'b1 | inst_sc & 1'b0;
+
+  assign dcache_tlb_excp_cancel_req = excp_num[5] | excp_num[4] | excp_num[3] | excp_num[2] | excp_num[1];
 
   //写reg数据
   wire [31:0] mem_regWData = rdcnt_REC == 2'b01 ? tid_out :
@@ -274,6 +277,7 @@ module mem_stage (
   assign mem_to_id_flush_excp_ertn = flush_excp_ertn;
   assign mem_to_exe_flush_excp_ertn = flush_excp_ertn;
   assign mem_to_if_bus = {
+    ecode,
     refetch_pc,
     mem_valid & inst_idle,
     tlbr_wen,

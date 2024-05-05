@@ -22,6 +22,7 @@ module icache (
     input  [ 7:0]       icacop_index ,
     input  [ 3:0]       icacop_offset,
     output              icacop_ok    ,
+    input icache_tlb_excp_cancel_req,
  
     //与AXI交互
     output wire rd_req,  //发送给AXI总线转接桥的读请求信号
@@ -256,6 +257,8 @@ module icache (
             requestBuffer_offset <= offset;
             requestBuffer_wstrb  <= wstrb;
             requestBuffer_wdata  <= wdata;
+          end else if (icache_tlb_excp_cancel_req) begin
+            cache_state <= MAIN_IDLE;
           end else if (~cache_hit) begin
             cache_state <= MAIN_MISS;
           end else begin
@@ -344,7 +347,7 @@ module icache (
   //icache不存在写，因此idle2lookup始终为1'b1
   assign idle2lookup_able = 1'b1;
 
-  assign icacop_ok = (cache_state == MAIN_IDLE) & icacop_en;//已经在idle时响应了icacop_en，流水线可以继续向后传递?
+  assign icacop_ok = (cache_state == MAIN_IDLE);//已经在idle时响应了icacop_en，流水线可以继续向后传递?
 
   /* ---------------------------------------------MAIN LOOKUP信号生成-------------------------------------------- */
   //icache不存在写，因此lookup2lookup即为cache_hit
@@ -357,7 +360,7 @@ module icache (
 
   assign way0_hit = way0_v & (requestBuffer_tag == way0_tag);
   assign way1_hit = way1_v & (requestBuffer_tag == way1_tag);
-  assign cache_hit = (way0_hit | way1_hit) & ~requestBuffer_uncache; //当icacop时cache hit不能命中 uncache为1时一定不命中
+  assign cache_hit = (way0_hit | way1_hit) & ~requestBuffer_uncache & ~requestBuffer_icacop_en; //当icacop时cache hit不能命中 uncache为1时一定不命中
 
   assign way0_data = {way0_bank3_dout, way0_bank2_dout, way0_bank1_dout, way0_bank0_dout};
   assign way1_data = {way1_bank3_dout, way1_bank2_dout, way1_bank1_dout, way1_bank0_dout};
@@ -473,11 +476,11 @@ module icache (
                          (cache_state == MAIN_IDLE & icacop_en & (icacop_mode == 2'h0 | icacop_mode == 2'h1 & ~icacop_offset[0])) | (requestBuffer_icacop_mode == 2'h2 & way0_cacop_hit);
   assign way1_tagv_wea = cache_state == MAIN_REFILL & (ret_valid & ret_last == 1'b1) & missBuffer_replaceWay & ~requestBuffer_uncache |
                          (cache_state == MAIN_IDLE & icacop_en & (icacop_mode == 2'h0 | icacop_mode == 2'h1 & icacop_offset[0])) | (requestBuffer_icacop_mode == 2'h2 & way1_cacop_hit);
-  assign way0_tagv_dina = icacop_mode == 2'h0 & cache_state == MAIN_IDLE & icacop_en ? {20'b0,way0_v} :
-                          icacop_mode == 2'h1 & cache_state == MAIN_IDLE & icacop_en | requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? {way0_tag,1'b0} :
+  assign way0_tagv_dina = icacop_mode == 2'h0 & cache_state == MAIN_IDLE & icacop_en ? 21'b0 :
+                          icacop_mode == 2'h1 & cache_state == MAIN_IDLE & icacop_en | requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? 21'b0 :
                           {requestBuffer_tag, 1'b1};
-  assign way1_tagv_dina = icacop_mode == 2'h0 & cache_state == MAIN_IDLE & icacop_en ? {20'b0,way1_v} :
-                          icacop_mode == 2'h1 & cache_state == MAIN_IDLE & icacop_en | requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? {way1_tag,1'b0} :
+  assign way1_tagv_dina = icacop_mode == 2'h0 & cache_state == MAIN_IDLE & icacop_en ? 21'b0 :
+                          icacop_mode == 2'h1 & cache_state == MAIN_IDLE & icacop_en | requestBuffer_icacop_mode == 2'h2 & cache_cacop_hit ? 21'b0 :
                           {requestBuffer_tag, 1'b1};
 
   //写BANK 写命中需要写
@@ -538,7 +541,7 @@ module icache (
 
   /*----------------------------------------------------外部信号--------------------------------------------*/
   assign addr_ok = ((cache_state == MAIN_IDLE & idle2lookup_able) | (cache_state == MAIN_LOOKUP & lookup2lookup_able)) & ~requestBuffer_icacop_en ;
-  assign data_ok =  cache_hit & cache_state == MAIN_LOOKUP |
+  assign data_ok =  (cache_hit | icache_tlb_excp_cancel_req) & cache_state == MAIN_LOOKUP |
                     (cache_state == MAIN_REFILL & ret_valid & (requestBuffer_offset[3:2] == missBuffer_retNum[1:0] |
                     requestBuffer_uncache));//当读时只读对应offset的那一字节
   //写时不需要使用这个互锁，读时是需要的；因为写时，如果写还在lookup那么可以直接前递，此时data_ok有效即可;如果不在，那么在writebuffer会阻塞读；如果读不命中，那么在refill完之后，写也就完成了，所以直接data_ok无影响
@@ -654,16 +657,16 @@ module i_lfsr (
 
   always @(posedge clk) begin
     if (~resetn) begin
-      r_lfsr <= 8'b0101_1001;  //种子
+      r_lfsr <= 8'b1;  //种子
     end else begin
-      r_lfsr[0] <= r_lfsr[7] ^ r_lfsr[5] ^ r_lfsr[3] ^ r_lfsr[2];
-      r_lfsr[1] <= r_lfsr[0];
-      r_lfsr[2] <= r_lfsr[1];
-      r_lfsr[3] <= r_lfsr[2];
-      r_lfsr[4] <= r_lfsr[3];
-      r_lfsr[5] <= r_lfsr[4];
-      r_lfsr[6] <= r_lfsr[5];
-      r_lfsr[7] <= r_lfsr[6];
+        r_lfsr[0] <= r_lfsr[7];
+        r_lfsr[1] <= r_lfsr[0];
+        r_lfsr[2] <= r_lfsr[1];
+        r_lfsr[3] <= r_lfsr[2];
+        r_lfsr[4] <= r_lfsr[3] ^ r_lfsr[7];
+        r_lfsr[5] <= r_lfsr[4] ^ r_lfsr[7];
+        r_lfsr[6] <= r_lfsr[5] ^ r_lfsr[7];
+        r_lfsr[7] <= r_lfsr[6];
     end
   end
 
