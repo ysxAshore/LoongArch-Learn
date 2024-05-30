@@ -332,9 +332,10 @@ module exe_stage (
 
   //封包exe传递给id的RAW相关判断
   wire exist_csrR = csr_instRec != 2'b0 | rdcnt_REC != 2'b0;
+  wire exist_csrWTLBEHI = (csr_instRec == 2'b10 | csr_instRec == 2'b11) & csr_num == 14'h11; //CSR写TLBEHI阻塞
   //inst_sc指令的写数据是llbit_out
   assign exe_to_id_bus = {
-    exe_valid, res_from_mem, exe_regW, exe_valid ? exe_regWAddr : 5'b0, inst_sc ? llbit_out : exe_finalResult, exist_csrR,div,complete_delay,div_finish_ready_i
+    exe_valid, res_from_mem, exe_regW, exe_valid ? exe_regWAddr : 5'b0, inst_sc ? {32{llbit_out}} : exe_finalResult, exist_csrR,div,complete_delay,div_finish_ready_i,exist_csrWTLBEHI
   };
 
   //封包exe传递给tlb的数据

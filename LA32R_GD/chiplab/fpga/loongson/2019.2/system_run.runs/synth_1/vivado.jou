@@ -3,12 +3,12 @@
 # SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
 # IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
 # SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
-# Start of session at: Sun May  5 21:10:12 2024
-# Process ID: 20972
+# Start of session at: Thu May 30 18:04:31 2024
+# Process ID: 33824
 # Current directory: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1
 # Command line: vivado.exe -log soc_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source soc_top.tcl
 # Log file: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1/soc_top.vds
 # Journal file: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/synth_1\vivado.jou
-# Running On: ysxAshore, OS: Windows, CPU Frequency: 2592 MHz, CPU Physical cores: 6, Host memory: 34263 MB
+# Running On: ysxAshore, OS: Windows, CPU Frequency: 2592 MHz, CPU Physical cores: 6, Host memory: 34221 MB
 #-----------------------------------------------------------
 source soc_top.tcl -notrace

@@ -2,49 +2,49 @@
 
 ## 目录
 
--   [1 验证5条指令的单周期CPU](#1-验证5条指令的单周期CPU)
-    -   [1.1 快速上手](#11-快速上手)
-        -   [1.1.1 获取实验开发环境](#111-获取实验开发环境)
-        -   [1.1.2 实验代码](#112-实验代码)
-            -   [1.1.2.1 填空minicpu\_env/miniCPU/minicpu\_top.v文件](#1121-填空minicpu_envminiCPUminicpu_topv文件)
-            -   [1.1.2.2 LED——充当数据存储直观写](#1122-LED充当数据存储直观写)
-            -   [1.1.2.3 顶层模块](#1123-顶层模块)
-            -   [1.1.2.4 指令存储器coe文件](#1124-指令存储器coe文件)
-        -   [1.1.3 新建Vivado工程集成CPU并仿真验证](#113-新建Vivado工程集成CPU并仿真验证)
-            -   [1.1.3.1 仿真过程中遇到的问题](#1131-仿真过程中遇到的问题)
-            -   [1.1.3.2 仿真结果](#1132-仿真结果)
-        -   [1.1.4 上板验证](#114-上板验证)
-            -   [1.1.4.1 约束文件](#1141-约束文件)
-    -   [1.2 实验开发环境组织结构介绍](#12-实验开发环境组织结构介绍)
--   [2 验证20条指令的单周期CPU](#2-验证20条指令的单周期CPU)
-    -   [2.1 实验开发环境组织结构介绍](#21-实验开发环境组织结构介绍)
-        -   [2.1.1 SoC\_lite结构介绍](#211-SoC_lite结构介绍)
-    -   [2.2 基于trace比对的调试框架](#22-基于trace比对的调试框架)
-        -   [2.2.1 基于trace比对的调试辅助手段](#221-基于trace比对的调试辅助手段)
-        -   [2.2.2 利用参考模型生成golden\_trace](#222-利用参考模型生成golden_trace)
-        -   [2.2.3 使用 golden\_trace 监控 myCPU](#223-使用-golden_trace-监控-myCPU)
-    -   [2.3 func功能测试程序](#23-func功能测试程序)
-        -   [2.3.1 func测试程序说明](#231-func测试程序说明)
-        -   [2.3.2 LoongArch-GCC交叉编译工具的安装](#232-LoongArch-GCC交叉编译工具的安装)
-        -   [2.3.3 func测试程序编译脚本说明](#233-func测试程序编译脚本说明)
-        -   [2.3.4 func测试程序的装载](#234-func测试程序的装载)
-        -   [2.3.5 func测试仿真验证结果的判断](#235-func测试仿真验证结果的判断)
-        -   [2.3.6 func测试FPGA上板验证结果判断](#236-func测试FPGA上板验证结果判断)
-    -   [2.4 基于mycpu\_env实验开发环境的实验流程](#24-基于mycpu_env实验开发环境的实验流程)
-        -   [2.4.1 开发CPU代码](#241-开发CPU代码)
-            -   [2.4.1.1 tools.v](#2411-toolsv)
-            -   [2.4.1.2 regfile.v](#2412-regfilev)
-            -   [2.4.1.3 alu.v](#2413-aluv)
-            -   [2.4.1.4 mul.v](#2414-mulv)
-            -   [2.4.1.5 div.v](#2415-divv)
-            -   [2.4.1.6 mycpu\_top.v](#2416-mycpu_topv)
-            -   [2.4.1.7 bridge\_1x2.v](#2417-bridge_1x2v)
-            -   [2.4.1.8 confreg.v](#2418-confregv)
-            -   [2.4.1.9 inst\_ram、data\_ram、clk\_pll IP](#2419-inst_ramdata_ramclk_pll-IP)
-        -   [2.4.2 编译测试程序](#242-编译测试程序)
-        -   [2.4.3 生成golden\_trace](#243-生成golden_trace)
-        -   [2.4.4 仿真验证设计的CPU](#244-仿真验证设计的CPU)
-        -   [2.4.5 上板验证设计的CPU](#245-上板验证设计的CPU)
+- [1 验证5条指令的单周期CPU](#1-验证5条指令的单周期CPU)
+  - [1.1 快速上手](#11-快速上手)
+    - [1.1.1 获取实验开发环境](#111-获取实验开发环境)
+    - [1.1.2 实验代码](#112-实验代码)
+      - [1.1.2.1 填空minicpu\_env/miniCPU/minicpu\_top.v文件](#1121-填空minicpu_envminiCPUminicpu_topv文件)
+      - [1.1.2.2 LED——充当数据存储直观写](#1122-LED充当数据存储直观写)
+      - [1.1.2.3 顶层模块](#1123-顶层模块)
+      - [1.1.2.4 指令存储器coe文件](#1124-指令存储器coe文件)
+    - [1.1.3 新建Vivado工程集成CPU并仿真验证](#113-新建Vivado工程集成CPU并仿真验证)
+      - [1.1.3.1 仿真过程中遇到的问题](#1131-仿真过程中遇到的问题)
+      - [1.1.3.2 仿真结果](#1132-仿真结果)
+    - [1.1.4 上板验证](#114-上板验证)
+      - [1.1.4.1 约束文件](#1141-约束文件)
+  - [1.2 实验开发环境组织结构介绍](#12-实验开发环境组织结构介绍)
+- [2 验证20条指令的单周期CPU](#2-验证20条指令的单周期CPU)
+  - [2.1 实验开发环境组织结构介绍](#21-实验开发环境组织结构介绍)
+    - [2.1.1 SoC\_lite结构介绍](#211-SoC_lite结构介绍)
+  - [2.2 基于trace比对的调试框架](#22-基于trace比对的调试框架)
+    - [2.2.1 基于trace比对的调试辅助手段](#221-基于trace比对的调试辅助手段)
+    - [2.2.2 利用参考模型生成golden\_trace](#222-利用参考模型生成golden_trace)
+    - [2.2.3 使用 golden\_trace 监控 myCPU](#223-使用-golden_trace-监控-myCPU)
+  - [2.3 func功能测试程序](#23-func功能测试程序)
+    - [2.3.1 func测试程序说明](#231-func测试程序说明)
+    - [2.3.2 LoongArch-GCC交叉编译工具的安装](#232-LoongArch-GCC交叉编译工具的安装)
+    - [2.3.3 func测试程序编译脚本说明](#233-func测试程序编译脚本说明)
+    - [2.3.4 func测试程序的装载](#234-func测试程序的装载)
+    - [2.3.5 func测试仿真验证结果的判断](#235-func测试仿真验证结果的判断)
+    - [2.3.6 func测试FPGA上板验证结果判断](#236-func测试FPGA上板验证结果判断)
+  - [2.4 基于mycpu\_env实验开发环境的实验流程](#24-基于mycpu_env实验开发环境的实验流程)
+    - [2.4.1 开发CPU代码](#241-开发CPU代码)
+      - [2.4.1.1 tools.v](#2411-toolsv)
+      - [2.4.1.2 regfile.v](#2412-regfilev)
+      - [2.4.1.3 alu.v](#2413-aluv)
+      - [2.4.1.4 mul.v](#2414-mulv)
+      - [2.4.1.5 div.v](#2415-divv)
+      - [2.4.1.6 mycpu\_top.v](#2416-mycpu_topv)
+      - [2.4.1.7 bridge\_1x2.v](#2417-bridge_1x2v)
+      - [2.4.1.8 confreg.v](#2418-confregv)
+      - [2.4.1.9 inst\_ram、data\_ram、clk\_pll IP](#2419-inst_ramdata_ramclk_pll-IP)
+    - [2.4.2 编译测试程序](#242-编译测试程序)
+    - [2.4.3 生成golden\_trace](#243-生成golden_trace)
+    - [2.4.4 仿真验证设计的CPU](#244-仿真验证设计的CPU)
+    - [2.4.5 上板验证设计的CPU](#245-上板验证设计的CPU)
 
 # 1 验证5条指令的单周期CPU
 
@@ -416,37 +416,37 @@ end:
 
 #### 1.1.3.1 仿真过程中遇到的问题
 
-1.  clk\_pll IP 被上锁导致`Run Sumlation`出现Module \<clk\_pll> not found while processing module instance \<pll.clk\_pll>
+1. clk\_pll IP 被上锁导致`Run Sumlation`出现Module \<clk\_pll> not found while processing module instance \<pll.clk\_pll>
 
-    解决方法：
-    1.  点击Report–>Report IP Status
+   解决方法：
+   1. 点击Report–>Report IP Status
 
-        ![](image/image_3QN4q0HqNS.png)
-    2.  勾选被锁的IP核，点击Upgrade Selected
+      ![](image/image_0dtE37Rzaj.png)
+   2. 勾选被锁的IP核，点击Upgrade Selected
 
-        ![](image/image_OGRQYDRJU2.png)
+      ![](image/image_Gdbp4K17QO.png)
 
-        如果upgrade Selected无法点击时，在`Tcl Console`执行命令：`upgrade_ip [get_ips]`
+      如果upgrade Selected无法点击时，在`Tcl Console`执行命令：`upgrade_ip [get_ips]`
 
-        若过程中提示
-        ```bash
-         [Common 17-69] Command failed: No IP specified.  Please specify IP with 'objects'
+      若过程中提示
+      ```bash
+       [Common 17-69] Command failed: No IP specified.  Please specify IP with 'objects'
 
-        ```
-        原因是项目路径中存在中文，修改为英文即可解决
-2.  未安装gcc /usr/bin/gcc not found, please install GCC for your Linux distribution
+      ```
+      原因是项目路径中存在中文，修改为英文即可解决
+2. 未安装gcc /usr/bin/gcc not found, please install GCC for your Linux distribution
 
-    安装gcc/g++/gdb/make 等基本编程工具`sudo apt-get install build-essential `
-3.  注意在测试文件中写的是#2000ns时 resetn才为高电平，因此需要将仿真时间设置的较长些
-    ```bash
-    initial
-    begin
-        clk = 1'b0;
-        resetn = 1'b0;
-        #2000;
-        resetn = 1'b1;
-    end
-    ```
+   安装gcc/g++/gdb/make 等基本编程工具`sudo apt-get install build-essential `
+3. 注意在测试文件中写的是#2000ns时 resetn才为高电平，因此需要将仿真时间设置的较长些
+   ```bash
+   initial
+   begin
+       clk = 1'b0;
+       resetn = 1'b0;
+       #2000;
+       resetn = 1'b1;
+   end
+   ```
 
 #### 1.1.3.2 仿真结果
 
@@ -621,7 +621,7 @@ set_false_path -from [get_clocks -of_objects [get_pins pll.clk_pll/inst/plle2_ad
 
 SoC\_lite内部结构如下：
 
-![](image/image_IhLS-i4-5l.png)
+![](image/image_1ObS4pqq6g.png)
 
 相比之前的SoC\_mini，SoC\_lite多了数据存储器以及mycpu与数据存储器、confreg之间的通信部件
 
@@ -809,310 +809,310 @@ myCPU功能验证所使用的 testbench与 gettrace 工程中的testbench 有所
 
 func程序分为func/start.S和func/inst/ \*.S，都是LoongArch32汇编程序:
 
-1.  func/start.S ：主函数，执行必要的启动初始化后调用func/inst/下的各汇编程序
+1. func/start.S ：主函数，执行必要的启动初始化后调用func/inst/下的各汇编程序
 
-    主函数func/start.S的主体部分代码如下，分为三大部分:初始化、功能点测试、显示测试结果
-    1.  设置LED、数码管显示：单色LED灯全灭，双色LED灯一红一绿，数码管不显示
-        ```nasm
-              LI (a0, LED_RG1_ADDR) #获取双色LED灯1的地址
-              LI (a1, LED_RG0_ADDR) #获取双色LED灯2的地址
-              LI (a2, LED_ADDR)     #获取单色LED灯的地址
-              LI (s1, NUM_ADDR)     #获取数码管的地址
-          
-              LI (t1, 0x0002)       #RG是10,亮绿色
-              LI (t2, 0x0001)       #RG是01,亮红色
-              LI (t3, 0x0000ffff)   #单色LED灯是高电平灭，低电平亮
-              lu12i.w s3, 0         #数码管是共阴极的，全灭
-              NOP4
-          
-              st.w t1, a0, 0
-              st.w t2, a1, 0
-              st.w t3, a2, 0
-              st.w s3, s1, 0
-        ```
-    2.  进行各个功能点的测试，每个功能点测试完成后，执行idle\_1s等待一段时间且数码管显示值改变（左边两个显示功能点编号、右边两个显示通过的功能点数[^注释4]）
-        ```nasm
-          inst_test:
-              bl n1_lu12i_w_test    #lu12i.w
-              bl idle_1s
-              
-              bl n2_add_w_test   #add.w
-              bl idle_1s
-          ......
-
-          idle_1s:
-              NOP4
-              LI (t0,SW_INTER_ADDR) #获取开关的地址
-              LI (t1, 0xaaaa)
-          
-              #initial t3
-              ld.w    t2, t0, 0   #读取开关的值switch_interleave: {switch[7],1'b0, switch[6],1'b0...switch[0],1'b0}
-              NOP4
-              xor     t2, t2, t1  #开关是"拨上低电平,拨下高电平"异或使其值改变到对应"拨上高电平拨下低电平"
-              NOP4
-              slli.w  t3, t2, 9   #t3 = switch interleave << 9 左移9位
-              NOP4
-              addi.w  t3, t3, 1   #t3=t3+1
-              NOP4
-
-          sub1:
-              addi.w  t3, t3, -1  #t3=t3-1
-          
-              #select min{t3, switch_interleave}
-              ld.w    t2, t0, 0   #switch_interleave: {switch[7],1'b0, switch[6],1'b0...switch[0],1'b0}
-              NOP4
-              xor     t2, t2, t1 
-              NOP4
-              slli.w  t2, t2, 9     #再次获取 switch interleave << 9
-              NOP4                  
-              sltu    t4, t3, t2    #无符号比较，t4=t3<t2
-              NOP4
-              bne     t4, zero, 1f  #
-              NOP4                  #t3>=t2的处理
-              addi.w  t3, t2, 0     #t3=min{t3,t2}
-              NOP4
-          1:
-              bne     t3, zero, sub1#t3不为0,再继续sub1循环
-              NOP4
-              jirl    zero, ra, 0   #结束idle
-              NOP4
-
-        ```
-        也就是说idle\_1s是根据开关的状态来设定循环次数。在仿真环境下，我们会模拟拨码开关为全拨下的状态，以使 idle\_1s 循环次数最小[^注释5]——如果CPU上板运行过程中，发现数码管累加跳动太慢，请调小拨码开关代表的数值；如果发现数码管累加跳动太快，请调大拨码开关代表的数值
-    3.  显示测试结果
-
-        仿真测试通过PASS：两个双色LED灯均为绿色，单色LED灯不亮
-
-        仿真测试失败FAIL：两个双色LED灯均亮红色，单色LED灯全亮
-        ```nasm
-        test_end:
-            LI  (s0, TEST_NUM)
+   主函数func/start.S的主体部分代码如下，分为三大部分:初始化、功能点测试、显示测试结果
+   1. 设置LED、数码管显示：单色LED灯全灭，双色LED灯一红一绿，数码管不显示
+      ```nasm
+            LI (a0, LED_RG1_ADDR) #获取双色LED灯1的地址
+            LI (a1, LED_RG0_ADDR) #获取双色LED灯2的地址
+            LI (a2, LED_ADDR)     #获取单色LED灯的地址
+            LI (s1, NUM_ADDR)     #获取数码管的地址
+        
+            LI (t1, 0x0002)       #RG是10,亮绿色
+            LI (t2, 0x0001)       #RG是01,亮红色
+            LI (t3, 0x0000ffff)   #单色LED灯是高电平灭，低电平亮
+            lu12i.w s3, 0         #数码管是共阴极的，全灭
             NOP4
-            beq s0, s3, 1f
+        
+            st.w t1, a0, 0
+            st.w t2, a1, 0
+            st.w t3, a2, 0
+            st.w s3, s1, 0
+      ```
+   2. 进行各个功能点的测试，每个功能点测试完成后，执行idle\_1s等待一段时间且数码管显示值改变（左边两个显示功能点编号、右边两个显示通过的功能点数[^注释4]）
+      ```nasm
+        inst_test:
+            bl n1_lu12i_w_test    #lu12i.w
+            bl idle_1s
+            
+            bl n2_add_w_test   #add.w
+            bl idle_1s
+        ......
+
+        idle_1s:
+            NOP4
+            LI (t0,SW_INTER_ADDR) #获取开关的地址
+            LI (t1, 0xaaaa)
+        
+            #initial t3
+            ld.w    t2, t0, 0   #读取开关的值switch_interleave: {switch[7],1'b0, switch[6],1'b0...switch[0],1'b0}
+            NOP4
+            xor     t2, t2, t1  #开关是"拨上低电平,拨下高电平"异或使其值改变到对应"拨上高电平拨下低电平"
+            NOP4
+            slli.w  t3, t2, 9   #t3 = switch interleave << 9 左移9位
+            NOP4
+            addi.w  t3, t3, 1   #t3=t3+1
             NOP4
 
-            LI (a0, LED_ADDR)
-            LI (a1, LED_RG1_ADDR)
-            LI (a2, LED_RG0_ADDR)
-
-            LI (t1, 0x0002)
+        sub1:
+            addi.w  t3, t3, -1  #t3=t3-1
+        
+            #select min{t3, switch_interleave}
+            ld.w    t2, t0, 0   #switch_interleave: {switch[7],1'b0, switch[6],1'b0...switch[0],1'b0}
             NOP4
-            # 测试成功
-            st.w    zero, a0, 0 
-            st.w    t1, a1, 0
-            st.w    t1, a2, 0
-            li.w    a0, 0x1
-            b  2f
+            xor     t2, t2, t1 
+            NOP4
+            slli.w  t2, t2, 9     #再次获取 switch interleave << 9
+            NOP4                  
+            sltu    t4, t3, t2    #无符号比较，t4=t3<t2
+            NOP4
+            bne     t4, zero, 1f  #
+            NOP4                  #t3>=t2的处理
+            addi.w  t3, t2, 0     #t3=min{t3,t2}
             NOP4
         1:
-            # 测试失败
-            LI (t1, 0x0001)
-            LI (a0, LED_RG1_ADDR)
-            LI (a1, LED_RG0_ADDR)
+            bne     t3, zero, sub1#t3不为0,再继续sub1循环
             NOP4
-            st.w    t1, a0, 0
-            st.w    t1, a1, 0
-            li.w    a0, 0
-
-        2:
-            bl test_finish
+            jirl    zero, ra, 0   #结束idle
             NOP4
-        ```
-2.  func/inst/ \*.S ：针对每条指令或功能点有一个汇编测试程序
 
-    nst/ 目录下每个功能点的测试代码程序名为`n#_*_test.S`，其中“#”为编号。
+      ```
+      也就是说idle\_1s是根据开关的状态来设定循环次数。在仿真环境下，我们会模拟拨码开关为全拨下的状态，以使 idle\_1s 循环次数最小[^注释5]——如果CPU上板运行过程中，发现数码管累加跳动太慢，请调小拨码开关代表的数值；如果发现数码管累加跳动太快，请调大拨码开关代表的数值
+   3. 显示测试结果
 
-    每个功能点的测试代码大致如下
-    ```nasm
-     ......
-      LEAF(n1_lu12i_w_test)
-          addi.w   s0, s0 ,1         #加载功能点编号s0++
-          addi.w   s2, zero, 0x0
-          lu12i.w  t2, 0x1
-          ###test inst
-          addi.w   t1, zero, 0x0
-          TEST_LU12I_W(0x00000, 0x00000)
-          ......                     #测试程序，省略
-          TEST_LU12I_W(0xff0af, 0xff0a0)
-          ###detect exception
-          bne      s2, zero, inst_error
-          ###score ++                #s3存放功能测试计分，每通过一个功能点测试，则+1
-          addi.w   s3, s3, 1
-          ###output (s0<<24)|s3
-      inst_error:#未通过测试
-          slli.w   t1, s0, 24
+      仿真测试通过PASS：两个双色LED灯均为绿色，单色LED灯不亮
+
+      仿真测试失败FAIL：两个双色LED灯均亮红色，单色LED灯全亮
+      ```nasm
+      test_end:
+          LI  (s0, TEST_NUM)
           NOP4
-          or       t0, t1, s3        #t1高8位为功能点编号，s3低8位为通过功能点数，
-                                     #相或结果显示到数码管上。
+          beq s0, s3, 1f
           NOP4
-          st.w     t0, s1, 0         #s1存放数码管地址
-          jirl     zero, ra, 0
-      END(n1_lu12i_w_test)
-    ```
-3.  func/include/ \*.h ：测试程序的配置信息和宏定义
 
-    这里主要介绍以下`test_config.h`头文件，该头文件内容如下：
-    ```c
-    // ==========================================================================================================================
-    // exp6         : n1~n20  SHORT_TEST1 1 NOP_INSERT 0 TEST1 1 TEST2 0 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
-    // exp7         : n1~n20  SHORT_TEST1 0 NOP_INSERT 1 TEST1 1 TEST2 0 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
-    // exp8~9       : n1~n20  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 0 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
-    // exp10        : n1~n36  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
-    // exp11        : n1~n46  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
-    // exp12        : n1~n47  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
-    // exp13~16     : n1~n58  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 0 TEST7 0 TEST8 0 TEST9 0
-    // exp18        : n1~n70  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 1 TEST7 0 TEST8 0 TEST9 0
-    // exp19, 21~22 : n1~n72  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 1 TEST7 1 TEST8 0 TEST9 0 
-    // exp23        : n1~n79  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 1 TEST7 1 TEST8 1 TEST9 0
-    // ==========================================================================================================================
+          LI (a0, LED_ADDR)
+          LI (a1, LED_RG1_ADDR)
+          LI (a2, LED_RG0_ADDR)
 
-    #if EXP==0 //for user-config
-      //==================================================================
-      //SHORT_TEST1: less test case for n1~n20.
-      //             Only set for exp6.
-      //==================================================================
-      #define SHORT_TEST1 0
-      
-      //==================================================================
-      //NOP_INSERT: Insert 4 nop insts between every alu operation.
-      //            Only set for exp7.
-      //==================================================================
-      #define NOP_INSERT 0
-      
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 1
-      #define TEST4 1
-      #define TEST5 1
-      #define TEST6 1
-      #define TEST7 1
-      #define TEST8 1
-      #define TEST9 1
-    #elif EXP==6
-      #define SHORT_TEST1 1
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 0
-      #define TEST3 0
-      #define TEST4 0
-      #define TEST5 0
-      #define TEST6 0
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0
-    #elif  EXP==7
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 1
-      #define TEST1 1
-      #define TEST2 0
-      #define TEST3 0
-      #define TEST4 0
-      #define TEST5 0
-      #define TEST6 0
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0
-    #elif  (EXP==8 || EXP==9)
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 0
-      #define TEST3 0
-      #define TEST4 0
-      #define TEST5 0
-      #define TEST6 0
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0
-    #elif  EXP==10
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 0
-      #define TEST4 0
-      #define TEST5 0
-      #define TEST6 0
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0
-    #elif  EXP==11
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 1
-      #define TEST4 0
-      #define TEST5 0
-      #define TEST6 0
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0
-    #elif  EXP==12
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 1
-      #define TEST4 1
-      #define TEST5 0
-      #define TEST6 0
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0
-    #elif  (EXP==13 || EXP==14 || EXP==15 || EXP==16)
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 1
-      #define TEST4 1
-      #define TEST5 1
-      #define TEST6 0
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0
-    #elif  EXP==18
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 1
-      #define TEST4 1
-      #define TEST5 1
-      #define TEST6 1
-      #define TEST7 0
-      #define TEST8 0
-      #define TEST9 0  
-    #elif  (EXP==19 || EXP==21 || EXP==22)
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 1
-      #define TEST4 1
-      #define TEST5 1
-      #define TEST6 1
-      #define TEST7 1
-      #define TEST8 0
-      #define TEST9 0  
-    #elif  EXP==23
-      #define SHORT_TEST1 0
-      #define NOP_INSERT 0
-      #define TEST1 1
-      #define TEST2 1
-      #define TEST3 1
-      #define TEST4 1
-      #define TEST5 1
-      #define TEST6 1
-      #define TEST7 1
-      #define TEST8 1
-      #define TEST9 0  
-    #else
-      #error: please do "make EXP=N"(N={0,6-16,18-19,21-23})
-    #endif
-    ```
-    之后每次开始一个新的实验任务前，需要根据 `test_config.h` 头部注释信息中查明该实验对应的`SHORT_TEST1`, `NOP_INSERT`, `TEST1~TEST9`这12个配置宏的数值，去除掉对应实验的注释
+          LI (t1, 0x0002)
+          NOP4
+          # 测试成功
+          st.w    zero, a0, 0 
+          st.w    t1, a1, 0
+          st.w    t1, a2, 0
+          li.w    a0, 0x1
+          b  2f
+          NOP4
+      1:
+          # 测试失败
+          LI (t1, 0x0001)
+          LI (a0, LED_RG1_ADDR)
+          LI (a1, LED_RG0_ADDR)
+          NOP4
+          st.w    t1, a0, 0
+          st.w    t1, a1, 0
+          li.w    a0, 0
+
+      2:
+          bl test_finish
+          NOP4
+      ```
+2. func/inst/ \*.S ：针对每条指令或功能点有一个汇编测试程序
+
+   nst/ 目录下每个功能点的测试代码程序名为`n#_*_test.S`，其中“#”为编号。
+
+   每个功能点的测试代码大致如下
+   ```nasm
+    ......
+     LEAF(n1_lu12i_w_test)
+         addi.w   s0, s0 ,1         #加载功能点编号s0++
+         addi.w   s2, zero, 0x0
+         lu12i.w  t2, 0x1
+         ###test inst
+         addi.w   t1, zero, 0x0
+         TEST_LU12I_W(0x00000, 0x00000)
+         ......                     #测试程序，省略
+         TEST_LU12I_W(0xff0af, 0xff0a0)
+         ###detect exception
+         bne      s2, zero, inst_error
+         ###score ++                #s3存放功能测试计分，每通过一个功能点测试，则+1
+         addi.w   s3, s3, 1
+         ###output (s0<<24)|s3
+     inst_error:#未通过测试
+         slli.w   t1, s0, 24
+         NOP4
+         or       t0, t1, s3        #t1高8位为功能点编号，s3低8位为通过功能点数，
+                                    #相或结果显示到数码管上。
+         NOP4
+         st.w     t0, s1, 0         #s1存放数码管地址
+         jirl     zero, ra, 0
+     END(n1_lu12i_w_test)
+   ```
+3. func/include/ \*.h ：测试程序的配置信息和宏定义
+
+   这里主要介绍以下`test_config.h`头文件，该头文件内容如下：
+   ```c
+   // ==========================================================================================================================
+   // exp6         : n1~n20  SHORT_TEST1 1 NOP_INSERT 0 TEST1 1 TEST2 0 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
+   // exp7         : n1~n20  SHORT_TEST1 0 NOP_INSERT 1 TEST1 1 TEST2 0 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
+   // exp8~9       : n1~n20  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 0 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
+   // exp10        : n1~n36  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 0 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
+   // exp11        : n1~n46  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 0 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
+   // exp12        : n1~n47  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 0 TEST6 0 TEST7 0 TEST8 0 TEST9 0
+   // exp13~16     : n1~n58  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 0 TEST7 0 TEST8 0 TEST9 0
+   // exp18        : n1~n70  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 1 TEST7 0 TEST8 0 TEST9 0
+   // exp19, 21~22 : n1~n72  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 1 TEST7 1 TEST8 0 TEST9 0 
+   // exp23        : n1~n79  SHORT_TEST1 0 NOP_INSERT 0 TEST1 1 TEST2 1 TEST3 1 TEST4 1 TEST5 1 TEST6 1 TEST7 1 TEST8 1 TEST9 0
+   // ==========================================================================================================================
+
+   #if EXP==0 //for user-config
+     //==================================================================
+     //SHORT_TEST1: less test case for n1~n20.
+     //             Only set for exp6.
+     //==================================================================
+     #define SHORT_TEST1 0
+     
+     //==================================================================
+     //NOP_INSERT: Insert 4 nop insts between every alu operation.
+     //            Only set for exp7.
+     //==================================================================
+     #define NOP_INSERT 0
+     
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 1
+     #define TEST4 1
+     #define TEST5 1
+     #define TEST6 1
+     #define TEST7 1
+     #define TEST8 1
+     #define TEST9 1
+   #elif EXP==6
+     #define SHORT_TEST1 1
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 0
+     #define TEST3 0
+     #define TEST4 0
+     #define TEST5 0
+     #define TEST6 0
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0
+   #elif  EXP==7
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 1
+     #define TEST1 1
+     #define TEST2 0
+     #define TEST3 0
+     #define TEST4 0
+     #define TEST5 0
+     #define TEST6 0
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0
+   #elif  (EXP==8 || EXP==9)
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 0
+     #define TEST3 0
+     #define TEST4 0
+     #define TEST5 0
+     #define TEST6 0
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0
+   #elif  EXP==10
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 0
+     #define TEST4 0
+     #define TEST5 0
+     #define TEST6 0
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0
+   #elif  EXP==11
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 1
+     #define TEST4 0
+     #define TEST5 0
+     #define TEST6 0
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0
+   #elif  EXP==12
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 1
+     #define TEST4 1
+     #define TEST5 0
+     #define TEST6 0
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0
+   #elif  (EXP==13 || EXP==14 || EXP==15 || EXP==16)
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 1
+     #define TEST4 1
+     #define TEST5 1
+     #define TEST6 0
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0
+   #elif  EXP==18
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 1
+     #define TEST4 1
+     #define TEST5 1
+     #define TEST6 1
+     #define TEST7 0
+     #define TEST8 0
+     #define TEST9 0  
+   #elif  (EXP==19 || EXP==21 || EXP==22)
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 1
+     #define TEST4 1
+     #define TEST5 1
+     #define TEST6 1
+     #define TEST7 1
+     #define TEST8 0
+     #define TEST9 0  
+   #elif  EXP==23
+     #define SHORT_TEST1 0
+     #define NOP_INSERT 0
+     #define TEST1 1
+     #define TEST2 1
+     #define TEST3 1
+     #define TEST4 1
+     #define TEST5 1
+     #define TEST6 1
+     #define TEST7 1
+     #define TEST8 1
+     #define TEST9 0  
+   #else
+     #error: please do "make EXP=N"(N={0,6-16,18-19,21-23})
+   #endif
+   ```
+   之后每次开始一个新的实验任务前，需要根据 `test_config.h` 头部注释信息中查明该实验对应的`SHORT_TEST1`, `NOP_INSERT`, `TEST1~TEST9`这12个配置宏的数值，去除掉对应实验的注释
 
 ### 2.3.2 LoongArch-GCC交叉编译工具的安装
 
@@ -1230,31 +1230,31 @@ coe和mif数据内容完全相同，只是格式信息存在差异。mif文件�
 
 有两种方法判断仿真结果是否正确
 
-1.  观察Vivado控制台的打印信息——PASS通过、ERROR失败
+1. 观察Vivado控制台的打印信息——PASS通过、ERROR失败
 
-    ![](image/image_aa1ua2djjo.png)
-2.  通过波形窗口观察程序执行结果func正确的执行行为
+   ![](image/image_4gtECiaK8P.png)
+2. 通过波形窗口观察程序执行结果func正确的执行行为
 
-    观察confreg模块的信号`led_data`、`led_rg0_data`、`led_rg1_data`、`num_data`
-    1.  开始时，led\_data全1，led\_rg0\_data和led\_rg1\_data为0x1和0x2，num\_data全0
-    2.  执行过程中，每通过一个测试点num\_data高8位低8位同步累加，如果没有，表示该测试点未通过
-    3.  结束时
+   观察confreg模块的信号`led_data`、`led_rg0_data`、`led_rg1_data`、`num_data`
+   1. 开始时，led\_data全1，led\_rg0\_data和led\_rg1\_data为0x1和0x2，num\_data全0
+   2. 执行过程中，每通过一个测试点num\_data高8位低8位同步累加，如果没有，表示该测试点未通过
+   3. 结束时
 
-        通过：led\_data全1、led\_rg0\_data和led\_rg1\_data均为0x1，num\_data高8位低8位值相同
+      通过：led\_data全1、led\_rg0\_data和led\_rg1\_data均为0x1，num\_data高8位低8位值相同
 
-        失败：led\_data全0、led\_rg0\_data和led\_rg1\_data均为0x2，num\_data高8位大于低8位
+      失败：led\_data全0、led\_rg0\_data和led\_rg1\_data均为0x2，num\_data高8位大于低8位
 
 ### 2.3.6 func测试FPGA上板验证结果判断
 
 上板验证结果的判断即仿真结果判断的第二种方法的具象化
 
-1.  开始时，单色LED灯全灭，双色LED灯一红一绿，数码管全灭
-2.  执行过程中，每通过一个测试点数码管高8位低8位同步累加，如果没有，表示该测试点未通过
-3.  结束时
+1. 开始时，单色LED灯全灭，双色LED灯一红一绿，数码管全灭
+2. 执行过程中，每通过一个测试点数码管高8位低8位同步累加，如果没有，表示该测试点未通过
+3. 结束时
 
-    通过：单色LED全灭、双色LED全绿，数码管高8位低8位值相同
+   通过：单色LED全灭、双色LED全绿，数码管高8位低8位值相同
 
-    失败：单色LED全亮、双色LED全红，数码管高8位大于低8位
+   失败：单色LED全亮、双色LED全红，数码管高8位大于低8位
 
 ## 2.4 基于mycpu\_env实验开发环境的实验流程
 
@@ -2962,7 +2962,7 @@ clk\_pll是为了时钟降频
 
 这里要做的是实验六，因此取消掉对应的注释即可
 
-![](image/image_jkOtRgvKOY.png)
+![](image/image_EYzmdcf3JX.png)
 
 make成功后即在obj目录下生成data\_ram.coe  data\_ram.mif  inst\_ram.coe  inst\_ram.mif  rom.vlog  test.s
 
@@ -3014,7 +3014,7 @@ run: Time (s): cpu = 00:00:09 ; elapsed = 00:00:17 . Memory (MB): peak = 11492.6
 
 现在报错csrwr指令，还差大约10000个写寄存器指令，这些剩下再弄
 
-![](image/image_qLZGU5eIoW.png)
+![](image/image_EFguXuJq32.png)
 
 ### 2.4.5 上板验证设计的CPU
 

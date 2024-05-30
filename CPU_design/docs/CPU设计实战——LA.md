@@ -24,7 +24,7 @@ Gitee仓库地址：
 
 上面是MIPS版本的教学设计，所采用的是之前学习李亚民教授《计算机原理与设计Verilog版》中使用的flop触发器控制流水方式。但是在设计C7 类SRAM总线接口遇到了很多问题——对类SRAM接口的不熟悉以及对flop结合类SRAM的机制了解不够，导致实现较为困难。因此为了更方便快速地学习以及实现，我决定放弃flop这种流水控制方式，转而按照下面《CPU设计实战（LoongArch版）》中的流水线ready\_go、valid的握手机制这种流水线控制方式
 
-[CPU设计实战：LoongArch版.pdf](file/CPU设计实战：LoongArch版_A_Xcj5-w6Z.pdf "CPU设计实战：LoongArch版.pdf")
+[CPU设计实战：LoongArch版.pdf](file/CPU设计实战：LoongArch版_KMOz_V9q35.pdf "CPU设计实战：LoongArch版.pdf")
 
 其中对于C1、C2、C3、C4的实现仍同前面的实现方式，下面从C5开始重新设计
 
@@ -41,3 +41,7 @@ Gitee仓库地址：
 [C9 存储管理单元设计](<C9 存储管理单元设计/C9 存储管理单元设计.md> "C9 存储管理单元设计")
 
 [C10 高速缓存设计](<C10 高速缓存设计/C10 高速缓存设计.md> "C10 高速缓存设计")
+
+[C11 Chiplab](<C11 Chiplab/C11 Chiplab.md> "C11 Chiplab")
+
+[上板调试修改](上板调试修改/上板调试修改.md "上板调试修改")

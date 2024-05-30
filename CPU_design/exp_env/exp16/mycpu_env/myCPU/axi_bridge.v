@@ -200,7 +200,7 @@ assign arprot  = 3'b0;
 assign rdata_sram_addr_ok = //这为什么不用data_read_wait load优先级大于取指 设置了有写请求就暂停读 addr_ok无效
         (~arvalid & data_sram_req == 1'b1 & data_sram_wr == 1'b0) ? 1'b1 : 1'b0; //读通道没有被占用且进行读数据RAM请求
 assign inst_sram_addr_ok = 
-        (~inst_read_wait & ~arvalid & inst_sram_req == 1'b1 & inst_sram_wr == 1'b0 & 
+        (~arvalid & inst_sram_req == 1'b1 & inst_sram_wr == 1'b0 & 
             (data_sram_req == 1'b0 | data_sram_wr == 1'b1)) ? 1'b1 : 1'b0;//load优先级大于取指，需要判断没有读数据请求或者有但是是写数据
 
 //-----------------------------------读响应相关信号-------------------------------------//

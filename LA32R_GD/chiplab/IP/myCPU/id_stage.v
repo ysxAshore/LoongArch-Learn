@@ -115,7 +115,8 @@ module id_stage (
   wire exe_div;
   wire exe_complete_delay;
   wire exe_div_finish_ready_i;
-  assign {exe_valid, exe_res_from_mem, exe_regW, exe_regWAddr, exe_regWData, exe_exist_csrR,exe_div,exe_complete_delay,exe_div_finish_ready_i} = exe_to_id_bus;
+  wire exe_existCSRWTLBEHI;
+  assign {exe_valid, exe_res_from_mem, exe_regW, exe_regWAddr, exe_regWData, exe_exist_csrR,exe_div,exe_complete_delay,exe_div_finish_ready_i,exe_existCSRWTLBEHI} = exe_to_id_bus;
 
   //拆解mem组合逻辑送来的数据
   wire mem_ready_go;
@@ -463,6 +464,7 @@ module id_stage (
   //这里既有CSR->GR
   wire csr_delay = id_valid & exe_exist_csrR & ((need_rj & regAddrA != 5'b0 & exe_valid & exe_regWAddr == regAddrA) |
                                   (need_rkd & regAddrB != 5'b0 & exe_valid & exe_regWAddr == regAddrB)) & ~mem_to_id_flush_excp_ertn;
+  wire csr_tlbsrch_delay = id_valid & inst_tlbsrch  & exe_valid & exe_existCSRWTLBEHI & ~mem_to_id_flush_excp_ertn;                          
 
   //异常
   wire inst_ine;
@@ -519,13 +521,13 @@ module id_stage (
                      {2{inst_rdcntvl}} & 2'b10 |
                      {2{inst_rdcntvh}} & 2'b11;
 
-  //mem等待data_ok时涉及到的阻塞 mem阶段当memreadygo不满足时写只能是load写
-  wire mem_data_ok_stall = ~mem_ready_go & id_valid & ((need_rj & regAddrA != 5'b0 & (exe_regWAddr == regAddrA | mem_regWAddr == regAddrA | wb_regWAddr == exe_regWAddr)) |
-                                  (need_rkd & regAddrB != 5'b0 & (exe_regWAddr == regAddrB | mem_regWAddr == regAddrB | wb_regWAddr == regAddrB))) & (mem_pc != wb_pc);
+    //mem等待data_ok时涉及到的阻塞 mem阶段当memreadygo不满足时写只能是load写
+  wire mem_data_ok_stall = ~mem_ready_go & id_valid & ((need_rj & regAddrA != 5'b0 & (mem_regWAddr == regAddrA)) |
+                                  (need_rkd & regAddrB != 5'b0 & (mem_regWAddr == regAddrB))) & (mem_pc != wb_pc);//可能会有exe级无法到达，导致mem级没更新
   //id级等待exe级除法计算完成
   wire div_delay = id_valid & ((need_rj & regAddrA != 5'b0 & exe_valid & exe_regWAddr == regAddrA) | 
                                (need_rkd & regAddrB != 5'b0 & exe_valid & exe_regWAddr == regAddrB)) & exe_div & ~(exe_complete_delay & exe_div_finish_ready_i);
-  assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall & ~div_delay;
+  assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall & ~div_delay & ~csr_tlbsrch_delay;
 
   //TLB INS
   wire [2:0]tlb_ins_rec = {3{inst_tlbsrch}} & 3'b001 |

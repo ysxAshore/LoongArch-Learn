@@ -2,24 +2,24 @@
 
 ## 目录
 
--   [1 CSR实现](#1-CSR实现)
-    -   [1.1 使用Verilog头文件定义CSR寄存器域](#11-使用Verilog头文件定义CSR寄存器域)
-    -   [1.2 使用Verilog设计文件实现CSR的RW](#12-使用Verilog设计文件实现CSR的RW)
--   [2 流水阶段增量开发——EXP12](#2-流水阶段增量开发EXP12)
-    -   [2.1 IF阶段代码修改](#21-IF阶段代码修改)
-    -   [2.2 ID阶段代码修改](#22-ID阶段代码修改)
-    -   [2.3 EXE阶段代码修改](#23-EXE阶段代码修改)
-    -   [2.4 MEM阶段代码修改](#24-MEM阶段代码修改)
-    -   [2.5 WB阶段代码修改](#25-WB阶段代码修改)
-    -   [2.6 hazard阶段代码修改](#26-hazard阶段代码修改)
--   [3 流水阶段增量开发——EXP13](#3-流水阶段增量开发EXP13)
-    -   [3.1 IF阶段增量开发——支持ADEF异常](#31-IF阶段增量开发支持ADEF异常)
-    -   [3.2 ID阶段增量开发——支持RDCNT、BREAK指令、定时器中断、软中断](#32-ID阶段增量开发支持RDCNTBREAK指令定时器中断软中断)
-    -   [3.3 EXE阶段增量开发——支持ALE异常、根据d\_rdcnt\_inst选择写寄存器数据](#33-EXE阶段增量开发支持ALE异常根据d_rdcnt_inst选择写寄存器数据)
-    -   [3.4 MEM阶段增量开发](#34-MEM阶段增量开发)
-    -   [3.5 WB阶段增量开发](#35-WB阶段增量开发)
-    -   [3.6 hazard模块增量开发](#36-hazard模块增量开发)
--   [4 重点记录](#4-重点记录)
+- [1 CSR实现](#1-CSR实现)
+  - [1.1 使用Verilog头文件定义CSR寄存器域](#11-使用Verilog头文件定义CSR寄存器域)
+  - [1.2 使用Verilog设计文件实现CSR的RW](#12-使用Verilog设计文件实现CSR的RW)
+- [2 流水阶段增量开发——EXP12](#2-流水阶段增量开发EXP12)
+  - [2.1 IF阶段代码修改](#21-IF阶段代码修改)
+  - [2.2 ID阶段代码修改](#22-ID阶段代码修改)
+  - [2.3 EXE阶段代码修改](#23-EXE阶段代码修改)
+  - [2.4 MEM阶段代码修改](#24-MEM阶段代码修改)
+  - [2.5 WB阶段代码修改](#25-WB阶段代码修改)
+  - [2.6 hazard阶段代码修改](#26-hazard阶段代码修改)
+- [3 流水阶段增量开发——EXP13](#3-流水阶段增量开发EXP13)
+  - [3.1 IF阶段增量开发——支持ADEF异常](#31-IF阶段增量开发支持ADEF异常)
+  - [3.2 ID阶段增量开发——支持RDCNT、BREAK指令、定时器中断、软中断](#32-ID阶段增量开发支持RDCNTBREAK指令定时器中断软中断)
+  - [3.3 EXE阶段增量开发——支持ALE异常、根据d\_rdcnt\_inst选择写寄存器数据](#33-EXE阶段增量开发支持ALE异常根据d_rdcnt_inst选择写寄存器数据)
+  - [3.4 MEM阶段增量开发](#34-MEM阶段增量开发)
+  - [3.5 WB阶段增量开发](#35-WB阶段增量开发)
+  - [3.6 hazard模块增量开发](#36-hazard模块增量开发)
+- [4 重点记录](#4-重点记录)
 
 > 参考资料
 >
@@ -129,9 +129,9 @@
 
 其中关于TLB域和TCFG域的边界值和做了以下定义：
 
-1.  TLBIDX的n值为5→32个TLB项
-2.  TLBELO的PALEN为36
-3.  TCFG的n值为32
+1. TLBIDX的n值为5→32个TLB项
+2. TLBELO的PALEN为36
+3. TCFG的n值为32
 
 ### 1.2 使用Verilog设计文件实现CSR的RW
 
@@ -688,480 +688,480 @@ endmodule
 
 下面进行具体分析：
 
--   CRMD
-    1.  复位时，置CRMD.DA为1，CRMD.PLV、IE、DATF、DATM、0域为0
-    2.  W\_excp触发异常时，置CRMD.PLV、IE为0。如果是TLB重填异常，那么还需要置CRMD.DA为1，PG为0
-    3.  W\_ertn执行ERTN指令时，置CRMD.PLV、IE为PRMD.PPLV、PLE的值。如果当前正在执行的服务程序是重填服务程序，那么还需要置CRMD.DA为0，CRMD.PG为1
-    4.  如果写crmd\_wen信号有效时，则根据写csr数据W\_csrWData对应域信息更新csr\_crmd
-    ```verilog
-      //crmd
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_crmd[`PLV]  <= 2'b0;
-          csr_crmd[`IE]   <= 1'b0;
-          csr_crmd[`DA]   <= 1'b1;
-          csr_crmd[`PG]   <= 1'b0;
-          csr_crmd[`DATF] <= 2'b0;
-          csr_crmd[`DATM] <= 2'b0;
-          csr_crmd[31:9]  <= 23'b0;
-        end else if (W_excp) begin
-          csr_crmd[`PLV] <= 2'b0;
-          csr_crmd[`IE]  <= 1'b0;
-          if (W_excp_tlbrefill) begin
-            csr_crmd[`DA] <= 1'b1;
-            csr_crmd[`PG] <= 1'b0;
-          end
-        end else if (W_ertn) begin
-          csr_crmd[`PLV] <= csr_prmd[`PPLV];
-          csr_crmd[`IE]  <= csr_prmd[`PIE];
-          if (csr_estat[`ECODE] == 6'h3f) begin  //重填异常
-            csr_crmd[`DA] <= 1'b0;
-            csr_crmd[`PG] <= 1'b1;
-          end
-        end else if (crmd_wen) begin
-          csr_crmd[`PLV]  <= W_csrWData[`PLV];
-          csr_crmd[`IE]   <= W_csrWData[`IE];
-          csr_crmd[`DA]   <= W_csrWData[`DA];
-          csr_crmd[`PG]   <= W_csrWData[`PG];
-          csr_crmd[`DATF] <= W_csrWData[`DATF];
-          csr_crmd[`DATM] <= W_csrWData[`DATM];
+- CRMD
+  1. 复位时，置CRMD.DA为1，CRMD.PLV、IE、DATF、DATM、0域为0
+  2. W\_excp触发异常时，置CRMD.PLV、IE为0。如果是TLB重填异常，那么还需要置CRMD.DA为1，PG为0
+  3. W\_ertn执行ERTN指令时，置CRMD.PLV、IE为PRMD.PPLV、PLE的值。如果当前正在执行的服务程序是重填服务程序，那么还需要置CRMD.DA为0，CRMD.PG为1
+  4. 如果写crmd\_wen信号有效时，则根据写csr数据W\_csrWData对应域信息更新csr\_crmd
+  ```verilog
+    //crmd
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_crmd[`PLV]  <= 2'b0;
+        csr_crmd[`IE]   <= 1'b0;
+        csr_crmd[`DA]   <= 1'b1;
+        csr_crmd[`PG]   <= 1'b0;
+        csr_crmd[`DATF] <= 2'b0;
+        csr_crmd[`DATM] <= 2'b0;
+        csr_crmd[31:9]  <= 23'b0;
+      end else if (W_excp) begin
+        csr_crmd[`PLV] <= 2'b0;
+        csr_crmd[`IE]  <= 1'b0;
+        if (W_excp_tlbrefill) begin
+          csr_crmd[`DA] <= 1'b1;
+          csr_crmd[`PG] <= 1'b0;
         end
-      end
-    ```
--   PRMD
-    1.  复位时将PRMD的0域置0
-    2.  当W\_excp有效触发异常时，使用CRMD.PLV和CRMD.IE更新PRMD.PPLV和PRMD.PIE
-    3.  当写PRMD信号prmd\_wen有效时，使用W\_csrWData对应域值更新PRMD对应域
-    ```verilog
-      //prmd
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_prmd[31:3] <= 29'b0;
-        end else if (W_excp) begin
-          csr_prmd[`PPLV] <= csr_crmd[`PLV];
-          csr_prmd[`PIE]  <= csr_crmd[`IE];
-        end else if (prmd_wen) begin
-          csr_prmd[`PPLV] <= W_csrWData[`PPLV];
-          csr_prmd[`PIE]  <= W_csrWData[`PIE];
+      end else if (W_ertn) begin
+        csr_crmd[`PLV] <= csr_prmd[`PPLV];
+        csr_crmd[`IE]  <= csr_prmd[`PIE];
+        if (csr_estat[`ECODE] == 6'h3f) begin  //重填异常
+          csr_crmd[`DA] <= 1'b0;
+          csr_crmd[`PG] <= 1'b1;
         end
+      end else if (crmd_wen) begin
+        csr_crmd[`PLV]  <= W_csrWData[`PLV];
+        csr_crmd[`IE]   <= W_csrWData[`IE];
+        csr_crmd[`DA]   <= W_csrWData[`DA];
+        csr_crmd[`PG]   <= W_csrWData[`PG];
+        csr_crmd[`DATF] <= W_csrWData[`DATF];
+        csr_crmd[`DATM] <= W_csrWData[`DATM];
       end
-    ```
--   euen
-    1.  复位时，将csr\_euen全置0
-    2.  当写EUEN信号euen\_wen有效时，使用W\_csrWData对应域值更新csr\_euen
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_euen <= 32'b0;
-        end else if (euen_wen) begin
-          csr_euen[`FPE] <= W_csrWData[`FPE];
-        end
+    end
+  ```
+- PRMD
+  1. 复位时将PRMD的0域置0
+  2. 当W\_excp有效触发异常时，使用CRMD.PLV和CRMD.IE更新PRMD.PPLV和PRMD.PIE
+  3. 当写PRMD信号prmd\_wen有效时，使用W\_csrWData对应域值更新PRMD对应域
+  ```verilog
+    //prmd
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_prmd[31:3] <= 29'b0;
+      end else if (W_excp) begin
+        csr_prmd[`PPLV] <= csr_crmd[`PLV];
+        csr_prmd[`PIE]  <= csr_crmd[`IE];
+      end else if (prmd_wen) begin
+        csr_prmd[`PPLV] <= W_csrWData[`PPLV];
+        csr_prmd[`PIE]  <= W_csrWData[`PIE];
       end
-    ```
--   ecfg
-    1.  复位时，将csr\_ecfg全置0
-    2.  当写ECFG信号ecfg\_wen有效时，使用W\_csrWData对应域值更新csr\_ecfg
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_ecfg <= 32'b0;
-        end else if (ecfg_wen) begin
-          csr_ecfg[`LIE_9_0]   <= W_csrWData[`LIE_9_0];
-          csr_ecfg[`LIE_12_11] <= W_csrWData[`LIE_12_11];
-        end
+    end
+  ```
+- euen
+  1. 复位时，将csr\_euen全置0
+  2. 当写EUEN信号euen\_wen有效时，使用W\_csrWData对应域值更新csr\_euen
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_euen <= 32'b0;
+      end else if (euen_wen) begin
+        csr_euen[`FPE] <= W_csrWData[`FPE];
       end
-    ```
--   estat
-    1.  复位时将ESTAT域的IS\_1\_0、0域置位0
+    end
+  ```
+- ecfg
+  1. 复位时，将csr\_ecfg全置0
+  2. 当写ECFG信号ecfg\_wen有效时，使用W\_csrWData对应域值更新csr\_ecfg
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_ecfg <= 32'b0;
+      end else if (ecfg_wen) begin
+        csr_ecfg[`LIE_9_0]   <= W_csrWData[`LIE_9_0];
+        csr_ecfg[`LIE_12_11] <= W_csrWData[`LIE_12_11];
+      end
+    end
+  ```
+- estat
+  1. 复位时将ESTAT域的IS\_1\_0、0域置位0
 
-        除此之外，手册上并没有指出，但是结合实际开发的单核CPU，将IS\_9\_2、核间中断、定时器中断置位0
-    2.  复位信号无效时，将ESTAT域的IS\_9\_2置位外部输入interrupt的值
-    3.  复位信号无效时，如果有写TICLR寄存器且对应W\_csrWData的CLR域值为1，即表示需要将定时器中断复位——csr\_estat\[11]置0；如果定时器计时使能且定时器计数值为0，即表示定时器中断有效——csr\_estat\[11]置1
-    4.  当触发异常时，会根据Code、subcode更新csr\_estat的ECODE、ESUBCODE域
-    5.  当写ESTAT信号estat\_wen有效时，根据W\_csrWData的IS\_1\_0域更新ESTAT对应值
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_estat[`IS_1_0] <= 2'b0;
-          csr_estat[`IS_9_2] <= 8'b0;
-          csr_estat[10] <= 1'b0;  //手册没写，但是应该是也需要复位的
-          csr_estat[12] <= 1'b0;  //手册没写，复位也需要复位核间中断，因为单核所以手册没写
-          csr_estat[15:13] <= 3'b0;
-          csr_estat[31] <= 1'b0;
-        end else begin
-          //根据外设硬中断源interrupt，赋值csr_estat[`IS_9_2]
-          csr_estat[`IS_9_2] <= interrupt;
-          //定时器中断——当倒计时为0且TCFG.En使能，置位定时器中断csr_estat[11];同时写ticlr.clr域为1清除定时器中断
-          if (ticlr_wen & W_csrWData[`CLR]) begin
-            csr_estat[11] <= 1'b0;
-          end else if (csr_tcfg[`EN] & csr_tval == 32'b0) begin
-            csr_estat[11] <= 1'b1;
-          end
-          if (W_excp) begin
-            csr_estat[`ECODE] <= W_code;
-            csr_estat[`ESUBCODE] <= W_subcode;
-          end else if (estat_wen) begin
-            csr_estat[`IS_1_0] <= W_csrWData[`IS_1_0];
-          end
+     除此之外，手册上并没有指出，但是结合实际开发的单核CPU，将IS\_9\_2、核间中断、定时器中断置位0
+  2. 复位信号无效时，将ESTAT域的IS\_9\_2置位外部输入interrupt的值
+  3. 复位信号无效时，如果有写TICLR寄存器且对应W\_csrWData的CLR域值为1，即表示需要将定时器中断复位——csr\_estat\[11]置0；如果定时器计时使能且定时器计数值为0，即表示定时器中断有效——csr\_estat\[11]置1
+  4. 当触发异常时，会根据Code、subcode更新csr\_estat的ECODE、ESUBCODE域
+  5. 当写ESTAT信号estat\_wen有效时，根据W\_csrWData的IS\_1\_0域更新ESTAT对应值
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_estat[`IS_1_0] <= 2'b0;
+        csr_estat[`IS_9_2] <= 8'b0;
+        csr_estat[10] <= 1'b0;  //手册没写，但是应该是也需要复位的
+        csr_estat[12] <= 1'b0;  //手册没写，复位也需要复位核间中断，因为单核所以手册没写
+        csr_estat[15:13] <= 3'b0;
+        csr_estat[31] <= 1'b0;
+      end else begin
+        //根据外设硬中断源interrupt，赋值csr_estat[`IS_9_2]
+        csr_estat[`IS_9_2] <= interrupt;
+        //定时器中断——当倒计时为0且TCFG.En使能，置位定时器中断csr_estat[11];同时写ticlr.clr域为1清除定时器中断
+        if (ticlr_wen & W_csrWData[`CLR]) begin
+          csr_estat[11] <= 1'b0;
+        end else if (csr_tcfg[`EN] & csr_tval == 32'b0) begin
+          csr_estat[11] <= 1'b1;
         end
-      end
-    ```
--   era
-    1.  当触发异常时，根据写回阶段输入的W\_era值更新csr\_era
-    2.  当写era信号era\_wen有效时，更新W\_csrWData至csr\_era
-    ```verilog
-      always @(posedge clk) begin
         if (W_excp) begin
-          csr_era <= W_era;
-        end else if (era_wen) begin
-          csr_era <= W_csrWData;
+          csr_estat[`ECODE] <= W_code;
+          csr_estat[`ESUBCODE] <= W_subcode;
+        end else if (estat_wen) begin
+          csr_estat[`IS_1_0] <= W_csrWData[`IS_1_0];
         end
       end
-    ```
--   badv——未实现完全
-    1.  当写badv信号badv\_wen有效时，更新W\_csrWData至csr\_badv
-    2.  当发生ADEF和ALE异常时，需要写badv，前者写异常指令地址后者写访存地址
-    ```verilog
-     always @(posedge clk) begin
-        if (badv_wen) begin
-          csr_badv <= W_csrWData;
-        end else if (W_excp_adef) begin
-          csr_badv <= W_badv_pc;
-        end
+    end
+  ```
+- era
+  1. 当触发异常时，根据写回阶段输入的W\_era值更新csr\_era
+  2. 当写era信号era\_wen有效时，更新W\_csrWData至csr\_era
+  ```verilog
+    always @(posedge clk) begin
+      if (W_excp) begin
+        csr_era <= W_era;
+      end else if (era_wen) begin
+        csr_era <= W_csrWData;
       end
+    end
+  ```
+- badv——未实现完全
+  1. 当写badv信号badv\_wen有效时，更新W\_csrWData至csr\_badv
+  2. 当发生ADEF和ALE异常时，需要写badv，前者写异常指令地址后者写访存地址
+  ```verilog
+   always @(posedge clk) begin
+      if (badv_wen) begin
+        csr_badv <= W_csrWData;
+      end else if (W_excp_adef) begin
+        csr_badv <= W_badv_pc;
+      end
+    end
 
-    ```
--   eentry
-    1.  当复位信号有效时，置csr\_eentry的0域为0
-    2.  当写eentry信号eentry\_wen有效时，更新W\_csrWData对应域值至csr\_eentry
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_eentry[5:0] <= 6'b0;
-        end else if (eentry_wen) begin
-          csr_eentry[`EENTRY_VA] <= W_csrWData[`EENTRY_VA];
-        end
+  ```
+- eentry
+  1. 当复位信号有效时，置csr\_eentry的0域为0
+  2. 当写eentry信号eentry\_wen有效时，更新W\_csrWData对应域值至csr\_eentry
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_eentry[5:0] <= 6'b0;
+      end else if (eentry_wen) begin
+        csr_eentry[`EENTRY_VA] <= W_csrWData[`EENTRY_VA];
       end
-    ```
--   cpuid
-    1.  因为只开发单核CPU，所以当复位信号有效时，会置csr\_cpuid的0域和COREID域均为0
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_cpuid[`COREID] <= 9'b0;
-          csr_cpuid[31:9] <= 23'b0;
-        end
+    end
+  ```
+- cpuid
+  1. 因为只开发单核CPU，所以当复位信号有效时，会置csr\_cpuid的0域和COREID域均为0
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_cpuid[`COREID] <= 9'b0;
+        csr_cpuid[31:9] <= 23'b0;
       end
-    ```
--   save
-    1.  当save0\~3写信号有效时，会置W\_csrWData至csr\_save0\~3中
-    ```verilog
-      always @(posedge clk) begin
-        if (save0_wen) begin
-          csr_save0 <= W_csrWData;
-        end
-        if (save1_wen) begin
-          csr_save1 <= W_csrWData;
-        end
-        if (save2_wen) begin
-          csr_save2 <= W_csrWData;
-        end
-        if (save3_wen) begin
-          csr_save3 <= W_csrWData;
-        end
+    end
+  ```
+- save
+  1. 当save0\~3写信号有效时，会置W\_csrWData至csr\_save0\~3中
+  ```verilog
+    always @(posedge clk) begin
+      if (save0_wen) begin
+        csr_save0 <= W_csrWData;
       end
-    ```
--   llbit
-    1.  当复位信号有效时，置llbit、LLBCTL的KLO域和0域为0
-    2.  当执行ERTN指令时，如果LLBIT的KLO域为1那么不清零llbit，而是复位KLO域值；否则清零llbit
-    3.  当LLBCTL的写信号llbctl\_wen有效时，会根据W\_csrWData对应KLO域的值更新LLBCTL。并且如果W\_csrWData对应WCLLB域值为1时(向LLBCTL.WCLLB写1)，那么会更新LLBCTL.WCLLB，且复位llbit
-    4.  当llbit的写信号W\_llbit\_wen有效时，会根据W\_llbit更新llbit
-    ```verilog
-      reg llbit;
-      always @(posedge clk) begin
-        if (~resetn) begin
-          llbit <= 1'b0;
+      if (save1_wen) begin
+        csr_save1 <= W_csrWData;
+      end
+      if (save2_wen) begin
+        csr_save2 <= W_csrWData;
+      end
+      if (save3_wen) begin
+        csr_save3 <= W_csrWData;
+      end
+    end
+  ```
+- llbit
+  1. 当复位信号有效时，置llbit、LLBCTL的KLO域和0域为0
+  2. 当执行ERTN指令时，如果LLBIT的KLO域为1那么不清零llbit，而是复位KLO域值；否则清零llbit
+  3. 当LLBCTL的写信号llbctl\_wen有效时，会根据W\_csrWData对应KLO域的值更新LLBCTL。并且如果W\_csrWData对应WCLLB域值为1时(向LLBCTL.WCLLB写1)，那么会更新LLBCTL.WCLLB，且复位llbit
+  4. 当llbit的写信号W\_llbit\_wen有效时，会根据W\_llbit更新llbit
+  ```verilog
+    reg llbit;
+    always @(posedge clk) begin
+      if (~resetn) begin
+        llbit <= 1'b0;
+        csr_llbctl[`KLO] <= 1'b0;
+        csr_llbctl[31:3] <= 29'b0;
+      end else if (W_ertn) begin
+        if (csr_llbctl[`KLO]) begin
           csr_llbctl[`KLO] <= 1'b0;
-          csr_llbctl[31:3] <= 29'b0;
-        end else if (W_ertn) begin
-          if (csr_llbctl[`KLO]) begin
-            csr_llbctl[`KLO] <= 1'b0;
-          end else begin
-            llbit <= 1'b0;
-          end
-        end else if (llbctl_wen) begin
-          csr_llbctl[`KLO] <= W_csrWData[`KLO];
-          if (W_csrWData[`WCLLB] == 1'b1) begin
-            csr_llbctl[`WCLLB] <= W_csrWData[`WCLLB] == 1'b1;
-            llbit <= 1'b0;
-          end
-        end else if (W_llbit_wen) begin
-          llbit <= W_llbit;
+        end else begin
+          llbit <= 1'b0;
         end
-      end
-    ```
--   tibidx——未实现完整
-    1.  当复位信号有效时，置TLBIDX的0域为0
-    2.  当写信号tlbidx\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbidx
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_tlbidx[23:5] <= 11'b0;
-          csr_tlbidx[30]   <= 1'b0;
-        end else if (tlbidx_wen) begin
-          csr_tlbidx[`INDEX] <= W_csrWData[`INDEX];
-          csr_tlbidx[`PS] <= W_csrWData[`PS];
-          csr_tlbidx[`NE] <= W_csrWData[`NE];
+      end else if (llbctl_wen) begin
+        csr_llbctl[`KLO] <= W_csrWData[`KLO];
+        if (W_csrWData[`WCLLB] == 1'b1) begin
+          csr_llbctl[`WCLLB] <= W_csrWData[`WCLLB] == 1'b1;
+          llbit <= 1'b0;
         end
+      end else if (W_llbit_wen) begin
+        llbit <= W_llbit;
       end
-    ```
--   tibhi——未实现完整
-    1.  当复位信号有效时，置TLBHI的0域为0
-    2.  当写信号tlbhi\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbhi
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_tlbehi[12:0] <= 13'b0;
-        end else if (tlbehi_wen) begin
-          csr_tlbehi[`VPPN] <= W_csrWData[`VPPN];
-        end
+    end
+  ```
+- tibidx——未实现完整
+  1. 当复位信号有效时，置TLBIDX的0域为0
+  2. 当写信号tlbidx\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbidx
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_tlbidx[23:5] <= 11'b0;
+        csr_tlbidx[30]   <= 1'b0;
+      end else if (tlbidx_wen) begin
+        csr_tlbidx[`INDEX] <= W_csrWData[`INDEX];
+        csr_tlbidx[`PS] <= W_csrWData[`PS];
+        csr_tlbidx[`NE] <= W_csrWData[`NE];
       end
-    ```
--   tibelo0——未实现完整
-    1.  当复位信号有效时，置TLBELO0的0域为0
-    2.  当写信号tlbelo0\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbelo0
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_tlbelo0[7] <= 1'b0;
-        end else if (tlbelo0_wen) begin
-          csr_tlbelo0[`TLB_V]   <= W_csrWData[`TLB_V];
-          csr_tlbelo0[`TLB_D]   <= W_csrWData[`TLB_D];
-          csr_tlbelo0[`TLB_PLV] <= W_csrWData[`TLB_PLV];
-          csr_tlbelo0[`TLB_MAT] <= W_csrWData[`TLB_MAT];
-          csr_tlbelo0[`TLB_G]   <= W_csrWData[`TLB_G];
-          csr_tlbelo0[`TLB_PPN] <= W_csrWData[`TLB_PPN];
-        end
+    end
+  ```
+- tibhi——未实现完整
+  1. 当复位信号有效时，置TLBHI的0域为0
+  2. 当写信号tlbhi\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbhi
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_tlbehi[12:0] <= 13'b0;
+      end else if (tlbehi_wen) begin
+        csr_tlbehi[`VPPN] <= W_csrWData[`VPPN];
       end
-    ```
--   tibelo1——未实现完整
-    1.  当复位信号有效时，置TLBELO1的0域为0
-    2.  当写信号tlbelo1\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbelo1
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_tlbelo1[7] <= 1'b0;
-        end else if (tlbelo0_wen) begin
-          csr_tlbelo1[`TLB_V]   <= W_csrWData[`TLB_V];
-          csr_tlbelo1[`TLB_D]   <= W_csrWData[`TLB_D];
-          csr_tlbelo1[`TLB_PLV] <= W_csrWData[`TLB_PLV];
-          csr_tlbelo1[`TLB_MAT] <= W_csrWData[`TLB_MAT];
-          csr_tlbelo1[`TLB_G]   <= W_csrWData[`TLB_G];
-          csr_tlbelo1[`TLB_PPN] <= W_csrWData[`TLB_PPN];
-        end
+    end
+  ```
+- tibelo0——未实现完整
+  1. 当复位信号有效时，置TLBELO0的0域为0
+  2. 当写信号tlbelo0\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbelo0
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_tlbelo0[7] <= 1'b0;
+      end else if (tlbelo0_wen) begin
+        csr_tlbelo0[`TLB_V]   <= W_csrWData[`TLB_V];
+        csr_tlbelo0[`TLB_D]   <= W_csrWData[`TLB_D];
+        csr_tlbelo0[`TLB_PLV] <= W_csrWData[`TLB_PLV];
+        csr_tlbelo0[`TLB_MAT] <= W_csrWData[`TLB_MAT];
+        csr_tlbelo0[`TLB_G]   <= W_csrWData[`TLB_G];
+        csr_tlbelo0[`TLB_PPN] <= W_csrWData[`TLB_PPN];
       end
-    ```
--   asid——未实现完整
-    1.  当复位信号有效时，置ASID的0域为0；且ASID域位宽固定为0\~9因此ASID.ASIDBITS值为10
-    2.  当写信号asid\_wen有效时，根据W\_csrWData对应域的值更新csr\_asid
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_asid[15:10] <= 6'b0;
-          csr_asid[31:24] <= 8'b0;
-          //ASID域位宽为10——9:0
-          csr_asid[`TLB_ASIDBITS] <= 8'd10;
-        end else if (asid_wen) begin
-          csr_asid[`TLB_ASID] <= W_csrWData[`TLB_ASID];
-        end
+    end
+  ```
+- tibelo1——未实现完整
+  1. 当复位信号有效时，置TLBELO1的0域为0
+  2. 当写信号tlbelo1\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbelo1
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_tlbelo1[7] <= 1'b0;
+      end else if (tlbelo0_wen) begin
+        csr_tlbelo1[`TLB_V]   <= W_csrWData[`TLB_V];
+        csr_tlbelo1[`TLB_D]   <= W_csrWData[`TLB_D];
+        csr_tlbelo1[`TLB_PLV] <= W_csrWData[`TLB_PLV];
+        csr_tlbelo1[`TLB_MAT] <= W_csrWData[`TLB_MAT];
+        csr_tlbelo1[`TLB_G]   <= W_csrWData[`TLB_G];
+        csr_tlbelo1[`TLB_PPN] <= W_csrWData[`TLB_PPN];
       end
-    ```
--   pgdl
-    1.  当复位信号有效时，置PGDL的0域为0
-    2.  当写信号pgdl\_wen有效时，根据W\_csrWData对应域的值更新csr\_pgdl
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_pgdl[11:0] <= 12'b0;
-        end else if (pgdl_wen) begin
-          csr_pgdl[`PGDL_BASE] <= W_csrWData[`PGDL_BASE];
-        end
+    end
+  ```
+- asid——未实现完整
+  1. 当复位信号有效时，置ASID的0域为0；且ASID域位宽固定为0\~9因此ASID.ASIDBITS值为10
+  2. 当写信号asid\_wen有效时，根据W\_csrWData对应域的值更新csr\_asid
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_asid[15:10] <= 6'b0;
+        csr_asid[31:24] <= 8'b0;
+        //ASID域位宽为10——9:0
+        csr_asid[`TLB_ASIDBITS] <= 8'd10;
+      end else if (asid_wen) begin
+        csr_asid[`TLB_ASID] <= W_csrWData[`TLB_ASID];
       end
-    ```
--   pgdh
-    1.  当复位信号有效时，置PGDH的0域为0
-    2.  当写信号pgdh\_wen有效时，根据W\_csrWData对应域的值更新csr\_pgdh
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_pgdh[11:0] <= 12'b0;
-        end else if (pgdh_wen) begin
-          csr_pgdh[`PGDH_BASE] <= W_csrWData[`PGDH_BASE];
-        end
+    end
+  ```
+- pgdl
+  1. 当复位信号有效时，置PGDL的0域为0
+  2. 当写信号pgdl\_wen有效时，根据W\_csrWData对应域的值更新csr\_pgdl
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_pgdl[11:0] <= 12'b0;
+      end else if (pgdl_wen) begin
+        csr_pgdl[`PGDL_BASE] <= W_csrWData[`PGDL_BASE];
       end
-    ```
--   pgd
+    end
+  ```
+- pgdh
+  1. 当复位信号有效时，置PGDH的0域为0
+  2. 当写信号pgdh\_wen有效时，根据W\_csrWData对应域的值更新csr\_pgdh
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_pgdh[11:0] <= 12'b0;
+      end else if (pgdh_wen) begin
+        csr_pgdh[`PGDH_BASE] <= W_csrWData[`PGDH_BASE];
+      end
+    end
+  ```
+- pgd
 
-    如果BADV\[31]是0，那么PGD=PGDL，否则PGD=PGDH
-    ```verilog
-      assign csr_pgd = csr_badv[31] ? csr_pgdh : csr_pgdl;
-    ```
--   dmw0
-    1.  当复位信号有效时，置DMW0的0域为0
-    2.  当写信号dmw0\_wen有效时，根据W\_csrWData对应域的值更新csr\_dmw0
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_dmw0[`DMW_PLV0] <= 1'b0;
-          csr_dmw0[2:1] <= 2'b0;
-          csr_dmw0[`DMW_PLV3] <= 1'b0;
-          csr_dmw0[24:6] <= 19'b0;
-          csr_dmw0[28] <= 1'b0;
-        end else if (dmw0_wen) begin
-          csr_dmw0[`DMW_PLV0] <= W_csrWData[`DMW_PLV0];
-          csr_dmw0[`DMW_PLV3] <= W_csrWData[`DMW_PLV3];
-          csr_dmw0[`DMW_MAT]  <= W_csrWData[`DMW_MAT];
-          csr_dmw0[`DMW_PSEG] <= W_csrWData[`DMW_PSEG];
-          csr_dmw0[`DMW_VSEG] <= W_csrWData[`DMW_VSEG];
+  如果BADV\[31]是0，那么PGD=PGDL，否则PGD=PGDH
+  ```verilog
+    assign csr_pgd = csr_badv[31] ? csr_pgdh : csr_pgdl;
+  ```
+- dmw0
+  1. 当复位信号有效时，置DMW0的0域为0
+  2. 当写信号dmw0\_wen有效时，根据W\_csrWData对应域的值更新csr\_dmw0
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_dmw0[`DMW_PLV0] <= 1'b0;
+        csr_dmw0[2:1] <= 2'b0;
+        csr_dmw0[`DMW_PLV3] <= 1'b0;
+        csr_dmw0[24:6] <= 19'b0;
+        csr_dmw0[28] <= 1'b0;
+      end else if (dmw0_wen) begin
+        csr_dmw0[`DMW_PLV0] <= W_csrWData[`DMW_PLV0];
+        csr_dmw0[`DMW_PLV3] <= W_csrWData[`DMW_PLV3];
+        csr_dmw0[`DMW_MAT]  <= W_csrWData[`DMW_MAT];
+        csr_dmw0[`DMW_PSEG] <= W_csrWData[`DMW_PSEG];
+        csr_dmw0[`DMW_VSEG] <= W_csrWData[`DMW_VSEG];
+      end
+    end
+  ```
+- dmw1
+  1. 当复位信号有效时，置DMW1的0域为0
+  2. 当写信号dmw1\_wen有效时，根据W\_csrWData对应域的值更新csr\_dmw1
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_dmw1[`DMW_PLV0] <= 1'b0;
+        csr_dmw1[2:1] <= 2'b0;
+        csr_dmw1[`DMW_PLV3] <= 1'b0;
+        csr_dmw1[24:6] <= 19'b0;
+        csr_dmw1[28] <= 1'b0;
+      end else if (dmw1_wen) begin
+        csr_dmw1[`DMW_PLV0] <= W_csrWData[`DMW_PLV0];
+        csr_dmw1[`DMW_PLV3] <= W_csrWData[`DMW_PLV3];
+        csr_dmw1[`DMW_MAT]  <= W_csrWData[`DMW_MAT];
+        csr_dmw1[`DMW_PSEG] <= W_csrWData[`DMW_PSEG];
+        csr_dmw1[`DMW_VSEG] <= W_csrWData[`DMW_VSEG];
+      end
+    end
+  ```
+- tlbrentry
+  1. 当复位信号有效时，置TLBRENTRY的0域为0
+  2. 当写信号tlbrentry\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbrentry
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_tlbrentry[5:0] <= 6'b0;
+      end else if (tlbrentry_wen) begin
+        csr_tlbrentry[`TLBEENTRY_VA] <= W_csrWData[`TLBEENTRY_VA];
+      end
+    end
+  ```
+- tid
+  1. 当复位信号有效时，将csr\_tid置为CPUID的值——单核即为0
+  2. 当写信号tid\_wen有效时，根据W\_csrWData更新csr\_tid
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_tid <= 32'b0;
+      end else if (tid_wen) begin
+        csr_tid <= W_csrWData;
+      end
+    end
+  ```
+- tcfg
+  1. 复位时，将TCFG.EN置为0
+  2. 当写信号tcfg\_wen有效时，根据W\_csrWData对应域值更新csr\_tcfg
+
+     注意这里也因为TCFG.INITVAL的更新从而更新了TVAL
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_tcfg[`EN] <= 1'b0;
+      end else if (tcfg_wen) begin
+        csr_tcfg[`EN] <= W_csrWData[`EN];
+        csr_tcfg[`PERIODIC] <= W_csrWData[`PERIODIC];
+        csr_tcfg[`INITVAL] <= W_csrWData[`INITVAL];
+        csr_tval <= {W_csrWData[`INITVAL], 2'b0};
+      end
+    end
+  ```
+- tval
+
+  因为tval的初始值更新放在了tcfg中，所以这里只写了tval的计时语句块
+
+  当TCFG.EN高电平时，表示允许定时器计时，从而：
+
+  如果定时器值不为0，那么自身递减1
+
+  如果定时器值为0，那么根据TCFG.PERIODIC选择是否再开始计时[^注释1]
+  ```verilog
+    always @(posedge clk) begin
+      if (csr_tcfg[`EN] == 1'b1) begin
+        if (csr_tval != 32'b0) begin
+          csr_tval <= csr_tval - 32'b1;
+        end else if (csr_tval == 32'b0) begin
+          csr_tval <= csr_tcfg[`PERIODIC] ? {csr_tcfg[`INITVAL], 2'b0} : 32'hffffffff;
         end
       end
-    ```
--   dmw1
-    1.  当复位信号有效时，置DMW1的0域为0
-    2.  当写信号dmw1\_wen有效时，根据W\_csrWData对应域的值更新csr\_dmw1
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_dmw1[`DMW_PLV0] <= 1'b0;
-          csr_dmw1[2:1] <= 2'b0;
-          csr_dmw1[`DMW_PLV3] <= 1'b0;
-          csr_dmw1[24:6] <= 19'b0;
-          csr_dmw1[28] <= 1'b0;
-        end else if (dmw1_wen) begin
-          csr_dmw1[`DMW_PLV0] <= W_csrWData[`DMW_PLV0];
-          csr_dmw1[`DMW_PLV3] <= W_csrWData[`DMW_PLV3];
-          csr_dmw1[`DMW_MAT]  <= W_csrWData[`DMW_MAT];
-          csr_dmw1[`DMW_PSEG] <= W_csrWData[`DMW_PSEG];
-          csr_dmw1[`DMW_VSEG] <= W_csrWData[`DMW_VSEG];
-        end
+    end
+  ```
+- ticlr
+
+  因为TICLR的CLR位读永远是1，所以复位时全置0
+
+  而写CLR的信号只是用于清定时器中断，在ESTAT中已实现
+  ```verilog
+    always @(posedge clk) begin
+      if (~resetn) begin
+        csr_ticlr <= 32'b0;
       end
-    ```
--   tlbrentry
-    1.  当复位信号有效时，置TLBRENTRY的0域为0
-    2.  当写信号tlbrentry\_wen有效时，根据W\_csrWData对应域的值更新csr\_tlbrentry
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_tlbrentry[5:0] <= 6'b0;
-        end else if (tlbrentry_wen) begin
-          csr_tlbrentry[`TLBEENTRY_VA] <= W_csrWData[`TLBEENTRY_VA];
-        end
-      end
-    ```
--   tid
-    1.  当复位信号有效时，将csr\_tid置为CPUID的值——单核即为0
-    2.  当写信号tid\_wen有效时，根据W\_csrWData更新csr\_tid
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_tid <= 32'b0;
-        end else if (tid_wen) begin
-          csr_tid <= W_csrWData;
-        end
-      end
-    ```
--   tcfg
-    1.  复位时，将TCFG.EN置为0
-    2.  当写信号tcfg\_wen有效时，根据W\_csrWData对应域值更新csr\_tcfg
-
-        注意这里也因为TCFG.INITVAL的更新从而更新了TVAL
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_tcfg[`EN] <= 1'b0;
-        end else if (tcfg_wen) begin
-          csr_tcfg[`EN] <= W_csrWData[`EN];
-          csr_tcfg[`PERIODIC] <= W_csrWData[`PERIODIC];
-          csr_tcfg[`INITVAL] <= W_csrWData[`INITVAL];
-          csr_tval <= {W_csrWData[`INITVAL], 2'b0};
-        end
-      end
-    ```
--   tval
-
-    因为tval的初始值更新放在了tcfg中，所以这里只写了tval的计时语句块
-
-    当TCFG.EN高电平时，表示允许定时器计时，从而：
-
-    如果定时器值不为0，那么自身递减1
-
-    如果定时器值为0，那么根据TCFG.PERIODIC选择是否再开始计时[^注释1]
-    ```verilog
-      always @(posedge clk) begin
-        if (csr_tcfg[`EN] == 1'b1) begin
-          if (csr_tval != 32'b0) begin
-            csr_tval <= csr_tval - 32'b1;
-          end else if (csr_tval == 32'b0) begin
-            csr_tval <= csr_tcfg[`PERIODIC] ? {csr_tcfg[`INITVAL], 2'b0} : 32'hffffffff;
-          end
-        end
-      end
-    ```
--   ticlr
-
-    因为TICLR的CLR位读永远是1，所以复位时全置0
-
-    而写CLR的信号只是用于清定时器中断，在ESTAT中已实现
-    ```verilog
-      always @(posedge clk) begin
-        if (~resetn) begin
-          csr_ticlr <= 32'b0;
-        end
-      end
-    ```
--   output port——未实现完整
-    ```verilog
-      //output port
-      assign d_csrRead = {32{d_csrAdd == CRMD}} & csr_crmd |
-                     {32{d_csrAdd == PRMD }}  & csr_prmd    |
-                     {32{d_csrAdd == ECFG  }}  & csr_ecfg    |
-                     {32{d_csrAdd == ESTAT }}  & csr_estat   |
-                     {32{d_csrAdd == ERA   }}  & csr_era      |
-                     {32{d_csrAdd == BADV  }}  & csr_badv    |
-                     {32{d_csrAdd == EENTRY}}  & csr_eentry  |
-                     {32{d_csrAdd == TLBIDX}}  & csr_tlbidx  |
-                     {32{d_csrAdd == TLBEHI}}  & csr_tlbehi  |
-                     {32{d_csrAdd == TLBELO0}} & csr_tlbelo0 |
-                     {32{d_csrAdd == TLBELO1}} & csr_tlbelo1 |
-                     {32{d_csrAdd == ASID  }}  & csr_asid    |
-                     {32{d_csrAdd == PGDL  }}  & csr_pgdl    |
-                     {32{d_csrAdd == PGDH  }}  & csr_pgdh    |
-                     {32{d_csrAdd == PGD   }}  & csr_pgd     |
-                     {32{d_csrAdd == CPUID }}  & csr_cpuid   |
-                     {32{d_csrAdd == SAVE0 }}  & csr_save0   |
-                     {32{d_csrAdd == SAVE1 }}  & csr_save1   |
-                     {32{d_csrAdd == SAVE2 }}  & csr_save2   |
-                     {32{d_csrAdd == SAVE3 }}  & csr_save3   |
-                     {32{d_csrAdd == TID   }}  & csr_tid     |
-                     {32{d_csrAdd == TCFG  }}  & csr_tcfg    |
-                     {32{d_csrAdd == CNTC  }}  & csr_cntc    |
-                     {32{d_csrAdd == TICLR }}  & csr_ticlr   |
-                     {32{d_csrAdd == LLBCTL}}  & {csr_llbctl[31:1], llbit} |
-                     {32{d_csrAdd == TVAL  }}  & csr_tval    |
-                     {32{d_csrAdd == TLBRENTRY}} & csr_tlbrentry   |
-                     {32{d_csrAdd == DMW0}}    & csr_dmw0    |
-                     {32{d_csrAdd == DMW1}}    & csr_dmw1    ;
-      assign tid_out = csr_tid;
-      assign timer_64_out = timer_64;
-      assign has_int = csr_crmd[`IE] & ((csr_ecfg[`LIE] & csr_estat[`IS]) != 13'b0);
-      assign eentry_out = csr_eentry;
-      assign tlbrentry_out = csr_tlbrentry;
-      assign era_out = csr_era;
-      assign plv = {2{W_excp}} & 2'b0 |   
-                   {2{W_ertn}} & csr_prmd[`PPLV] |
-                   {2{crmd_wen}} & W_csrWData[`PLV]   |
-                   {2{!W_excp && !W_ertn && !crmd_wen}} & csr_crmd[`PLV];
-    ```
+    end
+  ```
+- output port——未实现完整
+  ```verilog
+    //output port
+    assign d_csrRead = {32{d_csrAdd == CRMD}} & csr_crmd |
+                   {32{d_csrAdd == PRMD }}  & csr_prmd    |
+                   {32{d_csrAdd == ECFG  }}  & csr_ecfg    |
+                   {32{d_csrAdd == ESTAT }}  & csr_estat   |
+                   {32{d_csrAdd == ERA   }}  & csr_era      |
+                   {32{d_csrAdd == BADV  }}  & csr_badv    |
+                   {32{d_csrAdd == EENTRY}}  & csr_eentry  |
+                   {32{d_csrAdd == TLBIDX}}  & csr_tlbidx  |
+                   {32{d_csrAdd == TLBEHI}}  & csr_tlbehi  |
+                   {32{d_csrAdd == TLBELO0}} & csr_tlbelo0 |
+                   {32{d_csrAdd == TLBELO1}} & csr_tlbelo1 |
+                   {32{d_csrAdd == ASID  }}  & csr_asid    |
+                   {32{d_csrAdd == PGDL  }}  & csr_pgdl    |
+                   {32{d_csrAdd == PGDH  }}  & csr_pgdh    |
+                   {32{d_csrAdd == PGD   }}  & csr_pgd     |
+                   {32{d_csrAdd == CPUID }}  & csr_cpuid   |
+                   {32{d_csrAdd == SAVE0 }}  & csr_save0   |
+                   {32{d_csrAdd == SAVE1 }}  & csr_save1   |
+                   {32{d_csrAdd == SAVE2 }}  & csr_save2   |
+                   {32{d_csrAdd == SAVE3 }}  & csr_save3   |
+                   {32{d_csrAdd == TID   }}  & csr_tid     |
+                   {32{d_csrAdd == TCFG  }}  & csr_tcfg    |
+                   {32{d_csrAdd == CNTC  }}  & csr_cntc    |
+                   {32{d_csrAdd == TICLR }}  & csr_ticlr   |
+                   {32{d_csrAdd == LLBCTL}}  & {csr_llbctl[31:1], llbit} |
+                   {32{d_csrAdd == TVAL  }}  & csr_tval    |
+                   {32{d_csrAdd == TLBRENTRY}} & csr_tlbrentry   |
+                   {32{d_csrAdd == DMW0}}    & csr_dmw0    |
+                   {32{d_csrAdd == DMW1}}    & csr_dmw1    ;
+    assign tid_out = csr_tid;
+    assign timer_64_out = timer_64;
+    assign has_int = csr_crmd[`IE] & ((csr_ecfg[`LIE] & csr_estat[`IS]) != 13'b0);
+    assign eentry_out = csr_eentry;
+    assign tlbrentry_out = csr_tlbrentry;
+    assign era_out = csr_era;
+    assign plv = {2{W_excp}} & 2'b0 |   
+                 {2{W_ertn}} & csr_prmd[`PPLV] |
+                 {2{crmd_wen}} & W_csrWData[`PLV]   |
+                 {2{!W_excp && !W_ertn && !crmd_wen}} & csr_crmd[`PLV];
+  ```
 
 ## 2 流水阶段增量开发——EXP12
 
@@ -1699,27 +1699,27 @@ endmodule
 
 在原来的基础上增加了下面的工作
 
-1.  增加了CSR的模块例化，以及对应端口的流水传递
-2.  增加了读取CSR数据的前递逻辑、CSRXCHG、CSRWR写数据的实现
-    ```verilog
-      assign d_csr_data = {32{D_forwardCSR == 2'b11}} & E_csrWData |
-                          {32{D_forwardCSR == 2'b10}} & M_csrWData |
-                          {32{D_forwardCSR == 2'b01}} & W_csrWData |
-                          {32{D_forwardCSR == 2'b00}} & d__csr_data;
-      assign d_csrWData = inst_csrwr ? d_regDataB : (d_regDataB & d_regDataA) | (d_csr_data & ~d_regDataA);   
-    ```
-3.  根据异常/中断服务程序入口地址以及返回地址，更改下一个指令PC的实现
-    ```verilog
-      assign d_pc_next = W_excp & ~W_ertn ? d_eentry_out :
-                        (W_ertn ? d_era_out: 
-                        (d_selPC[1] ? d_pcJ : 
-                        (d_selPC[0] ? d_pcBranch : 
-                        F_pcPlus4)));
-    ```
-4.  增加了IF-ID流水线寄存器的EXCP、ERTN阻塞
-5.  增加了清空下一个EXE的译码信号
+1. 增加了CSR的模块例化，以及对应端口的流水传递
+2. 增加了读取CSR数据的前递逻辑、CSRXCHG、CSRWR写数据的实现
+   ```verilog
+     assign d_csr_data = {32{D_forwardCSR == 2'b11}} & E_csrWData |
+                         {32{D_forwardCSR == 2'b10}} & M_csrWData |
+                         {32{D_forwardCSR == 2'b01}} & W_csrWData |
+                         {32{D_forwardCSR == 2'b00}} & d__csr_data;
+     assign d_csrWData = inst_csrwr ? d_regDataB : (d_regDataB & d_regDataA) | (d_csr_data & ~d_regDataA);   
+   ```
+3. 根据异常/中断服务程序入口地址以及返回地址，更改下一个指令PC的实现
+   ```verilog
+     assign d_pc_next = W_excp & ~W_ertn ? d_eentry_out :
+                       (W_ertn ? d_era_out: 
+                       (d_selPC[1] ? d_pcJ : 
+                       (d_selPC[0] ? d_pcBranch : 
+                       F_pcPlus4)));
+   ```
+4. 增加了IF-ID流水线寄存器的EXCP、ERTN阻塞
+5. 增加了清空下一个EXE的译码信号
 
-    使用寄存器保留W\_excp信号，然后在下一个周期时ID的译码指令均为0写寄存器信号亦为0
+   使用寄存器保留W\_excp信号，然后在下一个周期时ID的译码指令均为0写寄存器信号亦为0
 
 ### 2.3 EXE阶段代码修改
 
@@ -1900,10 +1900,10 @@ endmodule
 
 在原来的基础上增加了下面的工作
 
-1.  增加了流水的信号传递
-2.  提前了写GR数据是来自csr\_data还是aluresult的选择
+1. 增加了流水的信号传递
+2. 提前了写GR数据是来自csr\_data还是aluresult的选择
 
-    因为会涉及到CSR数据和CR数据的前递——比如i指令是需要将CSR数据加载到GR中，i+1指令用到了这个GR寄存器，那么就需要前递这个GR寄存器，因此在EXE阶段就需要前递。为了简化逻辑，将GR之间的前递和这种涉及到CSR的前递合并，将csr\_data和alu的值的选择提前到这里进行
+   因为会涉及到CSR数据和CR数据的前递——比如i指令是需要将CSR数据加载到GR中，i+1指令用到了这个GR寄存器，那么就需要前递这个GR寄存器，因此在EXE阶段就需要前递。为了简化逻辑，将GR之间的前递和这种涉及到CSR的前递合并，将csr\_data和alu的值的选择提前到这里进行
 
 ### 2.4 MEM阶段代码修改
 
@@ -2227,8 +2227,8 @@ endmodule
 
 ```
 
-1.  根据W\_excp\_or\_ertn信号，产生了F、D阶段的阻塞信号以及E、M、W阶段的清除信号
-2.  根据D、E、M、W阶段的csrAdd和csr\_en信号，产生了读csr数据的前递逻辑
+1. 根据W\_excp\_or\_ertn信号，产生了F、D阶段的阻塞信号以及E、M、W阶段的清除信号
+2. 根据D、E、M、W阶段的csrAdd和csr\_en信号，产生了读csr数据的前递逻辑
 
 ## 3 流水阶段增量开发——EXP13
 
@@ -2892,11 +2892,11 @@ endmodule
 
 ```
 
-1.  RDCNTID指令是需要读取csr\_tid，设计csr时csr\_tid的值输出tid\_out为wire型，因此需要前递保存最新更新的（RDCNTID在WB阶段时的tid），所以设计了tid数据的前递
-2.  rdcntvl和rdcntvh数据的选择，并向后传递d\_rdcnt\_inst，用于EXE阶段写寄存器数据的选择
-3.  规整EXCP和EXCPNUM
+1. RDCNTID指令是需要读取csr\_tid，设计csr时csr\_tid的值输出tid\_out为wire型，因此需要前递保存最新更新的（RDCNTID在WB阶段时的tid），所以设计了tid数据的前递
+2. rdcntvl和rdcntvh数据的选择，并向后传递d\_rdcnt\_inst，用于EXE阶段写寄存器数据的选择
+3. 规整EXCP和EXCPNUM
 
-    目前实现了中断（2个软中断、8个硬中断）、adef、syscall、break、ine、ipe、ale
+   目前实现了中断（2个软中断、8个硬中断）、adef、syscall、break、ine、ipe、ale
 
 ### 3.3 EXE阶段增量开发——支持ALE异常、根据d\_rdcnt\_inst选择写寄存器数据
 
@@ -3105,17 +3105,17 @@ endmodule
 
 ```
 
-1.  当E\_rdcnt\_inst非全0时，选择E\_rdcnt\_val，否则选择aluResult
-2.  根据读写存储位宽，判断ALE异常是否发生
+1. 当E\_rdcnt\_inst非全0时，选择E\_rdcnt\_val，否则选择aluResult
+2. 根据读写存储位宽，判断ALE异常是否发生
 
-    读写字数据时，地址4字节对齐——低两位全0
+   读写字数据时，地址4字节对齐——低两位全0
 
-    读写半字数据时，地址2字节对齐——LSB为0
+   读写半字数据时，地址2字节对齐——LSB为0
 
-    读写字节数据时，地址1字节对齐——低两位任意，不会有ALE异常发生
-3.  更新写寄存器信号——ALE异常发生时不再写寄存器
-    更新excp和excp\_num信号
-    更新写csr\_badv数据——csr\_badv是写取指地址错误的异常指令地址、写访存错误的访存地址
+   读写字节数据时，地址1字节对齐——低两位任意，不会有ALE异常发生
+3. 更新写寄存器信号——ALE异常发生时不再写寄存器
+   更新excp和excp\_num信号
+   更新写csr\_badv数据——csr\_badv是写取指地址错误的异常指令地址、写访存错误的访存地址
 
 ### 3.4 MEM阶段增量开发
 
@@ -3258,12 +3258,12 @@ endmodule
 
 ```
 
-1.  增加了M\_era和M\_badv\_add的传递
+1. 增加了M\_era和M\_badv\_add的传递
 
-    M\_era的增加是因为存在分支指令发生异常且采取分支，那么在下一个时钟周期，异常的地址是E\_pcAddr而不是D\_pcAddr
+   M\_era的增加是因为存在分支指令发生异常且采取分支，那么在下一个时钟周期，异常的地址是E\_pcAddr而不是D\_pcAddr
 
-    M\_badv\_add的增加是写csr\_badv的选择
-2.  增加了写存信号的设置，当ale异常发生时，不写存
+   M\_badv\_add的增加是写csr\_badv的选择
+2. 增加了写存信号的设置，当ale异常发生时，不写存
 
 ### 3.5 WB阶段增量开发
 
@@ -3379,8 +3379,8 @@ endmodule
 
 ```
 
-1.  写csr\_badv的信号W\_excp\_adef
-2.  写csr\_stat的W\_code和W\_subcode
+1. 写csr\_badv的信号W\_excp\_adef
+2. 写csr\_stat的W\_code和W\_subcode
 
 ### 3.6 hazard模块增量开发
 
@@ -3476,22 +3476,22 @@ endmodule
 
 ```
 
-1.  触发ADEF异常时，阻塞IF阶段
-    触发ALE异常，阻塞IF、ID、EXE
-2.  TID数据的前递
-3.  因为流水线的前递是发生在前半段，所以并不需要图中的branchstall，省去以后流水线的效率有提高
+1. 触发ADEF异常时，阻塞IF阶段
+   触发ALE异常，阻塞IF、ID、EXE
+2. TID数据的前递
+3. 因为流水线的前递是发生在前半段，所以并不需要图中的branchstall，省去以后流水线的效率有提高
 
 ## 4 重点记录
 
-1.  旧的CSR不只是译码时读，在后面的3个周期都可以读，或者说也涉及到了前递
-2.  CSR数据与GR数据之间的前递
-3.  异常/中断阻塞IF、ID，清空EXE、MEM、WB，并清空下一个周期的EXE
-4.  5'b0寄存器不前递
-5.  异常的优先级
+1. 旧的CSR不只是译码时读，在后面的3个周期都可以读，或者说也涉及到了前递
+2. CSR数据与GR数据之间的前递
+3. 异常/中断阻塞IF、ID，清空EXE、MEM、WB，并清空下一个周期的EXE
+4. 5'b0寄存器不前递
+5. 异常的优先级
 
-    取指大于译码大于执行
-6.  取消f\_adef\_excp导致的F\_excp\_stall
+   取指大于译码大于执行
+6. 取消f\_adef\_excp导致的F\_excp\_stall
 
-    assign #1 F\_excp\_stall = D\_excp\_stall | (f\_ADEF\_excp & \~W\_excp\_or\_ertn);
+   assign #1 F\_excp\_stall = D\_excp\_stall | (f\_ADEF\_excp & \~W\_excp\_or\_ertn);
 
 [^注释1]: 是否需要复位TCFG.EN还不知道

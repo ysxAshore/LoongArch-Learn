@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xc7a200tfbg676-2" LaunchTime="1714914976">
+<GenRun Id="impl_1" LaunchPart="xc7a200tfbg676-2" LaunchTime="1717063468">
   <File Type="ROUTE-PWR" Name="soc_top_power_routed.rpt"/>
   <File Type="PA-TCL" Name="soc_top.tcl"/>
   <File Type="ROUTE-PWR-SUM" Name="soc_top_power_summary_routed.pb"/>
@@ -621,10 +621,11 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_a.prj">
+    <File Path="$PPRDIR/../../../IP/myCPU/IP/tagv_sram.xcix">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="ScopedToCell" Val="mig_axi_32"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
     <File Path="$PPRDIR/../../../IP/myCPU/IP/data_bank_sram.xcix">
@@ -634,11 +635,10 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PPRDIR/../../../IP/myCPU/IP/tagv_sram.xcix">
+    <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/mig_axi_32_loongson/mig_a.prj">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
+        <Attr Name="ScopedToCell" Val="mig_axi_32"/>
       </FileInfo>
     </File>
     <File Path="$PPRDIR/../../../IP/xilinx_ip/2019.2/sram_128x22/sram_128x22.xci">

@@ -237,7 +237,7 @@ module mem_stage (
   //refetch pc
   wire [31:0] refetch_pc = mem_pc + 32'h4;
   //nemu 比对时还需要重取ecfg estat
-  wire refetch = mem_valid & (tlb_ins_rec != 3'b0 | (csr_instRec == 2'b10 | csr_instRec == 2'b11) & (csr_num == 14'h0 | csr_num == 14'h4 | csr_num == 14'h5 | csr_num == 14'h10 | csr_num == 14'h11 | csr_num== 14'h12 | csr_num == 14'h13 | csr_num == 14'h18 | csr_num == 14'h19 | csr_num == 14'h1a) | cacop_inst);
+  wire refetch = mem_valid & (tlb_ins_rec != 3'b0 | (csr_instRec == 2'b10 | csr_instRec == 2'b11) & (csr_num == 14'h0 | csr_num == 14'h18 | csr_num == 14'h180 | csr_num == 14'h181) | cacop_inst);
 
   //TLB WR FILL
   wire we = (tlb_ins_rec == 3'b011 | tlb_ins_rec == 3'b100) & mem_valid & ~mem_excp;

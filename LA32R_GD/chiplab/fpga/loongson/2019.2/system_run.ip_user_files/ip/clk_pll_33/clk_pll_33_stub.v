@@ -2,7 +2,7 @@
 // Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2023.1 (win64) Build 3865809 Sun May  7 15:05:29 MDT 2023
-// Date        : Sun May  5 21:04:29 2024
+// Date        : Thu May 16 20:56:01 2024
 // Host        : ysxAshore running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
 //               e:/Projects/Studying/LA/LA32R_GD/chiplab/IP/xilinx_ip/2019.2/clk_pll_33/clk_pll_33_stub.v

@@ -3,8 +3,8 @@
 # SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
 # IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
 # SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
-# Start of session at: Sun May  5 21:03:32 2024
-# Process ID: 23748
+# Start of session at: Thu May 16 20:55:16 2024
+# Process ID: 16264
 # Current directory: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/clk_pll_33_synth_1
 # Command line: vivado.exe -log clk_pll_33.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source clk_pll_33.tcl
 # Log file: E:/Projects/Studying/LA/LA32R_GD/chiplab/fpga/loongson/2019.2/system_run.runs/clk_pll_33_synth_1/clk_pll_33.vds

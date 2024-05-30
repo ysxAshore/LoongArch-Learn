@@ -2,34 +2,34 @@
 
 ## 目录
 
--   [2.1 SOC参数配置](#21-SOC参数配置)
--   [2.2 Quick start](#22-Quick-start)
-    -   [简单的仿真过程](#简单的仿真过程)
--   [2.3 LA32R-NEMU](#23-LA32R-NEMU)
--   [2.4 prog环境](#24-prog环境)
-    -   [2.4.1. 编译参数配置](#241-编译参数配置)
-    -   [2.4.2 运行参数设置](#242-运行参数设置)
-    -   [2.4.3 编译运行](#243-编译运行)
--   [2.4.4 func验证](#244-func验证)
--   [2.5 random环境](#25-random环境)
-    -   [2.5.1 连接DIFFTEST相关信号](#251-连接DIFFTEST相关信号)
-    -   [2.5.2 准备测试用例](#252-准备测试用例)
-    -   [2.5.3. 编译参数配置](#253-编译参数配置)
-    -   [2.5.4 运行参数配置](#254-运行参数配置)
-    -   [2.5.5 编译运行](#255-编译运行)
-        -   [2.5.5.1 单个随机指令序列的运行方法](#2551-单个随机指令序列的运行方法)
-    -   [2.5.6. 随机验证调试帮助](#256-随机验证调试帮助)
--   [2.6 提高仿真速度的Tips](#26-提高仿真速度的Tips)
--   [问题记录](#问题记录)
+- [2.1 SOC参数配置](#21-SOC参数配置)
+- [2.2 Quick start](#22-Quick-start)
+  - [简单的仿真过程](#简单的仿真过程)
+- [2.3 LA32R-NEMU](#23-LA32R-NEMU)
+- [2.4 prog环境](#24-prog环境)
+  - [2.4.1. 编译参数配置](#241-编译参数配置)
+  - [2.4.2 运行参数设置](#242-运行参数设置)
+  - [2.4.3 编译运行](#243-编译运行)
+- [2.4.4 func验证](#244-func验证)
+- [2.5 random环境](#25-random环境)
+  - [2.5.1 连接DIFFTEST相关信号](#251-连接DIFFTEST相关信号)
+  - [2.5.2 准备测试用例](#252-准备测试用例)
+  - [2.5.3. 编译参数配置](#253-编译参数配置)
+  - [2.5.4 运行参数配置](#254-运行参数配置)
+  - [2.5.5 编译运行](#255-编译运行)
+    - [2.5.5.1 单个随机指令序列的运行方法](#2551-单个随机指令序列的运行方法)
+  - [2.5.6. 随机验证调试帮助](#256-随机验证调试帮助)
+- [2.6 提高仿真速度的Tips](#26-提高仿真速度的Tips)
+- [问题记录](#问题记录)
 
 运行环境包括`run_prog`和`run_random`
 
 run\_prog用于运行以下测试程序
 
--   func：共81个功能测试点，验证处理器核设计是否与指令手册一致
--   coremark/dhrystone：性能测试程序
--   my\_program：用户自定义裸机C程序
--   linux：内核，仿真环境下可通过终端与用户交互
+- func：共81个功能测试点，验证处理器核设计是否与指令手册一致
+- coremark/dhrystone：性能测试程序
+- my\_program：用户自定义裸机C程序
+- linux：内核，仿真环境下可通过终端与用户交互
 
 run\_random用于运行随机指令序列，能够覆盖部分边角情况。初始化完成后，序列中的指令可连续执行，由生成器保证序列可连续执行不会中断以及提供页表项完成虚实地址映射
 
@@ -60,17 +60,17 @@ AXI_RAND_SRC=${CHIPLAB_HOME}/IP/AXI_DELAY_RAND
 AXI_SRAM_SRC=${CHIPLAB_HOME}/IP/AXI_SRAM_BRIDGE
 AMBA_SRC=${CHIPLAB_HOME}/IP/AMBA
 APB_DEV_SRC=${CHIPLAB_HOME}/IP/APB_DEV
-UART_SRC=${CHIPLAB_HOME}/IP/APB_DEV/URT
+UART_SRC=${CHIPLAB_HOME}/IP/APB_DEV/URT+
 NAND_SRC=${CHIPLAB_HOME}/IP/APB_DEV/NAND
 
 ```
 
-1.  AXI64设置为y，表示SoC中AXI协议数据位宽为64位
-2.  AXI128设置为y，表示SoC中AXI协议数据位宽为128位
+1. AXI64设置为y，表示SoC中AXI协议数据位宽为64位
+2. AXI128设置为y，表示SoC中AXI协议数据位宽为128位
 
-    `AXI64`和`AXI128`至多配置一个`y`，都置为`n`时表示`AXI32`，AXI协议数据位宽为32bits
-3.  CPU\_2CMT 设置为y，表示处理器核每周期可至多提交2条指令，设置为n，表示处理器核每周期提交1条指令
-4.  其他参数用于指示所使用的IP模块，以及IP所处的位置。在当前SoC固定无法修改的情况下，这部分参数不需要调整
+   `AXI64`和`AXI128`至多配置一个`y`，都置为`n`时表示`AXI32`，AXI协议数据位宽为32bits
+3. CPU\_2CMT 设置为y，表示处理器核每周期可至多提交2条指令，设置为n，表示处理器核每周期提交1条指令
+4. 其他参数用于指示所使用的IP模块，以及IP所处的位置。在当前SoC固定无法修改的情况下，这部分参数不需要调整
 
 ## 2.2 Quick start
 
@@ -223,10 +223,10 @@ simulation_run_prog:
 
 使用`make`命令进行仿真的整个流程，包括
 
--   `make verilator` : verilator编译verilog代码
--   `make testbench` : 编译testbench（C++）
--   `make soft_compile` : 编译software(func)
--   `make simulation_run_prog` : 开始func仿真
+- `make verilator` : verilator编译verilog代码
+- `make testbench` : 编译testbench（C++）
+- `make soft_compile` : 编译software(func)
+- `make simulation_run_prog` : 开始func仿真
 
 可以运行`make clean`清理`make`生成的内容
 
@@ -244,21 +244,21 @@ make verilator testbench simulation_run_prog
 
 仿真过程中会生成两个比较关键的文件夹：obj和log
 
-1.  &#x20;obj文件夹内包括对应func测试点生成的obj文件夹
+1. &#x20;obj文件夹内包括对应func测试点生成的obj文件夹
 
-    ![](image/image_0-LN__mTlC.png)
+   ![](image/image_f0G7EhRZ0S.png)
 
-    test.s是对应的反汇编文件
-    mif文件是coe文件的二进制形式，是根据coe文件生成的。 coe文件只会在生成RAM/ROM模块时起作用，其作用就是根据文件内容生成相应的mif文件，而RAM/ROM真正使用的是mif文件。且并不能直接编辑mif文件，因为mif文件是根据coe生成的，每次编辑完mif重新生成的话又会覆盖掉修改
-2.  log文件夹内包含对应func测试点生成的log文件夹
+   test.s是对应的反汇编文件
+   mif文件是coe文件的二进制形式，是根据coe文件生成的。 coe文件只会在生成RAM/ROM模块时起作用，其作用就是根据文件内容生成相应的mif文件，而RAM/ROM真正使用的是mif文件。且并不能直接编辑mif文件，因为mif文件是根据coe生成的，每次编辑完mif重新生成的话又会覆盖掉修改
+2. log文件夹内包含对应func测试点生成的log文件夹
 
-    ![](image/image_B1d9bsEapp.png)
-    -   `simu_trace.txt` : 仿真过程输出信息的备份
-    -   `mem_trace.txt` : 仿真过程访存信息的备份
-    -   `simu_trace.fst` : 仿真波形文件 可以使用gtkwave打开
-    -   `uart_output.txt` : 假串口输出`log`
-    -   `uart_output.txt.real` : 真串口输出`log`
-    > 若使用`Ctrl+C`强制结束仿真，那么输出信息的备份`simu_trace.txt`并不会保存在log目录下，而是会保存在`/tmp`目录下，串口、波形的log输出则会丢失
+   ![](image/image_T6S3URJzR2.png)
+   - `simu_trace.txt` : 仿真过程输出信息的备份
+   - `mem_trace.txt` : 仿真过程访存信息的备份
+   - `simu_trace.fst` : 仿真波形文件 可以使用gtkwave打开
+   - `uart_output.txt` : 假串口输出`log`
+   - `uart_output.txt.real` : 真串口输出`log`
+   > 若使用`Ctrl+C`强制结束仿真，那么输出信息的备份`simu_trace.txt`并不会保存在log目录下，而是会保存在`/tmp`目录下，串口、波形的log输出则会丢失
 
 ## 2.5 random环境
 
@@ -266,31 +266,31 @@ make verilator testbench simulation_run_prog
 
 ### 2.5.2 准备测试用例
 
-1.  下载相关随机res文件压缩包
+1. 下载相关随机res文件压缩包
 
-    下载地址：[https://caiyun.139.com/w/i/1F5C1o0Yf7uYL](https://caiyun.139.com/w/i/1F5C1o0Yf7uYL "https://caiyun.139.com/w/i/1F5C1o0Yf7uYL")
+   下载地址：[https://caiyun.139.com/w/i/1F5C1o0Yf7uYL](https://caiyun.139.com/w/i/1F5C1o0Yf7uYL "https://caiyun.139.com/w/i/1F5C1o0Yf7uYL")
 
-    提取码：sHJS
+   提取码：sHJS
 
-    共有10个random资源，总大小为10G左右，为了节省空间，这里只下载其中大小最小的random8.tar.gz
-2.  random \*.tar.bz2介绍
+   共有10个random资源，总大小为10G左右，为了节省空间，这里只下载其中大小最小的random8.tar.gz
+2. random \*.tar.bz2介绍
 
-    解压该`random*.tar.bz2`文件可以得到`RES_*`目录，目录内容如下：
+   解压该`random*.tar.bz2`文件可以得到`RES_*`目录，目录内容如下：
 
-    ![](image/image_fAuMa78Nkt.png)
+   ![](image/image_gczHgJ9dY2.png)
 
-    共有`RES_cluster_00**`和`RES_jump00**` 50个子目录
+   共有`RES_cluster_00**`和`RES_jump00**` 50个子目录
 
-    `jump`类倾向于同一类指令重复，而`cluster`类为多类型指令混合
-3.  准备测试用例
+   `jump`类倾向于同一类指令重复，而`cluster`类为多类型指令混合
+3. 准备测试用例
 
-    在`$(CHIPLAB_HOME)/software/`目录下新建`random_res`目录，将步骤2解压得到的部分RES\_cluster\_00\*\*和RES\_jump\_00\*\*移动到该目录下
+   在`$(CHIPLAB_HOME)/software/`目录下新建`random_res`目录，将步骤2解压得到的部分RES\_cluster\_00\*\*和RES\_jump\_00\*\*移动到该目录下
 
-    移动部分的原因是：对于`random_res`下的所有文件，`run_random`都会对其进行处理，因此建议放入适量的随机指令序列，同时该目录下不可放置其他无关内容
+   移动部分的原因是：对于`random_res`下的所有文件，`run_random`都会对其进行处理，因此建议放入适量的随机指令序列，同时该目录下不可放置其他无关内容
 
-    移动最后的random\_res目录结构如下：
+   移动最后的random\_res目录结构如下：
 
-    ![](image/image_LXF9fGidNt.png)
+   ![](image/image_klyPi-50Ah.png)
 
 ### 2.5.3. 编译参数配置
 
@@ -365,13 +365,13 @@ ram.dat:../../../../../software/random_boot/rom.vlog inst.vlog
 
 所有随机序列测试成功或失败的信息存放在`run_random/log/date`目录下中；每个随机序列具体的测试信息存放在`run_random/log/$(TESTCASE)`[^注释2]下
 
-![](image/image_S34200Oqyh.png)
+![](image/image_861AgLPtAL.png)
 
 左图是DUMP\_WAVEFORM=0的目录结构
 
 若测试成功，则fail.log和nopass.log内容为空；此时pass.log内会记录所测试的随机序列的运行日志文件路径
 
-![](image/image_h6ILRGaMmw.png)
+![](image/image_Ohg6ryoXIx.png)
 
 cluster的run.log文件记录了对应每个random\_res/RES\_cluster\_00\*目录下的所有随机指令序列文件的TLB运行结果，以及总共用时，总指令数等信息
 jump的run.log文件记录了对应每个random\_res/RES\_jump\_00\*目录下的所有随机指令的PC情况，以及总用时，总指令数等信息
@@ -398,74 +398,74 @@ make ../../../../software/random_res/$(TESTCASE)
 
 随机测试用例文件夹中存有`*.res`文件，用于构成随机验证环境。同时，随机指令序列也给出了正确的执行路径以及执行结果。当运行出错时，一方面可以同作为金标准的`nemu`进行对比分析，另一方面也可以从`*.res`文件获取正确的运行结果并进行分析。以下对较为关键的`*.res`文件进行介绍。
 
--   `comment.res` : 随机指令序列中的汇编指令。`instruction.res、address.res、pc.res、result_type.res、value1.res`五个文件每行与该文件每行的指令对应
--   `instruction.res` : 随机指令的二进制。
--   `address.res` : 随机指令修改的通用寄存器号。
--   `value1.res` : 随机指令修改的通用寄存器的值。
--   `pc.res` : 随机指令的虚地址。
--   `result_type.res` : 为`1`表示随机指令修改通用寄存器，为`0`则表示不修改。
--   `page.res` : 页表项的虚地址。
--   `pfn.res` : 页表项的物理地址。
--   `cca.res` : 页表项的存储访问类型。
--   `page_size.res` : 页表项的页大小。`page.res、pfn.res、cca.res、page_size.res`四个文件每行描述一个页表项，当处理器核在处理`tlb`出错时，可查询四个文件观察页表填充是否正确。
--   `init.reg.res` : 通用寄存器初始值。
+- `comment.res` : 随机指令序列中的汇编指令。`instruction.res、address.res、pc.res、result_type.res、value1.res`五个文件每行与该文件每行的指令对应
+- `instruction.res` : 随机指令的二进制。
+- `address.res` : 随机指令修改的通用寄存器号。
+- `value1.res` : 随机指令修改的通用寄存器的值。
+- `pc.res` : 随机指令的虚地址。
+- `result_type.res` : 为`1`表示随机指令修改通用寄存器，为`0`则表示不修改。
+- `page.res` : 页表项的虚地址。
+- `pfn.res` : 页表项的物理地址。
+- `cca.res` : 页表项的存储访问类型。
+- `page_size.res` : 页表项的页大小。`page.res、pfn.res、cca.res、page_size.res`四个文件每行描述一个页表项，当处理器核在处理`tlb`出错时，可查询四个文件观察页表填充是否正确。
+- `init.reg.res` : 通用寄存器初始值。
 
 查看波形时，可观察顶层`simu_top.v`的几个`ram*`信号，判断AXI总线发出的请求及传输的数据是否正确
 
 ## 2.6 提高仿真速度的Tips
 
--   推荐使用较新的`verilator`版本，建议`v4.224`及以上
+- 推荐使用较新的`verilator`版本，建议`v4.224`及以上
 
-    我的ubuntu22.04使用`sudo apt install verilator`后安装的是4.038版本
--   关注`verilator`编译时给出的`WARNING`中是否有`UNOPT`，`UNOPTFLAT`等字样，如有，应当尽量解决之
--   如果你的设计复杂度明显比`chiplab`仓库中自带的DEMO CPU更高，请尝试使用多线程仿真
--   建议关闭`output-pc-info`这一编译选项
--   不必要记录波形的时候建议不要开启`DUMP_WAVEFORM`，记录波形会带来明显的仿真速度下降
--   `verilator`仿真非常依赖主机处理器前端的性能，因此，考虑压缩设计代码大小或使用前端性能更强的处理器来运行仿真会有帮助
+  我的ubuntu22.04使用`sudo apt install verilator`后安装的是4.038版本
+- 关注`verilator`编译时给出的`WARNING`中是否有`UNOPT`，`UNOPTFLAT`等字样，如有，应当尽量解决之
+- 如果你的设计复杂度明显比`chiplab`仓库中自带的DEMO CPU更高，请尝试使用多线程仿真
+- 建议关闭`output-pc-info`这一编译选项
+- 不必要记录波形的时候建议不要开启`DUMP_WAVEFORM`，记录波形会带来明显的仿真速度下降
+- `verilator`仿真非常依赖主机处理器前端的性能，因此，考虑压缩设计代码大小或使用前端性能更强的处理器来运行仿真会有帮助
 
 ## 问题记录
 
-1.  func功能测试内obj未清理干净，导致编译func时出现undefined reference错误
+1. func功能测试内obj未清理干净，导致编译func时出现undefined reference错误
 
-    ![](image/image_7aRr8oSn8L.png)
-2.  不设置Makefile\_run中的`DUMP_WAVEFORM`为1时，make会出现mv /tmp/log/ \*.fst失败，Make报错tmp/log不存在，但这个不影响make进程。设置以后即不出现这个警告
-3.  单个随机指令序列的运行时报错不存在目标rom.vlog，解决这个以后又报错不存在output
+   ![](image/image_vN5nfLqB6q.png)
+2. 不设置Makefile\_run中的`DUMP_WAVEFORM`为1时，make会出现mv /tmp/log/ \*.fst失败，Make报错tmp/log不存在，但这个不影响make进程。设置以后即不出现这个警告
+3. 单个随机指令序列的运行时报错不存在目标rom.vlog，解决这个以后又报错不存在output
 
-    原因是run\_random/run\_random下的makefile写的太乱
+   原因是run\_random/run\_random下的makefile写的太乱
 
-    若没有在run\_random/目录下make过，则在该目录下make需要先make random\_boot产生rom.vlog，然后再make testbench产生output；否则直接make即可
+   若没有在run\_random/目录下make过，则在该目录下make需要先make random\_boot产生rom.vlog，然后再make testbench产生output；否则直接make即可
 
-    因此可以将makefile修改为以下代码
-    ```verilog
-    BASE :=../../../../software/random_res
-    DIRS :=$(filter-out Makefile,$(wildcard $(BASE)/*))
-    .PHONY: all $(DIRS)
-    # To run specific test <TESTCASE> (e.g. RES0)
-    # make RES0
-    all: $(DIRS)
-    ifneq "$(MAKECMDGOALS)" "prepare"
-    $(DIRS):
-      +make simulation_run_random -C $(notdir $@) -f ../../Makefile_run CASENAME=$(notdir $@)
-    else
-    $(DIRS):
-      mkdir -p $(notdir $@)
-      cd $(notdir $@) && ln -sf ../$@/* ./
-    endif
-    prepare:$(DIRS)
-      +make all -C ../../../../software/random_boot
-      +make verilator -C ../
-      +make testbench -C ../
+   因此可以将makefile修改为以下代码
+   ```verilog
+   BASE :=../../../../software/random_res
+   DIRS :=$(filter-out Makefile,$(wildcard $(BASE)/*))
+   .PHONY: all $(DIRS)
+   # To run specific test <TESTCASE> (e.g. RES0)
+   # make RES0
+   all: $(DIRS)
+   ifneq "$(MAKECMDGOALS)" "prepare"
+   $(DIRS):
+     +make simulation_run_random -C $(notdir $@) -f ../../Makefile_run CASENAME=$(notdir $@)
+   else
+   $(DIRS):
+     mkdir -p $(notdir $@)
+     cd $(notdir $@) && ln -sf ../$@/* ./
+   endif
+   prepare:$(DIRS)
+     +make all -C ../../../../software/random_boot
+     +make verilator -C ../
+     +make testbench -C ../
 
-    clean:
-      rm -rf $(filter-out Makefile,$(wildcard *))
-      +make clean -C ../../../../software/random_boot
-      rm ../output
+   clean:
+     rm -rf $(filter-out Makefile,$(wildcard *))
+     +make clean -C ../../../../software/random_boot
+     rm ../output
 
-    ```
-    > make 的-C是进入到-C参数的目录下执行make 以及make所带有的选项
-    >
-    > Makefile的缩进是只允许使用Tab缩进的
-    > 改完之后即可以按照如果之前并没有在/run\_random/下make过，则需要先执行`make prepare`，再运行上述代码框内命令所述，**先**\*\*`make prepare`****再****`make`\*\*
+   ```
+   > make 的-C是进入到-C参数的目录下执行make 以及make所带有的选项
+   >
+   > Makefile的缩进是只允许使用Tab缩进的
+   > 改完之后即可以按照如果之前并没有在/run\_random/下make过，则需要先执行`make prepare`，再运行上述代码框内命令所述，**先**\*\*`make prepare`****再****`make`\*\*
 
 [^注释1]: 当前临床医学界所公认的诊断某病最为可靠的方法
 

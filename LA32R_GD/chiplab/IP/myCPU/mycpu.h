@@ -5,7 +5,7 @@
 `define EXE_TO_MEM_WD 296 + $clog2(`TLB_NUM)
 `define MEM_TO_WB_WD 102
 `define WB_TO_ID_WD 71
-`define EXE_TO_ID_WD 44
+`define EXE_TO_ID_WD 45
 `define MEM_TO_ID_WD 72
 `define MEM_TO_CSR_WD 249 + $clog2(`TLB_NUM)
 `define CSR_TO_MEM_WD 217 + $clog2(`TLB_NUM)

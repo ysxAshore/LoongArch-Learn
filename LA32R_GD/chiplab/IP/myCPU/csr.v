@@ -297,13 +297,7 @@ module csr (
 
   always @(posedge clk) begin
     if (~resetn) begin
-      csr_estat[`IS_1_0] <= 2'b0;
-      csr_estat[`IS_9_2] <= 8'b0;
-      csr_estat[10] <= 1'b0;  //手册没写，但是应该是也需要复位的
-      csr_estat[12] <= 1'b0;  //手册没写，复位也需要复位核间中断，因为单核所以手册没写
-      csr_estat[15:13] <= 3'b0;
-      csr_estat[31] <= 1'b0;
-
+      csr_estat <= 32'b0;
       timer_en <= 1'b0;
     end else begin
       //根据外设硬中断源interrupt，赋值csr_estat[`IS_9_2]

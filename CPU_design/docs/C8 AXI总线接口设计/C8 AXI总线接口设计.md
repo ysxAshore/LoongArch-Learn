@@ -2,41 +2,41 @@
 
 ## 目录
 
--   [1 类SRAM总线](#1-类SRAM总线)
-    -   [1.1 主方和从方](#11-主方和从方)
-    -   [1.2 类SRAM总线接口信号的定义](#12-类SRAM总线接口信号的定义)
-    -   [1.3 类SRAM总线的读写时序](#13-类SRAM总线的读写时序)
--   [2 类SRAM总线的设计](#2-类SRAM总线的设计)
-    -   [2.1 取指设计的考虑](#21-取指设计的考虑)
-        -   [2.1.1 考虑ready\_go](#211-考虑ready_go)
-        -   [2.1.2 考虑allowin](#212-考虑allowin)
-        -   [2.1.3 考虑异常清空流水线](#213-考虑异常清空流水线)
-        -   [2.1.4 考虑转移计算未完成的情况](#214-考虑转移计算未完成的情况)
-        -   [2.1.5 设计综述](#215-设计综述)
-        -   [2.1.6 优化——还没做](#216-优化还没做)
-    -   [2.2 访存设计的考虑](#22-访存设计的考虑)
-        -   [2.2.1 Load访存设计](#221-Load访存设计)
-        -   [2.2.2 Store访存设计](#222-Store访存设计)
-        -   [2.2.3 设计综述](#223-设计综述)
--   [3 AXI总线协议](#3-AXI总线协议)
-    -   [3.1 AXI总线协议初步解读](#31-AXI总线协议初步解读)
-        -   [3.1.1 握手](#311-握手)
-        -   [3.1.2 总线传输和总线事务](#312-总线传输和总线事务)
-        -   [3.1.3 地址、大小和数据](#313-地址大小和数据)
-        -   [3.1.4 多个通道](#314-多个通道)
-        -   [3.1.5 多通道间同一事务的握手依赖关系](#315-多通道间同一事务的握手依赖关系)
-        -   [3.1.6 并发访问](#316-并发访问)
-        -   [3.1.7 乱序响应](#317-乱序响应)
-        -   [3.1.8 ID](#318-ID)
-        -   [3.1.9 写响应通道的作用](#319-写响应通道的作用)
-        -   [3.1.10 突发传输方式](#3110-突发传输方式)
-    -   [3.2 类SRAM总线接口信号与AXI总线接口信号的对应关系](#32-类SRAM总线接口信号与AXI总线接口信号的对应关系)
--   [4 类SRAM-AXI转接桥设计](#4-类SRAM-AXI转接桥设计)
-    -   [4.1 转接桥顶层接口](#41-转接桥顶层接口)
-    -   [4.2 转接桥设计要求——保证功能正确且匹配验证环境](#42-转接桥设计要求保证功能正确且匹配验证环境)
-    -   [4.3 转接桥设计建议——牺牲一些性能和面积来换取控制逻辑的简洁性](#43-转接桥设计建议牺牲一些性能和面积来换取控制逻辑的简洁性)
-    -   [4.4 设计实现](#44-设计实现)
-    -   [4.5 优化——还没做](#45-优化还没做)
+- [1 类SRAM总线](#1-类SRAM总线)
+  - [1.1 主方和从方](#11-主方和从方)
+  - [1.2 类SRAM总线接口信号的定义](#12-类SRAM总线接口信号的定义)
+  - [1.3 类SRAM总线的读写时序](#13-类SRAM总线的读写时序)
+- [2 类SRAM总线的设计](#2-类SRAM总线的设计)
+  - [2.1 取指设计的考虑](#21-取指设计的考虑)
+    - [2.1.1 考虑ready\_go](#211-考虑ready_go)
+    - [2.1.2 考虑allowin](#212-考虑allowin)
+    - [2.1.3 考虑异常清空流水线](#213-考虑异常清空流水线)
+    - [2.1.4 考虑转移计算未完成的情况](#214-考虑转移计算未完成的情况)
+    - [2.1.5 设计综述](#215-设计综述)
+    - [2.1.6 优化——还没做](#216-优化还没做)
+  - [2.2 访存设计的考虑](#22-访存设计的考虑)
+    - [2.2.1 Load访存设计](#221-Load访存设计)
+    - [2.2.2 Store访存设计](#222-Store访存设计)
+    - [2.2.3 设计综述](#223-设计综述)
+- [3 AXI总线协议](#3-AXI总线协议)
+  - [3.1 AXI总线协议初步解读](#31-AXI总线协议初步解读)
+    - [3.1.1 握手](#311-握手)
+    - [3.1.2 总线传输和总线事务](#312-总线传输和总线事务)
+    - [3.1.3 地址、大小和数据](#313-地址大小和数据)
+    - [3.1.4 多个通道](#314-多个通道)
+    - [3.1.5 多通道间同一事务的握手依赖关系](#315-多通道间同一事务的握手依赖关系)
+    - [3.1.6 并发访问](#316-并发访问)
+    - [3.1.7 乱序响应](#317-乱序响应)
+    - [3.1.8 ID](#318-ID)
+    - [3.1.9 写响应通道的作用](#319-写响应通道的作用)
+    - [3.1.10 突发传输方式](#3110-突发传输方式)
+  - [3.2 类SRAM总线接口信号与AXI总线接口信号的对应关系](#32-类SRAM总线接口信号与AXI总线接口信号的对应关系)
+- [4 类SRAM-AXI转接桥设计](#4-类SRAM-AXI转接桥设计)
+  - [4.1 转接桥顶层接口](#41-转接桥顶层接口)
+  - [4.2 转接桥设计要求——保证功能正确且匹配验证环境](#42-转接桥设计要求保证功能正确且匹配验证环境)
+  - [4.3 转接桥设计建议——牺牲一些性能和面积来换取控制逻辑的简洁性](#43-转接桥设计建议牺牲一些性能和面积来换取控制逻辑的简洁性)
+  - [4.4 设计实现](#44-设计实现)
+  - [4.5 优化——还没做](#45-优化还没做)
 
 本章将进入一个新的阶段——为设计出的CPU添加AXI总线接口
 
@@ -44,16 +44,16 @@
 
 本章的设计任务有两个难点：一是 CPU 内部要如何调整以适应总线接口下的访存行为，二是如何设计出一个遵循 AXI 总线协议的接口。为了降低难度，将这章的设计工作划分为三个阶段：
 
-1.  将原有 CPU 访问 SRAM 的接口调整为类 SRAM 总线接口
-2.  设计实现一个 “类 SRAM-AXI” 的转接桥，拼接上阶段一完成的 CPU，完成AXI固定延迟验证
-3.  完善设计的CPU，通过AXI随机延迟验证
+1. 将原有 CPU 访问 SRAM 的接口调整为类 SRAM 总线接口
+2. 设计实现一个 “类 SRAM-AXI” 的转接桥，拼接上阶段一完成的 CPU，完成AXI固定延迟验证
+3. 完善设计的CPU，通过AXI随机延迟验证
 
 ## 1 类SRAM总线
 
 > 为什么要引入类SRAM总线
 >
-> 1.  一部分初学者完全不知道如何从现有取指和访存的 SRAM 接口改出 AXI 接口
-> 2.  一部分初学者过于激进地使用 AXI 协议的特性，把设计改得太复杂，出现大量错误。
+> 1. 一部分初学者完全不知道如何从现有取指和访存的 SRAM 接口改出 AXI 接口
+> 2. 一部分初学者过于激进地使用 AXI 协议的特性，把设计改得太复杂，出现大量错误。
 
 ### 1.1 主方和从方
 
@@ -81,30 +81,30 @@
 | data\_ok | 1  | 输入     | 该次请求的数据传输OK&#xA;读：数据返回给主方&#xA;写：数据写入完成 |
 | rdata    | 32 | 输入     | 该次读请求返回的数据                             |
 
-1.  clk对应于cpu的`clk`
-2.  req对应于原访存的`en`信号
-3.  wr对应于原访存的`|wen`信号
-4.  size是新增的信号
+1. clk对应于cpu的`clk`
+2. req对应于原访存的`en`信号
+3. wr对应于原访存的`|wen`信号
+4. size是新增的信号
 
-    访指令存储时size设置为2'b10
+   访指令存储时size设置为2'b10
 
-    访数据存储时size需要结合访存指令设置
-5.  addr对应于原访存的`addr`信号
-6.  wstrb对应于原访存的`wen`信号
-7.  wdata对应于原访存的`wdata`信号
-8.  addr\_ok是新增的信号
+   访数据存储时size需要结合访存指令设置
+5. addr对应于原访存的`addr`信号
+6. wstrb对应于原访存的`wen`信号
+7. wdata对应于原访存的`wdata`信号
+8. addr\_ok是新增的信号
 
-    addr\_ok是用于和req信号一起完成读写请求的握手——在clk上升沿的同时看到req和addr\_ok均为高有效才是请求握手成功
-9.  data\_ok是新增的信号
+   addr\_ok是用于和req信号一起完成读写请求的握手——在clk上升沿的同时看到req和addr\_ok均为高有效才是请求握手成功
+9. data\_ok是新增的信号
 
-    data\_ok对应读事务时，是数据返回的有效信号；对应写事务时，是写入完成的有效信号
+   data\_ok对应读事务时，是数据返回的有效信号；对应写事务时，是写入完成的有效信号
 
-    和addr\_ok不同的是，在类SRAM接口中主方对于data\_ok是总可以接收的，所以不设置data\_ok的握手信号
+   和addr\_ok不同的是，在类SRAM接口中主方对于data\_ok是总可以接收的，所以不设置data\_ok的握手信号
 10. rdata对应于原访存的`rdata`信号
 
 ### 1.3 类SRAM总线的读写时序
 
-![](image/image_JJ3kQpNh1r.png)
+![](image/image_C-83ap41uh.png)
 
 左图为类SRAM总线上的一次读事务时序关系
 
@@ -112,7 +112,7 @@
 
 在clk上升沿时，若data\_ok为高电平则说明数据已成功传输给主方，此时的rdata即为给定位置读出的数据
 
-![](image/image_ddZYmGcTBD.png)
+![](image/image_05SoGBlJLX.png)
 
 左图为类SRAM总线上的一次写事务时序关系
 
@@ -124,7 +124,7 @@
 >
 > **为了简化设计，需要控制连续写读的数目，可以****在主方拉低req信号****来暂停发送新事务的请求，****在从方拉低addr\_ok****信号来暂停接收新事务的请求**
 
-![](image/image_ZaqMUnDepC.png)
+![](image/image_sc73QJARTj.png)
 
 左图为类SRAM总线上的连续写读的时序关系。
 
@@ -144,99 +144,97 @@ size信号的生成非常简单，着重分析addr\_ok和data\_ok怎么加入到
 
 ready\_go信号的作用当前阶段的组合逻辑工作是否完成
 
-1.  preIF插入addr\_ok的应用
+1. preIF插入addr\_ok的应用
 
-    当preIF级接收不到addr\_ok和req高有效的握手时，preIF 的工作没有完成，需要继续发送请求
+   当preIF级接收不到addr\_ok和req高有效的握手时，preIF 的工作没有完成，需要继续发送请求
 
-    结合互锁流水线的valid、allowin、readygo可知在preIF级也应该存在一个readygo，该readygo只有当req和addr\_ok均高有效时为1'b1
+   结合互锁流水线的valid、allowin、readygo可知在preIF级也应该存在一个readygo，该readygo只有当req和addr\_ok均高有效时为1'b1
 
-    readygo的设置就可以结合to\_valid，从而无法将nextpc传至 IF 阶段的 PC
-    ```verilog
-       preIF_readygo = req & addr_ok;
-       preIF_to_IF_valid = resetn & preIF_readygo;
-    ```
-2.  IF插入data\_ok的应用
+   readygo的设置就可以结合to\_valid，从而无法将nextpc传至 IF 阶段的 PC
+   ```verilog
+      preIF_readygo = req & addr_ok;
+      preIF_to_IF_valid = resetn & preIF_readygo;
+   ```
+2. IF插入data\_ok的应用
 
-    data\_ok是表示数据已读出，可以接收。因此只有当data\_ok有效时，IF级才得到了对应地址的指令，内部的工作才处理完成可以准备好向ID 级流动，所以if\_readygo应该设置为data\_ok
-    ```verilog
-       if_readygo = data_ok;
-    ```
+   data\_ok是表示数据已读出，可以接收。因此只有当data\_ok有效时，IF级才得到了对应地址的指令，内部的工作才处理完成可以准备好向ID 级流动，所以if\_readygo应该设置为data\_ok
+   ```verilog
+      if_readygo = data_ok;
+   ```
 
 #### 2.1.2 考虑allowin
 
 要达到流水线互锁的目的，还需要使用allowin信号
 
-1.  preIF级向IF级流动
+1. preIF级向IF级流动
 
-    这一过程是：preIF级生成nextPC，并根据该nextPC发起取指请求，当收到addr\_ok时，preIF\_readygo有效；此时若IF级if\_allowin为1，则preIF级的nextPC就流向IF级的PC，preIF级维护下一条指令的取指请求
+   这一过程是：preIF级生成nextPC，并根据该nextPC发起取指请求，当收到addr\_ok时，preIF\_readygo有效；此时若IF级if\_allowin为1，则preIF级的nextPC就流向IF级的PC，preIF级维护下一条指令的取指请求
 
-    根据preIF\_readygo和if\_allowin的组合情况，有以下几种可能
-    1.  preIF\_readygo为0，if\_allowin为0：请求未成功，preIF继续发送取指请求
-    2.  preIF\_readygo为0，if\_allowin为1：请求未成功，preIF继续发送取指请求
-    3.  preIF\_readygo为1，if\_allowin为1：nextPC→PC
-    4.  preIF\_readygo为1，if\_allowin为0：这种情况需要详细讨论
-        1.  被堵在preIF级的指令下一拍不能再继续读地址请求
+   根据preIF\_readygo和if\_allowin的组合情况，有以下几种可能
+   1. preIF\_readygo为0，if\_allowin为0：请求未成功，preIF继续发送取指请求
+   2. preIF\_readygo为0，if\_allowin为1：请求未成功，preIF继续发送取指请求
+   3. preIF\_readygo为1，if\_allowin为1：nextPC→PC
+   4. preIF\_readygo为1，if\_allowin为0：这种情况需要详细讨论
+      1. 被堵在preIF级的指令下一拍不能再继续读地址请求
 
-            这是因为此时preIF\_readygo已为1，表明发送到地址请求已经被类SRAM接收。如果下一拍再置起req，那么类SRAM会将它视为一个新的请求
+         这是因为此时preIF\_readygo已为1，表明发送到地址请求已经被类SRAM接收。如果下一拍再置起req，那么类SRAM会将它视为一个新的请求
 
-            CPU 外部接收了多少个读请求，就会一个不漏地返回同样数目的数据
-        2.  地址请求已成功，数据可能会随时返回
+         CPU 外部接收了多少个读请求，就会一个不漏地返回同样数目的数据
+      2. 地址请求已成功，数据可能会随时返回
 
-            如果在if\_allowin为1前IF级就接受到该指令，那么if\_readygo为1，但是因为if\_allowin为0，此时nextPC还无法进入IF级。而类SRAM的rdata接口数据只能保持一拍，所以就需要面临一个选择：“是保持该指令到缓存[^注释3]还是重新让preIF发送取指请求”
-            一种简单但相对低效的解决方法是，只有当if\_allowin为1时preIF才能发送地址请求——这里采用这种低效的方法，为了实现简单
-    > 📌综上所述，要么需要建立指令缓存，且preIF\_readygo的有效不能仅仅只看req、addr\_ok还需要考虑请求已被接收后的情况；要么直接设置当if\_allowin为1时preIF才能发送地址请求
-2.  IF级向ID级流动
+         如果在if\_allowin为1前IF级就接受到该指令，那么if\_readygo为1，但是因为if\_allowin为0，此时nextPC还无法进入IF级。而类SRAM的rdata接口数据只能保持一拍，所以就需要面临一个选择：“是保持该指令到缓存[^注释3]还是重新让preIF发送取指请求”
+         一种简单但相对低效的解决方法是，只有当if\_allowin为1时preIF才能发送地址请求——这里采用这种低效的方法，为了实现简单
+   > 📌综上所述，要么需要建立指令缓存，且preIF\_readygo的有效不能仅仅只看req、addr\_ok还需要考虑请求已被接收后的情况；要么直接设置当if\_allowin为1时preIF才能发送地址请求
+2. IF级向ID级流动
 
-    这一过程是：IF级等待data\_ok来置if\_readygo，当if\_readygo为1且id\_allowin为1时，IF级的指令流向ID级，IF级维护下一条指令的取指数据或者进入无效状态
+   这一过程是：IF级等待data\_ok来置if\_readygo，当if\_readygo为1且id\_allowin为1时，IF级的指令流向ID级，IF级维护下一条指令的取指数据或者进入无效状态
 
-    和preIF→IF类似，IF→ID的readygo和allowin也存在四种情况：
-    1.  if\_readygo为0，id\_allowin为0：IF级继续等待指令返回
-    2.  if\_readygo为0，id\_allowin为1：IF级继续等待指令返回
-    3.  if\_readygo为1，id\_allowin为1：if→id
-    4.  if\_readygo为1，id\_allowin为0：按照之前的写法，取指返回是assign赋值给if\_inst，那么同preIF→IF存在的问题一样，指令只能保持一拍，那么就需要丢弃然后preIF重新请求或者暂存指令，结合preIF→IF的处理，这里采用暂存指令的方法——设置一组触发器来保存 IF 级取回的指令，当该组触发器存有有效数据时， 则选择该组触发器保存的数据作为 IF 级取回的指令送往 ID 级，在 ID 级 allowin 为 1 后，该指令立即进入 ID 级
-        同样if\_readygo不能只看data\_ok还需要看临时缓存中是否有有效指令
+   和preIF→IF类似，IF→ID的readygo和allowin也存在四种情况：
+   1. if\_readygo为0，id\_allowin为0：IF级继续等待指令返回
+   2. if\_readygo为0，id\_allowin为1：IF级继续等待指令返回
+   3. if\_readygo为1，id\_allowin为1：if→id
+   4. if\_readygo为1，id\_allowin为0：按照之前的写法，取指返回是assign赋值给if\_inst，那么同preIF→IF存在的问题一样，指令只能保持一拍，那么就需要丢弃然后preIF重新请求或者暂存指令，结合preIF→IF的处理，这里采用暂存指令的方法——设置一组触发器来保存 IF 级取回的指令，当该组触发器存有有效数据时， 则选择该组触发器保存的数据作为 IF 级取回的指令送往 ID 级，在 ID 级 allowin 为 1 后，该指令立即进入 ID 级
+      同样if\_readygo不能只看data\_ok还需要看临时缓存中是否有有效指令
 
 #### 2.1.3 考虑异常清空流水线
 
 在引入类 SRAM 总线接口后，异常清空流水线的情况也需要特别考虑
 
-1.  preIF：根据preIF是否完成了地址请求分两种情况讨论
-    1.  preIF\_to\_IF\_valid为0
+1. preIF：根据preIF是否完成了地址请求分两种情况讨论
+   1. preIF\_to\_IF\_valid为0
 
-        按照之前所述，preIF\_to\_IF\_valid的赋值不能仅仅看resetn还需要看preIF\_readygo
+      按照之前所述，preIF\_to\_IF\_valid的赋值不能仅仅看resetn还需要看preIF\_readygo
 
-        不考虑复位的情况，那么此时`preIF_to_IF_valid=0→preIF_readygo=0`。因此此时地址请求并未被类SRAM接收。而类 SRAM 总线允许请求中途更改请求[^注释4]，因此直接根据 Cancel 信息调 整 pre-IF 级发送的地址请求不会有任何影响
-    2.  preIF\_to\_IF\_valid为1
+      不考虑复位的情况，那么此时`preIF_to_IF_valid=0→preIF_readygo=0`。因此此时地址请求并未被类SRAM接收。而类 SRAM 总线允许请求中途更改请求[^注释4]，因此直接根据 Cancel 信息调 整 pre-IF 级发送的地址请求不会有任何影响
+   2. preIF\_to\_IF\_valid为1
 
-        而preIF\_to\_IF\_valid为1时，此时读请求地址已成功被类SRAM接收，此时若存在异常清空流水线虽然preIF的nextPC可以马上修改发出新的取指请求，但是IF级收到的第一个返回的指令数据是对当前被取消的取指请求的返回
-2.  IF：根据if\_allowin分两种情况讨论
-    1.  if\_allowin为1
+      而preIF\_to\_IF\_valid为1时，此时读请求地址已成功被类SRAM接收，此时若存在异常清空流水线虽然preIF的nextPC可以马上修改发出新的取指请求，但是IF级收到的第一个返回的指令数据是对当前被取消的取指请求的返回
+2. IF：根据if\_allowin分两种情况讨论
+   1. if\_allowin为1
 
-        因为`if_allowin=~if_valid | if_ready_go & id_allowin`，所以if\_allowin=1可以得到要么if级没有有效指令if\_valid=0，要么if阶段组合逻辑工作已经完成有指令且即将要进入id级
+      因为`if_allowin=~if_valid | if_ready_go & id_allowin`，所以if\_allowin=1可以得到要么if级没有有效指令if\_valid=0，要么if阶段组合逻辑工作已经完成有指令且即将要进入id级
+   2. if\_allowin为0
 
-        此时若需取消正在取指请求的指令，只需要在在下一拍将if\_valid置0即可
-    2.  if\_allowin为0
+      如果if\_allowin为0，那么if级指令有效且无法进入ID级，这时又可以根据if\_readygo来分为两种情况
+      1. if\_readygo为1
 
-        如果if\_allowin为0，那么if级指令有效且无法进入ID级，这时又可以根据if\_readygo来分为两种情况
-        1.  if\_readygo为1
+         表明if级已收到过data\_ok，此时if级不存在未完成的类SRAM总线事务，可以直接通过if\_valid=0来取消if级下一拍的指令
 
-            表明if级已收到过data\_ok，此时if级不存在未完成的类SRAM总线事务，可以直接通过if\_valid=0来取消if级下一拍的指令
+         按照之前所采用的方法，if级存在指令缓存，也需要清除指令缓存有效信号——preIF\_to\_IF\_valid为0也是，要清除缓存有效信号
+      2. if\_readygo为0
 
-            按照之前所采用的方法，if级存在指令缓存，也需要清除指令缓存有效信号——preIF\_to\_IF\_valid为0也是，要清除缓存有效信号
-        2.  if\_readygo为0
-
-            if级还在等待 data\_ok，此时 if 级有待完成的类 SRAM 总线事务，可以直接将 IF-valid 置0，但是要注意if级后续收到的第一个返回的指令数据是对当前被 Cancel 的取指请求的返回
+         if级还在等待 data\_ok，此时 if 级有待完成的类 SRAM 总线事务，可以直接将 IF-valid 置0，但是要注意if级后续收到的第一个返回的指令数据是对当前被 Cancel 的取指请求的返回
 
 上述都存在一种共同的情况：异常取消以后，if级收到的第一个返回的指令数据是被取消的取指请求的返回。很明显这一个指令数据应该被丢弃，否则会出现if级指令和pc码不对应的情况。在最多只取消一个指令数据的前提下[^注释5]，解决方法有两个：
 
-1.  在if级状态机，引入新的状态
+1. 在if级状态机，引入新的状态
 
-    该状态表明等一个data\_ok并丢弃当次返回的指令数据
-2.  在if级新增一个触发器——用这种方法
+   该状态表明等一个data\_ok并丢弃当次返回的指令数据
+2. 在if级新增一个触发器——用这种方法
 
-    该触发器复位值为0，遇到上述的两种情况时，该触发器置为1；在收到data\_ok时，该触发器置为0
+   该触发器复位值为0，遇到上述的两种情况时，该触发器置为1；在收到data\_ok时，该触发器置为0
 
-    当触发器值为1时，会将if级readygo置为0从而丢弃第一个返回的指令数据
+   当触发器值为1时，会将if级readygo置为0从而丢弃第一个返回的指令数据
 
 #### 2.1.4 考虑转移计算未完成的情况
 
@@ -246,192 +244,192 @@ ready\_go信号的作用当前阶段的组合逻辑工作是否完成
 
 出现转移计算未完成的情况时，preIF所进行取指请求的nextPC就是不正确的[^注释6]，解决方法有两种：
 
-1.  阻塞取指——用这种方法
+1. 阻塞取指——用这种方法
 
-    在ID级送到IF级的 bus上新增一个控制信号 `br_stall`，当ID级上存在转移指令且处于计算未完成状态时，将 br\_stall 置为 1；pre-IF 级看到 br\_stall 为 1 时将暂停发出取指请求直至 br\_stall重新为 0
-2.  丢弃错误取指
+   在ID级送到IF级的 bus上新增一个控制信号 `br_stall`，当ID级上存在转移指令且处于计算未完成状态时，将 br\_stall 置为 1；pre-IF 级看到 br\_stall 为 1 时将暂停发出取指请求直至 br\_stall重新为 0
+2. 丢弃错误取指
 
 #### 2.1.5 设计综述
 
-1.  为了撤销“preIF\_to\_IF\_readygo=1,if\_allowin=0的特殊情况”，设置只有在if\_allowin时才能发送取指请求
-    ```verilog
-      assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~br_stall;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
+1. 为了撤销“preIF\_to\_IF\_readygo=1,if\_allowin=0的特殊情况”，设置只有在if\_allowin时才能发送取指请求
+   ```verilog
+     assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~br_stall;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
 
-    ```
-2.  针对“if\_readygo=1,id\_allowin=0”的情况，需要添加指令缓存，保存在if级只能维持一拍的指令
-    ```verilog
-      //if->id的指令缓存
-      reg [31:0] inst_sram_rdata_r;
-      reg inst_sram_rdata_r_valid;
+   ```
+2. 针对“if\_readygo=1,id\_allowin=0”的情况，需要添加指令缓存，保存在if级只能维持一拍的指令
+   ```verilog
+     //if->id的指令缓存
+     reg [31:0] inst_sram_rdata_r;
+     reg inst_sram_rdata_r_valid;
 
-      always @(posedge clk) begin
-        if (~resetn | if_reflush) begin
-          inst_sram_rdata_r_valid <= 1'b0;
-        end else if (if_valid & if_ready_go & ~id_allowin) begin
-          inst_sram_rdata_r <= inst_sram_rdata;
-          inst_sram_rdata_r_valid <= 1'b1;
-        end else if (id_allowin) begin
-          inst_sram_rdata_r_valid <= 1'b0;
-        end
-      end
-    ```
-    ![](image/image_X4WiwQINAX.png)
+     always @(posedge clk) begin
+       if (~resetn | if_reflush) begin
+         inst_sram_rdata_r_valid <= 1'b0;
+       end else if (if_valid & if_ready_go & ~id_allowin) begin
+         inst_sram_rdata_r <= inst_sram_rdata;
+         inst_sram_rdata_r_valid <= 1'b1;
+       end else if (id_allowin) begin
+         inst_sram_rdata_r_valid <= 1'b0;
+       end
+     end
+   ```
+   ![](image/image__yD3vr71g1.png)
 
-    但是缓存的设计也需要看data\_ok时的指令，不然会因为缓存有效而一直更换缓存数据
-    ```verilog
-      //if->id的指令缓存
-      reg [31:0] inst_sram_rdata_r;
-      reg inst_sram_rdata_r_valid;
+   但是缓存的设计也需要看data\_ok时的指令，不然会因为缓存有效而一直更换缓存数据
+   ```verilog
+     //if->id的指令缓存
+     reg [31:0] inst_sram_rdata_r;
+     reg inst_sram_rdata_r_valid;
 
-      always @(posedge clk) begin
-        if (~resetn | if_reflush) begin
-          inst_sram_rdata_r_valid <= 1'b0;
-        end else if (if_valid & inst_sram_data_ok & ~id_allowin) begin
-          inst_sram_rdata_r <= inst_sram_rdata;
-          inst_sram_rdata_r_valid <= 1'b1;
-        end else if (id_allowin) begin
-          inst_sram_rdata_r_valid <= 1'b0;
-        end
-      end
-    ```
-3.  对于转移问题
-    1.  因为指令缓存解决了`"if_readygo=1,id_allowin=0"`的特殊情况，而对于`"if_readygo=0"`的情况，阻塞等待data\_ok，因此这种添加了类SRAM的机制使得指令都可以流经到ID阶段——不再使用id\_to\_if\_bus的br\_taken\_cancel[^注释7]，所有转移指令的下一条指令的取消都放到ID阶段进行，也因此ID阶段的转移指令的转移信息需要缓存，否则会出现下图的情况
+     always @(posedge clk) begin
+       if (~resetn | if_reflush) begin
+         inst_sram_rdata_r_valid <= 1'b0;
+       end else if (if_valid & inst_sram_data_ok & ~id_allowin) begin
+         inst_sram_rdata_r <= inst_sram_rdata;
+         inst_sram_rdata_r_valid <= 1'b1;
+       end else if (id_allowin) begin
+         inst_sram_rdata_r_valid <= 1'b0;
+       end
+     end
+   ```
+3. 对于转移问题
+   1. 因为指令缓存解决了`"if_readygo=1,id_allowin=0"`的特殊情况，而对于`"if_readygo=0"`的情况，阻塞等待data\_ok，因此这种添加了类SRAM的机制使得指令都可以流经到ID阶段——不再使用id\_to\_if\_bus的br\_taken\_cancel[^注释7]，所有转移指令的下一条指令的取消都放到ID阶段进行，也因此ID阶段的转移指令的转移信息需要缓存，否则会出现下图的情况
 
-        ![](image/image_xoQLW9-XxY.png)
+      ![](image/image_8ntzY2UKQT.png)
 
-        上图中光标所在位置，nextPC是采取了br\_taken的，但是由于preIF阶段的addr\_ok还没收到，不能更新IF，nextPC也就没法进入到PC——但是该nextPC是可以进行取指请求的。而ID阶段因为下一个时钟周期已经是无效的指令了——转移取消下一个ID指令，所以nextPC不再是转移的nextPC，因此需要保持br信息到缓存。缓存的条件是下一拍要采用转移`br_taken`且id阶段的指令准备好流进下一拍`id_ready_go`但下一拍由if进入id的指令是无效的`if_to_id_valid`
-        ```verilog
-          //处理转移指令以后的下一条指令因为data_ok长期未到导致的br_taken_cancel的失效问题
-          wire br_cancel;
-          wire br_taken_cancel;
-          reg  br_cancel_r;
-          reg  br_cancel_r_valid;
-          assign br_cancel = br_taken;
-          assign br_taken_cancel = br_cancel_r_valid ? br_cancel_r : br_cancel;
+      上图中光标所在位置，nextPC是采取了br\_taken的，但是由于preIF阶段的addr\_ok还没收到，不能更新IF，nextPC也就没法进入到PC——但是该nextPC是可以进行取指请求的。而ID阶段因为下一个时钟周期已经是无效的指令了——转移取消下一个ID指令，所以nextPC不再是转移的nextPC，因此需要保持br信息到缓存。缓存的条件是下一拍要采用转移`br_taken`且id阶段的指令准备好流进下一拍`id_ready_go`但下一拍由if进入id的指令是无效的`if_to_id_valid`
+      ```verilog
+        //处理转移指令以后的下一条指令因为data_ok长期未到导致的br_taken_cancel的失效问题
+        wire br_cancel;
+        wire br_taken_cancel;
+        reg  br_cancel_r;
+        reg  br_cancel_r_valid;
+        assign br_cancel = br_taken;
+        assign br_taken_cancel = br_cancel_r_valid ? br_cancel_r : br_cancel;
 
-          always @(posedge clk) begin
-            if (~resetn | mem_to_id_flush_excp_ertn) begin
-              br_cancel_r_valid <= 1'b0;
-            end else if (br_taken & ~if_to_id_valid & id_ready_go) begin 
-              br_cancel_r_valid <= 1'b1;
-              br_cancel_r <= br_cancel;
-            end else if (br_cancel_r_valid & if_to_id_valid) begin
-              br_cancel_r_valid <= 1'b0;
-            end
+        always @(posedge clk) begin
+          if (~resetn | mem_to_id_flush_excp_ertn) begin
+            br_cancel_r_valid <= 1'b0;
+          end else if (br_taken & ~if_to_id_valid & id_ready_go) begin 
+            br_cancel_r_valid <= 1'b1;
+            br_cancel_r <= br_cancel;
+          end else if (br_cancel_r_valid & if_to_id_valid) begin
+            br_cancel_r_valid <= 1'b0;
           end
-          
-          always @(posedge clk) begin
-            if (~resetn | mem_to_id_flush_excp_ertn) begin
-              id_valid <= 1'b0;
-            end else if (br_taken_cancel) begin  //如果采取分支，那么取消当前IF阶段的指令
-              id_valid <= 1'b0;
-            end else if (id_allowin) begin
-              id_valid <= if_to_id_valid;
-            end
-            if (id_allowin & if_to_id_valid) begin
-              id_data <= if_to_id_bus;
-            end
+        end
+        
+        always @(posedge clk) begin
+          if (~resetn | mem_to_id_flush_excp_ertn) begin
+            id_valid <= 1'b0;
+          end else if (br_taken_cancel) begin  //如果采取分支，那么取消当前IF阶段的指令
+            id_valid <= 1'b0;
+          end else if (id_allowin) begin
+            id_valid <= if_to_id_valid;
           end
-        ```
-    2.  对于`load-to-branch`的阻塞问题，需要在ID阶段检测“是否branch所读的寄存器是exe阶段load的目的寄存器”，如果是则置br\_stall有效并传输到IF阶段，禁止preIF的取指请求
-        ```verilog
-          assign br_stall = id_valid & load_delay & br_taken;
-
-
-          //封包id组合逻辑传递给if组合逻辑preIF的数据
-          assign id_to_if_bus = {br_stall, br_taken, br_target};
-          
-          assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~br_stall;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
-
-        ```
-    3.  当nextPC无法被更新时，需要缓存id\_to\_if\_bus
-        1.  转移指令的下一条指令的地址请求还没被响应，无法进入IF级
-        2.  因为类SRAM总线的存在，导致if级的内容并不始终有效。而转移可以立即更新的条件是if级有效且preIF即将进入if级
-        3.  当地址请求完成，等待数据响应时，可以更新nextPC进行下一个取指请求
-            因此可以更新的条件是——有效指令进入id段|当前取指请求成功得到地址响应进入if段，其不满足的条件是\~preIF\_readygo | \~if\_allowin | \~if\_valid
-        ```verilog
-          reg [`ID_TO_IF_WD-1:0] id_to_if_bus_r;
-          reg                    id_to_if_bus_r_valid;
-          reg                    bd_done;
-          always @(posedge clk) begin
-            if (~resetn | if_reflush) begin
-              id_to_if_bus_r_valid <= 1'b0;
-            end else if (id_to_if_bus[32] & id_allowin & ~(preIF_ready_go & if_valid & if_allowin)) begin //而转移的取消必须都进入到id阶段，因此这里是也需要if_valid和if_allowin
-              id_to_if_bus_r <= id_to_if_bus;
-              id_to_if_bus_r_valid <= 1'b1;
-            end else if ((bd_done | if_valid) & preIF_ready_go & if_allowin) begin //可以成功更新nextPC
-              id_to_if_bus_r_valid <= 1'b0;
-            end
+          if (id_allowin & if_to_id_valid) begin
+            id_data <= if_to_id_bus;
           end
-        ```
-    4.  使用bd\_done解决if\_valid无效时的nextPC更新问题
-        > 📌总的来说，nextPC的更新是要么转移指令的下一条指令到达if级，要么转移指令的下一条指令到达id级
-        > 因此当if\_valid无效时，即转移指令的下一条指令目前还在取指请求或者即将进入if级，此时也应该要更新PC。但是if\_valid无效，所以需要使用另外的信号来记录这一种可以更新的情况——bd\_done
-        ```verilog
-          always @(posedge clk) begin 
-            if (~resetn | if_reflush) begin
-              bd_done <= 1'b0;
-            end else if (br_taken & ~bd_done & (if_valid ^ (preIF_ready_go & if_allowin))) begin
-              bd_done <= 1'b1;
-            end else if (bd_done & preIF_ready_go & if_allowin) begin
-              bd_done <= 1'b0;
-            end
+        end
+      ```
+   2. 对于`load-to-branch`的阻塞问题，需要在ID阶段检测“是否branch所读的寄存器是exe阶段load的目的寄存器”，如果是则置br\_stall有效并传输到IF阶段，禁止preIF的取指请求
+      ```verilog
+        assign br_stall = id_valid & load_delay & br_taken;
+
+
+        //封包id组合逻辑传递给if组合逻辑preIF的数据
+        assign id_to_if_bus = {br_stall, br_taken, br_target};
+        
+        assign inst_sram_req   = if_allowin & ~ADEF_EXCP & ~br_stall;  //因为preIF_to_IF_valid的更改是由preIF_readygo设置的，因此不能作为req生成的信号
+
+      ```
+   3. 当nextPC无法被更新时，需要缓存id\_to\_if\_bus
+      1. 转移指令的下一条指令的地址请求还没被响应，无法进入IF级
+      2. 因为类SRAM总线的存在，导致if级的内容并不始终有效。而转移可以立即更新的条件是if级有效且preIF即将进入if级
+      3. 当地址请求完成，等待数据响应时，可以更新nextPC进行下一个取指请求
+         因此可以更新的条件是——有效指令进入id段|当前取指请求成功得到地址响应进入if段，其不满足的条件是\~preIF\_readygo | \~if\_allowin | \~if\_valid
+      ```verilog
+        reg [`ID_TO_IF_WD-1:0] id_to_if_bus_r;
+        reg                    id_to_if_bus_r_valid;
+        reg                    bd_done;
+        always @(posedge clk) begin
+          if (~resetn | if_reflush) begin
+            id_to_if_bus_r_valid <= 1'b0;
+          end else if (id_to_if_bus[32] & id_allowin & ~(preIF_ready_go & if_valid & if_allowin)) begin //而转移的取消必须都进入到id阶段，因此这里是也需要if_valid和if_allowin
+            id_to_if_bus_r <= id_to_if_bus;
+            id_to_if_bus_r_valid <= 1'b1;
+          end else if ((bd_done | if_valid) & preIF_ready_go & if_allowin) begin //可以成功更新nextPC
+            id_to_if_bus_r_valid <= 1'b0;
           end
-        ```
-4.  异常处理
+        end
+      ```
+   4. 使用bd\_done解决if\_valid无效时的nextPC更新问题
+      > 📌总的来说，nextPC的更新是要么转移指令的下一条指令到达if级，要么转移指令的下一条指令到达id级
+      > 因此当if\_valid无效时，即转移指令的下一条指令目前还在取指请求或者即将进入if级，此时也应该要更新PC。但是if\_valid无效，所以需要使用另外的信号来记录这一种可以更新的情况——bd\_done
+      ```verilog
+        always @(posedge clk) begin 
+          if (~resetn | if_reflush) begin
+            bd_done <= 1'b0;
+          end else if (br_taken & ~bd_done & (if_valid ^ (preIF_ready_go & if_allowin))) begin
+            bd_done <= 1'b1;
+          end else if (bd_done & preIF_ready_go & if_allowin) begin
+            bd_done <= 1'b0;
+          end
+        end
+      ```
+4. 异常处理
 
-    记录异常的第二种情况的清除if级指令
-    ```verilog
-      //br信息也需要保持到缓存，以在preIF_ready_go无效时保持进入到IF，同样MEM到ID的更新nextpc的信息也需要保持
-      reg [`MEM_TO_ID_WD-1:0] mem_to_if_bus_r;
-      reg mem_to_if_bus_r_valid;
-      always @(posedge clk) begin
-        if (~resetn) begin
-          mem_to_if_bus_r_valid <= 1'b0;
-        end else if (~mem_to_if_bus_r_valid & (mem_to_if_bus[1] | mem_to_if_bus[0]) & ~preIF_ready_go) begin
-          mem_to_if_bus_r <= mem_to_if_bus;  //这也应该加一个if_allowin吧？不用，异常针对if_readygo不为1有处理
-          mem_to_if_bus_r_valid <= 1'b1;
-        end else if (mem_to_if_bus_r_valid & preIF_ready_go) begin
-          mem_to_if_bus_r_valid <= 1'b0;
-        end
-      end
-      
-      wire if_reflush;
-      assign if_reflush = mem_to_if_bus[1] | mem_to_if_bus[0];
-      wire if_reflush_r;
-      assign if_reflush_r = excp | ertn;
-      
-      assign if_allowin     = ~if_valid | if_ready_go & id_allowin | if_reflush_r;
-      
-      always @(posedge clk) begin
-        if (~resetn) begin
-          if_valid <= 1'b0;
-          if_pc <= 32'h1bff_fffc;
-        end else if (if_allowin) begin
-          if_valid <= preIf_to_if_valid;
-        end else if (if_ready_go & if_reflush) begin
-          if_valid <= 1'b0;
-        end
-        if (if_allowin & preIf_to_if_valid) begin //原来在if_valid & (~id_allowin | ~if_ready_go)时利用brcancel取消指令的方法，都用到id阶段处理了，因为现在都能流经到id阶段
-          if_pc <= nextpc;
-          if_ADEF_EXCP <= ADEF_EXCP;
-        end
-      end
-      
-      //异常清空时的特殊处理
-      reg excp_reg;
-      always @(posedge clk) begin
-        if (~resetn) begin
-          excp_reg <= 1'b0;
-        end else if (if_valid & if_reflush & ~if_ready_go) begin
-          excp_reg <= 1'b1;
-        end else if (inst_sram_data_ok) begin
-          excp_reg <= 1'b0;
-        end
-      end
+   记录异常的第二种情况的清除if级指令
+   ```verilog
+     //br信息也需要保持到缓存，以在preIF_ready_go无效时保持进入到IF，同样MEM到ID的更新nextpc的信息也需要保持
+     reg [`MEM_TO_ID_WD-1:0] mem_to_if_bus_r;
+     reg mem_to_if_bus_r_valid;
+     always @(posedge clk) begin
+       if (~resetn) begin
+         mem_to_if_bus_r_valid <= 1'b0;
+       end else if (~mem_to_if_bus_r_valid & (mem_to_if_bus[1] | mem_to_if_bus[0]) & ~preIF_ready_go) begin
+         mem_to_if_bus_r <= mem_to_if_bus;  //这也应该加一个if_allowin吧？不用，异常针对if_readygo不为1有处理
+         mem_to_if_bus_r_valid <= 1'b1;
+       end else if (mem_to_if_bus_r_valid & preIF_ready_go) begin
+         mem_to_if_bus_r_valid <= 1'b0;
+       end
+     end
+     
+     wire if_reflush;
+     assign if_reflush = mem_to_if_bus[1] | mem_to_if_bus[0];
+     wire if_reflush_r;
+     assign if_reflush_r = excp | ertn;
+     
+     assign if_allowin     = ~if_valid | if_ready_go & id_allowin | if_reflush_r;
+     
+     always @(posedge clk) begin
+       if (~resetn) begin
+         if_valid <= 1'b0;
+         if_pc <= 32'h1bff_fffc;
+       end else if (if_allowin) begin
+         if_valid <= preIf_to_if_valid;
+       end else if (if_ready_go & if_reflush) begin
+         if_valid <= 1'b0;
+       end
+       if (if_allowin & preIf_to_if_valid) begin //原来在if_valid & (~id_allowin | ~if_ready_go)时利用brcancel取消指令的方法，都用到id阶段处理了，因为现在都能流经到id阶段
+         if_pc <= nextpc;
+         if_ADEF_EXCP <= ADEF_EXCP;
+       end
+     end
+     
+     //异常清空时的特殊处理
+     reg excp_reg;
+     always @(posedge clk) begin
+       if (~resetn) begin
+         excp_reg <= 1'b0;
+       end else if (if_valid & if_reflush & ~if_ready_go) begin
+         excp_reg <= 1'b1;
+       end else if (inst_sram_data_ok) begin
+         excp_reg <= 1'b0;
+       end
+     end
 
-    ```
-    > 📌当此时if\_ready\_go无效时，即表明if级指令正在等待data\_ok，如果收到了data\_ok时也不要把他进入id级
+   ```
+   > 📌当此时if\_ready\_go无效时，即表明if级指令正在等待data\_ok，如果收到了data\_ok时也不要把他进入id级
 
 #### 2.1.6 优化——还没做
 
@@ -447,12 +445,12 @@ load 指令设计的逻辑改动很大程度上可以借鉴前一小节中介绍
 
 核心是以下几点：
 
-1.  指令在发起访存的那一级，都要完成地址请求的握手（addr\_ok 正在或已经为 1）才能进入下一级流水
-2.  指令在接收数据的那一级，都要等待数据返回握手完成（data\_ok 正在或已经为 1）才能进入下一级流水
-3.  对于某指令访存请求被接收后数据已返回，而该指令却因为下一级反馈的 allowin 无效而无 法进入下一级的情况，建议在看到下一级反馈的 allowin 有效时才发出访存请求以简化设计
-4.  对于已经被接收的访存请求，如果其对应的指令因为异常清空流水线而被取消时，一定要记 录下这些访存请求，进而在它们的数据返回时将其丢弃
+1. 指令在发起访存的那一级，都要完成地址请求的握手（addr\_ok 正在或已经为 1）才能进入下一级流水
+2. 指令在接收数据的那一级，都要等待数据返回握手完成（data\_ok 正在或已经为 1）才能进入下一级流水
+3. 对于某指令访存请求被接收后数据已返回，而该指令却因为下一级反馈的 allowin 无效而无 法进入下一级的情况，建议在看到下一级反馈的 allowin 有效时才发出访存请求以简化设计
+4. 对于已经被接收的访存请求，如果其对应的指令因为异常清空流水线而被取消时，一定要记 录下这些访存请求，进而在它们的数据返回时将其丢弃
 
-    store 指令已为实现精确异常而保证了其发起访存请求时就一定不会再被异常取消[^注释8]，如果将 load 指令发访存请求的条件也设置的同 样严格，那么就不会出现这种情况，也就无须额外处理
+   store 指令已为实现精确异常而保证了其发起访存请求时就一定不会再被异常取消[^注释8]，如果将 load 指令发访存请求的条件也设置的同 样严格，那么就不会出现这种情况，也就无须额外处理
 
 此外，如果MEM级参与前递的有效信号是mem\_valid需要修改至ms\_to\_ws\_valid
 
@@ -464,29 +462,29 @@ store指令在EXE级的改动和load指令一致，因为类SRAM总线中关于a
 
 #### 2.2.3 设计综述
 
-1.  EXE级的ready\_go需要添加“如果有发出访存请求，那么exe需要阻塞直到req和addr\_ok均有效”，通过画真值表得到表达式是`~((exe_memW | res_from_mem) & ~(data_sram_req & data_sram_addr_ok))`
-2.  为消除“exe\_ready\_go有效而mem\_allowin无效”的情况，访存请求需要在mem\_allowin有效时发送
-3.  有异常时不发出请求req，实现精确异常
-4.  mem参与前递的mem\_valid需要更改为mem\_to\_wb\_valid
-5.  mem\_ready\_go需要根据“当前阶段是否是访存指令”来设置，如果是那么需要等待data\_ok
-    `~((mem_memW | res_from_mem) & ~data_sram_data_ok)` exe级需要增加exe\_memW信号到mem级的传递
-6.  因为data\_ok不是总有效的，所以如果id阶段涉及到load-delay，且load指令在mem级阻塞，那么也需要阻塞id级的指令直到mem级的load指令收到data\_ok
+1. EXE级的ready\_go需要添加“如果有发出访存请求，那么exe需要阻塞直到req和addr\_ok均有效”，通过画真值表得到表达式是`~((exe_memW | res_from_mem) & ~(data_sram_req & data_sram_addr_ok))`
+2. 为消除“exe\_ready\_go有效而mem\_allowin无效”的情况，访存请求需要在mem\_allowin有效时发送
+3. 有异常时不发出请求req，实现精确异常
+4. mem参与前递的mem\_valid需要更改为mem\_to\_wb\_valid
+5. mem\_ready\_go需要根据“当前阶段是否是访存指令”来设置，如果是那么需要等待data\_ok
+   `~((mem_memW | res_from_mem) & ~data_sram_data_ok)` exe级需要增加exe\_memW信号到mem级的传递
+6. 因为data\_ok不是总有效的，所以如果id阶段涉及到load-delay，且load指令在mem级阻塞，那么也需要阻塞id级的指令直到mem级的load指令收到data\_ok
 
-    mem级需要传递mem\_ready\_go信号到id级
+   mem级需要传递mem\_ready\_go信号到id级
 
-    id级需结合mem级是否存在load指令以及是否有mem级的前递来设置阻塞
-    ```verilog
-      wire mem_data_ok_stall = ~mem_ready_go & mem_regW & mem_valid & id_valid & ((need_rj & regAddrA != 5'b0 & mem_regWAddr == regAddrA) |
-                                      (need_rkd & regAddrB != 5'b0 & mem_regWAddr == regAddrB));
-      assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall;
-    ```
-    这里遇到了一些问题
+   id级需结合mem级是否存在load指令以及是否有mem级的前递来设置阻塞
+   ```verilog
+     wire mem_data_ok_stall = ~mem_ready_go & mem_regW & mem_valid & id_valid & ((need_rj & regAddrA != 5'b0 & mem_regWAddr == regAddrA) |
+                                     (need_rkd & regAddrB != 5'b0 & mem_regWAddr == regAddrB));
+     assign id_ready_go = ~load_delay & ~csr_delay & ~mem_data_ok_stall;
+   ```
+   这里遇到了一些问题
 
-    ![](image/image_STE7OyfyA-.png)
+   ![](image/image_UhaO53H6CI.png)
 
-    此时mem\_valid是无效的，因此不能\&mem\_valid
+   此时mem\_valid是无效的，因此不能\&mem\_valid
 
-    可能会有短延时的id级存在的问题，导致ld指令已经将数据写回，id还在判断阻塞，这里可以加上wbpc和mempc的比较来消除阻塞
+   可能会有短延时的id级存在的问题，导致ld指令已经将数据写回，id还在判断阻塞，这里可以加上wbpc和mempc的比较来消除阻塞
 
 ## 3 AXI总线协议
 
@@ -510,7 +508,7 @@ AMBA AXI总线接口基本介绍
 
 一个总线事务包含多个总线传输。总线传输只针对 valid 和 ready 同时有效（即握手成功）的那个时钟周期。如下图中的一次AXI读事务，包括读请求上的一次传输（蓝色框）和读响应上的四次传输（红色框）
 
-![](image/image_39FXcU0Adw.png)
+![](image/image_PgmFM-gDZJ.png)
 
 #### 3.1.3 地址、大小和数据
 
@@ -528,7 +526,7 @@ AXI为了实现非常高的总线传输性能定义了5个通道：写地址请�
 
 #### 3.1.5 多通道间同一事务的握手依赖关系
 
-![](image/image_wCZDQNrrjM.png)
+![](image/image_-2IyRri_h9.png)
 
 读事务：只有在ARVALID和ARREADY都有效时，从方才能将RVALID置有效
 
@@ -570,14 +568,14 @@ AXI为了实现非常高的总线传输性能定义了5个通道：写地址请�
 
 ### 3.2 类SRAM总线接口信号与AXI总线接口信号的对应关系
 
-1.  当req=1且wr=0时，对应arvalid信号
-2.  当req=1且wr=1时，对应awvalid信号
-3.  当前总线事务是读事务时，addr\_ok对应aready信号
-4.  当前总线事务是写事务时，addr\_ok对应AXI总线上的awready和wready都已经或者正在为1
-5.  当前总线事务是读事务时，data\_ok对应rvalid信号
-6.  当前总线事务是写事务时，data\_ok对应bvalid信号
-7.  当前总线事务是读事务时，addr对应araddr、size对应arsize、rdata对应rdata
-8.  当前总线事务是写事务时，addr对应awaddr、size对应awsize、wdata对应wdata、wstrb对应wstrb
+1. 当req=1且wr=0时，对应arvalid信号
+2. 当req=1且wr=1时，对应awvalid信号
+3. 当前总线事务是读事务时，addr\_ok对应aready信号
+4. 当前总线事务是写事务时，addr\_ok对应AXI总线上的awready和wready都已经或者正在为1
+5. 当前总线事务是读事务时，data\_ok对应rvalid信号
+6. 当前总线事务是写事务时，data\_ok对应bvalid信号
+7. 当前总线事务是读事务时，addr对应araddr、size对应arsize、rdata对应rdata
+8. 当前总线事务是写事务时，addr对应awaddr、size对应awsize、wdata对应wdata、wstrb对应wstrb
 
 ## 4 类SRAM-AXI转接桥设计
 
@@ -587,38 +585,38 @@ AXI为了实现非常高的总线传输性能定义了5个通道：写地址请�
 
 整个转接桥与 CPU 其余部分，以及与 SoC 中的其他部分的关系如下图所示：
 
-![](image/image_l9GvSbvbMO.png)
+![](image/image_IFKUAVHeXs.png)
 
 注意转接桥的类SRAM接口是从方，AXI接口是主方
 
 ### 4.2 转接桥设计要求——保证功能正确且匹配验证环境
 
-1.  ARESETN有效期间，AXI主方端口的VALID信号输出必须是0，READY信号不能是不定态
-2.  AXI主方端口的所有valid输出信号的置1逻辑中，一定不能允许组合逻辑来自同一通道的ready输入信号，但是可以来自于时序逻辑的ready输入——valid有效一定不能根据ready得到
-3.  AXI主方端口的所有ready输出信号，一定不能允许组合逻辑来自同一通道的valid输入信号，但是可以来自于时序逻辑的valid输入——设计要求
+1. ARESETN有效期间，AXI主方端口的VALID信号输出必须是0，READY信号不能是不定态
+2. AXI主方端口的所有valid输出信号的置1逻辑中，一定不能允许组合逻辑来自同一通道的ready输入信号，但是可以来自于时序逻辑的ready输入——valid有效一定不能根据ready得到
+3. AXI主方端口的所有ready输出信号，一定不能允许组合逻辑来自同一通道的valid输入信号，但是可以来自于时序逻辑的valid输入——设计要求
 
 > 📌2和3使得主方输出的valid、ready分别和当前时刻输入的ready、valid无关，但可以和上一时刻的有关
 
-1.  无论读、写请求，类 SRAM 接口上的事务要和 AXI 接口上的事务严格一一对应
-2.  在AXI主方的读请求、写请求、写数据通道上，如果主方输出的valid置为1时的从方ready输入是0，那么在ready 信号变为 1 之前，不允许主方变更该通道的所有输出信号——与类 SRAM 总线不同，类 SRAM 总线允许中途更改请求
-3.  AXI主方在发起读请求时，要先确保“该请求与‘已发出请求但尚未接收到写响应的写请求’”不存在相关
+1. 无论读、写请求，类 SRAM 接口上的事务要和 AXI 接口上的事务严格一一对应
+2. 在AXI主方的读请求、写请求、写数据通道上，如果主方输出的valid置为1时的从方ready输入是0，那么在ready 信号变为 1 之前，不允许主方变更该通道的所有输出信号——与类 SRAM 总线不同，类 SRAM 总线允许中途更改请求
+3. AXI主方在发起读请求时，要先确保“该请求与‘已发出请求但尚未接收到写响应的写请求’”不存在相关
 
-    如果存在，那么需要阻塞读请求的发出，不能使用前递
+   如果存在，那么需要阻塞读请求的发出，不能使用前递
 
-    简单的方法是：只要有写请求就停止发送读请求，直至主方收到写响应
+   简单的方法是：只要有写请求就停止发送读请求，直至主方收到写响应
 
-    高效的方法是：记录那些 “已发出请求但尚未接收到写响 应的写请求” 的地址waddr、位宽wsize、字节写使能wstrb等信息，后续读请求查询并比较这些信息后再决定 是否发出
+   高效的方法是：记录那些 “已发出请求但尚未接收到写响 应的写请求” 的地址waddr、位宽wsize、字节写使能wstrb等信息，后续读请求查询并比较这些信息后再决定 是否发出
 
 ### 4.3 转接桥设计建议——牺牲一些性能和面积来换取控制逻辑的简洁性
 
-1.  除了可以置为常值的信号外，所有 AXI 主方的输出直接来自触发器 Q 端
-2.  为读数据预留缓存，从 rdata 端口上收到的数据先保存到这个预留缓存中。AXI 上最多支持几个 “已完成读请求握手但数据尚未返回的读事务”，就预留同样数目的 rdata 缓存&#x20;
-3.  取指对应的 arid 恒为 0，load 对应的 arid 恒为 1
-4.  控制 AXI 读写的状态机分为独立的 4 个状态机：读请求通道一个，读响应通道一个，写请求和写数据共用一个，写响应一个
-5.  类 SRAM 从方端的输入信号不用锁存后再使用
-6.  数据端发来的类 SRAM 总线的读请求优先级固定高于取指端发来的类 SRAM 总线的读请求
-    **load优先级大于取指**
-7.  类 SRAM 从端输出的 addr\_ok 和 data\_ok 信号若是来自组合逻辑，那么这个组合逻辑中不要引入 AXI 接口上的 valid 和 ready 信号 ？
+1. 除了可以置为常值的信号外，所有 AXI 主方的输出直接来自触发器 Q 端
+2. 为读数据预留缓存，从 rdata 端口上收到的数据先保存到这个预留缓存中。AXI 上最多支持几个 “已完成读请求握手但数据尚未返回的读事务”，就预留同样数目的 rdata 缓存&#x20;
+3. 取指对应的 arid 恒为 0，load 对应的 arid 恒为 1
+4. 控制 AXI 读写的状态机分为独立的 4 个状态机：读请求通道一个，读响应通道一个，写请求和写数据共用一个，写响应一个
+5. 类 SRAM 从方端的输入信号不用锁存后再使用
+6. 数据端发来的类 SRAM 总线的读请求优先级固定高于取指端发来的类 SRAM 总线的读请求
+   **load优先级大于取指**
+7. 类 SRAM 从端输出的 addr\_ok 和 data\_ok 信号若是来自组合逻辑，那么这个组合逻辑中不要引入 AXI 接口上的 valid 和 ready 信号 ？
 
 ### 4.4 设计实现
 
@@ -966,7 +964,7 @@ endmodule
 
 > 仿真时通过设置confreg.v的RANDOM\_SEED来达到随机延时的效果
 >
-> ![](image/image_2xNTD4NUw6.png)
+> ![](image/image_Le-fxaYHdL.png)
 
 ### 4.5 优化——还没做
 

@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2023.1 (win64) Build 3865809 Sun May  7 15:05:29 MDT 2023
-| Date             : Sun May  5 21:25:51 2024
+| Date             : Thu May 30 18:18:07 2024
 | Host             : ysxAshore running 64-bit major release  (build 9200)
 | Command          : report_power -file soc_top_power_routed.rpt -pb soc_top_power_summary_routed.pb -rpx soc_top_power_routed.rpx
 | Design           : soc_top
@@ -30,14 +30,14 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 1.155        |
+| Total On-Chip Power (W)  | 1.341        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 1.006        |
-| Device Static (W)        | 0.149        |
+| Dynamic (W)              | 1.191        |
+| Device Static (W)        | 0.150        |
 | Effective TJA (C/W)      | 1.9          |
-| Max Ambient (C)          | 82.8         |
-| Junction Temperature (C) | 27.2         |
+| Max Ambient (C)          | 82.5         |
+| Junction Temperature (C) | 27.5         |
 | Confidence Level         | Low          |
 | Setting File             | ---          |
 | Simulation Activity File | ---          |
@@ -52,25 +52,25 @@ Table of Contents
 +--------------------------+-----------+----------+-----------+-----------------+
 | On-Chip                  | Power (W) | Used     | Available | Utilization (%) |
 +--------------------------+-----------+----------+-----------+-----------------+
-| Clocks                   |     0.068 |       28 |       --- |             --- |
-| Slice Logic              |     0.020 |    61930 |       --- |             --- |
-|   LUT as Logic           |     0.017 |    26732 |    133800 |           19.98 |
+| Clocks                   |     0.067 |       28 |       --- |             --- |
+| Slice Logic              |     0.111 |    61971 |       --- |             --- |
+|   LUT as Logic           |     0.107 |    26795 |    133800 |           20.03 |
+|   CARRY4                 |     0.002 |     1183 |     33450 |            3.54 |
 |   LUT as Distributed RAM |     0.001 |     1272 |     46200 |            2.75 |
-|   CARRY4                 |    <0.001 |     1183 |     33450 |            3.54 |
-|   Register               |    <0.001 |    24446 |    269200 |            9.08 |
+|   Register               |    <0.001 |    24447 |    269200 |            9.08 |
+|   F7/F8 Muxes            |    <0.001 |      817 |    133800 |            0.61 |
 |   LUT as Shift Register  |    <0.001 |      224 |     46200 |            0.48 |
-|   F7/F8 Muxes            |    <0.001 |      819 |    133800 |            0.61 |
 |   Others                 |    <0.001 |     1084 |       --- |             --- |
 |   BUFG                   |    <0.001 |        2 |        32 |            6.25 |
-| Signals                  |     0.025 |    47586 |       --- |             --- |
-| Block RAM                |     0.020 |     13.5 |       365 |            3.70 |
+| Signals                  |     0.118 |    47657 |       --- |             --- |
+| Block RAM                |     0.021 |     13.5 |       365 |            3.70 |
 | MMCM                     |     0.095 |        1 |        10 |           10.00 |
 | PLL                      |     0.344 |        3 |        10 |           30.00 |
-| I/O                      |     0.296 |      143 |       400 |           35.75 |
+| I/O                      |     0.297 |      143 |       400 |           35.75 |
 | PHASER                   |     0.134 |       14 |       --- |             --- |
 | XADC                     |     0.004 |        1 |       --- |             --- |
-| Static Power             |     0.149 |          |           |                 |
-| Total                    |     1.155 |          |           |                 |
+| Static Power             |     0.150 |          |           |                 |
+| Total                    |     1.341 |          |           |                 |
 +--------------------------+-----------+----------+-----------+-----------------+
 
 
@@ -80,7 +80,7 @@ Table of Contents
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint    |       1.000 |     0.231 |       0.198 |      0.033 |       NA    | Unspecified | NA         |
+| Vccint    |       1.000 |     0.416 |       0.382 |      0.034 |       NA    | Unspecified | NA         |
 | Vccaux    |       1.800 |     0.373 |       0.342 |      0.031 |       NA    | Unspecified | NA         |
 | Vcco33    |       3.300 |     0.006 |       0.001 |      0.005 |       NA    | Unspecified | NA         |
 | Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
@@ -174,13 +174,14 @@ Table of Contents
 +---------------------------------------------------+-----------+
 | Name                                              | Power (W) |
 +---------------------------------------------------+-----------+
-| soc_top                                           |     1.006 |
+| soc_top                                           |     1.191 |
 |   APB_DEV                                         |     0.003 |
 |     nand_module                                   |     0.002 |
 |       NAND                                        |     0.002 |
 |   AXI_CLK_CONVERTER                               |     0.002 |
 |     inst                                          |     0.002 |
 |       gen_clock_conv.gen_async_conv.asyncfifo_axi |     0.002 |
+|   CONFREG                                         |     0.001 |
 |   DMA_MASTER0                                     |     0.002 |
 |   ETHERNET_TOP                                    |     0.005 |
 |     u_mac_top_0                                   |     0.004 |
@@ -189,9 +190,19 @@ Table of Contents
 |     inst                                          |     0.110 |
 |   clk_pll_33                                      |     0.144 |
 |     inst                                          |     0.144 |
-|   cpu_mid                                         |     0.038 |
-|     d_cache                                       |     0.010 |
-|     i_cache                                       |     0.012 |
+|   cpu_mid                                         |     0.222 |
+|     d_cache                                       |     0.013 |
+|       way0_bank0                                  |     0.001 |
+|       way0_bank1                                  |     0.001 |
+|       way0_bank2                                  |     0.001 |
+|       way0_bank3                                  |     0.001 |
+|       way0_tagv                                   |     0.001 |
+|       way1_bank0                                  |     0.001 |
+|       way1_bank1                                  |     0.001 |
+|       way1_bank2                                  |     0.001 |
+|       way1_bank3                                  |     0.001 |
+|       way1_tagv                                   |     0.001 |
+|     i_cache                                       |     0.011 |
 |       way0_bank0                                  |     0.001 |
 |       way0_bank1                                  |     0.001 |
 |       way0_bank2                                  |     0.001 |
@@ -203,12 +214,13 @@ Table of Contents
 |       way1_bank3                                  |     0.001 |
 |       way1_tagv                                   |     0.001 |
 |     u_csr                                         |     0.001 |
-|     u_exe_stage                                   |     0.006 |
-|       u_int_div_radix_4_v1                        |     0.002 |
-|       u_mul                                       |     0.004 |
-|     u_tlb                                         |     0.006 |
-|   mig_axi                                         |     0.675 |
-|     u_mig_axi_32_mig                              |     0.675 |
+|     u_exe_stage                                   |     0.187 |
+|       u_int_div_radix_4_v1                        |     0.003 |
+|       u_mul                                       |     0.183 |
+|     u_id_stage                                    |     0.001 |
+|     u_tlb                                         |     0.005 |
+|   mig_axi                                         |     0.674 |
+|     u_mig_axi_32_mig                              |     0.674 |
 |       temp_mon_enabled.u_tempmon                  |     0.008 |
 |       u_ddr3_infrastructure                       |     0.187 |
 |       u_memc_ui_top_axi                           |     0.479 |
